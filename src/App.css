@@ -36,3 +36,62 @@
     transform: rotate(360deg);
   }
 }
+
+.tabs {
+  display: flex;
+  position: relative;
+  background-color: #f0f0f0; /* 배경을 회색으로 변경 */
+  box-shadow: rgba(0, 0, 0, 0.2);
+  padding: 0.75rem;
+  border-radius: 20px;
+}
+
+.tabs * {
+  z-index: 2;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 200px;
+  font-size: 1rem;
+  font-weight: 400;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: color 0.15s ease-in;
+}
+
+input[id="radio-1"]:checked + label,
+input[id="radio-2"]:checked + label,
+input[id="radio-3"]:checked + label {
+  color: black;
+}
+
+input[id=radio-1]:checked ~ .glider {
+  transform: translateX(0);
+}
+input[id=radio-2]:checked ~ .glider {
+  transform: translateX(100%);
+}
+input[id=radio-3]:checked ~ .glider {
+  transform: translateX(200%);
+}
+
+.glider {
+  position: absolute;
+  height: 100%; /* 글라이더의 높이 */
+  width: 33.3%; /* 글라이더의 너비 */
+  background-color: white; /* 흰색 배경 */
+  border: 2px solid #cccccc; /* 회색 테두리 */
+  z-index: 1;
+  top: 0%;
+  left: 0%;
+  border-radius: 20px; /* 라운드 테두리 */
+  transition: transform 0.25s ease-out;
+}
