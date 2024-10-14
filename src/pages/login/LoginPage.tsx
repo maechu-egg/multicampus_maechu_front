@@ -2,15 +2,15 @@ import React from "react";
 import Header from "../../components/layout/Header";
 import NavBar from "../../components/layout/NavBar";
 
-function HomePage(): JSX.Element {
+function LoginPage():JSX.Element {
   return (
     <div>
         <div>
-          <Header/> <NavBar/>
+            <Header/> <NavBar/>
         </div>
-        홈페이지입니다.
+        로그인 페이지입니다.
     </div>
-  );
+    );
 }
 
-export default HomePage;  
+export default LoginPage;  
