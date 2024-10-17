@@ -97,6 +97,16 @@ input[id=big]:checked ~ .glider {
   transform: translateX(200%);
 }
 
+input[id=diet]:checked ~ .glider {
+  transform: translateX(0);
+}
+input[id=effort]:checked ~ .glider {
+  transform: translateX(100%);
+}
+input[id=muscles]:checked ~ .glider {
+  transform: translateX(200%);
+}
+
 input[id=yes]:checked ~ .glider2 {
   transform: translateX(0);
 }
@@ -104,6 +114,19 @@ input[id=no]:checked ~ .glider2 {
   transform: translateX(100%);
 }
 
+input[id=poster]:checked ~ .glider2 {
+  transform: translateX(0);
+}
+input[id=basic]:checked ~ .glider2 {
+  transform: translateX(100%);
+}
+
+input[id=direct]:checked ~ .glider2 {
+  transform: translateX(0);
+}
+input[id=indirect]:checked ~ .glider2 {
+  transform: translateX(100%);
+}
 .glider {
   position: absolute;
   height: 100%; /* 글라이더의 높이 */

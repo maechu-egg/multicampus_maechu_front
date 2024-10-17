@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const CreateCrewForm = () => {
+function CrewModal() {
     // 입력 필드 상태 관리
     const [crewName, setCrewName] = useState('');
     const [title, setTitle] = useState('');
@@ -8,10 +8,10 @@ const CreateCrewForm = () => {
     const [sport, setSport] = useState('');
 
     // 라디오 버튼 상태 관리
-    const [goal, setGoal] = useState('');
-    const [gender, setGender] = useState('');
-    const [frequency, setFrequency] = useState('');
-    const [postOption, setPostOption] = useState('');
+    const [goal, setGoal] = useState('다이어트');
+    const [gender, setGender] = useState('남성');
+    const [frequency, setFrequency] = useState('주 1~3회');
+    const [postOption, setPostOption] = useState('게시글 개시');
 
     // 체크박스 상태 관리 (선호 나이)
     const [ages, setAge] = useState<string[]>([]);
@@ -267,8 +267,9 @@ const CreateCrewForm = () => {
                 <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">
+                    
                     <button type="submit" className="btn btn-primary">크루 생성</button>
-                   
+                    
 
                     &nbsp;&nbsp;&nbsp;
                     <button type="button" className="btn btn-danger">취소</button>
@@ -278,4 +279,4 @@ const CreateCrewForm = () => {
     );
 };
 
-export default CreateCrewForm;
+export default CrewModal;
