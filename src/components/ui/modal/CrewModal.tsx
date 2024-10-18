@@ -28,6 +28,7 @@ function CrewModal() {
     // 폼 제출 핸들러
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const selectedAges = ages.join(', ');
         const formData = {
             crewName,
             title,
@@ -36,7 +37,7 @@ function CrewModal() {
             gender,
             frequency,
             postOption,
-            ages,
+            ages: selectedAges,
             sport
         };
         console.log('Form Data:', formData);
