@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './Modal.css';
 
 function CrewIntroModal() {
     const [crewName, setCrewName] = useState('');

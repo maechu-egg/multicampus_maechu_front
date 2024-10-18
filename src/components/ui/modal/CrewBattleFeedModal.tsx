@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './Modal.css';
 
 function CrewBattleFeedModal() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);

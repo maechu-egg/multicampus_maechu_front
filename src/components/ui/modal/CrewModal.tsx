@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Modal.css';
 
 function CrewModal() {
     // 입력 필드 상태 관리

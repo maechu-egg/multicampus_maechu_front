@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './Modal.css';
 
 function CrewBattleModal() {
     const [goal, setGoal] = useState('체중감량');
