@@ -3,9 +3,10 @@ import {
   Route,
   BrowserRouter as Router,
   Routes,
+  useLocation,
 } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
-import CrewPage from "./pages/crew/CrewPage";
+import CrewHeader from "pages/crew/CrewHeader";
 import MyPage from "./pages/mypage/MyPage";
 import CommunityPage from "./pages/community/CommunityPage";
 import RecodePage from "./pages/recode/RecodePage";
@@ -17,16 +18,17 @@ import NavBar from "../src/components/layout/NavBar";
 function AppRouter() {
   return (
     <BrowserRouter>
-      <Header /> <NavBar />
-      <Routes>
-        <Route path="/" element={<HomePage />}></Route>
-        <Route path="/crewpage" element={<CrewPage />}></Route>
-        <Route path="/mypage" element={<MyPage />}></Route>
-        <Route path="/communitypage" element={<CommunityPage />}></Route>
-        <Route path="/recodepage" element={<RecodePage />}></Route>
-        <Route path="/aboutpage" element={<AboutPage />}></Route>
-        <Route path="/loginpage" element={<LoginPage />}></Route>
-      </Routes>
+        <Header />
+        <NavBar />
+        <Routes>
+            <Route path="/" element={<HomePage />}></Route>
+            <Route path="/crewpage" element={<CrewHeader />}></Route>
+            <Route path="/mypage" element={<MyPage />}></Route>
+            <Route path="/communitypage" element={<CommunityPage />}></Route>
+            <Route path="/recodepage" element={<RecodePage />}></Route>
+            <Route path="/aboutpage" element={<AboutPage />}></Route>
+            <Route path="/loginpage" element={<LoginPage />}></Route>
+        </Routes>
     </BrowserRouter>
   );
 }
