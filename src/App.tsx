@@ -1,22 +1,18 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/home/HomePage";
-import CrewModal from "./components/ui/modal/CrewModal";
-import CrewIntroModal from "./components/ui/modal/CrewIntroModal";
-import CrewBattleModal from "./components/ui/modal/CrewBattleModal";
-import CrewBattleFeedModal from "./components/ui/modal/CrewBattleFeedModal";
+import AppRouter from "./Router";
 
 function App() {
+  // 유저 recoil 세팅 해야함
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />}></Route>
-        <Route path="/crewmodal" element={<CrewModal />}></Route>
-        <Route path="/crewintromodal" element={<CrewIntroModal />}></Route>
-        <Route path="/crewbattlemodal" element={<CrewBattleModal />}></Route>
-        <Route path="/crewbattlefeedmodal" element={<CrewBattleFeedModal />}></Route>
-      </Routes>
-    </BrowserRouter>
+    // <BrowserRouter>
+    //   <Routes>
+    //     <Route path="/" element={<HomePage />}></Route>
+    //   </Routes>
+    // </BrowserRouter>
+    <>
+      <AppRouter />
+    </>
   );
 }
 
