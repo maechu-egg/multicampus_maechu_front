@@ -13,6 +13,8 @@ import AboutPage from "./pages/about/AboutPage";
 import LoginPage from "./pages/login/LoginPage";
 import Header from "../src/components/layout/Header";
 import NavBar from "../src/components/layout/NavBar";
+import BadgeStatusPage from "pages/badge/BadgeStatusPage";
+
 
 function AppRouter() {
   return (
@@ -26,6 +28,8 @@ function AppRouter() {
         <Route path="/recodepage" element={<RecodePage />}></Route>
         <Route path="/aboutpage" element={<AboutPage />}></Route>
         <Route path="/loginpage" element={<LoginPage />}></Route>
+        <Route path="/badgestatuspage" element={<BadgeStatusPage />}></Route>
+       
       </Routes>
     </BrowserRouter>
   );
