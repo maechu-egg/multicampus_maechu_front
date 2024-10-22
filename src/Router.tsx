@@ -23,7 +23,7 @@ function AppRouter() {
       <Header /> <NavBar />
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
-        <Route path="/crewpage" element={<CrewPage />}></Route>
+        <Route path="/crewpage" element={<CrewHeader />}></Route>
         <Route path="/mypage" element={<MyPage />}></Route>
         <Route path="/communitypage" element={<CommunityPage />}></Route>
         <Route path="/recodepage" element={<RecodePage />}></Route>
