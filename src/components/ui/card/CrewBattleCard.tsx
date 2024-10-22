@@ -21,10 +21,10 @@ function CrewBattleCard() {
                 </div>
                 <div className="progress-stacked">
                     <div className="progress" role="progressbar" aria-label="Segment one" aria-valuenow={15} aria-valuemin={0} aria-valuemax={100} style={{ width: '60%' }}>
-                        <div className="progress-bar"></div>
+                        <div className="progress-bar bg-primary" style={{height: "100%"}}></div>
                     </div>
                     <div className="progress" role="progressbar" aria-label="Segment two" aria-valuenow={30} aria-valuemin={0} aria-valuemax={100} style={{ width: '40%' }}>
-                        <div className="progress-bar bg-danger"></div>
+                        <div className="progress-bar bg-danger" style={{height: "100%"}}></div>
                     </div>
                 </div>
                 <div className="d-flex justify-content-between align-items-center">
