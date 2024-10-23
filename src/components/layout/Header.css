@@ -8,15 +8,57 @@
 #MainLogo {
     width: 200px;
     height: 100px;
-  }
-  
+}
 
-#ListTask{
+#LoginBtn {
     width: 100px;
     height: 50px;
 }
 
-#LoginBtn{
-    width: 100px;
-    height: 50px;
+/* 미디어 쿼리: 스마트폰 세로 (0px ~ 480px) */
+@media (max-width: 480px) {
+    #MainLogo {
+        width: 150px; /* 로고 크기 조정 */
+        height: 75px; 
+    }
+    #LoginBtn {
+        width: 80px; /* 로그인 버튼 크기 조정 */
+        height: 40px; 
+    }
+}
+
+/* 미디어 쿼리: 스마트폰 가로, 태블릿 (481px ~ 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    #MainLogo {
+        width: 180px; 
+        height: 90px; 
+    }
+    #LoginBtn {
+        width: 90px; 
+        height: 45px; 
+    }
+}
+
+/* 미디어 쿼리: 태블릿 가로, 노트북 (769px ~ 1279px) */
+@media (min-width: 769px) and (max-width: 1279px) {
+    #MainLogo {
+        width: 200px; 
+        height: 100px; 
+    }
+    #LoginBtn {
+        width: 100px; 
+        height: 50px; 
+    }
+}
+
+/* 미디어 쿼리: 데스크탑 (1280px ~) */
+@media (min-width: 1280px) {
+    #MainLogo {
+        width: 220px; 
+        height: 110px; 
+    }
+    #LoginBtn {
+        width: 110px; 
+        height: 55px; 
+    }
 }

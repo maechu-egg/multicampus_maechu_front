@@ -29,7 +29,7 @@ function AppRouter() {
         <Route path="/aboutpage" element={<AboutPage />}></Route>
         <Route path="/loginpage" element={<LoginPage />}></Route>
         <Route path="/badgestatuspage" element={<BadgeStatusPage />}></Route>
-       
+ 
       </Routes>
     </BrowserRouter>
   );
