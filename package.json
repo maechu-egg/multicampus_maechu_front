@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.31",
     "@types/node": "^22.7.5",
     "@types/react-router-dom": "^5.3.3",
     "prettier": "^3.3.3"
