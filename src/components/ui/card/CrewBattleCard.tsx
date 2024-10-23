@@ -2,7 +2,7 @@ import React from "react";
 
 function CrewBattleCard() {
     return (
-        <div className="card text-center mb-3" style={{ width: "20em", height: "27rem", marginRight: "20px" }}>
+        <div className="card text-center mb-3" style={{ width: "20em", height: "100%", marginRight: "20px" }}>
             {/* props 받아서 온 데이터들 정리해서 보여주기 */}
             <div className="card-body d-flex flex-column">
                 <div className="d-flex justify-content-start align-items-center">
