@@ -40,20 +40,26 @@ function CrewModal() {
             crew_gender,
             crew_frequency,
             crew_state,
-            ages: selectedAges,
+            crew_age: selectedAges,
             crew_sport,
             member_id :72
         };
+        console.log("debug >>> data", data);
 
         const createCrew = async() => {
-            try{
-                const response = await axios.post(`http://localhost:8001/crew/create`, data)
+            try {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3Mjk3MzAxMjAsImV4cCI6MTcyOTgxNjUyMH0.HoKyARnnB4G5GRd6e5uq26LN8qq9PS1p8KeBX-3XpCo'; // 실제 토큰 값으로 대체하세요
+                const response = await axios.post(`http://localhost:8001/crew/create`, data, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 console.log("debug >>> createCrew response", response);
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("크루 생성에 실패 했습니다.");
             }
-        }
+        };
         createCrew();
     };
 
