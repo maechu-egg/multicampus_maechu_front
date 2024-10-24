@@ -60,9 +60,9 @@ function CrewIntroModal() {
                 <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary">소개글 작성</button>
+                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">소개글 생성</button>
                     &nbsp;&nbsp;&nbsp;
-                    <button type="button" className="btn btn-danger">취소</button>
+                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">취소</button>
                 </div>
             </form>
         </div>

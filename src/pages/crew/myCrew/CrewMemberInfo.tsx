@@ -1,10 +1,21 @@
 import React from "react";
+import CrewMemberCard from "components/ui/card/CrewMemberCard";
 
-interface CrewMemberProps {
-    crewId: number; // 크루 ID를 prop으로 받습니다.
-}
+const crewMembers = [
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
 
-function CrewMemberInfo({ crewId }: CrewMemberProps): JSX.Element {
+    // 추가 멤버 데이터를 여기에 추가
+];
+
+function CrewMemberInfo(): JSX.Element {
     {/* 
         useEffect를 사용해서 crewId에 맞는 정보 불러오고
         뱃지, 닉네임, 나이, 지역, 배틀 승리 횟수, 주간 운동 횟수 보여주기 (카드형식)
@@ -17,7 +28,13 @@ function CrewMemberInfo({ crewId }: CrewMemberProps): JSX.Element {
     */}
     return (
         <div className="container">
-            크루원 정보 페이지
+            <div className="row">
+                {crewMembers.map(member => (
+                    <div key={member.id} className="col-md-4 mb-4 d-flex justify-content-center">
+                        <CrewMemberCard />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
