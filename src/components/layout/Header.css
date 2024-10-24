@@ -3,7 +3,30 @@
     justify-content: space-between; 
     align-items: center; 
     padding: 10px; 
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.navbar-menu {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0; 
+    justify-content: space-between;
+    flex-grow: 1; 
+  }
+  .navbar-item a {
+    text-decoration: none; 
+    color: black; 
+    font-size: 18px; 
+    transition: color 0.3s;
+  }
+  .navbar-item:last-child {
+    margin-right: 20px; 
+  }
+  
+  .navbar-item a:hover {
+    color: #007bff; 
+  }
 
 #MainLogo {
     width: 200px;
@@ -18,47 +41,78 @@
 /* 미디어 쿼리: 스마트폰 세로 (0px ~ 480px) */
 @media (max-width: 480px) {
     #MainLogo {
-        width: 150px; /* 로고 크기 조정 */
-        height: 75px; 
+        width: 70px; /* 로고 크기 조정 */
+        height: 50px; 
     }
     #LoginBtn {
-        width: 80px; /* 로그인 버튼 크기 조정 */
-        height: 40px; 
+        width: 20px; /* 로그인 버튼 크기 조정 */
+        height: 20px; 
     }
+    .navbar-item {
+        margin: 0 5px; 
+      }
+    
+      .navbar-item a {
+        font-size: 12px; 
+      }
 }
 
 /* 미디어 쿼리: 스마트폰 가로, 태블릿 (481px ~ 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
     #MainLogo {
-        width: 180px; 
-        height: 90px; 
+        width: 80px; 
+        height: 60px; 
     }
     #LoginBtn {
-        width: 90px; 
-        height: 45px; 
+        width: 30px; 
+        height: 30px; 
     }
+    .navbar-item {
+        margin: 0 10px; 
+      }
+    
+      .navbar-item a {
+        font-size: 15px; 
+      }
+    
+    
 }
 
 /* 미디어 쿼리: 태블릿 가로, 노트북 (769px ~ 1279px) */
 @media (min-width: 769px) and (max-width: 1279px) {
     #MainLogo {
-        width: 200px; 
-        height: 100px; 
+        width: 100px; 
+        height: 80px; 
     }
     #LoginBtn {
-        width: 100px; 
-        height: 50px; 
+        width: 40px; 
+        height: 40px; 
     }
+    .navbar-item {
+        margin: 0 20px; 
+      }
+    
+      .navbar-item a {
+        font-size: 16px; 
+      }
 }
 
 /* 미디어 쿼리: 데스크탑 (1280px ~) */
 @media (min-width: 1280px) {
     #MainLogo {
-        width: 220px; 
+        width: 140px; 
         height: 110px; 
     }
     #LoginBtn {
-        width: 110px; 
-        height: 55px; 
+        width: 50px; 
+        height: 50px; 
     }
+    .navbar-item {
+        margin: 0 30px; 
+      }
+    
+      .navbar-item a {
+        font-size: 18px; 
+      }
+    
 }
