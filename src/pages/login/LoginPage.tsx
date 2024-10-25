@@ -15,6 +15,7 @@ function LoginPage(): JSX.Element {
               id="floatingInputValue"
               placeholder="name@example.com"
               value="test@example.com"
+              style={{ width: '100%' }}
             />
             <label htmlFor="floatingInputValue">Input with value</label>
           </form>
@@ -25,6 +26,7 @@ function LoginPage(): JSX.Element {
               id="floatingInputValue"
               placeholder="name@example.com"
               value="test@example.com"
+              style={{ width: '100%' }}
             />
             <label htmlFor="floatingInputValue">Input with value</label>
           </form>
