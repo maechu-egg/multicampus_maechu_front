@@ -43,34 +43,37 @@ function CrewIntroModal() {
         <div className="container">
             <form onSubmit={handleSubmit}>
                 {/* 사진 */}
-                <div className="form-group form-control">
+                <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>사진</label>
                     <input
                         className="form-control"
                         type="file"
                         id="formFile"
                         onChange={handleFileChange}
+                        style={{ width: '100%' }}
                     />
                 </div>
                 <br />
                 {/* 크루 이름 (조건부 렌더링) */}
-                <div className="form-group form-control">
+                <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>크루 이름</label>
                     <input
                         type="text"
                         className="form-control"
                         value={crew_name}
                         onChange={(e) => setCrew_name(e.target.value)}
+                        style={{ width: '100%' }}
                     />
                 </div>
                 <br />
-                <div className="form-group form-control">
+                <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>크루 소개 내용</label>
                     <input
                         type="text"
                         className="form-control"
                         value={crew_intro_post}
                         onChange={(e) => setCrew_intro_post(e.target.value)}
+                        style={{ width: '100%' }}
                     />
                 </div>
                 <br />

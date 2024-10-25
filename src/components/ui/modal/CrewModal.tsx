@@ -65,20 +65,21 @@ function CrewModal() {
 
     return (
         <div className="container">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
                 {/* 크루 이름 */}
-                <div className="form-group form-control">
+                <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>크루 이름</label>
                     <input
                         type="text"
                         className="form-control"
                         value={crew_name}
                         onChange={(e) => setCrew_name(e.target.value)}
+                        style={{ width: '100%' }}
                     />
                 </div>
                 <br />
                 {/* 크루 목표 */}
-                <div className="form-control">
+                <div className="form-control" style={{ width: '100%' }}>
                     <label>크루 목표</label>
                     <div className="container d-flex justify-content-between w-100">
                         <div className="tabs form-check form-check-inline w-100">
@@ -117,18 +118,19 @@ function CrewModal() {
                 </div>
                 <br />
                 {/* 활동 지역 */}
-                <div className="form-group form-control">
+                <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>활동 지역</label>
                     <input
                         type="text"
                         className="form-control"
                         value={crew_location}
                         onChange={(e) => setCrew_location(e.target.value)}
+                        style={{ width: '100%' }}
                     />
                 </div>
                 <br />
                 {/* 운동 종목 */}
-                <div className='form-group form-control'>
+                <div className='form-group form-control' style={{ width: '100%' }}>
                     <label>운동 종목</label>
                     <input 
                         className='form-control' 
@@ -137,6 +139,7 @@ function CrewModal() {
                         id="sport" 
                         value={crew_sport} // 선택된 값 표시
                         onChange={(e) => setCrew_sport(e.target.value)} // 값이 변경될 때 상태 업데이트
+                        style={{ width: '100%' }}
                     />
                     <datalist id="list">
                         <option value="산악" />
@@ -149,7 +152,7 @@ function CrewModal() {
                 </div>
                 <br />
                 {/* 선호 성별 */}
-                <div className="form-control">
+                <div className="form-control" style={{ width: '100%' }}>
                     <label>선호 성별</label>
                     <div className="container d-flex justify-content-between w-100">
                         <div className="tabs form-check form-check-inline w-100">
@@ -188,7 +191,7 @@ function CrewModal() {
                 </div>
                 <br />
                 {/* 활동 빈도 */}
-                <div className="form-control">
+                <div className="form-control" style={{ width: '100%' }}>
                     <label>활동 빈도</label>
                     <div className="container d-flex justify-content-between w-100">
                         <div className="tabs form-check form-check-inline w-100">
@@ -227,7 +230,7 @@ function CrewModal() {
                 </div>
                 <br />
                 {/* 선호 나이 */}
-                <div className="form-group form-control">
+                <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>선호 나이</label>
                     <div className="d-flex justify-content-between w-100">
                         {['10대', '20대', '30대', '40대', '50대'].map((age) => (
@@ -247,18 +250,19 @@ function CrewModal() {
                 </div>
                 <br />
                 {/* 제목 */}
-                <div className="form-group form-control">
+                <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>제목</label>
                     <input
                         type="text"
                         className="form-control"
                         value={crew_title}
                         onChange={(e) => setCrew_title(e.target.value)}
+                        style={{ width: '100%' }}
                     />
                 </div>
                 <br/>
                 {/* 게시글 여부 */}
-                <div className="form-control">
+                <div className="form-control" style={{ width: '100%' }}>
                     <label>게시글 여부</label>
                     <div className="container d-flex justify-content-between w-100">
                         <div className="tabs form-check form-check-inline w-100">
