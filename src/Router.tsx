@@ -13,7 +13,7 @@ import RecodePage from "./pages/recode/RecodePage";
 import AboutPage from "./pages/about/AboutPage";
 import LoginPage from "./pages/login/LoginPage";
 import Header from "../src/components/layout/Header";
-import NavBar from "../src/components/layout/NavBar";
+
 import BadgeStatusPage from "pages/badge/BadgeStatusPage";
 import CrewBattleFeedDetailModal from "components/ui/modal/CrewBattleFeedDetailModal";
 
@@ -21,7 +21,7 @@ import CrewBattleFeedDetailModal from "components/ui/modal/CrewBattleFeedDetailM
 function AppRouter() {
   return (
     <BrowserRouter>
-      <Header /> <NavBar />
+      <Header />
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/crewpage" element={<CrewHeader />}></Route>
