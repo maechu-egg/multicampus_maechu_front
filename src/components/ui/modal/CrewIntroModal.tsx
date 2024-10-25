@@ -1,26 +1,42 @@
 import React, { useState } from "react";
 import './Modal.css';
+import axios from "axios";
 
 function CrewIntroModal() {
-    const [crewName, setCrewName] = useState('');
-    const [crewIntro, setCrewIntro] = useState('');
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [crew_name, setCrew_name] = useState('');
+    const [crew_intro_post, setCrew_intro_post] = useState('');
+    const [crew_intro_img, setCrew_intro_img] = useState<File | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setSelectedFile(e.target.files[0]);
+            setCrew_intro_img(e.target.files[0]);
         }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const formData = {
-            crewName,
-            crewIntro,
-            fileName: selectedFile ? selectedFile.name : null, // 파일 이름을 보낼 경우
+        const data = {
+            crew_name,
+            crew_intro_post,
+            crew_intro_img: crew_intro_img ? crew_intro_img.name : null, // 파일 이름을 보낼 경우
+            crew_id: 22
         };
-        console.log('Form Data:', formData);
+        console.log('Data:', data);
 
+        const updateCrewIntro = async() => {
+            try {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3Mjk3MzAxMjAsImV4cCI6MTcyOTgxNjUyMH0.HoKyARnnB4G5GRd6e5uq26LN8qq9PS1p8KeBX-3XpCo'; // 실제 토큰 값으로 대체하세요
+                const response = await axios.post(`http://localhost:8001/crew/intro/update`, data, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+            } catch (error) {
+                console.error('Error updating crew intro:', error);
+                alert("크루 소개글 수정에 실패 했습니다.");
+            }
+        };
+        updateCrewIntro();
     };
 
     return (
@@ -43,8 +59,8 @@ function CrewIntroModal() {
                     <input
                         type="text"
                         className="form-control"
-                        value={crewName}
-                        onChange={(e) => setCrewName(e.target.value)}
+                        value={crew_name}
+                        onChange={(e) => setCrew_name(e.target.value)}
                     />
                 </div>
                 <br />
@@ -53,8 +69,8 @@ function CrewIntroModal() {
                     <input
                         type="text"
                         className="form-control"
-                        value={crewIntro}
-                        onChange={(e) => setCrewIntro(e.target.value)}
+                        value={crew_intro_post}
+                        onChange={(e) => setCrew_intro_post(e.target.value)}
                     />
                 </div>
                 <br />
