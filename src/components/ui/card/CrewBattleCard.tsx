@@ -1,6 +1,6 @@
 import React from "react";
 
-function CrewBattleCard() {
+function CrewBattleCard():JSX.Element {
     return (
         <div className="card text-center mb-3" style={{ width: "20em", height: "100%", marginRight: "20px" }}>
             {/* props 받아서 온 데이터들 정리해서 보여주기 */}
@@ -36,7 +36,13 @@ function CrewBattleCard() {
                 </div>
                 <p className="card-text" style={{ fontSize: "15px" }}>배틀 내용 배틀 내용 배틀 내용 배틀 내용 배틀 내용 배틀 내용 배틀 내용</p>
                 <div className="mt-auto">
-                    <a href="#" className="btn btn-secondary">상세 보기</a>
+                    <button 
+                        className="btn btn-secondary" 
+                        data-bs-toggle="modal"
+                        data-bs-target="#battleFeedDetailModal"
+                    >
+                        상세 보기
+                    </button>
                 </div>
             </div>
         </div>

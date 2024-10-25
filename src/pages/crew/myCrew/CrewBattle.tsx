@@ -1,12 +1,14 @@
+import React, { useState } from "react";
 import CrewBattleModal from "components/ui/modal/CrewBattleModal";
-import React from "react";
 import CrewBattleCard from "components/ui/card/CrewBattleCard";
+import CrewBattleFeedDetailModal from "components/ui/modal/CrewBattleFeedDetailModal";
 
 interface CrewBattleProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
 }
 
 function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
+
     return (
         <div className="container">
             <br/>
@@ -35,7 +37,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <div className="carousel-item active">
                                 <div className="row">
                                     <div className="col-12 col-md-4 mb-3 d-flex justify-content-center">
-                                        <CrewBattleCard />
+                                        <CrewBattleCard/>
                                     </div>
                                     <div className="col-12 col-md-4 mb-3 d-flex justify-content-center">
                                         <CrewBattleCard />
@@ -48,16 +50,30 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <div className="carousel-item">
                                 <div className="row">
                                     <div className="col-12 col-md-4 mb-3 d-flex justify-content-center">
-                                        <CrewBattleCard />
+                                        <CrewBattleCard/>
                                     </div>
                                     <div className="col-12 col-md-4 mb-3 d-flex justify-content-center">
-                                        <CrewBattleCard />
+                                        <CrewBattleCard/>
                                     </div>
                                     <div className="col-12 col-md-4 mb-3 d-flex justify-content-center">
                                         <CrewBattleCard />
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* CrewBattleFeedDetailModal 모달 */}
+            <div className="modal fade" id="battleFeedDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleFeedDetailModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-xl">
+                    <div className="modal-content" style={{width: "100%", height: "100%"}}>
+                        <div className="modal-header">
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <CrewBattleFeedDetailModal />
                         </div>
                     </div>
                 </div>
