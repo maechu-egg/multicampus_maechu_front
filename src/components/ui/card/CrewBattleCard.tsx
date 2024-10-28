@@ -1,12 +1,34 @@
 import React from "react";
 
-function CrewBattleCard():JSX.Element {
+interface Battle {
+    battle_content: string;
+    battle_end_date: string;
+    battle_id: number;
+    battle_end_recruitment: string;
+    battle_goal: string;
+    battle_name: string;
+    crew_id: number;
+}
+
+interface CrewInfoProps {
+    battle: Battle; // 개별 멤버 객체를 prop으로 받습니다.
+    onDetailClick: () => void;
+}
+
+function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
+
+    const formattedBattleEndDate = new Date(battle.battle_end_date).toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
     return (
         <div className="card text-center mb-3" style={{ width: "20em", height: "100%", marginRight: "20px" }}>
             {/* props 받아서 온 데이터들 정리해서 보여주기 */}
             <div className="card-body d-flex flex-column">
                 <div className="d-flex justify-content-start align-items-center">
-                    <h3 className="card-title">배틀 제목 1</h3>
+                    <h3 className="card-title">{battle.battle_name}</h3>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <span className="badge rounded-pill text-bg-primary">진행중</span>
                 </div>
@@ -32,14 +54,15 @@ function CrewBattleCard():JSX.Element {
                     <p className="ms-3" style={{ fontSize: "15px" }}>40%</p>
                 </div>
                 <div className="justify-content-center align-items-center">
-                    <p>종료일 : 2024.10.20</p>
+                    <p>종료일 : {formattedBattleEndDate}</p>
                 </div>
-                <p className="card-text" style={{ fontSize: "15px" }}>배틀 내용 배틀 내용 배틀 내용 배틀 내용 배틀 내용 배틀 내용 배틀 내용</p>
+                <p className="card-text" style={{ fontSize: "15px" }}>{battle.battle_content}</p>
                 <div className="mt-auto">
                     <button 
                         className="btn btn-secondary" 
                         data-bs-toggle="modal"
                         data-bs-target="#battleFeedDetailModal"
+                        onClick={onDetailClick}
                     >
                         상세 보기
                     </button>

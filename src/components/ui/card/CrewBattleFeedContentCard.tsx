@@ -1,6 +1,19 @@
 import React from "react";
 
-function CrewBattleFeedContentCard() {
+
+interface Feed {
+    feed_exTime: number;
+    feed_img: string;
+    feed_kcal: number;
+    feed_post: string;
+    feed_sport: string;
+}
+
+interface CrewBattleFeedContentCardProps {
+    feed: Feed;
+}
+
+function CrewBattleFeedContentCard({ feed }: CrewBattleFeedContentCardProps) {
     return (
         <div className="container">
             <div className="form-control">
@@ -9,8 +22,8 @@ function CrewBattleFeedContentCard() {
                 </div>
                 <hr />
                 <div className="d-flex justify-content-between align-items-center">
-                    <div>오늘 러닝메이트들이랑 ^^</div>
-                    <div>355kcal</div>
+                    <div>{feed.feed_post}</div>
+                    <div>{feed.feed_kcal}kcal</div>
                 </div>
             </div>
         </div>

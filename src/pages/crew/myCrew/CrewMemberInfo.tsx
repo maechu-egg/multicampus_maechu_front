@@ -1,21 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CrewMemberCard from "components/ui/card/CrewMemberCard";
+import api from "services/api/axios";
 
-const crewMembers = [
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
-    { id: 1, name: "신유민", age: 11, region: "익산", records: 5, wins: 1, crewWins: 1 },
+interface CrewInfoProps {
+    crewId: number; // 크루 ID를 prop으로 받습니다.
+}
 
-    // 추가 멤버 데이터를 여기에 추가
-];
+function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
+    const [crewMembers, setCrewMembers] = useState<any[]>([]);
 
-function CrewMemberInfo(): JSX.Element {
+    useEffect(() => {
+        const selectCrewMember = async () => {
+            try {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
+                const response = await api.get(`http://localhost:8001/crew/member/list/${crewId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> selectCrewMember response", response.data);
+                setCrewMembers(response.data);
+            } catch (error) {
+                console.log('Error selecting crew member:', error);
+            }
+        };
+        selectCrewMember();
+    }, []);
     {/* 
         useEffect를 사용해서 crewId에 맞는 정보 불러오고
         뱃지, 닉네임, 나이, 지역, 배틀 승리 횟수, 주간 운동 횟수 보여주기 (카드형식)
@@ -30,8 +40,8 @@ function CrewMemberInfo(): JSX.Element {
         <div className="container">
             <div className="row">
                 {crewMembers.map(member => (
-                    <div key={member.id} className="col-md-4 mb-4 d-flex justify-content-center">
-                        <CrewMemberCard />
+                    <div key={member.crew_member_id} className="col-md-4 mb-4 d-flex justify-content-center">
+                        <CrewMemberCard member={member} />
                     </div>
                 ))}
             </div>

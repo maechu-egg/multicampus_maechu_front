@@ -18,19 +18,20 @@ function CrewIntroModal() {
         const data = {
             crew_name,
             crew_intro_post,
-            crew_intro_img: crew_intro_img ? crew_intro_img.name : null, // 파일 이름을 보낼 경우
-            crew_id: 22
+            crew_intro_img: crew_intro_img ? crew_intro_img : null,
+            crew_id: 1
         };
         console.log('Data:', data);
 
         const updateCrewIntro = async() => {
             try {
-                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3Mjk3MzAxMjAsImV4cCI6MTcyOTgxNjUyMH0.HoKyARnnB4G5GRd6e5uq26LN8qq9PS1p8KeBX-3XpCo'; // 실제 토큰 값으로 대체하세요
-                const response = await axios.post(`http://localhost:8001/crew/intro/update`, data, {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
+                const response = await axios.patch(`http://localhost:8001/crew/intro/update`, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                console.log("debug >>> updateCrewIntro response", response);
             } catch (error) {
                 console.error('Error updating crew intro:', error);
                 alert("크루 소개글 수정에 실패 했습니다.");
@@ -79,7 +80,7 @@ function CrewIntroModal() {
                 <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">소개글 생성</button>
+                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">소개글 수정</button>
                     &nbsp;&nbsp;&nbsp;
                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">취소</button>
                 </div>

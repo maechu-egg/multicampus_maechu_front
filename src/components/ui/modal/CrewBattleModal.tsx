@@ -1,35 +1,52 @@
 import React, { useState } from "react";
 import './Modal.css';
+import api from "services/api/axios";
 
 function CrewBattleModal() {
-    const [goal, setGoal] = useState('');
-    const [battleName, setBattleName] = useState('');
-    const [battleContent, setBattleContent] = useState('');
-    const [battleRecruitment, setBattleRecruitment] = useState('');
-    const [battleEndDate, setBattleEndDate] = useState('');
+    const [battle_goal, setGoal] = useState('');
+    const [battle_name, setBattleName] = useState('');
+    const [battle_content, setBattleContent] = useState('');
+    const [battle_end_recruitment, setBattleRecruitment] = useState('');
+    const [battle_end_date, setBattleEndDate] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const formData = {
-            goal,
-            battleName,
-            battleContent,
-            battleRecruitment,
-            battleEndDate
+        const data = {
+            battle_goal,
+            battle_name,
+            battle_content,
+            battle_end_recruitment,
+            battle_end_date,
+            crew_id: 1
         };
-        console.log('Form Data:', formData);
+        console.log('Form Data:', data);
+        const createBattle = async() => {
+            try {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
+                const response = await api.post(`crew/battle/create`, data, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> createBattle response", response.data);
+            } catch (error) {
+                console.error('Error creating crew:', error);
+                alert("배틀 생성에 실패 했습니다.");
+            }
+        };
+        createBattle();
     };
 
     return(
         <div className="container">
             <form onSubmit={handleSubmit}>
-                {/* 활동 지역 */}
+                {/* 배틀 이름 */}
                 <div className="form-group form-control" style={{ width: '100%' }}>
-                    <label>활동 지역</label>
+                    <label>배틀 이름</label>
                     <input
                         type="text"
                         className="form-control"
-                        value={battleName}
+                        value={battle_name}
                         onChange={(e) => setBattleName(e.target.value)}
                         style={{ width: '100%' }}
                     />
@@ -41,7 +58,7 @@ function CrewBattleModal() {
                     <input
                         type="text"
                         className="form-control"
-                        value={goal}
+                        value={battle_goal}
                         onChange={(e) => setGoal(e.target.value)}
                         style={{ width: '100%' }}
                     />
@@ -53,7 +70,7 @@ function CrewBattleModal() {
                     <input
                         type="date"
                         className="form-control"
-                        value={battleRecruitment}
+                        value={battle_end_recruitment}
                         onChange={(e) => setBattleRecruitment(e.target.value)}
                         style={{ width: '100%' }}
                     />
@@ -65,7 +82,7 @@ function CrewBattleModal() {
                     <input
                         type="date"
                         className="form-control"
-                        value={battleEndDate}
+                        value={battle_end_date}
                         onChange={(e) => setBattleEndDate(e.target.value)}
                         style={{ width: '100%' }}
                     />
@@ -77,7 +94,7 @@ function CrewBattleModal() {
                     <input
                         type="text"
                         className="form-control"
-                        value={battleContent}
+                        value={battle_content}
                         onChange={(e) => setBattleContent(e.target.value)}
                         style={{ width: '100%' }}
                     />

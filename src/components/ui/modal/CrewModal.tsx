@@ -33,6 +33,7 @@ function CrewModal() {
         e.preventDefault();
         const selectedAges = crew_age.join(', ');
         const data = {
+            crew_id: 1,
             crew_name,
             crew_title,
             crew_location,
@@ -42,14 +43,14 @@ function CrewModal() {
             crew_state,
             crew_age: selectedAges,
             crew_sport,
-            member_id :72
+            member_id :1
         };
         console.log("debug >>> data", data);
 
         const createCrew = async() => {
             try {
-                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3Mjk3MzAxMjAsImV4cCI6MTcyOTgxNjUyMH0.HoKyARnnB4G5GRd6e5uq26LN8qq9PS1p8KeBX-3XpCo'; // 실제 토큰 값으로 대체하세요
-                const response = await axios.post(`http://localhost:8001/crew/create`, data, {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
+                const response = await axios.patch(`http://localhost:8001/crew/info/update`, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -57,7 +58,7 @@ function CrewModal() {
                 console.log("debug >>> createCrew response", response);
             } catch (error) {
                 console.error('Error creating crew:', error);
-                alert("크루 생성에 실패 했습니다.");
+                alert("크루 수정에 실패 했습니다.");
             }
         };
         createCrew();

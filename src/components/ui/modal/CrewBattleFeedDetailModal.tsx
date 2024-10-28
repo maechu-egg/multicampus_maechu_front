@@ -1,63 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Modal.css';
 import CrewBattleFeedCard from "../card/CrewBattleFeedCard";
 import CrewBattleFeedContentCard from "../card/CrewBattleFeedContentCard";
+import api from "services/api/axios";
+import CrewBattleModal from "./CrewBattleModal";
+import CrewBattleFeedModal from "./CrewBattleFeedModal";
 
-function CrewBattleFeedDetailModal(): JSX.Element {
+interface CrewInfoProps {
+    battleId: number;
+}
+
+function CrewBattleFeedDetailModal({battleId}:CrewInfoProps): JSX.Element {
+
+    const [participantId, setParticipantId] = useState<number>(0);
+    const [battleMember, setBattleMember] = useState<any[]>([]);
+    const [battleFeed, setBattleFeed] = useState<any[]>([]);
+
+    useEffect(() => {
+        const getBattleFeed = async () => {
+            try{
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
+                const response = await api.get(`crew/battle/feed/list?participant_id=${participantId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>>  battleFeed response", response.data);
+                setBattleFeed(response.data);
+            } catch (error) {
+                console.log("debug >>> battleFeed error", error);
+            }
+        }
+        getBattleFeed();
+    }, [participantId]);
+
+    useEffect(() => {
+        const getBattleMember = async () => {
+            try{
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
+                const response = await api.get(`crew/battle/member/list?battle_id=${battleId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> battleMemberresponse", response.data);
+                setBattleMember(response.data);
+            } catch (error) {
+                console.log("debug >>> battleMemberresponse error", error);
+            }
+        }
+        getBattleMember();
+    }, [battleId]);
+
+
     return (
-        <div className="d-flex">
-            <div className="left-panel flex-shrink-0" style={{ overflowY: 'auto', maxHeight: '100vh' }}>
-                {/* 
-                    반복문으로 멤버카드 보여주고 멤버카드 클릭 이벤트 넣어서 멤버와 배틀정보가 같은 피드를
-                    보여주는 방식
-                */}
-                <div className="scrollable-content">
-                    {/* 첫번째 멤버 */}
-                    <CrewBattleFeedCard/>
-                    <hr />
-                    {/* 두번째 멤버 */}
-                    <CrewBattleFeedCard/>
-                    <hr />
-                    {/* 세번째 멤버 */}
-                    <CrewBattleFeedCard/>
-                    <hr />
-                    {/* 네번째 멤버 */}
-                    <CrewBattleFeedCard/>
-                    <hr />  
-                    {/* 다섯번째 멤버 */}
-                    <CrewBattleFeedCard/>
-                    <hr />
-                    {/* 여섯번째 멤버 */}
-                    <CrewBattleFeedCard/>
-                    <hr />
-                    {/* 일곱번째 멤버 */}
-                    <CrewBattleFeedCard/>
-                    <hr />
+        <div>
+            <div className="d-flex">
+                <div className="left-panel flex-shrink-0" style={{ overflowY: 'auto', maxHeight: '100vh' }}>
+                    <div className="scrollable-content">
+                        {battleMember.map((member, index) => (
+                            <div key={member.crew_member_id}>
+                                <CrewBattleFeedCard 
+                                    member={member}
+                                    onClickHandler={() => setParticipantId(member.participant_id)}
+                                />
+                                <hr />
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-            {/*
-                
-            */}
-            <div className="right-panel" style={{ width: '100%', overflowY: 'auto', maxHeight: '100vh' }}>
-                {/* 첫번째 피드*/}
-                <CrewBattleFeedContentCard />
-                <hr />
-                {/* 두번째 피드*/}
-                <CrewBattleFeedContentCard />
-                <hr />
-                {/* 세번째 피드*/}
-                <CrewBattleFeedContentCard />
-                <hr />
-                {/* 네번째 피드*/}
-                <CrewBattleFeedContentCard />
-                <hr />
-                {/* 다섯번째 피드*/}
-                <CrewBattleFeedContentCard />
-                <hr />
-                {/* 여섯번째 피드*/}
-                <CrewBattleFeedContentCard />
-                <hr />
+                <div className="right-panel" style={{ width: '100%', overflowY: 'auto', maxHeight: '100vh' }}>
+                    {battleFeed.map((feed, index) => (
+                        <div key={feed.feed_id}>
+                            <CrewBattleFeedContentCard feed={feed} />
+                            <hr />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

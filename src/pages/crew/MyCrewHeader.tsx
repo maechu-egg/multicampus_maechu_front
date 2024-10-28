@@ -97,7 +97,7 @@ function MyCrewHeader({ crewId }: MyCrewHeaderProps): JSX.Element {
                     aria-labelledby="crew-member-info-tab" 
                     tabIndex={0}
                 >
-                    <CrewMemberInfo /> {/* 크루 ID를 CrewMemberInfo에 전달 */}
+                    <CrewMemberInfo crewId={crewId} /> {/* 크루 ID를 CrewMemberInfo에 전달 */}
                 </div>
                 <div 
                     className={`tab-pane fade ${activeTab === 'crew-post' ? 'show active' : ''}`}

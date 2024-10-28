@@ -15,8 +15,6 @@ import LoginPage from "./pages/login/LoginPage";
 import Header from "../src/components/layout/Header";
 
 import BadgeStatusPage from "pages/badge/BadgeStatusPage";
-import CrewBattleFeedDetailModal from "components/ui/modal/CrewBattleFeedDetailModal";
-
 
 function AppRouter() {
   return (
@@ -31,7 +29,6 @@ function AppRouter() {
         <Route path="/aboutpage" element={<AboutPage />}></Route>
         <Route path="/loginpage" element={<LoginPage />}></Route>
         <Route path="/badgestatuspage" element={<BadgeStatusPage />}></Route>
-        <Route path="/crewbattledetailmodal" element={<CrewBattleFeedDetailModal />}></Route>
       </Routes>
     </BrowserRouter>
   );
