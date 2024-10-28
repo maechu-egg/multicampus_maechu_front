@@ -7,18 +7,22 @@ interface PostFormProps {
   initialData?: {
     title: string;
     content: string;
+    category: string;
+    subcategory: string;
+    tags: string[];
   };
-  onSave: (title: string, content: string) => void;
+  onSave: (title: string, content: string, category: string,  subcategory: string, tags: string[]) => void;
   onCancel: () => void; 
 }
 
 const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel }) => {
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
-  const [category, setCategory] = useState("");
-  const [subcategory, setSubcategory] = useState("");
+  const [category, setCategory] = useState(initialData?.category || ""); 
+  const [subcategory, setSubcategory] = useState(initialData?.subcategory || "");
   const [fileName, setFileName] = useState("");
-  const [tags, setTags] = useState("");
+  const [tagInput, setTagInput] = useState("");
+  const [tagList, setTagList] = useState<string[]>(initialData?.tags || []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -28,7 +32,29 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(title, content);
+    if (!category) {
+      alert("카테고리를 선택해주세요.");
+      return;
+    }
+    onSave(title, content, category, subcategory, tagList);  
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (tagInput.trim() !== '') {
+        const newTag = tagInput.trim().startsWith('#') ? tagInput.trim() : `#${tagInput.trim()}`;
+        if (!tagList.includes(newTag)) {
+          setTagList([...tagList, newTag]);
+        }
+        setTagInput('');
+      }
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    const newTagList = tagList.filter(tag => tag !== tagToRemove);
+    setTagList(newTagList);
   };
 
   return (
@@ -36,12 +62,13 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
       <h2>{mode === "create" ? "게시물 작성" : "게시물 수정"}</h2>
       <div className="mb-3">
         <label className="form-label">카테고리:</label>
-        <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+        <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} required>
           <option value="">선택하세요</option>
           <option value="헬스">헬스</option>
           <option value="런닝">런닝</option>
           <option value="필라테스">필라테스</option>
           <option value="크로스핏">크로스핏</option>
+          <option value="요가">요가</option>
         </select>
       </div>
       <div className="mb-3">
@@ -60,6 +87,7 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
           className="form-control"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          required
         />
       </div>
       <div className="mb-3">
@@ -68,6 +96,7 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
           className="form-control post-content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          required
         />
       </div>
       <div className="mb-3">
@@ -77,15 +106,35 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
       </div>
       <div className="mb-3">
         <label className="form-label">태그:</label>
-        <input
-          type="text"
-          className="form-control"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-        />
+        <div className="tags-input-container form-control">
+          {tagList.map((tag, index) => (
+            <span key={index} className="tag-item">
+              {tag}
+              <button 
+                type="button" 
+                className="tag-remove-btn"
+                onClick={() => removeTag(tag)}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          <input
+            type="text"
+            className="tag-input"
+            placeholder="태그를 입력하고 Enter를 누르세요"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleTagKeyDown}
+          />
+        </div>
       </div>
-      <button type="submit" className="btn btn-primary me-2">작성하기</button>
-      <button type="button" className="btn btn-secondary" onClick={onCancel}>작성취소</button>
+      <button type="submit" className="btn btn-primary me-2">
+        {mode === "create" ? "작성하기" : "수정하기"}
+      </button>
+      <button type="button" className="btn btn-secondary" onClick={onCancel}>
+        {mode === "create" ? "작성취소" : "수정취소"}
+      </button>
     </form>
   );
 };
