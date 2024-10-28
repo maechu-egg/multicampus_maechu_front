@@ -1,9 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import api from "../../services/api/axios";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginPage(): JSX.Element {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailErrMsg, setEmailErrMsg] = useState(""); // Initialize email error message state
+  const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 생성
+
+  const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailText = e.target.value;
+    setEmail(emailText);
+
+    if (emailText === "") {
+      setEmailErrMsg("이메일은 필수 입력 값입니다.");
+    } else if (!emailText.includes("@")) {
+      setEmailErrMsg("이메일 형식을 지켜주세요");
+    } else {
+      setEmailErrMsg("");
+    }
+  };
+
+  const handleLogin = async () => {
+    // 이메일과 비밀번호가 유효한지 확인
+    if (emailErrMsg) {
+      alert("이메일을 확인하세요.");
+      return;
+    }
+
+    try {
+      const response = await api.post("/user/login", {
+        email,
+        password,
+      });
+      console.log(response.data); // 서버의 응답 데이터 처리
+      alert("로그인 성공!"); // 로그인 성공 알림
+      // navigate("/"); // 홈페이지로 이동
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      alert("로그인에 실패했습니다. 다시 시도하세요.");
+      // 로그인 실패 시 입력값 초기화
+      setEmail(""); // 이메일 초기화
+      setPassword(""); // 비밀번호 초기화
+    }
+  };
+
   return (
     <Container>
       <LoginForm>
@@ -15,21 +57,25 @@ function LoginPage(): JSX.Element {
               className="form-control"
               id="floatingInputValue"
               placeholder="name@example.com"
-              value="test@example.com"
+              value={email} // Bind email state
+              onChange={onEmailChange} // Handle email change
               style={{ width: "100%" }}
             />
             <label htmlFor="floatingInputValue">Input with Email</label>
+            {emailErrMsg && <ErrMsg>{emailErrMsg}</ErrMsg>}{" "}
+            {/* Conditionally render error message */}
           </form>
           <form className="form-floating">
             <input
               type="password"
               className="form-control"
-              id="floatingInputValue"
-              placeholder="name@example.com"
-              value="test@example.com"
+              id="floatingInputPassword"
+              placeholder="Password"
+              value={password} // Bind password state
+              onChange={(e) => setPassword(e.target.value)} // Handle password change
               style={{ width: "100%", marginTop: "20px" }}
             />
-            <label htmlFor="floatingInputValue">Input with Password</label>
+            <label htmlFor="floatingInputPassword">Input with Password</label>
           </form>
         </Input>
 
@@ -52,6 +98,7 @@ function LoginPage(): JSX.Element {
             type="button"
             className="btn btn-secondary"
             style={{ width: "80px" }}
+            onClick={handleLogin} // 로그인 버튼 클릭 시 handleLogin 호출
           >
             Login
           </button>
@@ -107,6 +154,11 @@ const ButtonGroup = styled.div`
   width: 100%;
   margin-top: 30px;
   padding-right: 10px;
+`;
+
+const ErrMsg = styled.div`
+  color: red; /* 에러 메시지를 빨간색으로 설정 */
+  margin-top: 5px; /* 에러 메시지 위쪽 여백 */
 `;
 
 export default LoginPage;
