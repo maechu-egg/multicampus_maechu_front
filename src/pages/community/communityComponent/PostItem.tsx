@@ -1,40 +1,50 @@
-// PostItem.tsx
 import React from "react";
+import { FaThumbsUp, FaComment, FaEye } from "react-icons/fa";
 import "./PostItem.css";
 
-interface Post {
+interface PostItemProps {
   id: number;
   title: string;
-  content: string; 
+  content: string;
   author: string;
   date: string;
   views: number;
   comments: number;
-}
-
-interface PostItemProps extends Post {
-  onClick: () => void; //
+  category: string;
+  subcategory: string;
+  tags: string[];
+  likeCount: number;
+  onClick: () => void;
 }
 
 const PostItem: React.FC<PostItemProps> = ({
-  id,
   title,
   author,
   date,
   views,
   comments,
-  onClick 
+  subcategory,
+  likeCount,
+  onClick
 }) => {
   return (
     <div className="post-item" onClick={onClick}>
-      <h3 className="post-title">{title}</h3>
-      <div className="post-info">
-        <span className="post-author">{author}</span>
-        <span className="post-date">({date})</span>
-      </div>
-      <div className="post-stats">
-        <span className="post-views">조회수: {views}</span>
-        <span className="post-comments">댓글: {comments}</span>
+      <div className="post-content-wrapper">
+        <span className="subcategory">[{subcategory || '자유'}]</span>
+        <span className="post-title">{title}</span>
+        <span className="author">{author}</span>
+        <span className="date">{date}</span>
+        <div className="post-stats">
+          <span className="likes">
+            <FaThumbsUp /> {likeCount}
+          </span>
+          <span className="comments">
+            <FaComment /> {comments}
+          </span>
+          <span className="views">
+            <FaEye /> {views}
+          </span>
+        </div>
       </div>
     </div>
   );

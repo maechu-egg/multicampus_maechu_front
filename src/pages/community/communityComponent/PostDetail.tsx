@@ -2,15 +2,9 @@ import React, { useState } from "react";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import "./PostDetail.css";
 
-interface PostDetailProps {
-  title: string;
-  content: string;
-  author: string;
-  date: string;
-  onBack: () => void;
-}
-
 interface Comment {
+  id: number;
+  postId: number;
   author: string;
   content: string;
   date: string;
@@ -18,108 +12,199 @@ interface Comment {
   dislikeCount: number;
 }
 
+interface PostDetailProps {
+  title: string;
+  content: string;
+  author: string;
+  date: string;
+  views: number;
+  category: string;
+  tags: string[];
+  onBack: () => void;
+  onEdit: () => void;
+  onDelete: () => void;  
+  currentUserNickname: string;
+  comments: Comment[];
+  onAddComment: (content: string) => void;
+  onCommentReaction: (commentId: number, type: 'like' | 'dislike') => void;
+}
+
 const PostDetail: React.FC<PostDetailProps> = ({
   title,
   content,
   author,
   date,
+  views,
+  category,
+  tags,
   onBack,
+  onEdit,
+  onDelete,
+  currentUserNickname,
+  comments,
+  onAddComment,
+  onCommentReaction
 }) => {
+  const [commentInput, setCommentInput] = useState("");
+  const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
-  const [comments, setComments] = useState<Comment[]>([]); // 댓글 상태
-  const [commentInput, setCommentInput] = useState(""); // 댓글 입력 상태
-  const [commentAuthor, setCommentAuthor] = useState(""); 
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const handleLike = () => {
-    setLikeCount(likeCount + 1);
+    if (!liked) {
+      setLikeCount(prev => prev + 1);
+      setLiked(true);
+      if (disliked) {
+        setDislikeCount(prev => prev - 1);
+        setDisliked(false);
+      }
+    }
   };
 
   const handleDislike = () => {
-    setDislikeCount(dislikeCount + 1);
+    if (!disliked) {
+      setDislikeCount(prev => prev + 1);
+      setDisliked(true);
+      if (liked) {
+        setLikeCount(prev => prev - 1);
+        setLiked(false);
+      }
+    }
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (commentInput.trim() !== "" && commentAuthor.trim() !== "") {
-      const newComment: Comment = {
-        author: commentAuthor,
-        content: commentInput,
-        date: new Date().toLocaleDateString(),
-        likeCount: 0,
-        dislikeCount: 0,
-      };
-      setComments([...comments, newComment]); 
-      setCommentInput(""); 
-      setCommentAuthor(""); 
+    if (commentInput.trim() !== "") {
+      onAddComment(commentInput);
+      setCommentInput("");
     }
   };
 
-  const handleCommentLike = (index: number) => {
-    const newComments = [...comments];
-    newComments[index].likeCount += 1;
-    setComments(newComments);
-  };
-
-  const handleCommentDislike = (index: number) => {
-    const newComments = [...comments];
-    newComments[index].dislikeCount += 1;
-    setComments(newComments);
-  };
+  const sortedComments = [...comments].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.id - b.id;
+    } else {
+      return b.id - a.id;
+    }
+  });
 
   return (
     <div className="post-detail">
-      <h2>{title}</h2>
-      <p>작성자: {author} | 날짜: {date}</p>
+      <div className="post-category">
+        {category} 게시판
+      </div>
+      <hr className="border border-secondary border-1 opacity-50" />
+      <div className="post-header">
+        <h2>{title}</h2>
+        <div className="post-info">
+          <span className="author">{author}</span>
+          <div className="info-right">
+            <span className="date">{date}</span>
+            <span className="views">조회수: {views}</span>
+          </div>
+        </div>
+      </div>
+      <hr className="border border-secondary border-1 opacity-50" />
+      <div className="post-content">{content}</div>
 
-      <hr className="mt-2" />
+      {tags && tags.length > 0 && (
+        <div className="post-tags">
+          {tags.map((tag, index) => (
+            <span key={index} className="tag-item">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="reaction-buttons">
-        <p>{content}</p>
-        <br className="mt-5" />
-
-        <button onClick={handleLike} className="btn btn-light">
-          <FaThumbsUp /> {likeCount}
-        </button>
-        <button onClick={handleDislike} className="btn btn-light">
-          <FaThumbsDown /> {dislikeCount}
+        <div className="edit-delete-buttons">
+            <button className="btn btn-primary me-2" onClick={onEdit}>
+              수정
+            </button>
+            <button className="btn btn-danger me-2" onClick={onDelete}>
+              삭제
+            </button>
+        </div>
+        <div className="like-dislike-buttons">
+          <button
+            className={`btn ${liked ? 'btn-primary' : 'btn-outline-primary'} me-2`}
+            onClick={handleLike}
+          >
+            <FaThumbsUp /> {likeCount}
+          </button>
+          <button
+            className={`btn ${disliked ? 'btn-danger' : 'btn-outline-danger'}`}
+            onClick={handleDislike}
+          >
+            <FaThumbsDown /> {dislikeCount}
+          </button>
+        </div>
+        <button className="btn btn-secondary" onClick={onBack}>
+          뒤로가기
         </button>
       </div>
-      <hr className="mt-2" />
-      <button onClick={onBack} className="btn btn-secondary">뒤로가기</button>
 
-      <hr className="mt-3" />
-      <h4>댓글</h4>
-      <form onSubmit={handleCommentSubmit}>
-        <input
-          type="text"
-          value={commentAuthor}
-          onChange={(e) => setCommentAuthor(e.target.value)}
-          placeholder="작성자 이름"
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          value={commentInput}
-          onChange={(e) => setCommentInput(e.target.value)}
-          placeholder="댓글을 입력하세요"
-          className="form-control mb-2"
-        />
-        <button type="submit" className="btn btn-primary">댓글 작성</button>
-      </form>
-      <ul className="mt-3">
-        {comments.map((comment, index) => (
-          <li key={index} className="border p-2 mb-2">
-            <p><strong>{comment.author}</strong> | {comment.date}</p>
-            <p>{comment.content}</p>
-            <button onClick={() => handleCommentLike(index)} className="btn btn-light">
-              <FaThumbsUp /> {comment.likeCount}
+      <hr className="mt-4" />
+      <div className="comments-section">
+        <div className="comment-sort-buttons">
+          <button
+            className={`btn btn-sm ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'} me-2`}
+            onClick={() => setSortOrder('asc')}
+          >
+            등록순
+          </button>
+          <button
+            className={`btn btn-sm ${sortOrder === 'desc' ? 'btn-primary' : 'btn-outline-primary'}`}
+            onClick={() => setSortOrder('desc')}
+          >
+            최신순
+          </button>
+        </div>
+
+        <div className="comments-list">
+          {sortedComments.map((comment) => (
+            <div key={comment.id} className="comment">
+              <div className="comment-header">
+                <span className="comment-author">{comment.author}</span>
+                <span className="comment-date">{comment.date}</span>
+              </div>
+              <div className="comment-content">{comment.content}</div>
+              <div className="comment-reactions">
+                <button
+                  className="btn btn-sm btn-outline-primary me-2"
+                  onClick={() => onCommentReaction(comment.id, 'like')}
+                >
+                  <FaThumbsUp /> {comment.likeCount}
+                </button>
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => onCommentReaction(comment.id, 'dislike')}
+                >
+                  <FaThumbsDown /> {comment.dislikeCount}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <form onSubmit={handleCommentSubmit} className="comment-form">
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              className="form-control"
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+              placeholder="댓글을 입력하세요"
+            />
+            <button type="submit" className="btn btn-primary">
+              작성
             </button>
-            <button onClick={() => handleCommentDislike(index)} className="btn btn-light">
-              <FaThumbsDown /> {comment.dislikeCount}
-            </button>
-          </li>
-        ))}
-      </ul>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
