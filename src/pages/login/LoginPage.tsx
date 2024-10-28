@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import api from "../../services/api/axios";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // AuthContext에서 useAuth 훅 임포트
 
 function LoginPage(): JSX.Element {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailErrMsg, setEmailErrMsg] = useState(""); // Initialize email error message state
+  const [emailErrMsg, setEmailErrMsg] = useState(""); // 이메일 에러 메시지 상태 초기화
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 생성
+  const { dispatch } = useAuth(); // AuthContext에서 dispatch 함수 가져오기
 
   const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const emailText = e.target.value;
@@ -23,7 +25,6 @@ function LoginPage(): JSX.Element {
   };
 
   const handleLogin = async () => {
-    // 이메일과 비밀번호가 유효한지 확인
     if (emailErrMsg) {
       alert("이메일을 확인하세요.");
       return;
@@ -34,13 +35,20 @@ function LoginPage(): JSX.Element {
         email,
         password,
       });
-      console.log(response.data); // 서버의 응답 데이터 처리
-      alert("로그인 성공!"); // 로그인 성공 알림
-      // navigate("/"); // 홈페이지로 이동
+      console.log("서버 응답:", response.data); // 서버 응답 확인
+      const token = response.data.token; // 서버에서 받은 토큰
+
+      if (token) {
+        alert("로그인 성공!"); // 로그인 성공 알림
+        localStorage.setItem("authToken", token); // 로컬 스토리지에 토큰 저장
+        dispatch({ type: "LOGIN", payload: token }); // Context에 토큰 저장
+        navigate("/"); // 홈페이지로 이동
+      } else {
+        alert("토큰을 받을 수 없습니다."); // 토큰이 없을 경우 알림
+      }
     } catch (error) {
       console.error("로그인 실패:", error);
       alert("로그인에 실패했습니다. 다시 시도하세요.");
-      // 로그인 실패 시 입력값 초기화
       setEmail(""); // 이메일 초기화
       setPassword(""); // 비밀번호 초기화
     }
@@ -57,13 +65,13 @@ function LoginPage(): JSX.Element {
               className="form-control"
               id="floatingInputValue"
               placeholder="name@example.com"
-              value={email} // Bind email state
-              onChange={onEmailChange} // Handle email change
+              value={email} // 이메일 상태 바인딩
+              onChange={onEmailChange} // 이메일 변경 처리
               style={{ width: "100%" }}
             />
             <label htmlFor="floatingInputValue">Input with Email</label>
             {emailErrMsg && <ErrMsg>{emailErrMsg}</ErrMsg>}{" "}
-            {/* Conditionally render error message */}
+            {/* 에러 메시지 조건부 렌더링 */}
           </form>
           <form className="form-floating">
             <input
@@ -71,8 +79,8 @@ function LoginPage(): JSX.Element {
               className="form-control"
               id="floatingInputPassword"
               placeholder="Password"
-              value={password} // Bind password state
-              onChange={(e) => setPassword(e.target.value)} // Handle password change
+              value={password} // 비밀번호 상태 바인딩
+              onChange={(e) => setPassword(e.target.value)} // 비밀번호 변경 처리
               style={{ width: "100%", marginTop: "20px" }}
             />
             <label htmlFor="floatingInputPassword">Input with Password</label>
