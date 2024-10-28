@@ -29,7 +29,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [dislikeCount, setDislikeCount] = useState(0);
   const [comments, setComments] = useState<Comment[]>([]); // 댓글 상태
   const [commentInput, setCommentInput] = useState(""); // 댓글 입력 상태
-  const [commentAuthor, setCommentAuthor] = useState(""); 
+  const [commentAuthor, setCommentAuthor] = useState("");
 
   const handleLike = () => {
     setLikeCount(likeCount + 1);
@@ -49,9 +49,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
         likeCount: 0,
         dislikeCount: 0,
       };
-      setComments([...comments, newComment]); 
-      setCommentInput(""); 
-      setCommentAuthor(""); 
+      setComments([...comments, newComment]);
+      setCommentInput("");
+      setCommentAuthor("");
     }
   };
 
@@ -70,7 +70,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
   return (
     <div className="post-detail">
       <h2>{title}</h2>
-      <p>작성자: {author} | 날짜: {date}</p>
+      <p>
+        작성자: {author} | 날짜: {date}
+      </p>
 
       <hr className="mt-2" />
       <div className="reaction-buttons">
@@ -85,7 +87,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
         </button>
       </div>
       <hr className="mt-2" />
-      <button onClick={onBack} className="btn btn-secondary">뒤로가기</button>
+      <button onClick={onBack} className="btn btn-secondary">
+        뒤로가기
+      </button>
 
       <hr className="mt-3" />
       <h4>댓글</h4>
@@ -104,17 +108,27 @@ const PostDetail: React.FC<PostDetailProps> = ({
           placeholder="댓글을 입력하세요"
           className="form-control mb-2"
         />
-        <button type="submit" className="btn btn-primary">댓글 작성</button>
+        <button type="submit" className="btn btn-primary">
+          댓글 작성
+        </button>
       </form>
       <ul className="mt-3">
         {comments.map((comment, index) => (
           <li key={index} className="border p-2 mb-2">
-            <p><strong>{comment.author}</strong> | {comment.date}</p>
+            <p>
+              <strong>{comment.author}</strong> | {comment.date}
+            </p>
             <p>{comment.content}</p>
-            <button onClick={() => handleCommentLike(index)} className="btn btn-light">
+            <button
+              onClick={() => handleCommentLike(index)}
+              className="btn btn-light"
+            >
               <FaThumbsUp /> {comment.likeCount}
             </button>
-            <button onClick={() => handleCommentDislike(index)} className="btn btn-light">
+            <button
+              onClick={() => handleCommentDislike(index)}
+              className="btn btn-light"
+            >
               <FaThumbsDown /> {comment.dislikeCount}
             </button>
           </li>
