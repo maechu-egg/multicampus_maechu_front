@@ -41,6 +41,7 @@ function LoginPage(): JSX.Element {
       if (token) {
         alert("로그인 성공!"); // 로그인 성공 알림
         localStorage.setItem("authToken", token); // 로컬 스토리지에 토큰 저장
+        localStorage.setItem("memberId", memberId.toString()); // 로컬 스토리지에 memberId 저장
         dispatch({ type: "LOGIN", payload: { token, memberId } }); // Context에 token과 memberId 저장
 
         // Context에서 저장된 값을 가져와서 출력
