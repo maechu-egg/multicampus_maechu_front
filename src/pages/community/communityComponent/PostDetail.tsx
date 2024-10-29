@@ -22,11 +22,11 @@ interface PostDetailProps {
   tags: string[];
   onBack: () => void;
   onEdit: () => void;
-  onDelete: () => void;  
+  onDelete: () => void;
   currentUserNickname: string;
   comments: Comment[];
   onAddComment: (content: string) => void;
-  onCommentReaction: (commentId: number, type: 'like' | 'dislike') => void;
+  onCommentReaction: (commentId: number, type: "like" | "dislike") => void;
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
@@ -43,21 +43,21 @@ const PostDetail: React.FC<PostDetailProps> = ({
   currentUserNickname,
   comments,
   onAddComment,
-  onCommentReaction
+  onCommentReaction,
 }) => {
   const [commentInput, setCommentInput] = useState("");
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const handleLike = () => {
     if (!liked) {
-      setLikeCount(prev => prev + 1);
+      setLikeCount((prev) => prev + 1);
       setLiked(true);
       if (disliked) {
-        setDislikeCount(prev => prev - 1);
+        setDislikeCount((prev) => prev - 1);
         setDisliked(false);
       }
     }
@@ -65,10 +65,10 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
   const handleDislike = () => {
     if (!disliked) {
-      setDislikeCount(prev => prev + 1);
+      setDislikeCount((prev) => prev + 1);
       setDisliked(true);
       if (liked) {
-        setLikeCount(prev => prev - 1);
+        setLikeCount((prev) => prev - 1);
         setLiked(false);
       }
     }
@@ -83,7 +83,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   };
 
   const sortedComments = [...comments].sort((a, b) => {
-    if (sortOrder === 'asc') {
+    if (sortOrder === "asc") {
       return a.id - b.id;
     } else {
       return b.id - a.id;
@@ -92,9 +92,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
   return (
     <div className="post-detail">
-      <div className="post-category">
-        {category} 게시판
-      </div>
+      <div className="post-category">{category} 게시판</div>
       <hr className="border border-secondary border-1 opacity-50" />
       <div className="post-header">
         <h2>{title}</h2>
@@ -121,22 +119,22 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
       <div className="reaction-buttons">
         <div className="edit-delete-buttons">
-            <button className="btn btn-primary me-2" onClick={onEdit}>
-              수정
-            </button>
-            <button className="btn btn-danger me-2" onClick={onDelete}>
-              삭제
-            </button>
+          <button className="btn btn-primary me-2" onClick={onEdit}>
+            수정
+          </button>
+          <button className="btn btn-danger me-2" onClick={onDelete}>
+            삭제
+          </button>
         </div>
         <div className="like-dislike-buttons">
           <button
-            className={`btn ${liked ? 'btn-primary' : 'btn-outline-primary'} me-2`}
+            className={`btn ${liked ? "btn-primary" : "btn-outline-primary"} me-2`}
             onClick={handleLike}
           >
             <FaThumbsUp /> {likeCount}
           </button>
           <button
-            className={`btn ${disliked ? 'btn-danger' : 'btn-outline-danger'}`}
+            className={`btn ${disliked ? "btn-danger" : "btn-outline-danger"}`}
             onClick={handleDislike}
           >
             <FaThumbsDown /> {dislikeCount}
@@ -151,14 +149,14 @@ const PostDetail: React.FC<PostDetailProps> = ({
       <div className="comments-section">
         <div className="comment-sort-buttons">
           <button
-            className={`btn btn-sm ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'} me-2`}
-            onClick={() => setSortOrder('asc')}
+            className={`btn btn-sm ${sortOrder === "asc" ? "btn-primary" : "btn-outline-primary"} me-2`}
+            onClick={() => setSortOrder("asc")}
           >
             등록순
           </button>
           <button
-            className={`btn btn-sm ${sortOrder === 'desc' ? 'btn-primary' : 'btn-outline-primary'}`}
-            onClick={() => setSortOrder('desc')}
+            className={`btn btn-sm ${sortOrder === "desc" ? "btn-primary" : "btn-outline-primary"}`}
+            onClick={() => setSortOrder("desc")}
           >
             최신순
           </button>
@@ -175,13 +173,13 @@ const PostDetail: React.FC<PostDetailProps> = ({
               <div className="comment-reactions">
                 <button
                   className="btn btn-sm btn-outline-primary me-2"
-                  onClick={() => onCommentReaction(comment.id, 'like')}
+                  onClick={() => onCommentReaction(comment.id, "like")}
                 >
                   <FaThumbsUp /> {comment.likeCount}
                 </button>
                 <button
                   className="btn btn-sm btn-outline-danger"
-                  onClick={() => onCommentReaction(comment.id, 'dislike')}
+                  onClick={() => onCommentReaction(comment.id, "dislike")}
                 >
                   <FaThumbsDown /> {comment.dislikeCount}
                 </button>
