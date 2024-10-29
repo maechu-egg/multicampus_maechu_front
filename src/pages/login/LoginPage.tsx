@@ -9,7 +9,7 @@ function LoginPage(): JSX.Element {
   const [password, setPassword] = useState("");
   const [emailErrMsg, setEmailErrMsg] = useState(""); // 이메일 에러 메시지 상태 초기화
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 생성
-  const { dispatch } = useAuth(); // AuthContext에서 dispatch 함수 가져오기
+  const { dispatch, state } = useAuth(); // AuthContext에서 dispatch 함수와 state 가져오기
 
   const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const emailText = e.target.value;
@@ -36,12 +36,16 @@ function LoginPage(): JSX.Element {
         password,
       });
       console.log("서버 응답:", response.data); // 서버 응답 확인
-      const token = response.data.token; // 서버에서 받은 토큰
+      const { token, memberId } = response.data; // 서버에서 받은 token과 memberId
 
       if (token) {
         alert("로그인 성공!"); // 로그인 성공 알림
         localStorage.setItem("authToken", token); // 로컬 스토리지에 토큰 저장
-        dispatch({ type: "LOGIN", payload: token }); // Context에 토큰 저장
+        dispatch({ type: "LOGIN", payload: { token, memberId } }); // Context에 token과 memberId 저장
+
+        // Context에서 저장된 값을 가져와서 출력
+        console.log("로그인 후 Context 상태:", state); // Context 상태 출력
+
         navigate("/"); // 홈페이지로 이동
       } else {
         alert("토큰을 받을 수 없습니다."); // 토큰이 없을 경우 알림
