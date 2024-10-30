@@ -92,7 +92,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                 </div>
             </div>
 
-            {/* modal */}
+            {/* create battle modal */}
             <div className="modal fade" id="battleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>

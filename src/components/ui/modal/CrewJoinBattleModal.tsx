@@ -12,20 +12,9 @@ function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
     const [battle_end_recruitment, setBattleRecruitment] = useState('');
     const [battle_end_date, setBattleEndDate] = useState('');
 
-    useEffect(() => {
-        const getBattleInfo = async() => {
-            try{
-                const response = await api.get(`crew/battle/${battle_id}`);
-                console.log("debug >>> getBattleInfo response", response.data);
-            } catch (error) {
-                console.error('Error getting battle info:', error);
-            }
-        };
-        getBattleInfo();
-    }, [battle_id]);
-
     const handleSubmit = (e: React.FormEvent) => {
         console.log("debug >>> 배틀 참여");
+        alert("배틀 참여 완료");
     };
 
     return(
