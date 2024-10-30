@@ -127,7 +127,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center; /* 수직 중앙 정렬 */
-  padding-top: 20px; /* 위쪽 여백 추가 */
+  margin-top: 50px;
 `;
 
 const LoginForm = styled.form`
