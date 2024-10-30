@@ -16,7 +16,7 @@ interface CrewBattleFeedContentCardProps {
 function CrewBattleFeedContentCard({ feed }: CrewBattleFeedContentCardProps) {
     return (
         <div className="container">
-            <div className="form-control">
+            <div className="form-control" style={{ width: '100%' }}>
                 <div className="d-flex justify-content-center align-items-center">
                     <img src="/img/running.png" alt="Running" className="img-fluid"/>
                 </div>

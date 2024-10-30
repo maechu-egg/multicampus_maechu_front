@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import './Modal.css';
 import axios from 'axios';
+import { useAuth } from "context/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
-function CrewModal() {
+function CrewModal({ crew_id }: { crew_id: number }) {
+    const { state } = useAuth();
+    const token = state.token;
+    const member_id = state.memberId;
+    const navigate = useNavigate();
     // 입력 필드 상태 관리
     const [crew_name, setCrew_name] = useState('');
     const [crew_title, setCrew_title] = useState('');
@@ -17,7 +23,6 @@ function CrewModal() {
 
     // 체크박스 상태 관리 (선호 나이)
     const [crew_age, setCrew_age] = useState<string[]>([]);
-    const [member_id, setMember_id] = useState(0);
 
     // 체크박스 선택 핸들러
     const handleAgeSelection = (age: string) => {
@@ -33,7 +38,7 @@ function CrewModal() {
         e.preventDefault();
         const selectedAges = crew_age.join(', ');
         const data = {
-            crew_id: 1,
+            crew_id,
             crew_name,
             crew_title,
             crew_location,
@@ -43,19 +48,20 @@ function CrewModal() {
             crew_state,
             crew_age: selectedAges,
             crew_sport,
-            member_id :1
+            member_id
         };
         console.log("debug >>> data", data);
 
         const createCrew = async() => {
             try {
-                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
                 const response = await axios.patch(`http://localhost:8001/crew/info/update`, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
                 console.log("debug >>> createCrew response", response);
+                alert("크루 수정이 완료되었습니다.");
+                navigate("/");
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("크루 수정에 실패 했습니다.");
@@ -98,22 +104,31 @@ function CrewModal() {
                                 type="radio"
                                 id="radio-2"
                                 name="goal"
-                                value="운동"
-                                checked={crew_goal === '운동'}
+                                value="벌크업"
+                                checked={crew_goal === '벌크업'}
                                 onChange={(e) => setCrew_goal(e.target.value)}
                             />
-                            <label className="tab w-100 text-center" htmlFor="radio-2">운동</label>
+                            <label className="tab w-100 text-center" htmlFor="radio-2">벌크업</label>
 
                             <input
                                 type="radio"
                                 id="radio-3"
                                 name="goal"
-                                value="근성장"
-                                checked={crew_goal === '근성장'}
+                                value="린매스업"
+                                checked={crew_goal === '린매스업'}
                                 onChange={(e) => setCrew_goal(e.target.value)}
                             />
-                            <label className="tab w-100 text-center" htmlFor="radio-3">근성장</label>
-                            <span className='glider'></span>
+                            <label className="tab w-100 text-center" htmlFor="radio-3">린매스업</label>
+                            <input
+                                type="radio"
+                                id="radio-4"
+                                name="goal"
+                                value="유지"
+                                checked={crew_goal === '유지'}
+                                onChange={(e) => setCrew_goal(e.target.value)}
+                            />
+                            <label className="tab w-100 text-center" htmlFor="radio-4">유지</label>
+                            <span className='glider3'></span>
                         </div>
                     </div>
                 </div>

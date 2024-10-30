@@ -4,20 +4,22 @@ import CrewBattleCard from "components/ui/card/CrewBattleCard";
 import CrewBattleFeedDetailModal from "components/ui/modal/CrewBattleFeedDetailModal";
 import api from "services/api/axios";
 import CrewBattleFeedModal from "components/ui/modal/CrewBattleFeedModal";
+import { useAuth } from "context/AuthContext";
+import CrewJoinBattleModal from "components/ui/modal/CrewJoinBattleModal";
 
 interface CrewBattleProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
 }
 
 function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
-
+    const { state } = useAuth();
+    const token = state.token;
     const [battleList, setBattleList] = useState<any[]>([]);
     const [selectedBattleId, setSelectedBattleId] = useState(0);
 
     useEffect(() => {
         const getBattleList = async() => {
             try{
-                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4';
                 const response = await api.get(`crew/battle/list?crew_id=${crewId}`,{
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -78,7 +80,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
 
             {/* CrewBattleFeedDetailModal 모달 */}
             <div className="modal fade" id="battleFeedDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleFeedDetailModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-fullscreen" >
+                <div className="modal-dialog modal-xl" >
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
                         <div className="modal-header">
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -114,7 +116,22 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewBattleFeedModal />
+                            <CrewBattleFeedModal battle_id={selectedBattleId}/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* join modal */}
+            <div className="modal fade" id="battleJoinModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleJoinModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg modal-dialog-centered">
+                    <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="battleJoinModalLabel">배틀 참여</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <CrewJoinBattleModal battle_id={selectedBattleId}/>
                         </div>
                     </div>
                 </div>

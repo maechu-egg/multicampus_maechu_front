@@ -1,42 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './Modal.css';
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
 
-function CrewBattleModal() {
+function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
     const { state } = useAuth();
-    const token = state.token;
+    const token = state.token;  
     const [battle_goal, setGoal] = useState('');
     const [battle_name, setBattleName] = useState('');
     const [battle_content, setBattleContent] = useState('');
     const [battle_end_recruitment, setBattleRecruitment] = useState('');
     const [battle_end_date, setBattleEndDate] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const data = {
-            battle_goal,
-            battle_name,
-            battle_content,
-            battle_end_recruitment,
-            battle_end_date,
-            crew_id: 1
-        };
-        console.log('Form Data:', data);
-        const createBattle = async() => {
-            try {
-                const response = await api.post(`crew/battle/create`, data, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log("debug >>> createBattle response", response.data);
+    useEffect(() => {
+        const getBattleInfo = async() => {
+            try{
+                const response = await api.get(`crew/battle/${battle_id}`);
+                console.log("debug >>> getBattleInfo response", response.data);
             } catch (error) {
-                console.error('Error creating crew:', error);
-                alert("배틀 생성에 실패 했습니다.");
+                console.error('Error getting battle info:', error);
             }
         };
-        createBattle();
+        getBattleInfo();
+    }, [battle_id]);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        console.log("debug >>> 배틀 참여");
     };
 
     return(
@@ -104,7 +93,7 @@ function CrewBattleModal() {
                 <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">배틀 생성</button>
+                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">배틀 참가</button>
                     &nbsp;&nbsp;&nbsp;
                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">취소</button>
                 </div>
@@ -113,4 +102,4 @@ function CrewBattleModal() {
     );
 }
 
-export default CrewBattleModal;
+export default CrewJoinBattleModal;

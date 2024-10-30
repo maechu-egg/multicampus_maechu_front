@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "context/AuthContext";
+import api from "services/api/axios";
 
 interface Battle {
     battle_content: string;
@@ -16,6 +18,35 @@ interface CrewInfoProps {
 }
 
 function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
+    const { state } = useAuth();
+    const token = state.token;
+    const memberId = state.memberId;
+    const [isMember, setIsMember] = useState(false);
+
+    useEffect(() => {
+        const getBattleMember = async () => {
+            try {
+                const response = await api.get(`crew/battle/member/list?battle_id=${battle.battle_id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> 내가 속했는지 보기위한 배틀참여멤버 조회 response", response.data);
+                for(let i = 0; i < response.data.length; i++){
+                    console.log("debug >>> ", memberId, response.data[i].member_id);
+                    if(memberId == response.data[i].member_id){
+                        setIsMember(true);
+                        break;
+                    } else {
+                        setIsMember(false);
+                    }
+                }
+            } catch (error) {
+                console.log("debug >>> getBattleMember error", error);
+            }
+        }
+        getBattleMember();
+    }, [memberId]);
 
     const formattedBattleEndDate = new Date(battle.battle_end_date).toLocaleDateString('ko-KR', {
         year: 'numeric',
@@ -58,14 +89,26 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
                 </div>
                 <p className="card-text" style={{ fontSize: "15px" }}>{battle.battle_content}</p>
                 <div className="mt-auto">
-                    <button 
-                        className="btn btn-secondary" 
-                        data-bs-toggle="modal"
-                        data-bs-target="#battleFeedDetailModal"
-                        onClick={onDetailClick}
-                    >
-                        상세 보기
-                    </button>
+                    {isMember == true &&(
+                        <button 
+                            className="btn btn-secondary" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#battleFeedDetailModal"
+                            onClick={onDetailClick}
+                        >
+                            상세 보기
+                        </button>
+                    )}
+                    {isMember == false &&(
+                        <button 
+                            className="btn btn-secondary" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#battleJoinModal"
+                            onClick={onDetailClick}
+                        >
+                            참가하기
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

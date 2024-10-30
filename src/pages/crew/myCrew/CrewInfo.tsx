@@ -2,14 +2,19 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CrewModal from "components/ui/modal/CrewModal";
 import CrewIntroModal from "components/ui/modal/CrewIntroModal";
-import axios from "axios";
 import api from "services/api/axios";
+import { useAuth } from "context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 interface CrewInfoProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
 }
 
 function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
+    const { state } = useAuth();
+    const token = state.token;
+    const navigate = useNavigate();
     {/* 
         useEffect로 crewId에 맞는 정보 불러와서 crew_intro_img 왼쪽에 보여주고
         crew_name 오른쪽 윗부분, crew_intro_post 오른쪽 아래부분
@@ -23,7 +28,6 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
         const selectCrew = async() => {
             try{
                 /* crewId는 크루 헤더에서 내 크루 클릭시 크루아이디가 props로 넘어옴. */
-                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
                 const response = await api.get(`crew/info/${crewId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -48,12 +52,38 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
         day: 'numeric'
     });
 
+    const handleDeleteCrew = async() => {
+        const confirmDelete = window.confirm("정말로 크루를 삭제하시겠습니까?");
+        if (!confirmDelete) return;
+
+        try{
+            const response = await api.delete(`crew/delete/${crewId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("debug >>> handleDeleteCrew response", response.data);
+            alert("크루 삭제가 완료되었습니다.");
+            navigate("/");
+        } catch (error) {
+            console.log('Error deleting crew:', error);
+        }
+    }
+
     return (
         <div className="container">
             <br />
             <br />
             <br />
             <div className="row">
+                <div className="col-12 d-flex justify-content-start align-items-center">
+                    <button
+                        className="btn btn-danger"
+                        onClick={handleDeleteCrew}
+                    >
+                        크루삭제
+                    </button>
+                </div>
                 <div className="col-12 d-flex justify-content-end align-items-center">
                     <button 
                         className="btn btn-secondary mx-4"
@@ -105,7 +135,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewModal />
+                            <CrewModal crew_id={crewId}/>
                         </div>
                     </div>
                 </div>
@@ -121,7 +151,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewIntroModal />
+                            <CrewIntroModal crew_id={crewId}/>
                         </div>
                     </div>
                 </div>

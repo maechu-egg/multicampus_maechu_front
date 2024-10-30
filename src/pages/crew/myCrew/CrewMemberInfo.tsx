@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import CrewMemberCard from "components/ui/card/CrewMemberCard";
 import api from "services/api/axios";
-
+import { useAuth } from "context/AuthContext";
 interface CrewInfoProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
 }
 
 function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
+    const { state } = useAuth();
+    const token = state.token;
     const [crewMembers, setCrewMembers] = useState<any[]>([]);
 
     useEffect(() => {
         const selectCrewMember = async () => {
             try {
-                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
                 const response = await api.get(`http://localhost:8001/crew/member/list/${crewId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -41,7 +42,7 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
             <div className="row">
                 {crewMembers.map(member => (
                     <div key={member.crew_member_id} className="col-md-4 mb-4 d-flex justify-content-center">
-                        <CrewMemberCard member={member} />
+                        <CrewMemberCard member={member} crewId={crewId}/>
                     </div>
                 ))}
             </div>

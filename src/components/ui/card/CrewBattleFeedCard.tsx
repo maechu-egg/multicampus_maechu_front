@@ -1,5 +1,4 @@
-import React from "react";
-import CrewBattleFeedModal from "../modal/CrewBattleFeedModal";
+import React, { useEffect, useState } from "react";
 
 interface Member {
     member_id: number;
@@ -10,34 +9,50 @@ interface Member {
     profile_region: string;
     total_feed_exTime: number;
     total_feed_kcal: number;
+    badge_level: string;
 }
 
 interface CrewBattleFeedCardProps {
     member: Member;
     onClickHandler: () => void;
+    battleId: number;
 }
 
-function CrewBattleFeedCard({ member, onClickHandler}: CrewBattleFeedCardProps) {
+function CrewBattleFeedCard({ member, onClickHandler, battleId}: CrewBattleFeedCardProps) {
+    const [imgPath, setImgPath] = useState<string>("");
 
+    useEffect(() => {
+        if(member.badge_level === "브론즈") {
+            setImgPath("/img/crewBadge/CrewBadgeBronze.png");
+        } else if(member.badge_level === "실버") {
+            setImgPath("/img/crewBadge/CrewBadgeSilver.png");
+        } else if(member.badge_level === "골드") {
+            setImgPath("/img/crewBadge/CrewBadgeGold.png");
+        } else if(member.badge_level === "플래티넘") {
+            setImgPath("/img/crewBadge/CrewBadgePlatinum.png");
+        } else if(member.badge_level === "다이아") {
+            setImgPath("/img/crewBadge/CrewBadgeDiamond.png");
+        } else if(member.badge_level === "기본") {
+            setImgPath("/img/crewBadge/CrewBadgeDefault.png");
+        }
+    }, [member]);
 
     return (
-        <div className="container">
-            <br />
-            <div className="d-flex justify-content-center align-items-center">
-                <div className="card border-dark" style={{ width: '90%', borderRadius: '15px', borderWidth: '1px' }}
+        <div className="container" style={{ width: '100%' }}>
+            <div className="d-flex justify-content-center align-items-center" style={{ width: '100%' }}>
+                <div className="card border-dark" style={{ width: '100%', borderRadius: '15px', borderWidth: '1px' }}
                     onClick={onClickHandler}
                 >
                     <div className="card-body d-flex justify-content-between align-items-center" style={{height: "110px", padding: "4px"}}>
-                        <div style={{ width: '50%', height: '100%' }}>
+                        <div style={{ width: '50%' }}>
                             <img 
-                                src="/img/bronze.jpg" 
+                                src={`${imgPath}`}
                                 alt="Badge" 
                                 className="img-fluid"
                             />
                         </div>
-                        <ul className="list-unstyled text-center" style={{ width: '50%' }}>
-                            {/* 가지고온 정보를 보여줌. */}
-                            <li><strong>{member.nickname}</strong></li>
+                        <ul className="list-unstyled text-center" style={{ width: '50%', marginTop: "20px" }}>
+                            <li style={{fontSize: "30px"}}>{member.nickname}</li>
                         </ul>
                     </div>
                     <div>

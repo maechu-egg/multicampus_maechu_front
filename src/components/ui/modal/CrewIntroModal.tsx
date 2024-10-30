@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import './Modal.css';
 import axios from "axios";
+import { useAuth } from "context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-function CrewIntroModal() {
+function CrewIntroModal({ crew_id }: { crew_id: number }) {
+    const { state } = useAuth();
+    const token = state.token;
+    const member_id = state.memberId;
+    const navigate = useNavigate();
+
     const [crew_name, setCrew_name] = useState('');
     const [crew_intro_post, setCrew_intro_post] = useState('');
     const [crew_intro_img, setCrew_intro_img] = useState<File | null>(null);
@@ -19,19 +26,21 @@ function CrewIntroModal() {
             crew_name,
             crew_intro_post,
             crew_intro_img: crew_intro_img ? crew_intro_img : null,
-            crew_id: 1
+            crew_id,
+            member_id
         };
         console.log('Data:', data);
 
         const updateCrewIntro = async() => {
             try {
-                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJtZW1iZXJJZCI6MCwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE3MzAwNzUyNTIsImV4cCI6MTczMDE2MTY1Mn0.lfn7OzR_jL8yO4BxJFkLg0GPXT2l6eJIBbFjjkooTQ4'; // 실제 토큰 값으로 대체하세요
                 const response = await axios.patch(`http://localhost:8001/crew/intro/update`, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
                 console.log("debug >>> updateCrewIntro response", response);
+                alert("크루 소개글 수정이 완료되었습니다.");
+                navigate("/");
             } catch (error) {
                 console.error('Error updating crew intro:', error);
                 alert("크루 소개글 수정에 실패 했습니다.");

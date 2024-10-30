@@ -1,31 +1,77 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './Modal.css';
+import api from "services/api/axios";
+import { useAuth } from "context/AuthContext";
 
-function CrewBattleFeedModal() {
+interface CrewInfoProps {
+    battle_id: number;
+}
+
+function CrewBattleFeedModal({battle_id}:CrewInfoProps) {
+    const { state } = useAuth();
+    const token = state.token;
+    const member_id = state.memberId;
     const [feed_img, setSelectedFile] = useState<File | null>(null);
     const [feed_post, setFeedContent] = useState('');
     const [kcalType, setKcalType] = useState('direct');
     const [feed_kcal, setFeedKcal] = useState(0);
     const [feed_exTime, setFeedExTime] = useState<number | string>(0); // 초기값을 숫자로 설정
     const [feed_sport, setFeedSport] = useState('');
+    const [participantId, setParticipantId] = useState(0);
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setSelectedFile(e.target.files[0]);
         }
     };
+    useEffect( () => {
+        const getBattleMember = async () => {
+            try{
+                const response = await api.get(`crew/battle/member/list?battle_id=${battle_id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> participantId", response.data);
+                response.data.map((member: any) => {
+                    if (member.member_id === member_id) {
+                        setParticipantId(member.participant_id);
+                    }
+                });
+            } catch (error) {
+                console.log("debug >>> participantId error", error);
+            }
+        }
+        getBattleMember();
+    }, [battle_id]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const formData = {
-            feed_img,
+        const data = {
+            feed_img: feed_img ? feed_img : "이미지 없음",
             feed_post,
-            kcalType,
             feed_kcal,
-            feed_exTime,   
+            feed_exTime,
             feed_sport,
+            battle_id,
+            participant_id: participantId
         };
-        console.log('Form Data:', formData);
+        console.log('Form Data:', data);
+        const createFeed = async() => {
+            try{
+                const response = await api.post(`crew/battle/feed/create`, data, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> createFeed response", response.data);
+                alert("피드 생성 완료");
+            } catch (error) {
+                console.log("debug >>> createFeed error", error);
+            }
+        }
+        createFeed();
     };
 
     return (
@@ -141,9 +187,9 @@ function CrewBattleFeedModal() {
                 <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary">피드 생성</button>
+                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">피드 생성</button>
                     &nbsp;&nbsp;&nbsp;
-                    <button type="button" className="btn btn-danger">취소</button>
+                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">취소</button>
                 </div>
             </form>
         </div>
