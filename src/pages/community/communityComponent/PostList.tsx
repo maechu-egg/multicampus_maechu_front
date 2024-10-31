@@ -1,6 +1,8 @@
 import React from "react";
 import PostItem from "./PostItem";
 
+/* 게시물 목록을 표시하는 컴포넌트 */
+
 interface Post {
   id: number;
   title: string;
@@ -13,6 +15,7 @@ interface Post {
   subcategory: string;
   tags: string[];
   likeCount: number;
+  isRecommended?: boolean;
 }
 
 interface PostListProps {

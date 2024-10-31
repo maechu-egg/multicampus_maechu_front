@@ -11,11 +11,20 @@ interface PostFormProps {
     subcategory: string;
     tags: string[];
   };
-  onSave: (title: string, content: string, category: string,  subcategory: string, tags: string[]) => void;
-  onCancel: () => void; 
+  onSave: (title: string, content: string, category: string, subcategory: string, tags: string[]) => void;
+  onCancel: () => void;
+  categories: string[];
+  subcategories: { [key: string]: string[] };
 }
 
-const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel }) => {
+const PostForm: React.FC<PostFormProps> = ({ 
+  mode, 
+  initialData, 
+  onSave, 
+  onCancel,
+  categories,
+  subcategories 
+}) => {
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
   const [category, setCategory] = useState(initialData?.category || ""); 
@@ -32,11 +41,28 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!category) {
-      alert("카테고리를 선택해주세요.");
+  
+    if (title.trim() === "") {
+      alert("제목을 입력해주세요!");
       return;
     }
-    onSave(title, content, category, subcategory, tagList);  
+  
+    if (content.trim() === "") {
+      alert("내용을 입력해주세요!");
+      return;
+    }
+  
+    if (category === "") {
+      alert("카테고리를 선택해주세요!");
+      return;
+    }
+  
+    if (subcategory === "") {
+      alert("카테고리 소분류를 선택하세요!");
+      return;
+    }
+  
+    onSave(title, content, category, subcategory, tagList);
   };
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -61,25 +87,27 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
     <form onSubmit={handleSubmit} className="p-3 border rounded bg-light">
       <h2>{mode === "create" ? "게시물 작성" : "게시물 수정"}</h2>
       <div className="mb-3">
-        <label className="form-label">카테고리:</label>
-        <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} required>
-          <option value="">선택하세요</option>
-          <option value="헬스">헬스</option>
-          <option value="런닝">런닝</option>
-          <option value="필라테스">필라테스</option>
-          <option value="크로스핏">크로스핏</option>
-          <option value="요가">요가</option>
-        </select>
-      </div>
-      <div className="mb-3">
-        <label className="form-label">카테고리 소분류:</label>
-        <select className="form-select" value={subcategory} onChange={(e) => setSubcategory(e.target.value)}>
-          <option value="">선택하세요</option>
-          <option value="자유">자유</option>
-          <option value="질문">질문</option>
-          <option value="정보">정보</option>
-        </select>
-      </div>
+  <label className="form-label">카테고리:</label>
+  <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} required>
+    <option value="">선택하세요</option>
+    {categories.map((cat) => (
+      <option key={cat} value={cat}>
+        {cat}
+      </option>
+    ))}
+  </select>
+</div>
+<div className="mb-3">
+  <label className="form-label">카테고리 소분류:</label>
+  <select className="form-select" value={subcategory} onChange={(e) => setSubcategory(e.target.value)}>
+    <option value="">선택하세요</option>
+    {subcategories[category]?.map((subcat) => (
+      <option key={subcat} value={subcat}>
+        {subcat}
+      </option>
+    ))}
+  </select>
+</div>
       <div className="mb-3">
         <label className="form-label">제목:</label>
         <input
@@ -87,7 +115,6 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
           className="form-control"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          required
         />
       </div>
       <div className="mb-3">
@@ -96,7 +123,6 @@ const PostForm: React.FC<PostFormProps> = ({ mode, initialData, onSave, onCancel
           className="form-control post-content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          required
         />
       </div>
       <div className="mb-3">

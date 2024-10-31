@@ -2,6 +2,8 @@ import React from "react";
 import { FaThumbsUp, FaComment, FaEye } from "react-icons/fa";
 import "./PostItem.css";
 
+/* 개별 게시물 항목을 표시하는 컴포넌트 */
+
 interface PostItemProps {
   id: number;
   title: string;
@@ -14,6 +16,7 @@ interface PostItemProps {
   subcategory: string;
   tags: string[];
   likeCount: number;
+  isRecommended?: boolean; 
   onClick: () => void;
 }
 
@@ -25,10 +28,11 @@ const PostItem: React.FC<PostItemProps> = ({
   comments,
   subcategory,
   likeCount,
+  isRecommended, 
   onClick
 }) => {
   return (
-    <div className="post-item" onClick={onClick}>
+    <div className={`post-item ${isRecommended ? 'recommended' : ''}`} onClick={onClick}>
       <div className="post-content-wrapper">
         <span className="subcategory">[{subcategory || '자유'}]</span>
         <span className="post-title">{title}</span>

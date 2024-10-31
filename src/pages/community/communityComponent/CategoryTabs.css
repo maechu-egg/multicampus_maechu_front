@@ -1,0 +1,19 @@
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .nav-tabs .nav-link {
+    color: #495057;
+    border: none;
+    padding: 10px 20px;
+  }
+  
+  .nav-tabs .nav-link.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    background: none;
+  }
+  
+  .nav-tabs .nav-link:hover {
+    border-color: transparent;
+  }
