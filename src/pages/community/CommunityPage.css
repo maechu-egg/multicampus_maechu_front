@@ -1,74 +1,36 @@
 .community-container {
-    padding: 20px;
-  }
-  
-  .tab-container {
-    margin-bottom: 20px;
-  }
-  
-  .button-container {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .float-end {
-    float: right;
-  }
-  
-  .clear {
-    clear: both;
-  }
-  
-  /* 탭 스타일 커스터마이징 */
-  .nav-tabs {
-    border-bottom: 1px solid #dee2e6;
-  }
-  
-  .nav-tabs .nav-link {
-    color: #495057;
-    border: none;
-    padding: 10px 20px;
-  }
-  
-  .nav-tabs .nav-link.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-    background: none;
-  }
-  
-  .nav-tabs .nav-link:hover {
-    border-color: transparent;
-  }
+  padding: 20px;
+}
 
-  .search-and-write {
-    position: relative; /* 추가 */
-    display: flex;
-    justify-content: center; /* 변경 */
-    align-items: center;
-    margin-top:50px;
-    margin-bottom: 20px;
-    padding: 0 20px;
-  }
-  
-  .search-bar {
-    display: flex;
-    gap: 10px;
-    width: 400px;
-    position: absolute; /* 추가 */
-    left: 50%; /* 추가 */
-    transform: translateX(-50%); /* 추가 */
-  }
-  
-  .search-bar input {
-    flex: 1;
-  }
-  
-  .search-bar button {
-    white-space: nowrap;
-  }
-  
-  .write-button {
-    position: absolute; /* 추가 */
-    right: 20px; /* 추가 */
-    min-width: 100px;
-  }
+.tab-container {
+  margin-bottom: 20px;
+}
+
+.button-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.float-end {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+.search-and-write {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 0 20px;
+}
+
+.write-button {
+  position: absolute;
+  right: 20px;
+  min-width: 100px;
+}

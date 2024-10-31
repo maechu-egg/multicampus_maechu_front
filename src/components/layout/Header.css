@@ -41,8 +41,8 @@
 /* 미디어 쿼리: 스마트폰 세로 (0px ~ 480px) */
 @media (max-width: 480px) {
     #MainLogo {
-        width: 70px; /* 로고 크기 조정 */
-        height: 50px; 
+        width: 50px; /* 로고 크기 조정 */
+        height: 30px; 
     }
     #LoginBtn {
         width: 20px; /* 로그인 버튼 크기 조정 */
@@ -60,8 +60,8 @@
 /* 미디어 쿼리: 스마트폰 가로, 태블릿 (481px ~ 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
     #MainLogo {
-        width: 80px; 
-        height: 60px; 
+        width: 60px; 
+        height: 40px; 
     }
     #LoginBtn {
         width: 30px; 
@@ -81,8 +81,8 @@
 /* 미디어 쿼리: 태블릿 가로, 노트북 (769px ~ 1279px) */
 @media (min-width: 769px) and (max-width: 1279px) {
     #MainLogo {
-        width: 100px; 
-        height: 80px; 
+        width: 70px; 
+        height: 50px; 
     }
     #LoginBtn {
         width: 40px; 
@@ -100,12 +100,12 @@
 /* 미디어 쿼리: 데스크탑 (1280px ~) */
 @media (min-width: 1280px) {
     #MainLogo {
-        width: 140px; 
-        height: 110px; 
+        width: 80px; 
+        height: 60px; 
     }
     #LoginBtn {
-        width: 50px; 
-        height: 50px; 
+        width: 40px; 
+        height: 40px; 
     }
     .navbar-item {
         margin: 0 30px; 
