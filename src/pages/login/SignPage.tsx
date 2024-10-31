@@ -149,13 +149,13 @@ function SignPage(): JSX.Element {
 
       // member_img가 null이 아닐 때만 추가
       if (member_img) {
-        formData.append("member_img", member_img); // 프로필 이미지
-        formData.append("phone", phone); // 전화번호
+        formData.append("memberImgFile", member_img); // 프로필 이미지
       }
 
       formData.append("nickname", nickname); // 닉네임
       formData.append("password", password); // 비밀번호
       formData.append("email", email); // 이메일
+      formData.append("phone", phone); // 전화번호
 
       // 요청 데이터 출력
       console.log("Request Data:", {
