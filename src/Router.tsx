@@ -15,6 +15,7 @@ import LoginPage from "./pages/login/LoginPage";
 import Header from "../src/components/layout/Header";
 import SignPage from "./pages/login/SignPage";
 import ForgotPwPage from "./pages/login/ForgotPwPage";
+import UserInfoPage from "./pages/login/UserInfoPage";
 
 import BadgeStatusPage from "pages/badge/BadgeStatusPage";
 
@@ -26,6 +27,7 @@ function AppRouter() {
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/signpage" element={<SignPage />}></Route>
         <Route path="/forgotpwpage" element={<ForgotPwPage />}></Route>
+        <Route path="/userinfopage" element={<UserInfoPage />}></Route>
         <Route path="/crewpage" element={<CrewHeader />}></Route>
         <Route path="/mypage" element={<MyPage />}></Route>
         <Route path="/communitypage" element={<CommunityPage />}></Route>
