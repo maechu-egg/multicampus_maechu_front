@@ -2,20 +2,59 @@ import React, { useEffect, useState } from "react";
 import './Modal.css';
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
     const { state } = useAuth();
     const token = state.token;  
+    const memberId = state.memberId;
+    const navigate = useNavigate();
+
     const [battle_goal, setGoal] = useState('');
     const [battle_name, setBattleName] = useState('');
     const [battle_content, setBattleContent] = useState('');
     const [battle_end_recruitment, setBattleRecruitment] = useState('');
     const [battle_end_date, setBattleEndDate] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
-        console.log("debug >>> 배틀 참여");
-        alert("배틀 참여 완료");
+    const handleSubmit = async() => {
+        try{
+            const data = {
+                battle_id: battle_id,
+                member_id: memberId
+            }
+            const response = await api.post(`crew/battle/member/join`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("debug >>> handleSubmit response", response.data);
+            alert("배틀 참여 완료");
+            navigate(`/`);
+        } catch (error) {
+            console.log("debug >>> handleSubmit error", error);
+        }
     };
+
+    useEffect(() => {
+        const getBattleInfo = async () => {
+            try{
+                const response = await api.get(`crew/battle/detail/${battle_id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> getBattleInfo참가 response", response.data);
+                setBattleName(response.data.battle_name);
+                setGoal(response.data.battle_goal);
+                setBattleRecruitment(response.data.battle_end_recruitment.split(' ')[0]);
+                setBattleEndDate(response.data.battle_end_date.split(' ')[0]);
+                setBattleContent(response.data.battle_content);
+            } catch (error) {
+                console.log("debug >>> getBattleInfo error", error);
+            }
+        }
+        getBattleInfo();
+    }, [battle_id]);
 
     return(
         <div className="container">
@@ -27,7 +66,6 @@ function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
                         type="text"
                         className="form-control"
                         value={battle_name}
-                        onChange={(e) => setBattleName(e.target.value)}
                         style={{ width: '100%' }}
                     />
                 </div>
@@ -39,7 +77,6 @@ function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
                         type="text"
                         className="form-control"
                         value={battle_goal}
-                        onChange={(e) => setGoal(e.target.value)}
                         style={{ width: '100%' }}
                     />
                 </div>
@@ -51,7 +88,6 @@ function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
                         type="date"
                         className="form-control"
                         value={battle_end_recruitment}
-                        onChange={(e) => setBattleRecruitment(e.target.value)}
                         style={{ width: '100%' }}
                     />
                 </div>
@@ -63,7 +99,6 @@ function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
                         type="date"
                         className="form-control"
                         value={battle_end_date}
-                        onChange={(e) => setBattleEndDate(e.target.value)}
                         style={{ width: '100%' }}
                     />
                 </div>
@@ -75,7 +110,6 @@ function CrewJoinBattleModal({battle_id}: {battle_id: number}) {
                         type="text"
                         className="form-control"
                         value={battle_content}
-                        onChange={(e) => setBattleContent(e.target.value)}
                         style={{ width: '100%' }}
                     />
                 </div>

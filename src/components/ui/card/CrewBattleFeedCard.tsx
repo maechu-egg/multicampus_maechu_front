@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useAuth } from "context/AuthContext"; 
+import api from "services/api/axios";
 
 interface Member {
     member_id: number;
@@ -20,6 +22,9 @@ interface CrewBattleFeedCardProps {
 
 function CrewBattleFeedCard({ member, onClickHandler, battleId}: CrewBattleFeedCardProps) {
     const [imgPath, setImgPath] = useState<string>("");
+    const { state } = useAuth();
+    const memberId = state.memberId;
+    const token = state.token;
 
     useEffect(() => {
         if(member.badge_level === "브론즈") {
@@ -34,8 +39,30 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId}: CrewBattleFeedC
             setImgPath("/img/crewBadge/CrewBadgeDiamond.png");
         } else if(member.badge_level === "기본") {
             setImgPath("/img/crewBadge/CrewBadgeDefault.png");
+        } else if(member.badge_level === null){
+            setImgPath("/img/crewBadge/CrewBadgeDefault.png");
         }
     }, [member]);
+
+    const VoteHandler = async() => {
+        const data = {
+            battle_id: battleId,
+            participant_id: member.participant_id,
+            member_id: memberId
+        }
+        try{
+            const response = await api.post(`crew/battle/vote/create`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("debug >>> VoteHandler response", response.data);
+            alert("투표가 완료되었습니다.");
+        } catch (error) {
+            console.log("debug >>> VoteHandler error", error);
+            alert("한 배틀에 여러번 투표할 수 없습니다.");
+        }
+    }
 
     return (
         <div className="container" style={{ width: '100%' }}>
@@ -63,18 +90,31 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId}: CrewBattleFeedC
                         </ul>
                     </div>
                     <div className="d-flex">
-                        <button 
-                            className="btn btn-primary flex-fill accept-btn"
-                            data-bs-toggle="modal"
-                            data-bs-target="#battleFeedModal"
-                        >
-                            피드 추가
-                        </button>
-                        <button
-                            className="btn btn-danger flex-fill reject-btn" 
-                        >
-                            투표 하기
-                        </button>
+                        {memberId == member.member_id && (
+                            <button 
+                                className="btn btn-primary flex-fill accept-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#battleFeedModal"
+                            >
+                                피드 추가
+                            </button>
+                        )}
+                        {memberId == member.member_id && (
+                            <button
+                                className="btn btn-danger flex-fill reject-btn"
+                                onClick={VoteHandler}
+                            >
+                                투표 하기
+                            </button>
+                        )}
+                        {memberId != member.member_id && (
+                            <button
+                                className="btn btn-danger flex-fill exit-btn"
+                                onClick={VoteHandler}
+                            >
+                                투표 하기
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

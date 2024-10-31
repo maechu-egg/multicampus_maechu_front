@@ -25,7 +25,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log("debug >>> getBattleList response", response.data);
+                console.log("debug >>> getBattleList정보 response", response.data);
                 setBattleList(response.data);
             } catch(e){
                 console.log("debug >>> getBattleList error", e);

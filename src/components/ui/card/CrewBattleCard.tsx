@@ -10,6 +10,7 @@ interface Battle {
     battle_goal: string;
     battle_name: string;
     crew_id: number;
+    battle_state: number;
 }
 
 interface CrewInfoProps {
@@ -22,7 +23,25 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
     const token = state.token;
     const memberId = state.memberId;
     const [isMember, setIsMember] = useState(false);
+    const [firstScoreMember, setFirstScoreMember] = useState<{ nickname: string, vote_count: number } | null>(null);
+    const [secondScoreMember, setSecondScoreMember] = useState<{ nickname: string, vote_count: number } | null>(null);
+    const [firstPercent, setFirstPercent] = useState<number>(0);
+    const [secondPercent, setSecondPercent] = useState<number>(0);
 
+    useEffect(() => {
+        let firstScoreMemberVote = firstScoreMember?.vote_count || 0;
+        let secondScoreMemberVote = secondScoreMember?.vote_count || 0;
+
+        const totalVote = firstScoreMemberVote + secondScoreMemberVote;
+
+        const firstPercentValue = Math.round((firstScoreMemberVote / totalVote) * 100);
+        const secondPercentValue = Math.round((secondScoreMemberVote / totalVote) * 100);
+
+        setFirstPercent(firstPercentValue);
+        setSecondPercent(secondPercentValue);
+
+    }, [firstScoreMember, secondScoreMember]);
+    
     useEffect(() => {
         const getBattleMember = async () => {
             try {
@@ -31,9 +50,12 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
                         Authorization: `Bearer ${token}`
                     }
                 });
+                
                 console.log("debug >>> 내가 속했는지 보기위한 배틀참여멤버 조회 response", response.data);
+                setFirstScoreMember(response.data[0]);
+                setSecondScoreMember(response.data[1]);
+                
                 for(let i = 0; i < response.data.length; i++){
-                    console.log("debug >>> ", memberId, response.data[i].member_id);
                     if(memberId == response.data[i].member_id){
                         setIsMember(true);
                         break;
@@ -45,8 +67,9 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
                 console.log("debug >>> getBattleMember error", error);
             }
         }
+
         getBattleMember();
-    }, [memberId]);
+    }, [battle.battle_id]);
 
     const formattedBattleEndDate = new Date(battle.battle_end_date).toLocaleDateString('ko-KR', {
         year: 'numeric',
@@ -61,7 +84,12 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
                 <div className="d-flex justify-content-start align-items-center">
                     <h3 className="card-title">{battle.battle_name}</h3>
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <span className="badge rounded-pill text-bg-primary">진행중</span>
+                    {battle.battle_state == 0 &&(
+                        <span className="badge rounded-pill text-bg-danger">모집중</span>
+                    )}
+                    {battle.battle_state == 1 &&(
+                        <span className="badge rounded-pill text-bg-secondary">진행중</span>
+                    )}
                 </div>
                 <div className="d-flex justify-content-center align-items-center">
                     <img src="/img/person.png" className="card-img mx-1" style={{ width: "35%" }} />
@@ -69,27 +97,27 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
                     <img src="/img/person.png" className="card-img mx-1" style={{ width: "35%" }} />
                 </div>
                 <div className="d-flex justify-content-between align-items-center">
-                    <p className="me-3" style={{ fontSize: "18px" }}>신유민</p>
-                    <p className="ms-3" style={{ fontSize: "18px" }}>강은종</p>
+                    <p className="me-3" style={{ fontSize: "18px" }}>{firstScoreMember?.nickname}</p>
+                    <p className="ms-3" style={{ fontSize: "18px" }}>{secondScoreMember?.nickname}</p>
                 </div>
                 <div className="progress-stacked">
-                    <div className="progress" role="progressbar" aria-label="Segment one" aria-valuenow={15} aria-valuemin={0} aria-valuemax={100} style={{ width: '60%' }}>
+                    <div className="progress" role="progressbar" aria-label="Segment one" aria-valuenow={15} aria-valuemin={0} aria-valuemax={100} style={{ width: `${firstPercent}%` }}>
                         <div className="progress-bar bg-primary" style={{height: "100%"}}></div>
                     </div>
-                    <div className="progress" role="progressbar" aria-label="Segment two" aria-valuenow={30} aria-valuemin={0} aria-valuemax={100} style={{ width: '40%' }}>
+                    <div className="progress" role="progressbar" aria-label="Segment two" aria-valuenow={30} aria-valuemin={0} aria-valuemax={100} style={{ width: `${secondPercent}%` }}>
                         <div className="progress-bar bg-danger" style={{height: "100%"}}></div>
                     </div>
                 </div>
                 <div className="d-flex justify-content-between align-items-center">
-                    <p className="me-3" style={{ fontSize: "15px" }}>60%</p>
-                    <p className="ms-3" style={{ fontSize: "15px" }}>40%</p>
+                    <p className="me-3" style={{ fontSize: "15px" }}>{firstPercent}%</p>
+                    <p className="ms-3" style={{ fontSize: "15px" }}>{secondPercent}%</p>
                 </div>
                 <div className="justify-content-center align-items-center">
                     <p>종료일 : {formattedBattleEndDate}</p>
                 </div>
                 <p className="card-text" style={{ fontSize: "15px" }}>{battle.battle_content}</p>
                 <div className="mt-auto">
-                    {isMember == true &&(
+                    {isMember == true && battle.battle_state == 1 && (
                         <button 
                             className="btn btn-secondary" 
                             data-bs-toggle="modal"
@@ -99,7 +127,18 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
                             상세 보기
                         </button>
                     )}
-                    {isMember == false &&(
+                    {isMember == true && battle.battle_state == 0 && (
+                        <button 
+                            className="btn btn-secondary" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#battleFeedDetailModal"
+                            onClick={onDetailClick}
+                            disabled={true}
+                        >
+                            상세보기
+                        </button>
+                    )}
+                    {isMember == false && battle.battle_state == 0 && (
                         <button 
                             className="btn btn-secondary" 
                             data-bs-toggle="modal"
@@ -109,6 +148,17 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
                             참가하기
                         </button>
                     )}
+                    {isMember == false && battle.battle_state == 1 && (
+                        <button 
+                            className="btn btn-secondary" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#battleFeedDetailModal"
+                            onClick={onDetailClick}
+                        >
+                            피드 보기
+                        </button>
+                    )}
+                    
                 </div>
             </div>
         </div>

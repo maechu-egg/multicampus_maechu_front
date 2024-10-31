@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Modal.css';
 import axios from 'axios';
 import { useAuth } from "context/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import api from 'services/api/axios';
 
-function CrewModal({ crew_id }: { crew_id: number }) {
+function CrewModal({ crew_id }: { crew_id: number}) {
     const { state } = useAuth();
     const token = state.token;
     const member_id = state.memberId;
@@ -23,6 +24,30 @@ function CrewModal({ crew_id }: { crew_id: number }) {
 
     // 체크박스 상태 관리 (선호 나이)
     const [crew_age, setCrew_age] = useState<string[]>([]);
+
+    useEffect(() => {
+        const getCrewInfo = async() => {
+            try{
+                const response = await api.get(`crew/info/${crew_id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                console.log("debug >>> 크루수정 모달 response", response.data);
+                setCrew_name(response.data.crew_name);
+                setCrew_title(response.data.crew_title);
+                setCrew_location(response.data.crew_location);
+                setCrew_sport(response.data.crew_sport);
+                setCrew_goal(response.data.crew_goal);
+                setCrew_gender(response.data.crew_gender);
+                setCrew_frequency(response.data.crew_frequency);
+            } catch (error) {
+                console.error('Error getting crew info:', error);
+            }
+        };
+        getCrewInfo();
+    },[crew_id]);
+
 
     // 체크박스 선택 핸들러
     const handleAgeSelection = (age: string) => {
@@ -52,7 +77,7 @@ function CrewModal({ crew_id }: { crew_id: number }) {
         };
         console.log("debug >>> data", data);
 
-        const createCrew = async() => {
+        const updateCrew = async() => {
             try {
                 const response = await axios.patch(`http://localhost:8001/crew/info/update`, data, {
                     headers: {
@@ -67,7 +92,7 @@ function CrewModal({ crew_id }: { crew_id: number }) {
                 alert("크루 수정에 실패 했습니다.");
             }
         };
-        createCrew();
+        updateCrew();
     };
 
     return (

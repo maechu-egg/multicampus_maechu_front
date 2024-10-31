@@ -14,15 +14,18 @@ interface CrewInfoProps {
 function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
     const { state } = useAuth();
     const token = state.token;
+    const memberId = state.memberId;
     const navigate = useNavigate();
     {/* 
         useEffect로 crewId에 맞는 정보 불러와서 crew_intro_img 왼쪽에 보여주고
         crew_name 오른쪽 윗부분, crew_intro_post 오른쪽 아래부분
     */}
     const [crewName, setCrewName] = useState<string>("");
+
     const [crewIntroImg, setCrewIntroImg] = useState<string>("");
     const [crewIntroPost, setCrewIntroPost] = useState<string>("");
     const [crewDate, setCrewDate] = useState<string>("");
+    const [crewLeader, setCrewLeader] = useState(0);
 
     useEffect(() => {
         const selectCrew = async() => {
@@ -33,11 +36,12 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log("debug >>> selectCrew response", response.data);
+                console.log("debug >>> 크루소개페이지 response", response.data);
                 setCrewName(response.data.crew_name);
                 setCrewIntroImg(response.data.crew_intro_img);
                 setCrewIntroPost(response.data.crew_intro_post);
                 setCrewDate(response.data.crew_date);
+                setCrewLeader(response.data.member_id);
             } catch (error) {
                 console.log('Error selecting crew:', error);
             }
@@ -75,32 +79,34 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
             <br />
             <br />
             <br />
-            <div className="row">
-                <div className="col-12 d-flex justify-content-start align-items-center">
-                    <button
-                        className="btn btn-danger"
-                        onClick={handleDeleteCrew}
-                    >
-                        크루삭제
-                    </button>
+            {memberId == crewLeader && (
+                <div className="row">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                        <button
+                            className="btn btn-danger"
+                            onClick={handleDeleteCrew}
+                        >
+                            크루삭제
+                        </button>
+                    </div>
+                    <div className="col-6 d-flex justify-content-end align-items-center">
+                        <button 
+                            className="btn btn-secondary mx-4"
+                            data-bs-toggle="modal"
+                            data-bs-target="#postModal"
+                        >
+                            게시글 관리
+                        </button>
+                        <button 
+                            className="btn btn-secondary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#introModal"
+                        >
+                            소개글 관리
+                        </button>
+                    </div>
                 </div>
-                <div className="col-12 d-flex justify-content-end align-items-center">
-                    <button 
-                        className="btn btn-secondary mx-4"
-                        data-bs-toggle="modal"
-                        data-bs-target="#postModal"
-                    >
-                        게시글 관리
-                    </button>
-                    <button 
-                        className="btn btn-secondary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#introModal"
-                    >
-                        소개글 관리
-                    </button>
-                </div>
-            </div>
+            )}
             <div className="row mt-3 d-flex justify-content-around align-items-center">
                 <div className="col-md-8 col-12 d-flex justify-content-center">
                     <img
@@ -114,7 +120,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                     <div className="d-flex justify-content-center">
                         <h1>{crewName}</h1>
                     </div>
-                    <p>
+                    <p className="d-flex justify-content-center">
                         {crewIntroPost}
                     </p>
                     <div className="d-flex justify-content-center">

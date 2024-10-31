@@ -54,7 +54,7 @@ function CrewBattleFeedDetailModal({battleId}:CrewInfoProps): JSX.Element {
 
 
     return (
-        <div className="container" style={{ width: '100%' }}>
+        <div className="container" style={{ width: '100%'}}>
             <div className="d-flex">
                 <div className="left-panel flex-shrink-0" style={{ overflowY: 'auto', maxHeight: '100vh' }}>
                     <div className="scrollable-content">
