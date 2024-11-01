@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import api from "../../services/api/axios";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios"; // axios와 AxiosError를 임포트합니다.
 import { useAuth } from "../../context/AuthContext"; // AuthContext에서 useAuth 훅 임포트
 
 function ForgotPwPage(): JSX.Element {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false); // 이메일 유효성 상태 추가
@@ -15,6 +16,11 @@ function ForgotPwPage(): JSX.Element {
     useState(false); // 인증 코드 유효성 상태
   const [verificationError, setVerificationError] = useState(""); // 인증 코드 확인 에러 메시지
   const [certificationCode, setCertificationCode] = useState("");
+
+  const [passwordError, setPasswordError] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const validateEmail = (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규 표현식
@@ -105,6 +111,36 @@ function ForgotPwPage(): JSX.Element {
       }
     }
   };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+    setPasswordError(value.length < 6); // 비밀번호 길이 검사
+  };
+
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    setConfirmPasswordError(value !== password); // 비밀번호 확인 일치 검사
+  };
+
+  const handleUpdatePassword = async () => {
+    try {
+      const response = await api.patch("/user/changepw", {
+        email,
+        password,
+      });
+      console.log("서버 응답: ", response.data);
+      navigate("/login");
+    } catch (error) {
+      console.error("비밀번호 변경 실패: ", error);
+      alert("비밀번호 변경에 실패했습니다. 다시 시도하세요.");
+      setEmail(""); // 이메일 초기화
+      setPassword(""); // 비밀번호 초기화
+    }
+  };
   return (
     <Container>
       <LoginForm>
@@ -169,6 +205,52 @@ function ForgotPwPage(): JSX.Element {
               className={`form-text ${verificationError ? "text-danger" : ""}`}
             >
               {verificationError}
+            </div>
+
+            <label
+              htmlFor="inputPassword3"
+              className="form-label"
+              style={{ marginTop: "10px" }}
+            >
+              New Password
+            </label>
+            <input
+              type="password"
+              className={`form-control ${passwordError ? "is-invalid" : ""}`}
+              id="inputPassword3"
+              placeholder="6자 이상 입력"
+              value={password}
+              onChange={handlePasswordChange}
+              style={{ width: "100%", marginRight: "10px" }}
+            />
+            <input
+              type="password"
+              className={`form-control ${confirmPasswordError ? "is-invalid" : ""}`}
+              id="inputConfirmPassword"
+              placeholder="비밀번호 확인"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              style={{ width: "100%", marginRight: "10px", marginTop: "10px" }}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "10px",
+              }}
+            >
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={handleUpdatePassword} // Sign Up 버튼 클릭 시 핸들러 호출
+                disabled={
+                  !isEmailValid ||
+                  confirmPasswordError ||
+                  !isCertificationCodeValid
+                } // 버튼 비활성화 조건
+              >
+                Update Password
+              </button>
             </div>
           </form>
         </Input>
