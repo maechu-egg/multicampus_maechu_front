@@ -2,18 +2,21 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../context/AuthContext"; // AuthContext에서 useAuth 가져오기
 import api from "../../services/api/axios"; // api를 가져옵니다.
-
 const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
 
 const UserInfoPage = (): JSX.Element => {
   const [userInfo, setUserInfo] = useState<any>(null); // 사용자 정보를 저장할 상태
   const { state } = useAuth(); // AuthContext에서 상태 가져오기
-  const { token } = state; // 상태에서 token 가져오기
+  const { token, memberId } = state; // 상태에서 token과 memberId 가져오기
 
   useEffect(() => {
+    console.log("현재 컨텍스트 상태:", state); // 컨텍스트 상태 출력
+    console.log("사용할 토큰:", token); // 토큰 출력
+    console.log("사용자 ID:", memberId); // 사용자 ID 출력
+
     const fetchUserInfo = async () => {
       try {
-        console.log("사용할 토큰:", token); // 토큰 출력
+        console.log("함수 실행 시 현재 상태:", { token, memberId }); // 함수 실행 시 현재 상태 출력
         const response = await api.get("/user/info", {
           headers: {
             Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
@@ -28,7 +31,7 @@ const UserInfoPage = (): JSX.Element => {
     };
 
     fetchUserInfo(); // 사용자 정보 조회 함수 호출
-  }, [token]);
+  }, [token, state]); // state 추가
 
   // 이미지 src를 콘솔에 출력
   useEffect(() => {
