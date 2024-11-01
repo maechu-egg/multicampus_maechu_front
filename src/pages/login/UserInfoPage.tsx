@@ -3,7 +3,9 @@ import styled from "styled-components";
 import { useAuth } from "../../context/AuthContext"; // AuthContext에서 useAuth 가져오기
 import api from "../../services/api/axios"; // api를 가져옵니다.
 
-function UserInfoPage(): JSX.Element {
+const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
+
+const UserInfoPage = (): JSX.Element => {
   const [userInfo, setUserInfo] = useState<any>(null); // 사용자 정보를 저장할 상태
   const { state } = useAuth(); // AuthContext에서 상태 가져오기
   const { token } = state; // 상태에서 token 가져오기
@@ -11,6 +13,7 @@ function UserInfoPage(): JSX.Element {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
+        console.log("사용할 토큰:", token); // 토큰 출력
         const response = await api.get("/user/info", {
           headers: {
             Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
@@ -19,7 +22,6 @@ function UserInfoPage(): JSX.Element {
 
         console.log("사용자 정보 응답:", response.data); // 응답 데이터 콘솔 출력
         setUserInfo(response.data); // 사용자 정보 상태 업데이트
-        console.log(`${serverUrl}${userInfo.memberImgUrl}`);
       } catch (error) {
         console.error("사용자 정보 조회 오류:", error);
       }
@@ -28,15 +30,18 @@ function UserInfoPage(): JSX.Element {
     fetchUserInfo(); // 사용자 정보 조회 함수 호출
   }, [token]);
 
-  // 서버의 기본 URL
-  const serverUrl = "http://localhost:8001";
+  // 이미지 src를 콘솔에 출력
+  useEffect(() => {
+    if (userInfo) {
+      console.log("이미지 URL:", `${BASE_URL}${userInfo.memberImg}`); // 이미지 URL 콘솔 출력
+    }
+  }, [userInfo]);
 
   return (
     <Container>
       {userInfo ? (
         <UserInfo>
-          <img src={`${serverUrl}${userInfo.memberImgUrl}`} alt="Profile" />{" "}
-          {/* 이미지 URL 수정 */}
+          <img src={`${BASE_URL}${userInfo.memberImg}`} alt="Profile" />
           <h2>{userInfo.nickname}</h2>
           <p>Email: {userInfo.email}</p>
           <p>Phone: {userInfo.phone || "전화번호 없음"}</p>
@@ -46,7 +51,8 @@ function UserInfoPage(): JSX.Element {
       )}
     </Container>
   );
-}
+};
+
 const Container = styled.div`
   width: 100%;
   height: 100vh; /* 전체 화면 높이 설정 */

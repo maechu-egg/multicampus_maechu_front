@@ -2,9 +2,109 @@ import React, { useState } from "react";
 import api from "../../services/api/axios";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
+import { AxiosError } from "axios"; // axios와 AxiosError를 임포트합니다.
 import { useAuth } from "../../context/AuthContext"; // AuthContext에서 useAuth 훅 임포트
 
 function ForgotPwPage(): JSX.Element {
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false); // 이메일 유효성 상태 추가
+  const [checkButtonDisabled, setCheckButtonDisabled] = useState(true); // Check 버튼 비활성화 상태
+  const [emailCheckError, setEmailCheckError] = useState(""); // 이메일 중복 체크 에러 메시지
+  const [isCertificationCodeValid, setIsCertificationCodeValid] =
+    useState(false); // 인증 코드 유효성 상태
+  const [verificationError, setVerificationError] = useState(""); // 인증 코드 확인 에러 메시지
+  const [certificationCode, setCertificationCode] = useState("");
+
+  const validateEmail = (email: string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규 표현식
+    return emailPattern.test(email);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    const isValid = validateEmail(value);
+    setEmailError(!isValid); // 이메일 유효성 검사
+    setIsEmailValid(isValid); // 이메일 유효성 상태 업데이트
+    setCheckButtonDisabled(!isValid); // 이메일이 유효하지 않으면 Check 버튼 비활성화
+    setEmailCheckError(""); // 이메일 체크 에러 메시지 초기화
+  };
+
+  const handleCheckEmail = async () => {
+    try {
+      const response = await api.post("/user/register/email-check", {
+        email,
+      });
+      if (response.status === 200) {
+        // 존재하지 않는 이메일인 경우
+        setCheckButtonDisabled(true); // Check 버튼 비활성화
+        setEmailCheckError("존재하지 않는 이메일입니다."); // 에러 메시지 설정
+        setIsEmailValid(false); // 이메일 유효성 상태 업데이트
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError; // error를 AxiosError로 캐스팅합니다.
+      if (axiosError.response) {
+        if (axiosError.response.status === 409) {
+          // 존재하는 이메일인 경우
+          setCheckButtonDisabled(false); // Check 버튼 활성화
+          setEmailCheckError("인증코드 발송"); // 인증 코드 발송 메시지 설정
+          setIsEmailValid(true); // 이메일 유효성 상태 업데이트
+
+          // 인증 코드 전송 요청
+          try {
+            await api.post("/user/register/email-certification", {
+              email,
+            });
+            console.log("인증 코드가 발송되었습니다.");
+          } catch (certificationError) {
+            console.error("인증 코드 전송 오류:", certificationError);
+            setEmailCheckError("인증 코드 전송에 실패했습니다."); // 에러 메시지 설정
+          }
+        } else if (axiosError.response.status === 400) {
+          // 잘못된 이메일 형식
+          setCheckButtonDisabled(true); // Check 버튼 비활성화
+          setEmailCheckError("이메일 형식이 올바르지 않습니다."); // 에러 메시지 설정
+          setIsEmailValid(false); // 이메일 유효성 상태 업데이트
+        } else {
+          console.error("이메일 체크 오류:", error);
+        }
+      } else {
+        console.error("이메일 체크 오류:", error);
+      }
+    }
+  };
+
+  const handleCertificationCodeChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCertificationCode(e.target.value); // 인증 코드 입력 처리
+    setIsCertificationCodeValid(false); // 인증 코드 유효성 초기화
+  };
+
+  const handleVerifyCode = async () => {
+    try {
+      const response = await api.post("/user/register/verify-certification", {
+        email,
+        certificationCode,
+      });
+      if (response.status === 200) {
+        // 인증 성공
+        console.log("인증 코드가 확인되었습니다.");
+        setIsCertificationCodeValid(true); // 인증 코드 유효성 상태 업데이트
+        setVerificationError(""); // 에러 메시지 초기화
+      }
+    } catch (error) {
+      const axiosError = error as AxiosError; // error를 AxiosError로 캐스팅합니다.
+      if (axiosError.response && axiosError.response.status === 400) {
+        // 인증 실패
+        setIsCertificationCodeValid(false); // 인증 코드 유효성 상태 업데이트
+        setVerificationError("인증 코드가 유효하지 않습니다."); // 에러 메시지 설정
+      } else {
+        console.error("인증 코드 확인 오류:", error);
+      }
+    }
+  };
   return (
     <Container>
       <LoginForm>
@@ -14,82 +114,61 @@ function ForgotPwPage(): JSX.Element {
             <label htmlFor="exampleInputEmail1" className="form-label">
               Email address
             </label>
-            <div
-              className="mb-3"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              {" "}
+            <div className="mb-3 d-flex align-items-center">
               <input
                 type="email"
-                className="form-control"
+                className={`form-control ${emailError ? "is-invalid" : isEmailValid ? "is-valid" : ""}`}
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
-                style={{ marginRight: "10px" }} // Add some space between input and button
+                value={email}
+                onChange={handleEmailChange}
+                placeholder="가입되어 있는 이메일을 입력해주세요."
+                style={{ width: "100%", marginRight: "10px" }}
               />
-              <button type="submit" className="btn btn-secondary">
-                Submit
+              <button
+                type="button"
+                className="btn btn-secondary"
+                disabled={checkButtonDisabled}
+                onClick={handleCheckEmail} // 이메일 체크 버튼 클릭 시 핸들러 호출
+              >
+                Check
               </button>
             </div>
             <div
               id="emailHelp"
-              className="form-text"
-              style={{ color: "red", marginTop: "-10px", marginBottom: "13px" }}
+              className={`form-text ${emailError || emailCheckError ? "text-danger" : ""}`}
             >
-              We'll never share your email with anyone else.
+              {emailError ? "이메일 형식을 맞춰주세요" : emailCheckError}
             </div>
-
-            <label htmlFor="exampleInputPassword1" className="form-label">
-              Email Verification Code
-            </label>
-            <div
-              className="mb-3"
-              style={{ display: "flex", alignItems: "center" }}
+            <label
+              htmlFor="certificationCode"
+              className="form-label"
+              style={{ marginTop: "10px" }}
             >
-              {" "}
+              Certification Code
+            </label>
+            <div className="mb-3 d-flex align-items-center">
               <input
                 type="text"
-                className="form-control"
-                style={{ marginRight: "10px" }}
-                placeholder="보내준 인증코드 넣어라"
+                className={`form-control ${isCertificationCodeValid ? "is-valid" : !isCertificationCodeValid && verificationError ? "is-invalid" : ""}`}
+                id="certificationCode"
+                placeholder="인증 코드를 입력하세요"
+                value={certificationCode}
+                onChange={handleCertificationCodeChange}
+                style={{ width: "100%", marginRight: "10px" }}
               />
-              <button type="submit" className="btn btn-secondary">
-                Check
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleVerifyCode} // 인증 코드 확인 버튼 클릭 시 핸들러 호출
+              >
+                Verify
               </button>
             </div>
-          </form>
-
-          <form style={{ width: "100%" }}>
-            <div className="mb-3" style={{ width: "100%" }}>
-              <label
-                htmlFor="inputPassword3"
-                className="col-sm-2 col-form-label"
-              >
-                Password
-              </label>
-              <div className="col-sm-10">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="inputPassword3"
-                  style={{ width: "100%" }}
-                />
-              </div>
-            </div>
-            <div className="mb-3" style={{ width: "100%" }}>
-              <label
-                htmlFor="inputPassword3"
-                className="col-sm-2 col-form-label"
-              >
-                Password
-              </label>
-              <div className="col-sm-10">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="inputPassword3"
-                  style={{ width: "100%" }}
-                />
-              </div>
+            <div
+              className={`form-text ${verificationError ? "text-danger" : ""}`}
+            >
+              {verificationError}
             </div>
           </form>
         </Input>

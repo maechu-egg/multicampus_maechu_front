@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import axios, { AxiosError } from "axios"; // axios와 AxiosError를 임포트합니다.
+import { AxiosError } from "axios"; // axios와 AxiosError를 임포트합니다.
 import api from "../../services/api/axios"; // api를 임포트합니다.
 
 function SignPage(): JSX.Element {
@@ -157,32 +157,32 @@ function SignPage(): JSX.Element {
       formData.append("email", email); // 이메일
       formData.append("phone", phone); // 전화번호
 
-      // 요청 데이터 출력
-      console.log("Request Data:", {
-        member_img,
-        nickname,
-        password,
-        email,
-        phone,
-      });
+      // FormData의 내용을 출력
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
+      // API 요청
       const response = await api.post("/user/register", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
+      // 응답 처리
       if (response.status === 200) {
         console.log("회원가입 성공:", response.data);
         // 추가적인 성공 처리 로직
       }
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error("회원가입 오류:", axiosError);
+      console.error(
+        "회원가입 오류:",
+        axiosError.response ? axiosError.response.data : axiosError.message
+      );
       // 추가적인 오류 처리 로직
     }
   };
-
   return (
     <Container>
       <SignForm>
