@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { AxiosError } from "axios"; // axios와 AxiosError를 임포트합니다.
-import api from "../../services/api/axios"; // api를 임포트합니다.
+import { AxiosError } from "axios";
+import api from "../../services/api/axios";
 
 function SignPage(): JSX.Element {
   const [member_img, setMemberImg] = useState<File | null>(null); // 프로필 이미지 상태
