@@ -1,9 +1,7 @@
-import React from "react";
-
 interface BadgeFooterSectionProps {
   scoreLeft: number;
   progress: number;
-  nextBadge: string | null;  // optional(?)을 제거하고 필수 prop으로 변경
+  nextBadge: string | null;
 }
 
 function BadgeFooterSection({ scoreLeft, progress, nextBadge }: BadgeFooterSectionProps) {
@@ -20,9 +18,15 @@ function BadgeFooterSection({ scoreLeft, progress, nextBadge }: BadgeFooterSecti
 
   return (
     <div className="footer">
-      <p>{nextBadge} 등급까지 {scoreLeft}점 남았습니다.</p>
+      <p>{nextBadge} 등급까지 {scoreLeft}점 남았습니다</p>
       <div className="progress-bar">
-        <div className="progress" style={{ width: `${progress}%` }}></div>
+        <div 
+          className="progress" 
+          style={{ 
+            width: `${progress}%`,
+            transition: 'width 0.3s ease-in-out'
+          }}
+        ></div>
       </div>
     </div>
   );

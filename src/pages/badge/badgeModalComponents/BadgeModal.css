@@ -35,17 +35,17 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    justify-content: center;  /* 가운데 정렬을 위해 추가 */
-    width: 100%;             /* 전체 너비 사용 */
-    text-align: center;      /* 텍스트 가운데 정렬 */
-    margin: 20px 0;          /* 위아래 여백 추가 */
+    justify-content: center;  
+    width: 100%;          
+    text-align: center;    
+    margin: 20px 0;          
 }
 
 .modal-badge-image {
     width: 150px;
     height: 150px;
-    margin-bottom: 10px;    /* 이미지와 텍스트 사이 간격 */
-    margin-right: 0;        /* 기존 margin-right 제거 */
+    margin-bottom: 10px;    
+    margin-right: 0;      
 }
 
 
