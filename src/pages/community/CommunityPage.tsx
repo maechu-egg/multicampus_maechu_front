@@ -9,6 +9,8 @@ import SubcategoryTabs from "./communityComponent/SubcategoryTabs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./CommunityPage.css";
 import RecommendedKeywords from './communityComponent/RecommendedKeywords';
+import categoriesJson from '../../assets/data/categories.json';
+
 
 // 댓글 타입 정의
 interface Comment {
@@ -37,6 +39,14 @@ interface Post {
   isRecommended?: boolean; 
 }
 
+// categories.json 파일의 타입 정의
+interface CategoryData {
+  categories: string[];
+  subcategories: {
+    [key: string]: string[];  
+  };
+}
+
 function CommunityPage(): JSX.Element {
   const [showPostForm, setShowPostForm] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -51,56 +61,10 @@ function CommunityPage(): JSX.Element {
     // 임시 키워드 데이터 (나중에 백엔드에서 받아올 예정)
   const recommendedKeywords = ["운동", "헬스", "다이어트", "건강", "요가"];
 
-  //카테고리
-  const categories = ["헬스 및 피트니스", "단체 스포츠", "개인  스포츠", "레저 및 아웃도어 스포츠", "댄스 및 퍼포먼스 운동"];
-  // 카테고리 소분류
-  const subcategories: { [key: string]: string[] } = {
-    "헬스 및 피트니스": [
-      "헬스(웨이트 트레이닝)",
-      "필라테스",
-      "요가",
-      "크로스핏",
-      "사이클(스피닝)",
-      "홈 트레이닝",
-      "러닝/조깅",
-      "HIIT"
-    ],
-    "단체 스포츠": [
-      "축구",
-      "농구",
-      "배구",
-      "풋살",
-      "핸드볼",
-      "럭비",
-      "야구"
-    ],
-    "개인  스포츠": [
-      "테니스",
-      "배드민턴",
-      "탁구",
-      "골프",
-      "스쿼시",
-      "클라이밍",
-      "격투기"
-    ],
-    "레저 및 아웃도어 스포츠": [
-      "수영",
-      "서핑",
-      "스킨스쿠버",
-      "스케이트보드 / 롱보드",
-      "하이킹 / 트레킹",
-      "스키 / 스노보드",
-      "카약 / 래프팅",
-      "패러글라이딩"
-    ],
-    "댄스 및 퍼포먼스 운동": [
-      "줌바",
-      "힙합댄스",
-      "라틴댄스",
-      "발레",
-      "스트릿 댄스"
-    ]
-  };
+    // categories.json에서 데이터 가져오기
+    const categories = (categoriesJson as CategoryData).categories;
+    const subcategories = (categoriesJson as CategoryData).subcategories;
+ 
 
   /*게시물 작성 폼 표시 핸들러 */
   const handleCreatePost = () => {
@@ -341,7 +305,7 @@ function CommunityPage(): JSX.Element {
         />
       ) : (
         <>
-         {/* <RecommendedKeywords keywords={recommendedKeywords} /> 키워드 */} 
+         <RecommendedKeywords keywords={recommendedKeywords} />
 
          {/* 검색바와 게시물 작성 버튼 */}
           <div className="search-and-write">
