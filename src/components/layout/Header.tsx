@@ -1,15 +1,45 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { AiOutlineClose } from "react-icons/ai";
+import { useAuth } from "../../context/AuthContext"; // useAuth import
 
 const MainLogo = process.env.PUBLIC_URL + "/img/Mainlogo.png";
 
 function Header(): JSX.Element {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isClickMenuBtn, setIsClickMenuBtn] = useState(false);
-  const [animate, setAnimate] = useState(false);
   const HeaderRef = useRef<HTMLDivElement | null>(null);
+  const { state, dispatch } = useAuth(); // AuthContext에서 state와 dispatch 가져오기
+
+  const handleCloseMenu = () => {
+    setIsClickMenuBtn(false);
+  };
+
+  const handleNavigate = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    setIsClickMenuBtn(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        HeaderRef.current &&
+        !HeaderRef.current.contains(event.target as Node)
+      ) {
+        handleCloseMenu();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [HeaderRef]);
 
   const handleScroll = () => {
     setIsScrolled(window.scrollY > 0);
@@ -20,72 +50,90 @@ function Header(): JSX.Element {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    if (!isClickMenuBtn) {
-      setTimeout(() => setAnimate(false), 300);
-    }
-  }, [isClickMenuBtn]);
-
-  const handleMenuToggle = () => {
+  const toggleMenu = () => {
     setIsClickMenuBtn(!isClickMenuBtn);
-    setAnimate(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("memberId");
+    dispatch({ type: "LOGOUT" }); // 로그아웃 액션 실행
   };
 
   return (
     <Container ref={HeaderRef} className={isScrolled ? "scrolled" : ""}>
+      <HamburgerMenuIcon onClick={toggleMenu} className="hamburger-menu" />
       <Link to="/">
         <Logo src={MainLogo} alt="Main Logo" />
       </Link>
-      <Tabs $isClickMenuBtn={isClickMenuBtn} $animate={animate}>
+      <Tabs>
         <Tab>
-          <Link to="/communitypage">커뮤니티</Link>
+          <Link to="/communitypage" onClick={handleNavigate}>
+            커뮤니티
+          </Link>
         </Tab>
         <Tab>
-          <Link to="/crewpage">운동 크루 </Link>
+          <Link to="/crewpage" onClick={handleNavigate}>
+            운동 크루
+          </Link>
         </Tab>
         <Tab>
-          <Link to="/aboutpage">워크스페이스</Link>
+          <Link to="/aboutpage" onClick={handleNavigate}>
+            워크스페이스
+          </Link>
         </Tab>
         <Tab>
-          <Link to="/recodepage">나의 기록</Link>
+          <Link to="/recodepage" onClick={handleNavigate}>
+            나의 기록
+          </Link>
         </Tab>
       </Tabs>
 
-      <Link to="/signpage" style={{ textDecoration: "none" }}>
-        <Sign>Sign up</Sign>
-      </Link>
-      <Link to="/loginpage" style={{ textDecoration: "none" }}>
-        <Login>Login</Login>
-      </Link>
-      <HamburgerMenuIcon onClick={handleMenuToggle} />
+      <AuthButtons>
+        {state.token ? (
+          <>
+            <Link to="/mypage" style={{ textDecoration: "none" }}>
+              <Sign>My Page</Sign>
+            </Link>
+            <Login onClick={handleLogout}>Logout</Login>
+          </>
+        ) : (
+          <>
+            <Link to="/signpage" style={{ textDecoration: "none" }}>
+              <Sign>Sign up</Sign>
+            </Link>
+            <Link to="/loginpage" style={{ textDecoration: "none" }}>
+              <Login>Login</Login>
+            </Link>
+          </>
+        )}
+      </AuthButtons>
+
+      {/* Sidebar for mobile */}
+      <Sidebar $isClickMenuBtn={isClickMenuBtn}>
+        <CloseIcon onClick={handleCloseMenu} />
+        <SidebarContent>
+          <Tab onClick={toggleMenu}>
+            <Link to="/communitypage">커뮤니티</Link>
+          </Tab>
+          <Tab onClick={toggleMenu}>
+            <Link to="/crewpage">운동 크루</Link>
+          </Tab>
+          <Tab onClick={toggleMenu}>
+            <Link to="/aboutpage">워크스페이스</Link>
+          </Tab>
+          <Tab onClick={toggleMenu}>
+            <Link to="/recodepage">나의 기록</Link>
+          </Tab>
+        </SidebarContent>
+      </Sidebar>
     </Container>
   );
 }
 
 export default Header;
 
-const slideDown = keyframes`
-  from {
-    transform: translateY(-1px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-`;
-
-const slideUp = keyframes`
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(-1px);
-    opacity: 0;
-  }
-`;
-
+// Styled components
 const Container = styled.div`
   height: var(--header-height);
   position: sticky;
@@ -95,7 +143,7 @@ const Container = styled.div`
   padding: 15px 0;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 자식들 사이에 공간을 균등하게 배분 */
+  justify-content: space-between;
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.1);
   transition:
     background-color 0.5s,
@@ -115,15 +163,16 @@ const Logo = styled.img`
   margin-left: 60px;
 `;
 
-const Tabs = styled.div<{ $isClickMenuBtn: boolean; $animate: boolean }>`
+const Tabs = styled.div`
   display: grid;
-  grid-template-columns: repeat(
-    4,
-    1fr
-  ); /* Tabs 내에 4개의 Tab을 동일한 너비로 분배 */
-  width: 40%;
+  grid-template-columns: repeat(4, 1fr);
+  width: 45%;
   justify-items: center;
-  margin: 0 auto; /* Tabs를 가운데 정렬 */
+  margin: 0 auto;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
 `;
 
 const Tab = styled.div`
@@ -134,55 +183,80 @@ const Tab = styled.div`
     font-weight: 500;
     font-size: 1.15rem;
     color: black;
-    transition: color 0.3s;
     padding: 15px 0;
-    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+`;
 
-    /* Tab 하단에 밑줄 애니메이션 설정 */
-    &::before {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%; /* Tab 전체 너비 */
-      height: 3px;
-      background: black;
-      transform: scaleX(0); /* 초기 상태에서 밑줄이 보이지 않음 */
-      transform-origin: bottom right; /* 오른쪽에서 왼쪽으로 확장 */
-      transition: transform 0.3s ease; /* 부드러운 애니메이션 */
-    }
+const AuthButtons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
 
-    /* 호버 시 밑줄 애니메이션 */
-    &:hover::before {
-      transform: scaleX(1); /* 호버 시 밑줄이 왼쪽에서 오른쪽으로 확장 */
-      transform-origin: bottom left;
-    }
+  @media (max-width: 900px) {
+    margin-right: 20px;
   }
 `;
 
 const Sign = styled.div`
-  margin-right: 40px;
-  cursor: pointer; /* 마우스 커서를 손가락 모양으로 변경 */
   font-weight: bold;
   color: black;
 `;
 
 const Login = styled.div`
-  margin-right: 40px;
   padding: 10px 20px;
-  background-color: black; /* 배경색을 검정으로 설정 */
-  color: white; /* 글씨 색을 흰색으로 설정 */
-  border-radius: 5px; /* 테두리를 살짝 둥글게 */
-  font-weight: bold; /* 글씨를 굵게 설정 */
-  cursor: pointer; /* 마우스 커서를 손가락 모양으로 변경 */
-  transition: background-color 0.3s ease; /* 배경색 변화 애니메이션 */
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 
   &:hover {
-    background-color: #333; /* 호버 시 조금 밝은 검정색으로 변경 */
+    background-color: #333;
   }
 `;
 
-const HamburgerMenuIcon = styled(RxHamburgerMenu)``;
+const HamburgerMenuIcon = styled(RxHamburgerMenu)`
+  display: none;
+  cursor: pointer;
+  margin-left: 30px;
+  font-size: 2rem;
+
+  @media (max-width: 900px) {
+    display: block;
+  }
+`;
+
+const Sidebar = styled.div<{ $isClickMenuBtn: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 15;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  transform: translateX(${(props) => (props.$isClickMenuBtn ? "0" : "-100%")});
+  transition: transform 0.3s ease-in-out;
+
+  @media (min-width: 901px) {
+    display: none;
+  }
+`;
+
+const CloseIcon = styled(AiOutlineClose)`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 1.5rem;
+`;
+
+const SidebarContent = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
