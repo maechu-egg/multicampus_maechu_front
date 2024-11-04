@@ -25,6 +25,7 @@ function RecodePage() {
     fetchMonthData(value);
   }, []); // 컴포넌트 마운트 시 1회 실행
 
+  // 현재 날짜 기준 월 데이터 조회
   const fetchMonthData = async (date: Date) => {
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString();
@@ -48,8 +49,10 @@ function RecodePage() {
         'month': month
       }, { headers });
 
-      setExerciseDates(exerciseResponse.data.map((item: any) => item.date));
-      setDietDates(dietResponse.data.map((item: any) => item.date));
+      // 운동 기록 데이터 저장
+      setExerciseDates(exerciseResponse.data);
+      // 식단 기록 데이터 저장
+      setDietDates(dietResponse.data);
     } catch (error) {
       console.error('데이터 조회 실패:', error);
     }
@@ -113,10 +116,10 @@ function RecodePage() {
           <div className="modal-content">
             <h3>{selectedDate} 기록하기</h3>
             <div className="button-group">
-              <button onClick={() => navigate(`/recode/exercise/${selectedDate}`)}>
+              <button onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
                 운동 기록
               </button>
-              <button onClick={() => navigate(`/recode/diet/${selectedDate}`)}>
+              <button onClick={() => navigate(`/record/diet/${selectedDate}`)}>
                 식단 기록
               </button>
             </div>

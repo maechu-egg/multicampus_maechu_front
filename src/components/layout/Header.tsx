@@ -15,7 +15,7 @@ function Header(): JSX.Element {
       <ul className="navbar-menu">
         <li className="navbar-item"><Link to="/crewpage">크루</Link></li>
         <li className="navbar-item"><Link to="/mypage">마이페이지</Link></li>
-        <li className="navbar-item"><Link to="/recodepage">운동 히스토리</Link></li>
+        <li className="navbar-item"><Link to="/recordpage">운동 히스토리</Link></li>
         <li className="navbar-item"><Link to="/communitypage">운동 커뮤니티</Link></li>
         <li className="navbar-item"><Link to="/aboutpage">페이지 소개</Link></li>
       </ul>
