@@ -71,12 +71,12 @@ const getCrewBadgeInfo = (score: number) => {
 function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element | null {
   const [activeTab, setActiveTab] = useState('badge-info');
   const [score, setScore] = useState(0);
-  const [rank, setRank] = useState('0%');
+  const [rank, setRank] = useState(0);
   const [stats, setStats] = useState({
-    workoutDays: 0,
-    dietDays: 0,
-    posts: 0,
-    comments: 0
+    dietCount: 0,      
+    exerciseCount: 0,  
+    postCount: 0,      
+    commentCount: 0
   });
   const [scoreLeft, setScoreLeft] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -106,9 +106,9 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
           </>
         );
       case 'score-guide':  
-        return <BadgeScoreGuide />;
+      return <BadgeScoreGuide isCrew={true} />;
       case 'rank':
-        return <BadgeRankSection />;
+        return <BadgeRankSection isCrew={true} />;
       default:
         return null;
     }
