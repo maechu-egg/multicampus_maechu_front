@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { AxiosError } from "axios";
 import api from "../../services/api/axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function SignPage(): JSX.Element {
   const [member_img, setMemberImg] = useState<File | null>(null); // 프로필 이미지 상태
@@ -22,6 +24,8 @@ function SignPage(): JSX.Element {
   const [isCertificationCodeValid, setIsCertificationCodeValid] =
     useState(false); // 인증 코드 유효성 상태
   const [isNicknameValid, setIsNicknameValid] = useState(false); // 닉네임 유효성 상태
+  const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 생성
+  const { dispatch, state } = useAuth(); // AuthContext에서 dispatch 함수와 state 가져오기
 
   const validateEmail = (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 정규 표현식
@@ -172,7 +176,26 @@ function SignPage(): JSX.Element {
       // 응답 처리
       if (response.status === 200) {
         console.log("회원가입 성공:", response.data);
-        // 추가적인 성공 처리 로직
+        const loginResponse = await api.post("/user/login", {
+          email,
+          password,
+        });
+        console.log("서버 응답:", loginResponse.data); // 서버 응답 확인
+        const { token, memberId } = loginResponse.data; // 서버에서 받은 token과 memberId
+
+        if (token) {
+          alert("로그인 성공!"); // 로그인 성공 알림
+          localStorage.setItem("authToken", token); // 로컬 스토리지에 토큰 저장
+          localStorage.setItem("memberId", memberId.toString()); // 로컬 스토리지에 memberId 저장
+          dispatch({ type: "LOGIN", payload: { token, memberId } }); // Context에 token과 memberId 저장
+
+          // Context에서 저장된 값을 가져와서 출력
+          console.log("로그인 후 Context 상태:", state); // Context 상태 출력
+
+          navigate("/profile"); // 홈페이지로 이동
+        } else {
+          alert("토큰을 받을 수 없습니다."); // 토큰이 없을 경우 알림
+        }
       }
     } catch (error) {
       const axiosError = error as AxiosError;
