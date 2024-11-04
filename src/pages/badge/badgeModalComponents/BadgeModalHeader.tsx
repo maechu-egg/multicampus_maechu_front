@@ -1,16 +1,15 @@
-import React from "react";
-import badgeImage from 'assets/badgeGold.png';
-
+import React from 'react';
 
 interface BadgeModalHeaderProps {
-  title: string;
+  currentBadge: string;  
+  image: string;
 }
 
-function BadgeModalHeader({ title }: BadgeModalHeaderProps) {
+function BadgeModalHeader({ currentBadge, image }: BadgeModalHeaderProps) {
   return (
     <div className="modal-header">
-      <img src={badgeImage} alt="badge" className="modal-badge-image" />
-      <h2>{title}</h2>
+      <img src={image} alt={`${currentBadge} `} className="modal-badge-image" />
+      <h2>{currentBadge}</h2>
     </div>
   );
 }
