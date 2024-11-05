@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../../services/api/axios';
+import { useAuth } from '../../../context/AuthContext';
 import './BadgeRankSection.css';
 
 interface RankUser {
@@ -8,20 +9,37 @@ interface RankUser {
   badgeLevel: string;
 }
 
-function BadgeRankSection() {
-  const [topRanks, setTopRanks] = useState<RankUser[]>([]);
-  const [currentUserRank, setCurrentUserRank] = useState<RankUser | null>(null);
+interface CrewRank {
+  memberId: number;  
+  memberName: string;  
+  currentPoints: number;
+}
+
+interface BadgeRankSectionProps {
+  isCrew?: boolean;
+}
+
+function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
+  const [topRanks, setTopRanks] = useState<RankUser[] | CrewRank[]>([]);
+  const [currentRank, setCurrentRank] = useState<RankUser | CrewRank | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { state } = useAuth();
+  const { token, memberId } = state;
 
   useEffect(() => {
     const fetchRankings = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const currentMemberId = localStorage.getItem('memberId');
+        if (!token || !memberId) {
+          console.log('Token or memberId is missing');
+          return;
+        }
 
-        const response = await axios.post(
-          'http://localhost:8001/badges/user/rankings',
-          {},
+        const endpoint = isCrew 
+          ? 'badges/crew/rankings'
+          : 'badges/user/rankings';
+
+        const response = await api.get(
+          endpoint,
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -30,14 +48,16 @@ function BadgeRankSection() {
           }
         );
 
+        console.log('Rankings response:', response.data);
+
         const rankings = response.data;
-        const currentUser = rankings.find(
-          (user: RankUser) => user.memberId === Number(currentMemberId)
+        const current = rankings.find((user: RankUser | CrewRank) => 
+          user.memberId === Number(memberId)
         );
 
         setTopRanks(rankings);
-        if (currentUser) {
-          setCurrentUserRank(currentUser);
+        if (current) {
+          setCurrentRank(current);
         }
         
         setIsLoading(false);
@@ -48,7 +68,7 @@ function BadgeRankSection() {
     };
 
     fetchRankings();
-  }, []);
+  }, [isCrew, token, memberId]);
 
   if (isLoading) {
     return <div className="rank-loading">순위를 불러오는 중...</div>;
@@ -59,10 +79,12 @@ function BadgeRankSection() {
       <h3 className="rank-title">TOP 10 랭킹</h3>
       
       <div className="rank-list">
-        {topRanks.map((user, index) => (
+        {topRanks.map((rank, index) => (
           <div 
-            key={user.memberId} 
-            className={`rank-item ${user.memberId === currentUserRank?.memberId ? 'current-user' : ''} ${index < 3 ? 'top-three' : ''}`}
+            key={rank.memberId} 
+            className={`rank-item ${
+              rank.memberId === currentRank?.memberId ? 'current-user' : ''
+            } ${index < 3 ? 'top-three' : ''}`}
           >
             <div className="rank-position">
               {index < 3 ? (
@@ -76,30 +98,36 @@ function BadgeRankSection() {
             
             <div className="user-info">
               <span className="username">
-                {`User ${user.memberId}`}
-                {user.memberId === currentUserRank?.memberId && <span className="current-user-tag">나</span>}
+                {isCrew 
+                  ? (rank as CrewRank).memberName
+                  : `User ${rank.memberId}`}
+                {rank.memberId === currentRank?.memberId && 
+                  <span className="current-user-tag">나</span>
+                }
               </span>
-              <span className="score">{user.currentPoints}점</span>
+              <span className="score">{rank.currentPoints}점</span>
             </div>
           </div>
         ))}
       </div>
 
-      {currentUserRank && (
+      {currentRank && (
         <div className="current-user-section">
           <div className="divider"></div>
           <div className="rank-item current-user">
             <div className="rank-position">
               <span className="rank-number">
-                {topRanks.findIndex(user => user.memberId === currentUserRank.memberId) + 1}
+                {topRanks.findIndex(rank => rank.memberId === currentRank.memberId) + 1}
               </span>
             </div>
             <div className="user-info">
               <span className="username">
-                {`User ${currentUserRank.memberId}`}
+                {isCrew 
+                  ? (currentRank as CrewRank).memberName
+                  : `User ${currentRank.memberId}`}
                 <span className="current-user-tag">나</span>
               </span>
-              <span className="score">{currentUserRank.currentPoints}점</span>
+              <span className="score">{currentRank.currentPoints}점</span>
             </div>
           </div>
         </div>
