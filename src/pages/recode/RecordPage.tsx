@@ -42,13 +42,14 @@ function RecordPage() {
         'month': month
       }, { headers });
 
+      console.log("debug >>> exerciseResponse", exerciseResponse);
       // 식단 기록 조회
       const dietResponse = await api.post('record/diet/get/month', {
         'member_id': memberId,
         'year': year,
         'month': month
       }, { headers });
-
+      console.log("debug >>> dietResponse", dietResponse);
       // 운동 기록 데이터 저장
       setExerciseDates(exerciseResponse.data);
       // 식단 기록 데이터 저장
@@ -74,12 +75,17 @@ function RecordPage() {
 
   // 날짜 타일 컨텐츠 표시
   const tileContent = ({ date }: { date: Date }) => {
+    
+    // 날짜 조정
+    const adjustDate = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    )
     // 날짜 형식 변경, 0000-00-00 형식으로 변경
-    const formattedDate = date.toISOString().split('T')[0];
+    const dateString = adjustDate.toISOString().split('T')[0];
     // 운동 기록 여부 확인
-    const hasExercise = exerciseDates.includes(formattedDate);
+    const hasExercise = exerciseDates.includes(dateString);
     // 식단 기록 여부 확인
-    const hasDiet = dietDates.includes(formattedDate);
+    const hasDiet = dietDates.includes(dateString);
     
     let emoji = '';
     // 상태에 따른 이모지 설정
