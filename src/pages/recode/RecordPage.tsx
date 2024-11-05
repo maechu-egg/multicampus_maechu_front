@@ -5,6 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import styled from "styled-components";
 import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
+import { format } from 'date-fns';
 
 function RecordPage() {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
@@ -62,21 +63,49 @@ function RecordPage() {
   // 날짜 클릭 시 모달 표시
   // 날짜 클릭 시 해당 날짜 저장
   const handleClick = (date: Date) => {
-    // 클릭한 날짜 저장
-    const selectedDate = new Date(
-      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-    )
-    // 날짜 형식 변경, 0000-00-00 형식으로 변경
-    const dateString = selectedDate.toISOString().split('T')[0]
-    setSelectedDate(dateString);
-    // 모달 표시
-    setShowModal(true);
-  }
+    const clickedMonth = date.getMonth();
+    const currentMonth = value.getMonth();
+
+    // 이전/다음 달 날짜 클릭 시 해당 달로 이동
+    // 이전/다음 달 클릭 시 alert 표시 안되게 하기 위한 코드
+    if (clickedMonth !== currentMonth) {
+      setValue(date);
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const formattedDate = format(date, 'yyyy-MM-dd');
+    const hasExercise = exerciseDates.some(record => record === formattedDate);
+    const hasDiet = dietDates.some(record => record === formattedDate);
+
+    if (date > today) {
+      // 미래 날짜 클릭 시
+      alert('미리 기록할 수 없습니다.');
+      // 또는 커스텀 모달 사용:
+      // setModalMessage('미래 날짜는 기록할 수 없습니다.');
+      // setIsWarningModalOpen(true);
+      return;
+    }
+
+    if (hasExercise || hasDiet) {
+      // 기록이 있는 날짜 - 기존 모달 표시
+      setSelectedDate(formattedDate);
+      setShowModal(true);
+    } else {
+      // 기록이 없는 과거 날짜
+      alert('해당 날짜에는 기록이 없습니다.');
+      // 또는 커스텀 모달 사용:
+      // setModalMessage('해당 날짜에는 기록이 없습니다.');
+      // setIsWarningModalOpen(true);
+    }
+  };
 
   // 날짜 타일 컨텐츠 표시
   const tileContent = ({ date }: { date: Date }) => {
     
-    // 날짜 조정
+    // 날짜 조정, 시간 오차 발생 방지
     const adjustDate = new Date(
       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
     )
@@ -307,15 +336,9 @@ const Container = styled.div`
     color: blue !important;
   }
 
-  // 현재 날짜 타일 마우스 오버 시 효과
-  .react-calendar__tile--now:enabled:hover {
-    background-color: #e8e8e8 !important; // 배경색
-  }
-
   // 날짜 타일 포커스 시 효과
   .react-calendar__tile--active {
-    background: rgb(180, 185, 180) !important;  /* 원하는 색상으로 직접 지정 */
-    color: blue !important;
+    color: black;
   }
     
   // 인접 월 타일 스타일
