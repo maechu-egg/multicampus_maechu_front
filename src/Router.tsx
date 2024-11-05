@@ -9,7 +9,7 @@ import HomePage from "./pages/home/HomePage";
 import CrewHeader from "pages/crew/CrewHeader";
 import MyPage from "./pages/mypage/MyPage";
 import CommunityPage from "./pages/community/CommunityPage";
-import RecodePage from "./pages/recode/RecodePage";
+import RecordPage from "./pages/recode/RecordPage";
 import AboutPage from "./pages/about/AboutPage";
 import LoginPage from "./pages/login/LoginPage";
 import Header from "../src/components/layout/Header";
@@ -19,6 +19,8 @@ import UserInfoPage from "./pages/login/UserInfoPage";
 import ProfilePage from "./pages/login/ProfilePage";
 
 import BadgeStatusPage from "pages/badge/BadgeStatusPage";
+import DietPage from "pages/recode/DietPage";
+import ExercisePage from "pages/recode/ExercisePage";
 
 function AppRouter() {
   return (
@@ -33,7 +35,9 @@ function AppRouter() {
         <Route path="/crewpage" element={<CrewHeader />}></Route>
         <Route path="/mypage" element={<MyPage />}></Route>
         <Route path="/communitypage" element={<CommunityPage />}></Route>
-        <Route path="/recodepage" element={<RecodePage />}></Route>
+        <Route path="/recordpage" element={<RecordPage />}></Route>
+        <Route path="/record/exercise/:selectedDate" element={<ExercisePage />}></Route>
+        <Route path="/record/diet/:selectedDate" element={<DietPage />}></Route>
         <Route path="/aboutpage" element={<AboutPage />}></Route>
         <Route path="/loginpage" element={<LoginPage />}></Route>
         <Route path="/badgestatuspage" element={<BadgeStatusPage />}></Route>
