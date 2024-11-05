@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import "./badgeModalComponents/BadgeModal.css";
 import BadgeModalHeader from "./badgeModalComponents/BadgeModalHeader";
 import BadgeScoreSection from "./badgeModalComponents/BadgeScoreSection";
@@ -7,9 +6,9 @@ import BadgeStatsSection from "./badgeModalComponents/BadgeStatsSection";
 import BadgeFooterSection from "./badgeModalComponents/BadgeFooterSection";
 import BadgeModalTabs from "./badgeModalComponents/BadgeModalTabs";
 import BadgeScoreGuide from './badgeModalComponents/BadgeScoreGuide';
-import BadgeRankSection from './badgeModalComponents/BadgeRankSection';
-import { useAuth } from '../../context/AuthContext';
-import api from '../../services/api/axios';
+import BadgeRankSection from './badgeModalComponents/BadgeRankSection';  
+import { useAuth } from "../../context/AuthContext";  
+import api from "../../services/api/axios"; 
 
 interface PersonalBadgeModalProps {
   isOpen: boolean;
@@ -29,109 +28,194 @@ interface Stats {
   commentCount: number;
 }
 
+interface ActivityRecord {
+  recordId: number;
+  activityType: string;
+  points: number;
+  createdDate: string;
+  memberId: number;
+}
+
+const badgeImages = {
+  default: process.env.PUBLIC_URL + '/img/personalBadge/badgeDefault.png',
+  bronze: process.env.PUBLIC_URL + '/img/personalBadge/badgeBronze.png',
+  silver: process.env.PUBLIC_URL + '/img/personalBadge/badgeSilver.png',
+  gold: process.env.PUBLIC_URL + '/img/personalBadge/badgeGold.png',
+  platinum: process.env.PUBLIC_URL + '/img/personalBadge/badgePlatinum.png',
+  diamond: process.env.PUBLIC_URL + '/img/personalBadge/badgeDiamond.png'
+};
+
+const getBadgeInfo = (score: number) => {
+  if (score >= 100) {
+    return {
+      currentBadge: "다이아몬드",
+      image: badgeImages.diamond,
+      nextBadge: null,
+      requiredScore: null
+    };
+  } else if (score >= 70) {
+    return {
+      currentBadge: "플래티넘",
+      image: badgeImages.platinum,
+      nextBadge: "다이아몬드",
+      requiredScore: 100
+    };
+  } else if (score >= 50) {
+    return {
+      currentBadge: "골드",
+      image: badgeImages.gold,
+      nextBadge: "플래티넘",
+      requiredScore: 70
+    };
+  } else if (score >= 30) {
+    return {
+      currentBadge: "실버",
+      image: badgeImages.silver,
+      nextBadge: "골드",
+      requiredScore: 50
+    };
+  } else if (score >= 10) {
+    return {
+      currentBadge: "브론즈",
+      image: badgeImages.bronze,
+      nextBadge: "실버",
+      requiredScore: 30
+    };
+  } else {
+    return {
+      currentBadge: "기본",
+      image: badgeImages.default,
+      nextBadge: "브론즈",
+      requiredScore: 10
+    };
+  }
+};
+
 function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.Element | null {
   const [activeTab, setActiveTab] = useState('badge-info');
   const [currentBadgeInfo, setCurrentBadgeInfo] = useState<BadgeInfo>({
-    currentBadge: '',
+    currentBadge: '기본',
     nextBadge: '',
-    image: ''
+    image: badgeImages.default
   });
   const [score, setScore] = useState(0);
   const [rank, setRank] = useState(0);
-  const [scoreLeft, setScoreLeft] = useState(0);
-  const [progress, setProgress] = useState(0);
   const [stats, setStats] = useState<Stats>({
     dietCount: 0,
     exerciseCount: 0,
     postCount: 0,
     commentCount: 0
   });
+  const [scoreLeft, setScoreLeft] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [activities, setActivities] = useState<ActivityRecord[]>([]);
 
   const { state } = useAuth();
   const { token, memberId } = state;
+
+  const getBadgeThreshold = (score: number): number => {
+    if (score >= 100) return 100;
+    if (score >= 70) return 70;
+    if (score >= 50) return 50;
+    if (score >= 30) return 30;
+    if (score >= 10) return 10;
+    return 0;
+  };
+
+  const calculateStats = (activities: ActivityRecord[]): Stats => {
+    const exerciseCount = new Set(
+      activities
+        .filter(a => a.activityType === 'exercise')
+        .map(a => a.createdDate.split('T')[0])
+    ).size;
+    
+    const dietCount = new Set(
+      activities
+        .filter(a => a.activityType === 'diet')
+        .map(a => a.createdDate.split('T')[0])
+    ).size;
+
+    return {
+      dietCount,
+      exerciseCount,
+      postCount: 0,
+      commentCount: 0
+    };
+  };
 
   useEffect(() => {
     const fetchBadgeInfo = async () => {
       try {
         if (!token || !memberId) {
-          console.log('Token or memberId is missing');
+          console.log('[DEBUG] 인증 정보 없음:', { token: !!token, memberId });
           return;
         }
-  
-        // 토큰 형식 로깅
-        console.log('Token:', token);
-        console.log('Request URL:', `badges/user/${memberId}`);
-  
+    
         const config = {
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          withCredentials: true
+            'Content-Type': 'application/json'
+          }
         };
-  
-        // 요청 설정 로깅
-        console.log('Request config:', config);
-  
-        const response = await api.get(`badges/user/${memberId}`, config);
-  
-        console.log('Response:', response.data);
-  
+    
+        const response = await api.get(`badges/user/${memberId}/badge`, config);
         const data = response.data;
+        
+        console.log('[DEBUG] 뱃지 정보:', data);
+        
+        setScore(data.current_points || 0);
+        const badgeInfo = getBadgeInfo(data.current_points || 0);
+        
         setCurrentBadgeInfo({
-          currentBadge: data.currentBadge,
-          nextBadge: data.nextBadge,
-          image: data.image
+          currentBadge: data.badge_level,
+          nextBadge: badgeInfo.nextBadge || '',
+          image: badgeImages[data.badge_level.toLowerCase() as keyof typeof badgeImages] || badgeImages.default
         });
-        setScore(data.score);
-        setRank(data.rank);
-        setScoreLeft(data.scoreLeft);
-        setProgress(data.progress);
-  
-      } catch (error) {
-        console.error('Failed to fetch badge info:', error);
-        if (axios.isAxiosError(error)) {
-          console.log('Full error response:', error.response);
-          console.log('Error config:', error.config);
-          console.log('Error headers:', error.response?.headers);
+
+        if (badgeInfo.requiredScore) {
+          const remainingScore = badgeInfo.requiredScore - data.current_points;
+          setScoreLeft(remainingScore);
+          
+          const currentThreshold = getBadgeThreshold(data.current_points);
+          const progressPercentage = ((data.current_points - currentThreshold) / 
+            (badgeInfo.requiredScore - currentThreshold)) * 100;
+          setProgress(Math.min(Math.max(progressPercentage, 0), 100));
+        } else {
+          setScoreLeft(0);
+          setProgress(100);
         }
+      } catch (error) {
+        console.error('[DEBUG] 뱃지 정보 조회 실패:', error);
       }
     };
-  
-    const fetchActivityRecords = async () => {
+
+    const fetchActivities = async () => {
       try {
         if (!token || !memberId) return;
-  
+
         const config = {
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          withCredentials: true
+            'Content-Type': 'application/json'
+          }
         };
-  
+
         const response = await api.get(`badges/user/${memberId}/activities`, config);
-  
-        const data = response.data;
-        setStats({
-          dietCount: data.dietCount,
-          exerciseCount: data.exerciseCount,
-          postCount: data.postCount,
-          commentCount: data.commentCount
-        });
-  
+        const activities = response.data;
+        setActivities(activities);
+        const calculatedStats = calculateStats(activities);
+        setStats(calculatedStats);
       } catch (error) {
-        console.error('Failed to fetch activity records:', error);
+        console.error('[DEBUG] 활동 기록 조회 실패:', error);
       }
     };
-  
+
     if (isOpen) {
       fetchBadgeInfo();
-      fetchActivityRecords();
+      fetchActivities();
     }
   }, [isOpen, token, memberId]);
+
   if (!isOpen) return null;
 
   const renderTabContent = () => {
@@ -164,14 +248,15 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-button" onClick={onClose}>×</button>
         <BadgeModalTabs activeTab={activeTab} onTabChange={setActiveTab} />
         {activeTab === 'badge-info' && (
           <BadgeModalHeader 
             currentBadge={currentBadgeInfo.currentBadge}
             image={currentBadgeInfo.image}
+            isCrew={false}
           />
         )}
         {renderTabContent()}

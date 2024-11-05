@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../../services/api/axios';
+import { useAuth } from '../../../context/AuthContext';
 import './BadgeRankSection.css';
 
 interface RankUser {
@@ -22,20 +23,23 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
   const [topRanks, setTopRanks] = useState<RankUser[] | CrewRank[]>([]);
   const [currentRank, setCurrentRank] = useState<RankUser | CrewRank | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { state } = useAuth();
+  const { token, memberId } = state;
 
   useEffect(() => {
     const fetchRankings = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const currentMemberId = localStorage.getItem('memberId');
+        if (!token || !memberId) {
+          console.log('Token or memberId is missing');
+          return;
+        }
 
         const endpoint = isCrew 
-          ? 'http://localhost:8001/badges/crew/rankings'
-          : 'http://localhost:8001/badges/user/rankings';
+          ? 'badges/crew/rankings'
+          : 'badges/user/rankings';
 
-        const response = await axios.post(
+        const response = await api.get(
           endpoint,
-          {},
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -44,9 +48,11 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
           }
         );
 
+        console.log('Rankings response:', response.data);
+
         const rankings = response.data;
         const current = rankings.find((user: RankUser | CrewRank) => 
-          user.memberId === Number(currentMemberId)
+          user.memberId === Number(memberId)
         );
 
         setTopRanks(rankings);
@@ -62,7 +68,7 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
     };
 
     fetchRankings();
-  }, [isCrew]);
+  }, [isCrew, token, memberId]);
 
   if (isLoading) {
     return <div className="rank-loading">순위를 불러오는 중...</div>;

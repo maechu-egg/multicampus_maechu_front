@@ -45,7 +45,7 @@ const getBadgeGuides = (isCrew: boolean): BadgeGuideItem[] => {
       description: "운동과 식단을 시작한 뱃지입니다."
     },
     {
-      badge: isCrew ? "기본" : "뉴비",
+      badge: isCrew ? "기본" : "기본",
       image: process.env.PUBLIC_URL + (isCrew ? '/img/crewBadge/CrewBadgeDefault.png' : '/img/personalBadge/badgeDefault.png'),
       requiredScore: 0,
       description: "첫 시작을 환영합니다!"
