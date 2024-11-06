@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import "./PostDetail.css";
+import axios from "axios";
+
 
 interface Comment {
   id: number;
@@ -13,13 +15,18 @@ interface Comment {
 }
 
 interface PostDetailProps {
-  title: string;
-  content: string;
-  author: string;
-  date: string;
-  views: number;
-  category: string;
-  tags: string[];
+  post_id : number;
+  post_title: string;
+  post_contents: string;
+  post_nickname: string;
+  post_date: string;
+  post_views: number;
+  post_up_sport: string;
+  post_sport:string;
+  post_sports_keyword:string;
+  post_hashtag: string;
+  likeStatus :boolean;
+  unlikeStatus : boolean;
   onBack: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -27,16 +34,28 @@ interface PostDetailProps {
   comments: Comment[];
   onAddComment: (content: string) => void;
   onCommentReaction: (commentId: number, type: "like" | "dislike") => void;
+  post_img1?:string;
+  post_img2?:string;
+  post_unlike_counts : number;
+  post_like_counts: number;
+  commets_count:number;
+  member_id : number;
+  author:boolean;
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
-  title,
-  content,
-  author,
-  date,
-  views,
-  category,
-  tags,
+  post_id,
+  post_title,
+  post_contents,
+  post_nickname,
+  post_date,
+  post_views,
+  post_up_sport,
+  post_sport,
+  post_sports_keyword,
+  post_hashtag,
+  likeStatus,
+  unlikeStatus,
   onBack,
   onEdit,
   onDelete,
@@ -44,33 +63,153 @@ const PostDetail: React.FC<PostDetailProps> = ({
   comments,
   onAddComment,
   onCommentReaction,
+  post_img1,
+  post_img2,
+  post_unlike_counts ,
+  post_like_counts,
+  commets_count,
+  member_id,
+  author,
 }) => {
   const [commentInput, setCommentInput] = useState("");
-  const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
-  const [dislikeCount, setDislikeCount] = useState(0);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [liked, setLiked] = useState(likeStatus);
+  const [disliked, setDisliked] = useState(unlikeStatus);
+  const [likeCount, setLikeCount] = useState(post_like_counts);
+  const [dislikeCount, setDislikeCount] = useState(post_unlike_counts);
 
-  const handleLike = () => {
-    if (!liked) {
-      setLikeCount((prev) => prev + 1);
-      setLiked(true);
-      if (disliked) {
-        setDislikeCount((prev) => prev - 1);
-        setDisliked(false);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const hashtagArray = post_hashtag ? post_hashtag.split(", ") : []; // 공백을 기준으로 문자열을 나눠 배열로 변환
+  const handleLike =  async () => {
+  
+
+  
+    try{
+      const token = localStorage.getItem("authToken");
+
+      if(!token){
+
+        alert("로그인이 필요합니다.");
+        return; 
       }
+      console.log("token" , token);
+      
+      let response;
+      if(!liked){
+        response = await  axios.post(`http://localhost:8001/useractivity/${post_id}/likeinsert`, {},{
+          headers: {
+                
+            Authorization: `Bearer ${token}`,
+          },
+          
+        });
+        console.log(response.data);
+        if(response.status === 200){
+          if(response.data.Extagle){
+            alert('이미 좋아요를 눌렀습니다.');
+
+          }else if(response.data.result){
+            setLikeCount(response.data.likeCount);
+            setLiked(true);
+            if(disliked){
+              setDislikeCount(prev => prev - 1);
+              setDisliked(false);
+            }
+          }else{
+            alert(response.data.message || '좋아요 처리에 실패했습니다.');
+          }
+        }
+      }else if(liked){
+        // 좋아요 삭제 요청
+        const response = await axios.delete( `http://localhost:8001/useractivity/${post_id}/likedelete`,
+          {
+            headers: {
+            
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if(response.status === 200){
+          if(response.data.Extable === false){
+            alert('이미 좋아요를 취소한 상태입니다.');
+          }else if(response.data.result){
+            setLikeCount(response.data.likeCount);
+            setLiked(false);
+          }else{
+            alert(response.data.message || '좋아요 취소에 실패했습니다.');
+          }
+        }
+      }
+    }catch(error){
+      console.error('좋아요 요청 중 오류 발생 : ' , error);
     }
   };
 
-  const handleDislike = () => {
-    if (!disliked) {
-      setDislikeCount((prev) => prev + 1);
-      setDisliked(true);
-      if (liked) {
-        setLikeCount((prev) => prev - 1);
-        setLiked(false);
+
+  // 싫어요 처리 핸들러 
+  const handleDislike = async () => {
+
+    try{
+      const token = localStorage.getItem("authToken");
+
+      if(!token){
+
+        alert("로그인이 필요합니다.");
+        return; 
       }
+      console.log("token" , token);
+      let response;
+      if(!disliked){
+        // 싫어요 추가 요청
+        response = await axios.post(`http://localhost:8001/useractivity/${post_id}/unlikeinsert`, {},
+          {
+            headers: {
+            
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if(response.status === 200){
+          if(response.data.Extable){
+            alert('이미 싫어요를 눌렀습니다.');
+          }else if(response.data.result){
+            setDislikeCount(response.data.unLikeCount);
+            setDisliked(true);
+            if(liked){
+              setLikeCount(prev => prev - 1);
+              setLiked(false);
+            }
+          }else{
+            alert(response.data.message || '싫어요 처리에 실패했습니다.');
+          }
+        }
+
+      }else if(disliked){
+        // 싫어요 삭제 요청
+        response = await axios.delete( `http://localhost:8001/useractivity/${post_id}/unlikedelete`,
+          {
+            headers: {
+            
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if(response.status === 200){
+          if(response.data.Extable === false){
+            alert("이미 싫어요를 취소한 상태입니다.");
+          }else if(response.data.result){
+            setDislikeCount(response.data.unLikeCount);
+            setDisliked(false);
+          }else{
+            alert(response.data.message || '싫어요 취소에 실패했습니다.');
+
+          }
+        }
+      }
+    }catch(error){
+      console.log('싫어요 요청 중 오류 발생', error);
     }
   };
 
@@ -92,24 +231,38 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
   return (
     <div className="post-detail">
-      <div className="post-category">{category} 게시판</div>
+      <div className="post-category">{post_up_sport} 게시판 - {post_sport} - {post_sports_keyword}</div> 
       <hr className="border border-secondary border-1 opacity-50" />
       <div className="post-header">
-        <h2>{title}</h2>
+        <h2>{post_title}</h2>
         <div className="post-info">
-          <span className="author">{author}</span>
+          <span className="author">{post_nickname}</span>
           <div className="info-right">
-            <span className="date">{date}</span>
-            <span className="views">조회수: {views}</span>
+            <span className="date">{post_date}</span>
+            <span className="views">조회수: {post_views}</span>
           </div>
         </div>
       </div>
       <hr className="border border-secondary border-1 opacity-50" />
-      <div className="post-content">{content}</div>
+      <div className="post-content">{post_contents}</div>
 
-      {tags && tags.length > 0 && (
+      <div className="post-images">
+        {post_img1 && (
+          <div className="post-image">
+            <img src={post_img1} alt="게시글 이미지 1" style={{ maxWidth: "100%", height: "auto" }} />
+          </div>
+        )}
+        {post_img2 && (
+          <div className="post-image">
+            <img src={post_img2} alt="게시글 이미지 2" style={{ maxWidth: "100%", height: "auto" }} />
+          </div>
+        )}
+      </div>
+
+
+      {hashtagArray.length > 0 && (
         <div className="post-tags">
-          {tags.map((tag, index) => (
+          {hashtagArray.map((tag, index) => (
             <span key={index} className="tag-item">
               {tag}
             </span>
@@ -118,7 +271,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
       )}
 
       <div className="reaction-buttons">
-        <div className="edit-delete-buttons">
+       {author && ( <div className="edit-delete-buttons">
           <button className="btn btn-primary me-2" onClick={onEdit}>
             수정
           </button>
@@ -126,6 +279,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
             삭제
           </button>
         </div>
+       )}
         <div className="like-dislike-buttons">
           <button
             className={`btn ${liked ? "btn-primary" : "btn-outline-primary"} me-2`}
