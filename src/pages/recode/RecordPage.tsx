@@ -6,6 +6,7 @@ import styled from "styled-components";
 import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
 import MonthlyRecordChart from "../../components/MonthlyRecordChart";
+import { IoCloseOutline } from "react-icons/io5";
 
 function RecordPage() {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
@@ -148,9 +149,10 @@ function RecordPage() {
   };
 
   return (
-    <Container>
+    <Wrapper>
       <h1>운동 히스토리</h1>
-      <Calendar
+      <Container>
+        <Calendar
         onChange={(value) => setValue(value as Date)}
         value={value}
         locale="en-US"
@@ -165,14 +167,14 @@ function RecordPage() {
             <h3>{selectedDate}</h3>
             <div className="button-group">
               <button onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
-                운동 기록
+                🏋️‍♂️
               </button>
               <button onClick={() => navigate(`/record/diet/${selectedDate}`)}>
-                식단 기록
+                🥗
               </button>
             </div>
             <div className="close-button">
-              <button onClick={() => setShowModal(false)}>닫기</button>
+              <button onClick={() => setShowModal(false)}><IoCloseOutline /></button>
             </div>
           </div>
         </div>
@@ -183,9 +185,46 @@ function RecordPage() {
         dietDates={dietDates}
         currentMonth={value}
       />
-    </Container>
+      </Container>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 50px;
+
+  h1 {
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 2rem;
+    font-size: 27px;
+    font-weight: 700;
+    font-family: 'Pretendard', sans-serif;
+    text-align: left;
+  }
+
+  @media (max-width: 850px) {
+    
+    h1 {
+      text-align: left;
+      max-width: 600px;
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 710px) {
+    h1 {
+      text-align: left;
+      max-width: 550px;
+      font-size: 20px;
+    }
+  }
+`;
 
 const Container = styled.div`
 
@@ -194,15 +233,8 @@ const Container = styled.div`
   flex-direction: row; // 가로 정렬
   justify-content: center; // 중앙 정렬
   min-height: 100vh; // 화면 높이 최소 100vh
-  max-width: 1200px;  // 캘린더 너비와 맞춤
+  max-width: 1100px;  // 캘린더 너비와 맞춤
   margin: 0 auto;  // 중앙 정렬
-  
-  // 운동 히스토리 타이틀
-  h1 {
-    align-self: flex-start;  // 왼쪽 정렬
-    margin-bottom: 1rem; // 하단 여백
-    font-size: 24px;  // 필요한 경우 크기 조절
-  }
 
   // 모달 컨텐츠 스타일
   .modal-content {
@@ -212,9 +244,12 @@ const Container = styled.div`
     h3 {
       text-align: center; // 중앙 정렬
       margin-bottom: 2rem; // 하단 여백
+      font-size: 1.8rem;
+      font-weight: 600;
     }
     // 모달 내 버튼 그룹 스타일
     .button-group {
+      font-size: 2rem;
       display: flex; // 플렉스 정렬
       justify-content: center; // 중앙 정렬
       margin-bottom: 1rem; // 하단 여백
@@ -246,7 +281,7 @@ const Container = styled.div`
     height: 670px; // 캘린더 높이
     padding: 20px; // 캘린더 내부 여백
     background-color: white; // 배경색
-    box-shadow: 0 4px 12px rgba(0.3, 0.3, 0.3, 0.3); // 그림자
+    box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5); // 그림자
     border-radius: 15px; // 둥근 모서리
     
     // 캘린더 타일 스타일

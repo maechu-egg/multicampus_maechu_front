@@ -1,5 +1,6 @@
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import styled from 'styled-components';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -42,7 +43,7 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
   }
 
   const data = {
-    labels: ['둘 다 기록', '운동만 기록', '식단만 기록', '기록 없음'],
+    labels: ['😁', '😊', '😋', '❌'],
     datasets: [
       {
         data: [bothRecords, onlyExercise, onlyDiet, noRecords],
@@ -60,6 +61,18 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
     plugins: {
       legend: {
         position: 'bottom' as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+          boxWidth: 40,
+          boxHeight: 40,
+          padding: 25,
+          font: {
+            size: 25,
+            family: "'Pretendard', sans-serif",
+            weight: 400,
+          },
+        }
       },
       tooltip: {
         callbacks: {
@@ -70,16 +83,87 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
             return `${label}: ${value}일 (${percentage}%)`;
           },
         },
+        titleFont: {
+          size: 16,
+          family: "'Pretendard', sans-serif",
+        },
+        bodyFont: {
+          size: 16,
+          family: "'Pretendard', sans-serif",
+        }
       },
     },
+    maintainAspectRatio: false,
   };
 
   return (
-    <div style={{ width: '300px', margin: 'auto' }}>
-      <h3>이번 달 기록 현황</h3>
-      <Pie data={data} options={options} />
-    </div>
+    <ChartContainer>
+      <ChartTitle>이번 달 기록 현황</ChartTitle>
+      <ChartWrapper>
+        <Pie data={data} options={options} />
+      </ChartWrapper>
+    </ChartContainer>
   );
 };
+
+const ChartContainer = styled.div`
+  width: 300px;
+  height: 670px;
+  padding: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0.5,  0.5, 0.5, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 20px;
+
+  @media (max-width: 850px) {
+    width: 100%;
+    max-width: 170px;
+    margin-left: 20px;
+  }
+
+  @media (max-width: 710px) {
+    width: 100%;
+    max-width: 140px;
+    margin-left: 20px;
+  }
+`;
+
+const ChartTitle = styled.h3`
+  margin: 0 0 20px 0;
+  padding-bottom: 5px;
+  font-size: 20px;
+  font-weight: 700;
+  color: black;
+  border-bottom: 3px solid lightgray;
+  width: 100%;
+  text-align: center;
+`;
+
+const ChartWrapper = styled.div`
+  width: 100%;
+  height: 450px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  canvas {
+    max-width: 100%;
+    height: 100% !important;
+  }
+
+  @media (max-width: 850px) {
+    height: 350px;
+    padding: 5px;
+  }
+
+  @media (max-width: 710px) {
+    height: 300px;
+    padding: 5px;
+  }
+`;
 
 export default MonthlyRecordChart; 
