@@ -1,33 +1,30 @@
-import SearchBar from "pages/community/communityComponent/SearchBar";
 import { useEffect, useState } from "react";
-import CrewPostList from "./CrewPost/CrewPostList";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
 import CrewJoinModal from "components/ui/modal/CrewJoinModal";
+import CrewCard from "components/ui/card/CrewCard";
+import CrewCreateModal from "components/ui/modal/CrewCreateModal";
 
 function CrewSearch(): JSX.Element {
     const { state } = useAuth();
     const token = state.token;
     const [crewList, setCrewList] = useState<any[]>([]);
     const [selectedCrewId, setSelectedCrewId] = useState<number | null>(null);
-
-    const handleSearch = () => {
-        console.log("검색버튼 클릭");
-    };
-
-    const handleCreatePost = () => {
-        console.log("게시물 작성 버튼 클릭");
-    };
+    const [searchTerm, setSearchTerm] = useState("");
 
     const handlePostClick = (crewId: number) => {
         console.log(`Post clicked for crew ID: ${crewId}`);
         setSelectedCrewId(crewId);
     };
 
+    const filteredData = crewList.filter(crew => 
+        crew.crew_title && crew.crew_title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     useEffect(() => {
         const getCrewList = async () => {
-            try{
-                const response = await api.get("crew/list",{
+            try {
+                const response = await api.get("crew/list", {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -45,24 +42,42 @@ function CrewSearch(): JSX.Element {
         <div className="container">
             {/* 검색바와 게시물 작성 버튼 */}
             <div className="search-and-write">
-                <SearchBar onSearch={handleSearch} />
-                <button className="btn btn-primary write-button" onClick={handleCreatePost}>
+                <div className="search-bar">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="검색어를 입력하세요"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <button className="btn btn-primary write-button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#crewCreateModal"
+                >
                     크루 생성
                 </button>
             </div>
 
             {/* 게시물 목록 */}
-            {crewList.length > 0 ?(
-                crewList.map((crew) => {
-                    return (
-                        <CrewPostList key={crew.crew_id} crew={crew} onCrewClick={handlePostClick}  />
-                    )
-                })
-            ) : (
-                <div>
-                    <h2>모집중인 크루가 없습니다.</h2>
-                </div>
-            )}
+            <div className="row">
+                {filteredData.length > 0 ? (
+                    filteredData.map((crew) => {
+                        return (
+                            <div className="col-3 mb-3 d-flex justify-content-center" key={crew.crew_id}>
+                                <CrewCard 
+                                    crew={crew} 
+                                    onCrewClick={() => handlePostClick(crew.crew_id)}
+                                />
+                            </div>
+                        )
+                    })
+                ) : (
+                    <div>
+                        <h2>모집중인 크루가 없습니다.</h2>
+                    </div>
+                )}
+            </div>
 
             {/* join modal */}
             <div className="modal fade" id="crewJoinModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewJoinModalLabel" aria-hidden="true">
@@ -76,6 +91,21 @@ function CrewSearch(): JSX.Element {
                             {selectedCrewId !== null && (
                                 <CrewJoinModal crew_id={selectedCrewId}/>
                             )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* create modal */}
+            <div className="modal fade" id="crewCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewCreateModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg modal-dialog-centered">
+                    <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="crewCreateModalLabel">크루 생성</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <CrewCreateModal/>
                         </div>
                     </div>
                 </div>

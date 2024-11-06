@@ -1,6 +1,6 @@
 interface BadgeScoreSectionProps {
   score: number;
-  rank: string;
+  rank: number;
   currentBadge: string; 
 }
 

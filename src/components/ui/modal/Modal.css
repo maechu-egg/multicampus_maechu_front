@@ -142,3 +142,6 @@
     border-left: 2px solid #ccc; /* 선 스타일 설정 */
   }
 
+  .custom-padding {
+    padding: 0;
+}

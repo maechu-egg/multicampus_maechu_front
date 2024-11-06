@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import "./badgeModalComponents/BadgeModal.css";
 import BadgeModalHeader from "./badgeModalComponents/BadgeModalHeader";
 import BadgeScoreSection from "./badgeModalComponents/BadgeScoreSection";
@@ -8,17 +7,25 @@ import BadgeFooterSection from "./badgeModalComponents/BadgeFooterSection";
 import BadgeModalTabs from "./badgeModalComponents/BadgeModalTabs";
 import BadgeScoreGuide from './badgeModalComponents/BadgeScoreGuide';
 import BadgeRankSection from './badgeModalComponents/BadgeRankSection';  
+import { useAuth } from "../../context/AuthContext";  
+import api from "../../services/api/axios"; 
 
 interface PersonalBadgeModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface UserStats {
-  workoutDays: number;
-  dietDays: number;
-  posts: number;
-  comments: number;
+interface BadgeInfo {
+  currentBadge: string;
+  nextBadge: string;
+  image: string;
+}
+
+interface Stats {
+  dietCount: number;
+  exerciseCount: number;
+  postCount: number;
+  commentCount: number;
 }
 
 interface ActivityRecord {
@@ -27,12 +34,6 @@ interface ActivityRecord {
   points: number;
   createdDate: string;
   memberId: number;
-}
-
-interface BadgeResponse {
-  member_id: number;
-  current_points: number;
-  badge_level: string;
 }
 
 const badgeImages = {
@@ -82,7 +83,7 @@ const getBadgeInfo = (score: number) => {
     };
   } else {
     return {
-      currentBadge: "뉴비",
+      currentBadge: "기본",
       image: badgeImages.default,
       nextBadge: "브론즈",
       requiredScore: 10
@@ -92,83 +93,27 @@ const getBadgeInfo = (score: number) => {
 
 function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.Element | null {
   const [activeTab, setActiveTab] = useState('badge-info');
+  const [currentBadgeInfo, setCurrentBadgeInfo] = useState<BadgeInfo>({
+    currentBadge: '기본',
+    nextBadge: '',
+    image: badgeImages.default
+  });
   const [score, setScore] = useState(0);
-  const [rank, setRank] = useState('0%');
-  const [stats, setStats] = useState<UserStats>({
-    workoutDays: 0,
-    dietDays: 0,
-    posts: 0,
-    comments: 0
+  const [rank, setRank] = useState(0);
+  const [stats, setStats] = useState<Stats>({
+    dietCount: 0,
+    exerciseCount: 0,
+    postCount: 0,
+    commentCount: 0
   });
   const [scoreLeft, setScoreLeft] = useState(0);
   const [progress, setProgress] = useState(0);
   const [activities, setActivities] = useState<ActivityRecord[]>([]);
 
-  useEffect(() => {
-    if (isOpen) {
-      const token = localStorage.getItem('token');
-      const memberId = localStorage.getItem('memberId');
+  const { state } = useAuth();
+  const { token, memberId } = state;
 
-      // 1. 먼저 뱃지 정보 가져오기
-      axios.get<BadgeResponse>(`http://localhost:8001/badges/user/${memberId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        const { current_points, badge_level } = response.data;
-        console.log('뱃지 정보 응답:', response.data);  // 추가
-        console.log('현재 점수:', current_points);      // 추가
-        console.log('현재 등급:', badge_level);         // 추가
-
-        setScore(current_points);
-
-        // 뱃지 정보에 따른 UI 업데이트
-        const badgeInfo = getBadgeInfo(current_points);
-        if (badgeInfo.requiredScore) {
-          const remainingScore = badgeInfo.requiredScore - current_points;
-          setScoreLeft(remainingScore);
-          
-          const currentThreshold = getBadgeThreshold(current_points);
-          const progressPercentage = ((current_points - currentThreshold) / 
-            (badgeInfo.requiredScore - currentThreshold)) * 100;
-          setProgress(Math.min(Math.max(progressPercentage, 0), 100));
-
-          console.log('다음 등급까지 남은 점수:', remainingScore);  // 추가
-          console.log('진행률:', progressPercentage);           
-        } else {
-          setScoreLeft(0);
-          setProgress(100);
-        }
-      })
-      .catch(error => {
-        console.error("Failed to fetch badge info:", error);
-      });
-
-      // 2. 활동 기록 가져와서 통계 계산
-      axios.get(`http://localhost:8001/badges/user/${memberId}/activities`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        const activities = response.data;
-        setActivities(activities);
-
-        // 활동 기록으로부터 통계만 계산
-        const stats = calculateStats(activities);
-        setStats(stats);
-      })
-      .catch(error => {
-        console.error("Failed to fetch activity records:", error);
-      });
-    }
-  }, [isOpen]);
-
-  // 현재 점수가 속한 등급의 최소 점수를 반환하는 함수
-  const getBadgeThreshold = (score: number) => {
+  const getBadgeThreshold = (score: number): number => {
     if (score >= 100) return 100;
     if (score >= 70) return 70;
     if (score >= 50) return 50;
@@ -177,32 +122,101 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
     return 0;
   };
 
-  // 활동 기록으로부터 통계 계산하는 함수
-  const calculateStats = (activities: ActivityRecord[]) => {
-    const workoutDays = new Set(
+  const calculateStats = (activities: ActivityRecord[]): Stats => {
+    const exerciseCount = new Set(
       activities
         .filter(a => a.activityType === 'exercise')
         .map(a => a.createdDate.split('T')[0])
     ).size;
-
-    const dietDays = new Set(
+    
+    const dietCount = new Set(
       activities
         .filter(a => a.activityType === 'diet')
         .map(a => a.createdDate.split('T')[0])
     ).size;
 
     return {
-      workoutDays,
-      dietDays,
-      posts: 0,  // 이 값들은 다른 API에서 가져와야 할 수 있음
-      comments: 0
+      dietCount,
+      exerciseCount,
+      postCount: 0,
+      commentCount: 0
     };
   };
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    const fetchBadgeInfo = async () => {
+      try {
+        if (!token || !memberId) {
+          console.log('[DEBUG] 인증 정보 없음:', { token: !!token, memberId });
+          return;
+        }
+    
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        };
+    
+        const response = await api.get(`badges/user/${memberId}/badge`, config);
+        const data = response.data;
+        
+        console.log('[DEBUG] 뱃지 정보:', data);
+        
+        setScore(data.current_points || 0);
+        const badgeInfo = getBadgeInfo(data.current_points || 0);
+        
+        setCurrentBadgeInfo({
+          currentBadge: data.badge_level,
+          nextBadge: badgeInfo.nextBadge || '',
+          image: badgeImages[data.badge_level.toLowerCase() as keyof typeof badgeImages] || badgeImages.default
+        });
 
-  // 현재 점수에 따른 뱃지 정보 가져오기
-  const currentBadgeInfo = getBadgeInfo(score);
+        if (badgeInfo.requiredScore) {
+          const remainingScore = badgeInfo.requiredScore - data.current_points;
+          setScoreLeft(remainingScore);
+          
+          const currentThreshold = getBadgeThreshold(data.current_points);
+          const progressPercentage = ((data.current_points - currentThreshold) / 
+            (badgeInfo.requiredScore - currentThreshold)) * 100;
+          setProgress(Math.min(Math.max(progressPercentage, 0), 100));
+        } else {
+          setScoreLeft(0);
+          setProgress(100);
+        }
+      } catch (error) {
+        console.error('[DEBUG] 뱃지 정보 조회 실패:', error);
+      }
+    };
+
+    const fetchActivities = async () => {
+      try {
+        if (!token || !memberId) return;
+
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        };
+
+        const response = await api.get(`badges/user/${memberId}/activities`, config);
+        const activities = response.data;
+        setActivities(activities);
+        const calculatedStats = calculateStats(activities);
+        setStats(calculatedStats);
+      } catch (error) {
+        console.error('[DEBUG] 활동 기록 조회 실패:', error);
+      }
+    };
+
+    if (isOpen) {
+      fetchBadgeInfo();
+      fetchActivities();
+    }
+  }, [isOpen, token, memberId]);
+
+  if (!isOpen) return null;
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -224,11 +238,10 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
             </div>
           </>
         );
-      case 'score-guide':  
+      case 'score-guide':
         return <BadgeScoreGuide />;
-
       case 'rank':
-          return <BadgeRankSection />;
+        return <BadgeRankSection />;
       default:
         return null;
     }
@@ -237,13 +250,13 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close-button" onClick={onClose}>X</button>
+        <button className="modal-close-button" onClick={onClose}>×</button>
         <BadgeModalTabs activeTab={activeTab} onTabChange={setActiveTab} />
-        {/* 뱃지정보에서만 BadgeModalHeader 표시 */}
-        {activeTab !== 'score-guide' && activeTab !== 'rank' && (
+        {activeTab === 'badge-info' && (
           <BadgeModalHeader 
             currentBadge={currentBadgeInfo.currentBadge}
             image={currentBadgeInfo.image}
+            isCrew={false}
           />
         )}
         {renderTabContent()}

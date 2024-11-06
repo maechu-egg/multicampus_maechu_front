@@ -393,7 +393,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center; /* 수직 중앙 정렬 */
-  padding-top: 20px; /* 위쪽 여백 추가 */
 `;
 
 const SignForm = styled.div`
@@ -409,7 +408,7 @@ const SignForm = styled.div`
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px; /* 내부 여백 추가 */
-  margin-top: 30px;
+  margin-top: 30%;
 `;
 
 const Title = styled.h1`

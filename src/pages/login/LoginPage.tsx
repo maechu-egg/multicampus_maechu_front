@@ -127,7 +127,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center; /* 수직 중앙 정렬 */
-  margin-top: 50px;
 `;
 
 const LoginForm = styled.form`
@@ -144,7 +143,7 @@ const LoginForm = styled.form`
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px; /* 내부 여백 추가 */
-  margin-top: -50px;
+  margin-top: -10%;
 `;
 
 const Title = styled.h1`
