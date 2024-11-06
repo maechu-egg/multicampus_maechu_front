@@ -5,7 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import styled from "styled-components";
 import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
-import { format } from 'date-fns';
+import MonthlyRecordChart from "../../components/MonthlyRecordChart";
 
 function RecordPage() {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
@@ -74,22 +74,33 @@ function RecordPage() {
     }
 
     const today = new Date();
+    // date 오차 방지
     today.setHours(0, 0, 0, 0);
 
-    const formattedDate = format(date, 'yyyy-MM-dd');
+    const adjustedDate = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    );
+    const formattedDate = adjustedDate.toISOString().split('T')[0];
+
+    const adjustedToday = new Date(
+      Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
+    );
+    const formattedToday = adjustedToday.toISOString().split('T')[0];
+
     const hasExercise = exerciseDates.some(record => record === formattedDate);
     const hasDiet = dietDates.some(record => record === formattedDate);
 
-    if (date > today) {
+    if (adjustedDate > adjustedToday) {
       // 미래 날짜 클릭 시
       alert('미리 기록할 수 없습니다.');
       // 또는 커스텀 모달 사용:
       // setModalMessage('미래 날짜는 기록할 수 없습니다.');
       // setIsWarningModalOpen(true);
       return;
-    }
-
-    if (hasExercise || hasDiet) {
+    } else if (formattedDate === formattedToday) {
+      setSelectedDate(formattedDate);
+      setShowModal(true);
+    } else if (hasExercise || hasDiet) {
       // 기록이 있는 날짜 - 기존 모달 표시
       setSelectedDate(formattedDate);
       setShowModal(true);
@@ -105,16 +116,16 @@ function RecordPage() {
   // 날짜 타일 컨텐츠 표시
   const tileContent = ({ date }: { date: Date }) => {
     
-    // 날짜 조정, 시간 오차 발생 방지
+    // 날짜 조정, 서버는 UTC 시간 기준이므로 오차 발생 방지
     const adjustDate = new Date(
       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
     )
     // 날짜 형식 변경, 0000-00-00 형식으로 변경
     const dateString = adjustDate.toISOString().split('T')[0];
-    // 운동 기록 여부 확인
-    const hasExercise = exerciseDates.includes(dateString);
-    // 식단 기록 여부 확인
-    const hasDiet = dietDates.includes(dateString);
+    // 운동 기록 여부 확인  
+    const hasExercise = exerciseDates.some(record => record === dateString);
+    // 식단 기록 여부 확인  
+    const hasDiet = dietDates.some(record => record === dateString);
     
     let emoji = '';
     // 상태에 따른 이모지 설정
@@ -166,6 +177,12 @@ function RecordPage() {
           </div>
         </div>
       )}
+
+      <MonthlyRecordChart 
+        exerciseDates={exerciseDates}
+        dietDates={dietDates}
+        currentMonth={value}
+      />
     </Container>
   );
 };
@@ -174,10 +191,10 @@ const Container = styled.div`
 
   // 컨테이너 스타일
   display: flex; // 플렉스 정렬
-  flex-direction: column; // 세로 정렬
+  flex-direction: row; // 가로 정렬
   justify-content: center; // 중앙 정렬
   min-height: 100vh; // 화면 높이 최소 100vh
-  max-width: 700px;  // 캘린더 너비와 맞춤
+  max-width: 1200px;  // 캘린더 너비와 맞춤
   margin: 0 auto;  // 중앙 정렬
   
   // 운동 히스토리 타이틀
