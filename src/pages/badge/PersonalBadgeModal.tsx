@@ -158,7 +158,7 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
           }
         };
     
-        const response = await api.get(`badges/user/${memberId}/badge`, config);
+        const response = await api.get(`/badges/user/${memberId}/badge`, config);
         const data = response.data;
         
         console.log('[DEBUG] 뱃지 정보:', data);
@@ -191,22 +191,50 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
 
     const fetchActivities = async () => {
       try {
-        if (!token || !memberId) return;
-
+        if (!token || !memberId) {
+          console.log('[DEBUG] 인증 정보 없음:', { token: !!token, memberId });
+          return;
+        }
+    
         const config = {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         };
-
-        const response = await api.get(`badges/user/${memberId}/activities`, config);
-        const activities = response.data;
+    
+        const response = await api.get(`/badges/user/${memberId}/activities`, config);
+        
+        // 활동 기록이 없는 경우 빈 배열로 처리
+        const activities = response.data || [];
+        console.log('[DEBUG] 활동 기록:', activities);
+    
         setActivities(activities);
-        const calculatedStats = calculateStats(activities);
+        
+        // 활동 기록이 없어도 기본값으로 통계 표시
+        const calculatedStats = activities.length > 0 
+          ? calculateStats(activities)
+          : {
+              dietCount: 0,
+              exerciseCount: 0,
+              postCount: 0,
+              commentCount: 0
+            };
+        
         setStats(calculatedStats);
-      } catch (error) {
-        console.error('[DEBUG] 활동 기록 조회 실패:', error);
+      } catch (error: any) {
+        console.error('[DEBUG] 활동 기록 조회 실패:', {
+          message: error.message,
+          status: error.response?.status
+        });
+        
+        // 에러 발생 시 기본값 설정
+        setStats({
+          dietCount: 0,
+          exerciseCount: 0,
+          postCount: 0,
+          commentCount: 0
+        });
       }
     };
 
