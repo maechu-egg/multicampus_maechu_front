@@ -22,8 +22,9 @@ function RecordPage() {
 
   // 컴포넌트 마운트 시 현재 월 데이터 조회
   useEffect(() => {
-    console.log("debug >>> memberId", memberId);
-    console.log("debug >>> token", token);
+    if (!token) {
+      navigate("/login");
+    }
     fetchMonthData(value);
   }, []); // 컴포넌트 마운트 시 1회 실행
 
@@ -238,6 +239,7 @@ const Container = styled.div`
 
   // 모달 컨텐츠 스타일
   .modal-content {
+    border: 5px solid lightgray;
     border-radius: 20px; // 둥근 모서리
 
     // 모달 타이틀 스타일
@@ -259,13 +261,13 @@ const Container = styled.div`
       padding: 0.8rem 1.5rem; // 버튼 크기
       border-radius: 20px;  // 둥근 모서리
       border: none; // 테두리 제거
-      background-color: #f0f0f0; // 배경색
+      background-color: white; // 배경색
       cursor: pointer; // 마우스 오버 시 효과
       transition: all 0.2s ease-in-out; // 효과 시간
       // 버튼 마우스 오버 시 효과
       &:hover {
-        background-color: #e0e0e0; // 마우스 오버 시 배경색
-        transform: scale(1.05); // 마우스 오버 시 크기
+        background-color: lightgray; // 마우스 오버 시 배경색
+        transform: scale(1.1); // 마우스 오버 시 크기
       }
     }
     // 모달 내 닫기 버튼 스타일
