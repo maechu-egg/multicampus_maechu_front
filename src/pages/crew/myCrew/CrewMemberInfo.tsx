@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import CrewMemberCard from "components/ui/card/CrewMemberCard";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
+import CrewMemberCardEdit from "components/ui/card/CrewMemberCardEdit";
 interface CrewInfoProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
 }
@@ -19,7 +19,7 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                console.log("debug >>> selectCrewMember response", response.data);
+                console.log("debug >>> 크루멤버정보 response", response.data);
                 setCrewMembers(response.data);
             } catch (error) {
                 console.log('Error selecting crew member:', error);
@@ -42,7 +42,7 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
             <div className="row">
                 {crewMembers.map(member => (
                     <div key={member.crew_member_id} className="col-md-4 mb-4 d-flex justify-content-center">
-                        <CrewMemberCard member={member} crewId={crewId}/>
+                        <CrewMemberCardEdit member={member} crewId={crewId} />
                     </div>
                 ))}
             </div>

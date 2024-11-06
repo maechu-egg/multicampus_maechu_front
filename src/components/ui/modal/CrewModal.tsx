@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './Modal.css';
-import axios from 'axios';
 import { useAuth } from "context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import api from 'services/api/axios';
@@ -41,6 +40,7 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 setCrew_goal(response.data.crew_goal);
                 setCrew_gender(response.data.crew_gender);
                 setCrew_frequency(response.data.crew_frequency);
+                setCrew_state(response.data.crew_satate);
             } catch (error) {
                 console.error('Error getting crew info:', error);
             }
@@ -79,7 +79,7 @@ function CrewModal({ crew_id }: { crew_id: number}) {
 
         const updateCrew = async() => {
             try {
-                const response = await axios.patch(`http://localhost:8001/crew/info/update`, data, {
+                const response = await api.patch(`crew/info/update`, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -113,8 +113,8 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 {/* 크루 목표 */}
                 <div className="form-control" style={{ width: '100%' }}>
                     <label>크루 목표</label>
-                    <div className="container d-flex justify-content-between w-100">
-                        <div className="tabs form-check form-check-inline w-100">
+                    <div className="container d-flex justify-content-between w-100" >
+                        <div className="d-flex tabs w-100" style={{paddingLeft : 0, paddingRight : 0}}>
                             <input
                                 type="radio"
                                 id="radio-1"
@@ -196,7 +196,7 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 <div className="form-control" style={{ width: '100%' }}>
                     <label>선호 성별</label>
                     <div className="container d-flex justify-content-between w-100">
-                        <div className="tabs form-check form-check-inline w-100">
+                        <div className="d-flex tabs w-100" style={{paddingLeft : 0, paddingRight : 0}}>
                             <input
                                 type="radio"
                                 id="male"
@@ -235,7 +235,7 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 <div className="form-control" style={{ width: '100%' }}>
                     <label>활동 빈도</label>
                     <div className="container d-flex justify-content-between w-100">
-                        <div className="tabs form-check form-check-inline w-100">
+                        <div className="d-flex tabs  w-100" style={{paddingLeft : 0, paddingRight : 0}}>
                             <input
                                 type="radio"
                                 id="small"
@@ -306,7 +306,7 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 <div className="form-control" style={{ width: '100%' }}>
                     <label>게시글 여부</label>
                     <div className="container d-flex justify-content-between w-100">
-                        <div className="tabs form-check form-check-inline w-100">
+                        <div className="d-flex tabs w-100 " style={{paddingLeft : 0, paddingRight : 0}}>
                             <input
                                 type="radio"
                                 id="yes"
