@@ -133,7 +133,6 @@ function Header(): JSX.Element {
 
 export default Header;
 
-// Styled components
 const Container = styled.div`
   height: var(--header-height);
   position: sticky;
@@ -212,6 +211,7 @@ const Login = styled.div`
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
+  margin-right: 10px;
 
   &:hover {
     background-color: #333;
