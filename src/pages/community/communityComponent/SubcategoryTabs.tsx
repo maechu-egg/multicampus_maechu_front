@@ -5,14 +5,14 @@ import './SubcategoryTabs.css';
 
 /* 카테고리 소분류 탭을 표시하는 컴포넌트 */
 interface SubcategoryTabsProps {
-  subcategories: string[];// 서브카테고리 목록 배열
-  activeSubcategory: string; // 현재 선택된 서브카테고리
-  onSubcategoryChange: (subcategory: string) => void; // 서브카테고리 변경 핸들러
+  post_sports: string[];// 서브카테고리 목록 배열
+  activePost_sport: string; // 현재 선택된 서브카테고리
+  onSubcategoryChange: (post_sport: string) => void; // 서브카테고리 변경 핸들러
 }
 
 const SubcategoryTabs: React.FC<SubcategoryTabsProps> = ({
-  subcategories,
-  activeSubcategory,
+  post_sports,
+  activePost_sport,
   onSubcategoryChange,
 }) => {
   return (
@@ -21,20 +21,20 @@ const SubcategoryTabs: React.FC<SubcategoryTabsProps> = ({
         {/* 소분류 전체 */}
         <Nav.Item>
           <Nav.Link
-            active={activeSubcategory === ""}
+            active={activePost_sport === ""}
             onClick={() => onSubcategoryChange("")}
           >
             전체
           </Nav.Link>
         </Nav.Item>
         {/* 카테고리 소분류 목록 */}
-        {subcategories.map((subcategory) => (
-          <Nav.Item key={subcategory}>
+        {post_sports.map((post_sport) => (
+          <Nav.Item key={post_sport}>
             <Nav.Link
-              active={activeSubcategory === subcategory}
-              onClick={() => onSubcategoryChange(subcategory)}
+              active={activePost_sport === post_sport}
+              onClick={() => onSubcategoryChange(post_sport)}
             >
-              {subcategory}
+              {post_sport}
             </Nav.Link>
           </Nav.Item>
         ))}
