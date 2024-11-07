@@ -1,23 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-
+import { useAuth } from "../../context/AuthContext";
+import api from "../../services/api/axios";
+const categories = [
+  "내가 쓴 글",
+  "좋아요 한 글",
+  "내가 참여한 크루",
+  "배틀 중",
+];
 function MyPage(): JSX.Element {
   const personalPoints = 75;
   const crewPoints = 50;
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { state } = useAuth(); // AuthContext에서 상태 가져오기
+  const { token } = state; // 상태에서 token과 memberId 가져오기
+  const [kcalData, setkcalData] = useState();
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
   };
-
-  const categories = [
-    "내가 쓴 글",
-    "좋아요 한 글",
-    "내가 참여한 크루",
-    "배틀 중",
-  ];
 
   return (
     <Container>
