@@ -12,7 +12,7 @@ import RecommendedKeywords from "./communityComponent/RecommendedKeywords";
 import categoriesJson from "../../assets/data/categories.json";
 import dataJson from "../../assets/data/data.json";
 import axios from "axios";
-// import { recommendedKeywords, post_up_sports, post_sports } from './communityComponent/data';
+
 import {  useNavigate } from "react-router-dom";
 
 
@@ -93,28 +93,35 @@ function CommunityPage(): JSX.Element {
   // 게시글 목록 로드
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [activeTab, activePost_sport, currentPage]);
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (selectedCategory = activeTab, selectedSubcategory = activePost_sport) => {
+    console.log("selectedCategory", selectedCategory);
+    console.log("selectedSubcategory", selectedSubcategory);
+
     console.log("Fetching posts..."); // 요청 시작 시 로그 출력
     try {
-      const token = localStorage.getItem("authToken"); // 토큰을 로컬 스토리지에서 가져옵니다.
+      const token = localStorage.getItem("authToken"); 
       if (!token) {
         console.error("로그인 토큰이 없습니다.");
         return;
       }
       
+      const categoryParam = selectedCategory !== "" ? selectedCategory  : undefined;
+      const subcategoryParam = selectedSubcategory !== "" ? selectedSubcategory : undefined;
+      console.log("token" , token);
       console.log("await");
       const response = await axios.get("http://localhost:8001/community/posts", {
         params:{
           page:currentPage,
           size:postsPerPage,
+          post_up_sport: categoryParam,
+          post_sport: subcategoryParam,
         },
         headers: {
-          
           Authorization: `Bearer ${token}`,
         },
-      });
+      });    
       
       console.log("Response data:", response.data); // 응답 데이터 출력
 
@@ -167,7 +174,7 @@ function CommunityPage(): JSX.Element {
       for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
         formData.append("images", imageFiles[i]);
       }
-    }
+    }   
 
     try{
       const token = localStorage.getItem("authToken");
@@ -410,68 +417,17 @@ function CommunityPage(): JSX.Element {
 
   /* 카테고리 변경 핸들러 */
   const handleCategoryChange = (post_up_sport: string) => {
+    console.log("카테고리 변경됨:", post_up_sport);
     setActiveTab(post_up_sport);
     setActivePost_sport("");
+    fetchPosts(post_up_sport, ""); // 
   };
 
   /* 카테고리 소분류 변경 핸들러 */
   const handleSubcategoryChange = async (post_sport: string) => {
+    console.log("서브카테고리 변경됨:", post_sport);
     setActivePost_sport(post_sport);
-    const token = localStorage.getItem("authToken");
-   
-    if(!token){
-
-      alert("로그인이 필요합니다.");
-      return; 
-    }
-    console.log("token" , token);
-    
-    try{
-        
-      const post_sports = encodeURIComponent(post_sport.replace(/\//g, "_slash_"));
-        const response = await axios.get(`http://localhost:8001/community/posts/${post_sports}`, {
-            params:{
-              post_up_sport :activeTab,
-              page: currentPage,
-              size: postsPerPage,
-            },
-            headers: {
-                  
-              Authorization: `Bearer ${token}`,
-            },
-            
-          });
-
-        if(response.status === 200){
-          const fetchedPosts = response.data.sportpost;
-          const mappedPosts = fetchedPosts.map((post:Post) => ({
-            post_id : post.post_id,
-            post_title: post.post_title,
-            post_contents: post.post_contents || "",
-            post_nickname: post.post_nickname,
-            post_date: post.post_date,
-            post_views: post.post_views,
-            comments_count: post.comments_count || 0,
-            post_up_sport: post.post_up_sport || "",
-            post_sport: post.post_sport,
-            post_hashtag: post.post_hashtag || "",
-            post_like_counts: post.post_like_counts,
-            isRecommended: post.isRecommended || false,
-          }));
-          
-          setPosts(mappedPosts);
-          setTotalPages(response.data.totalPages);
-          setCurrentPage(response.data.currentPage);
-        }else{
-          console.error("데이터를 가져오는 중 오류 발생:", response.statusText);
-          alert("데이터를 가져오는 중 오류가 발생했습니다.");
-        }
-    }catch(error){
-
-      console.error("서버와의 통신 중 오류 발생:", error);
-      alert("서버와의 통신 중 오류가 발생했습니다.");
-
-    }
+    fetchPosts(activeTab, post_sport);
 
   };
 
