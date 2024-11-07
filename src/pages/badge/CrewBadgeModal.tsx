@@ -19,12 +19,13 @@ interface CrewBadgeModalProps {
 type BadgeLevel = '기본' | '브론즈' | '실버' | '골드' | '플래티넘' | '다이아몬드';
 
 interface CrewBadgeResponse {
-  상태: string;
-  정보: {
+  status: string;
+  badgeInfo: {
     crew_badge_id: number;
     crew_current_points: number;
     member_id: number;
     badge_level: BadgeLevel;
+    crew_battle_wins: number;
   }
 }
 
@@ -46,10 +47,7 @@ interface BadgeInfo {
 }
 
 interface Stats {
-  dietCount: number;
-  exerciseCount: number;
-  postCount: number;
-  commentCount: number;
+  battleWins: number;
 }
 
 const crewBadgeImages: Record<BadgeLevel, string> = {
@@ -74,23 +72,57 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
   const [progress, setProgress] = useState(0);
   const [battleWins, setBattleWins] = useState(0);
   const [stats, setStats] = useState<Stats>({
-    dietCount: 0,
-    exerciseCount: 0,
-    postCount: 0,
-    commentCount: 0
+    battleWins: 0
   });
 
   const { state } = useAuth();
   const { token, memberId } = state;
 
-  const getCrewBadgeInfo = (score: number) => {
-    if (score >= 100) return { nextBadge: null, requiredScore: null };
-    if (score >= 70) return { nextBadge: '다이아몬드', requiredScore: 100 };
-    if (score >= 50) return { nextBadge: '플래티넘', requiredScore: 70 };
-    if (score >= 30) return { nextBadge: '골드', requiredScore: 50 };
-    if (score >= 10) return { nextBadge: '실버', requiredScore: 30 };
-    return { nextBadge: '브론즈', requiredScore: 10 };
-  };
+ const getCrewBadgeInfo = (score: number) => {
+  if (score >= 100) {
+    return {
+      currentBadge: "다이아몬드" as BadgeLevel,
+      image: crewBadgeImages['다이아몬드'],
+      nextBadge: null,
+      requiredScore: null
+    };
+  } else if (score >= 70) {
+    return {
+      currentBadge: "플래티넘" as BadgeLevel,
+      image: crewBadgeImages['플래티넘'],
+      nextBadge: "다이아몬드",
+      requiredScore: 100
+    };
+  } else if (score >= 50) {
+    return {
+      currentBadge: "골드" as BadgeLevel,
+      image: crewBadgeImages['골드'],
+      nextBadge: "플래티넘",
+      requiredScore: 70
+    };
+  } else if (score >= 30) {
+    return {
+      currentBadge: "실버" as BadgeLevel,
+      image: crewBadgeImages['실버'],
+      nextBadge: "골드",
+      requiredScore: 50
+    };
+  } else if (score >= 10) {
+    return {
+      currentBadge: "브론즈" as BadgeLevel,
+      image: crewBadgeImages['브론즈'],
+      nextBadge: "실버",
+      requiredScore: 30
+    };
+  } else {
+    return {
+      currentBadge: "기본" as BadgeLevel,
+      image: crewBadgeImages['기본'],
+      nextBadge: "브론즈",
+      requiredScore: 10
+    };
+  }
+};
 
   const calculateProgress = (score: number): number => {
     if (score >= 100) return 100;
@@ -101,12 +133,19 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
     return (score / 10) * 100;
   };
 
+  const getBadgeThreshold = (score: number): number => {
+    if (score >= 100) return 100;
+    if (score >= 70) return 70;
+    if (score >= 50) return 50;
+    if (score >= 30) return 30;
+    if (score >= 10) return 10;
+    return 0;
+  };
+
+  
   const fetchBadgeInfo = async () => {
     try {
-      if (!token || !memberId) {
-        console.log('[DEBUG] 인증 정보 없음:', { token: !!token, memberId });
-        return;
-      }
+      if (!token || !memberId) return;
   
       const config = {
         headers: {
@@ -115,32 +154,50 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
       };
   
       try {
-        console.log('[DEBUG] 크루 뱃지 조회 시도:', { memberId });
         const response = await api.get<CrewBadgeResponse>(`/crew_badges/${memberId}`, config);
-        console.log('[DEBUG] 조회 응답:', response.data);
+        console.log('[DEBUG] 서버 응답:', response.data);
         
-        if (response.data && response.data.상태 === "성공") {
-          const badgeData = response.data.정보;
+        if (response.data && response.data.status === "success") {
+          const badgeData = response.data.badgeInfo;
           const currentScore = badgeData.crew_current_points;
           const badgeInfo = getCrewBadgeInfo(currentScore);
-          const badgeLevel = badgeData.badge_level;
+  
+          console.log('[DEBUG] 뱃지 정보:', {
+            현재점수: currentScore,
+            현재등급: badgeData.badge_level,
+            다음등급: badgeInfo.nextBadge,
+            필요점수: badgeInfo.requiredScore
+          });
   
           setCurrentBadgeInfo({
-            currentBadge: badgeLevel,
+            currentBadge: badgeData.badge_level,
             nextBadge: badgeInfo.nextBadge || '',
-            image: crewBadgeImages[badgeLevel]
+            image: crewBadgeImages[badgeData.badge_level as BadgeLevel]
           });
           
           setScore(currentScore);
-          setScoreLeft(badgeInfo.requiredScore ? badgeInfo.requiredScore - currentScore : 0);
-          setProgress(calculateProgress(currentScore));
+  
+          // 다음 등급까지 필요한 점수 계산
+          if (badgeInfo.nextBadge && badgeInfo.requiredScore !== null) {
+            const remainingScore = badgeInfo.requiredScore - currentScore;
+            console.log('[DEBUG] 점수 계산:', {
+              현재점수: currentScore,
+              다음등급필요점수: badgeInfo.requiredScore,
+              남은점수: remainingScore
+            });
+            
+            setScoreLeft(remainingScore);
+            setProgress(calculateProgress(currentScore));
+          } else {
+            setScoreLeft(0);
+            setProgress(100);
+          }
         }
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
           console.log('[DEBUG] 뱃지 없음, 생성 시도');
           
           try {
-            // 생성 요청
             const createResponse = await api.post<CreateBadgeResponse>(
               '/crew_badges/create', 
               { member_id: memberId },
@@ -157,17 +214,15 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
             if (createResponse.status === 201) {
               console.log('[DEBUG] 생성 성공, 기본값 설정');
               
-              // 생성 성공 후 1초 대기
               await new Promise(resolve => setTimeout(resolve, 1000));
               
-              // 다시 조회
               try {
                 console.log('[DEBUG] 생성 후 재조회 시도');
                 const newResponse = await api.get<CrewBadgeResponse>(`/crew_badges/${memberId}`, config);
                 console.log('[DEBUG] 재조회 응답:', newResponse.data);
                 
-                if (newResponse.data && newResponse.data.상태 === "성공") {
-                  const data = newResponse.data.정보;
+                if (newResponse.data && newResponse.data.status === "성공") {
+                  const data = newResponse.data.badgeInfo;
                   setCurrentBadgeInfo({
                     currentBadge: data.badge_level,
                     nextBadge: '브론즈',
@@ -177,7 +232,6 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
                   setScoreLeft(10);
                   setProgress(0);
                 } else {
-                  // 재조회 실패 시 기본값 설정
                   console.log('[DEBUG] 재조회 실패, 기본값 설정');
                   const defaultBadge: BadgeLevel = '기본';
                   setCurrentBadgeInfo({
@@ -191,7 +245,6 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
                 }
               } catch (getError) {
                 console.error('[DEBUG] 재조회 실패:', getError);
-                // 재조회 실패 시에도 기본값 설정
                 const defaultBadge: BadgeLevel = '기본';
                 setCurrentBadgeInfo({
                   currentBadge: defaultBadge,
@@ -258,7 +311,10 @@ function CrewBadgeModal({ isOpen, onClose }: CrewBadgeModalProps): JSX.Element |
               currentBadge={currentBadgeInfo.currentBadge}
             />
             <div className="stats-footer-container">
-              <BadgeStatsSection stats={stats} />
+              <BadgeStatsSection 
+                stats={stats} 
+                isCrew={true}  // isCrew prop 추가
+              />
               <BadgeFooterSection 
                 scoreLeft={scoreLeft} 
                 progress={progress}
