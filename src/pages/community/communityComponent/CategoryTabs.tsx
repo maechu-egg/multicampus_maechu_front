@@ -5,26 +5,26 @@ import './CategoryTabs.css';
 /* 메인 카테고리 탭을 표시하는 컴포넌트 */
 
 interface CategoryTabsProps {
-  categories: string[]; // 카테고리 목록 배열
+  post_up_sports: string[]; // 카테고리 목록 배열
   activeTab: string; // 현재 활성화된 카테고리
-  onTabChange: (category: string) => void; // 카테고리 변경 핸들러
+  onTabChange: (post_up_sport: string) => void; // 카테고리 변경 핸들러
 }
 
 const CategoryTabs: React.FC<CategoryTabsProps> = ({
-  categories,
+  post_up_sports,
   activeTab,
   onTabChange,
 }) => {
   return (
     <div className="d-flex justify-content-center">
       <Nav variant="tabs" className="category-tabs">
-        {categories.map((category) => (
-          <Nav.Item key={category}>
+        {post_up_sports.map((post_up_sport) => (
+          <Nav.Item key={post_up_sport}>
             <Nav.Link
-              active={activeTab === category}
-              onClick={() => onTabChange(category)}
+              active={activeTab === post_up_sport}
+              onClick={() => onTabChange(post_up_sport)}
             >
-              {category}
+              {post_up_sport}
             </Nav.Link>
           </Nav.Item>
         ))}
