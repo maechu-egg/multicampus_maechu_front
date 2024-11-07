@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './Modal.css';
 import { useAuth } from "context/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import CrewSearchDivEdit from '../selectDiv/CrewSearchDivEdit';
+import CrewLocationDiv from '../selectDiv/CrewLocationDiv';
 import api from 'services/api/axios';
 
-function CrewModal({ crew_id }: { crew_id: number}) {
+function CrewCreateModal() {
     const { state } = useAuth();
     const token = state.token;
     const member_id = state.memberId;
@@ -24,31 +26,6 @@ function CrewModal({ crew_id }: { crew_id: number}) {
     // 체크박스 상태 관리 (선호 나이)
     const [crew_age, setCrew_age] = useState<string[]>([]);
 
-    useEffect(() => {
-        const getCrewInfo = async() => {
-            try{
-                const response = await api.get(`crew/info/${crew_id}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log("debug >>> 크루수정 모달 response", response.data);
-                setCrew_name(response.data.crew_name);
-                setCrew_title(response.data.crew_title);
-                setCrew_location(response.data.crew_location);
-                setCrew_sport(response.data.crew_sport);
-                setCrew_goal(response.data.crew_goal);
-                setCrew_gender(response.data.crew_gender);
-                setCrew_frequency(response.data.crew_frequency);
-                setCrew_state(response.data.crew_satate);
-            } catch (error) {
-                console.error('Error getting crew info:', error);
-            }
-        };
-        getCrewInfo();
-    },[crew_id]);
-
-
     // 체크박스 선택 핸들러
     const handleAgeSelection = (age: string) => {
         if (crew_age.includes(age)) {
@@ -63,7 +40,6 @@ function CrewModal({ crew_id }: { crew_id: number}) {
         e.preventDefault();
         const selectedAges = crew_age.join(', ');
         const data = {
-            crew_id,
             crew_name,
             crew_title,
             crew_location,
@@ -77,23 +53,31 @@ function CrewModal({ crew_id }: { crew_id: number}) {
         };
         console.log("debug >>> data", data);
 
-        const updateCrew = async() => {
+        const createCrew = async() => {
             try {
-                const response = await api.patch(`crew/info/update`, data, {
+                const response = await api.post(`crew/create`, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
                 console.log("debug >>> createCrew response", response);
-                alert("크루 수정이 완료되었습니다.");
+                alert("크루 생성이 완료되었습니다.");
                 navigate("/");
             } catch (error) {
                 console.error('Error creating crew:', error);
-                alert("크루 수정에 실패 했습니다.");
+                alert("크루 생성에 실패 했습니다.");
             }
         };
-        updateCrew();
+        createCrew();
     };
+
+    const setCrewSports = (crewSport: string) => {
+        setCrew_sport(crewSport);
+    }
+
+    const setLocation = (crewLocation: string, crewLocationDetail : string) => {
+        setCrew_location(`${crewLocation}, ${crewLocationDetail}`);
+    }
 
     return (
         <div className="container">
@@ -161,35 +145,17 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 {/* 활동 지역 */}
                 <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>활동 지역</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={crew_location}
-                        onChange={(e) => setCrew_location(e.target.value)}
-                        style={{ width: '100%' }}
-                    />
+                    <CrewLocationDiv onSetLocation={(detailLocation: string, location: string) => setLocation(detailLocation, location)} />
+                    <br />
+                    <h5>선택된 활동 지역 : {crew_location}</h5>
                 </div>
                 <br />
                 {/* 운동 종목 */}
                 <div className='form-group form-control' style={{ width: '100%' }}>
                     <label>운동 종목</label>
-                    <input 
-                        className='form-control' 
-                        type="text" 
-                        list="list" 
-                        id="sport" 
-                        value={crew_sport} // 선택된 값 표시
-                        onChange={(e) => setCrew_sport(e.target.value)} // 값이 변경될 때 상태 업데이트
-                        style={{ width: '100%' }}
-                    />
-                    <datalist id="list">
-                        <option value="산악" />
-                        <option value="달리기" />
-                        <option value="걷기" />
-                        <option value="자전거" />
-                        <option value="헬스" />
-                        <option value="배드민턴" />
-                    </datalist>
+                    <CrewSearchDivEdit onSearchSport={setCrewSports}/>
+                    <br />
+                    <h5>선택된 운동 종목 : {crew_sport}</h5>
                 </div>
                 <br />
                 {/* 선호 성별 */}
@@ -342,4 +308,4 @@ function CrewModal({ crew_id }: { crew_id: number}) {
     );
 };
 
-export default CrewModal;
+export default CrewCreateModal;

@@ -30,19 +30,19 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
 
     useEffect(() => {
         if(member.badge_level === "브론즈") {
-            setImgPath("/img/crewBadge/CrewBadgeBronze.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeBronze.png");
         } else if(member.badge_level === "실버") {
-            setImgPath("/img/crewBadge/CrewBadgeSilver.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeSilver.png");
         } else if(member.badge_level === "골드") {
-            setImgPath("/img/crewBadge/CrewBadgeGold.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeGold.png");
         } else if(member.badge_level === "플래티넘") {
-            setImgPath("/img/crewBadge/CrewBadgePlatinum.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgePlatinum.png");
         } else if(member.badge_level === "다이아") {
-            setImgPath("/img/crewBadge/CrewBadgeDiamond.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeDiamond.png");
         } else if(member.badge_level === "기본") {
-            setImgPath("/img/crewBadge/CrewBadgeDefault.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeDefault.png");
         } else if(member.badge_level=== null) {
-            setImgPath("/img/crewBadge/CrewBadgeDefault.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeDefault.png");
         }
     }, [member]);
 

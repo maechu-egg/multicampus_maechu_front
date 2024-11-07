@@ -5,9 +5,10 @@ import { useAuth } from "context/AuthContext";
 
 interface CrewInfoProps {
     battle_id: number;
-}
+    crewId:number;
+}   
 
-function CrewBattleFeedModal({battle_id}:CrewInfoProps) {
+function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
     const { state } = useAuth();
     const token = state.token;
     const member_id = state.memberId;
@@ -28,7 +29,7 @@ function CrewBattleFeedModal({battle_id}:CrewInfoProps) {
     useEffect( () => {
         const getBattleMember = async () => {
             try{
-                const response = await api.get(`crew/battle/member/list?battle_id=${battle_id}`, {
+                const response = await api.get(`crew/battle/member/list?battle_id=${battle_id}&crew_id=${crewId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -105,7 +106,7 @@ function CrewBattleFeedModal({battle_id}:CrewInfoProps) {
                 <div className="form-control" style={{ width: '100%' }}>
                     <label>칼로리 입력 방식</label>
                     <div className="container d-flex justify-content-between w-100">
-                        <div className="tabs form-check form-check-inline w-100">
+                        <div className="d-flex tabs w-100 " style={{paddingLeft : 0, paddingRight : 0}}>
                             <input
                                 type="radio"
                                 id="direct"

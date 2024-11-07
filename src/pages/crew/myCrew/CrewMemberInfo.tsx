@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
-import CrewMemberCardEdit from "components/ui/card/CrewMemberCardEdit";
+import CrewMemberCardEdit from "components/ui/crew/card/CrewMemberCardEdit";
 interface CrewInfoProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
 }

@@ -16,9 +16,10 @@ interface Battle {
 interface CrewInfoProps {
     battle: Battle; // 개별 멤버 객체를 prop으로 받습니다.
     onDetailClick: () => void;
+    crewId: number;
 }
 
-function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
+function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.Element {
     const { state } = useAuth();
     const token = state.token;
     const memberId = state.memberId;
@@ -45,7 +46,7 @@ function CrewBattleCard({ battle, onDetailClick }: CrewInfoProps): JSX.Element {
     useEffect(() => {
         const getBattleMember = async () => {
             try {
-                const response = await api.get(`crew/battle/member/list?battle_id=${battle.battle_id}`, {
+                const response = await api.get(`crew/battle/member/list?battle_id=${battle.battle_id}&crew_id=${crewId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

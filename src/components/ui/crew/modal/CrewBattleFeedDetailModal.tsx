@@ -8,9 +8,10 @@ import { useAuth } from "context/AuthContext";
 
 interface CrewInfoProps {
     battleId: number;
+    crewId:number;
 }
 
-function CrewBattleFeedDetailModal({battleId}:CrewInfoProps): JSX.Element {
+function CrewBattleFeedDetailModal({battleId, crewId}:CrewInfoProps): JSX.Element {
     const { state } = useAuth();
     const token = state.token;
 
@@ -21,7 +22,7 @@ function CrewBattleFeedDetailModal({battleId}:CrewInfoProps): JSX.Element {
     useEffect(() => {
         const getBattleFeed = async () => {
             try{
-                const response = await api.get(`crew/battle/feed/list?participant_id=${participantId}`, {
+                const response = await api.get(`crew/battle/feed/list?participant_id=${participantId}&crew_id=${crewId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -38,7 +39,7 @@ function CrewBattleFeedDetailModal({battleId}:CrewInfoProps): JSX.Element {
     useEffect(() => {
         const getBattleMember = async () => {
             try{
-                const response = await api.get(`crew/battle/member/list?battle_id=${battleId}`, {
+                const response = await api.get(`crew/battle/member/list?battle_id=${battleId}&crew_id=${crewId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -65,6 +66,7 @@ function CrewBattleFeedDetailModal({battleId}:CrewInfoProps): JSX.Element {
                                     member={member}
                                     battleId={battleId}
                                     onClickHandler={() => setParticipantId(member.participant_id)}
+                                    crewId={crewId}
                                 />
                                 <hr />
                             </div>

@@ -18,9 +18,10 @@ interface CrewBattleFeedCardProps {
     member: Member;
     onClickHandler: () => void;
     battleId: number;
+    crewId: number;
 }
 
-function CrewBattleFeedCard({ member, onClickHandler, battleId}: CrewBattleFeedCardProps) {
+function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBattleFeedCardProps) {
     const [imgPath, setImgPath] = useState<string>("");
     const { state } = useAuth();
     const memberId = state.memberId;
@@ -51,7 +52,7 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId}: CrewBattleFeedC
             member_id: memberId
         }
         try{
-            const response = await api.post(`crew/battle/vote/create`, data, {
+            const response = await api.post(`crew/battle/vote/create?crew_id=${crewId}`, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

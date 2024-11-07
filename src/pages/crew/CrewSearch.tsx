@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
-import CrewJoinModal from "components/ui/modal/CrewJoinModal";
-import CrewCard from "components/ui/card/CrewCard";
-import CrewCreateModal from "components/ui/modal/CrewCreateModal";
+import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
+import CrewCard from "components/ui/crew/card/CrewCard";
+import CrewCreateModal from "components/ui/crew/modal/CrewCreateModal";
+import CrewSearchDivEdit from "components/ui/crew/selectDiv/CrewSearchDivEdit";
+import "./CrewPage.css";
 
 function CrewSearch(): JSX.Element {
     const { state } = useAuth();
@@ -11,6 +13,10 @@ function CrewSearch(): JSX.Element {
     const [crewList, setCrewList] = useState<any[]>([]);
     const [selectedCrewId, setSelectedCrewId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchSport, setSearchSport] = useState("");
+    
+    // 종목검색 div 열지 판단
+    const [open, setOpen] = useState(false);
 
     const handlePostClick = (crewId: number) => {
         console.log(`Post clicked for crew ID: ${crewId}`);
@@ -18,7 +24,8 @@ function CrewSearch(): JSX.Element {
     };
 
     const filteredData = crewList.filter(crew => 
-        crew.crew_title && crew.crew_title.toLowerCase().includes(searchTerm.toLowerCase())
+        crew.crew_title && crew.crew_title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        crew.crew_sport && crew.crew_sport.toLowerCase().includes(searchSport.toLowerCase())
     );
 
     useEffect(() => {
@@ -38,27 +45,52 @@ function CrewSearch(): JSX.Element {
         getCrewList();
     }, []);
 
+
+    const setsearchSports = (searchSport: string) => {
+        setSearchSport(searchSport);
+    }
+
+    const searchSportHandler = () => {
+        if(open === true) {
+            setOpen(false);
+            setSearchSport("");
+        } else {
+            setOpen(true);
+        }
+    }
+
     return (
         <div className="container">
-            {/* 검색바와 게시물 작성 버튼 */}
-            <div className="search-and-write">
-                <div className="search-bar">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="검색어를 입력하세요"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+            {/* 토글 & 검색바와 게시물 작성 버튼 */}
+            <div className="d-flex justify-content-between align-center">
+                <div className="container1">
+                    <div 
+                        className="btn btn-outline-dark"
+                        onClick={searchSportHandler}
+                    >
+                        <span className="btn-text">종목 선택</span>
+                    </div>
                 </div>
-                <button className="btn btn-primary write-button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#crewCreateModal"
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="검색어를 입력하세요"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button className="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#crewCreateModal"
                 >
                     크루 생성
                 </button>
             </div>
-
+            <br />
+            {/* 종목검색 선택 div */}
+            {open && 
+                <CrewSearchDivEdit onSearchSport={setsearchSports}/>
+            }
+            <br />
             {/* 게시물 목록 */}
             <div className="row">
                 {filteredData.length > 0 ? (
