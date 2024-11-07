@@ -8,10 +8,25 @@ interface MonthlyRecordChartProps {
   exerciseDates: string[];
   dietDates: string[];
   currentMonth: Date;
+  burnedCalories: number;
+  consumedCalories: number;
 }
 
-const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyRecordChartProps) => {
+const MonthlyRecordChart = ({ 
+  exerciseDates, 
+  dietDates, 
+  currentMonth,
+  burnedCalories,
+  consumedCalories
+}: MonthlyRecordChartProps) => {
   // 현재 월의 전체 날짜 수 구하기
+
+  console.log("debug >>> exerciseDates", exerciseDates);
+  console.log("debug >>> dietDates", dietDates);
+  console.log("debug >>> currentMonth", currentMonth);
+  console.log("debug >>> burnedCalories", burnedCalories);
+  console.log("debug >>> consumedCalories", consumedCalories);
+
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
     currentMonth.getMonth() + 1,
@@ -23,6 +38,8 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
   const lastDay = currentMonth.getMonth() === today.getMonth() ? 
     today.getDate() : daysInMonth;
 
+  console.log("debug >>> lastDay", lastDay);
+
   // 각 카테고리 날짜 수 계산
   let bothRecords = 0;
   let onlyExercise = 0;
@@ -30,7 +47,7 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
   let noRecords = 0;
 
   for (let day = 1; day <= lastDay; day++) {
-    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    const date = new Date(Date.UTC(currentMonth.getFullYear(), currentMonth.getMonth(), day));
     const dateString = date.toISOString().split('T')[0];
     
     const hasExercise = exerciseDates.includes(dateString);
@@ -41,6 +58,11 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
     else if (hasDiet) onlyDiet++;
     else noRecords++;
   }
+
+  console.log("debug >>> bothRecords", bothRecords);
+  console.log("debug >>> onlyExercise", onlyExercise);
+  console.log("debug >>> onlyDiet", onlyDiet);
+  console.log("debug >>> noRecords", noRecords);
 
   const data = {
     labels: ['😁', '😊', '😋', '❌'],
@@ -68,7 +90,7 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
           boxHeight: 40,
           padding: 25,
           font: {
-            size: 25,
+            size: 20,
             family: "'Pretendard', sans-serif",
             weight: 400,
           },
@@ -102,6 +124,23 @@ const MonthlyRecordChart = ({ exerciseDates, dietDates, currentMonth }: MonthlyR
       <ChartWrapper>
         <Pie data={data} options={options} />
       </ChartWrapper>
+      
+      <CaloriesSection>
+        <CalorieItem color="rgba(255,99,132,0.1)">
+          <CalorieLabel>운동 소모 칼로리</CalorieLabel>
+          <CalorieValue>{burnedCalories.toLocaleString()} kcal</CalorieValue>
+        </CalorieItem>
+        <CalorieItem color="rgb(255,255,224)">
+          <CalorieLabel>식단 섭취 칼로리</CalorieLabel>
+          <CalorieValue>{consumedCalories.toLocaleString()} kcal</CalorieValue>
+        </CalorieItem>
+        <CalorieItem color="#E5FFCC">
+          <CalorieLabel>순 칼로리</CalorieLabel>
+          <CalorieValue>
+            {(consumedCalories - burnedCalories).toLocaleString()} kcal
+          </CalorieValue>
+        </CalorieItem>
+      </CaloriesSection>
     </ChartContainer>
   );
 };
@@ -121,12 +160,14 @@ const ChartContainer = styled.div`
   @media (max-width: 850px) {
     width: 100%;
     max-width: 170px;
+    height: 700px;
     margin-left: 20px;
   }
 
   @media (max-width: 710px) {
     width: 100%;
     max-width: 140px;
+    height: 650px;
     margin-left: 20px;
   }
 `;
@@ -144,7 +185,7 @@ const ChartTitle = styled.h3`
 
 const ChartWrapper = styled.div`
   width: 100%;
-  height: 450px;
+  height: 350px;
   padding: 10px;
   display: flex;
   justify-content: center;
@@ -156,14 +197,44 @@ const ChartWrapper = styled.div`
   }
 
   @media (max-width: 850px) {
-    height: 350px;
+    height: 300px;
     padding: 5px;
   }
 
   @media (max-width: 710px) {
-    height: 300px;
+    height: 250px;
     padding: 5px;
   }
+`;
+
+const CaloriesSection = styled.div`
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  border-top: 2px solid #f0f0f0;
+`;
+
+const CalorieItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  padding: 12px;
+  background: ${props => props.color || '#f8f9fa'};
+  border-radius: 8px;
+  font-family: 'Pretendard', sans-serif;
+`;
+
+const CalorieLabel = styled.span`
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+`;
+
+const CalorieValue = styled.span`
+  font-size: 15px;
+  font-weight: 600;
+  color: #212529;
 `;
 
 export default MonthlyRecordChart; 
