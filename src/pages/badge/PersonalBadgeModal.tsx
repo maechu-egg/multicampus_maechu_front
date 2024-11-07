@@ -5,10 +5,10 @@ import BadgeScoreSection from "./badgeModalComponents/BadgeScoreSection";
 import BadgeStatsSection from "./badgeModalComponents/BadgeStatsSection";
 import BadgeFooterSection from "./badgeModalComponents/BadgeFooterSection";
 import BadgeModalTabs from "./badgeModalComponents/BadgeModalTabs";
-import BadgeScoreGuide from './badgeModalComponents/BadgeScoreGuide';
-import BadgeRankSection from './badgeModalComponents/BadgeRankSection';  
-import { useAuth } from "../../context/AuthContext";  
-import api from "../../services/api/axios"; 
+import BadgeScoreGuide from "./badgeModalComponents/BadgeScoreGuide";
+import BadgeRankSection from "./badgeModalComponents/BadgeRankSection";
+import { useAuth } from "../../context/AuthContext";
+import api from "../../services/api/axios";
 
 interface PersonalBadgeModalProps {
   isOpen: boolean;
@@ -37,12 +37,12 @@ interface ActivityRecord {
 }
 
 const badgeImages = {
-  default: process.env.PUBLIC_URL + '/img/personalBadge/badgeDefault.png',
-  bronze: process.env.PUBLIC_URL + '/img/personalBadge/badgeBronze.png',
-  silver: process.env.PUBLIC_URL + '/img/personalBadge/badgeSilver.png',
-  gold: process.env.PUBLIC_URL + '/img/personalBadge/badgeGold.png',
-  platinum: process.env.PUBLIC_URL + '/img/personalBadge/badgePlatinum.png',
-  diamond: process.env.PUBLIC_URL + '/img/personalBadge/badgeDiamond.png'
+  default: process.env.PUBLIC_URL + "/img/personalBadge/badgeDefault.png",
+  bronze: process.env.PUBLIC_URL + "/img/personalBadge/badgeBronze.png",
+  silver: process.env.PUBLIC_URL + "/img/personalBadge/badgeSilver.png",
+  gold: process.env.PUBLIC_URL + "/img/personalBadge/badgeGold.png",
+  platinum: process.env.PUBLIC_URL + "/img/personalBadge/badgePlatinum.png",
+  diamond: process.env.PUBLIC_URL + "/img/personalBadge/badgeDiamond.png",
 };
 
 const getBadgeInfo = (score: number) => {
@@ -51,52 +51,55 @@ const getBadgeInfo = (score: number) => {
       currentBadge: "다이아몬드",
       image: badgeImages.diamond,
       nextBadge: null,
-      requiredScore: null
+      requiredScore: null,
     };
   } else if (score >= 70) {
     return {
       currentBadge: "플래티넘",
       image: badgeImages.platinum,
       nextBadge: "다이아몬드",
-      requiredScore: 100
+      requiredScore: 100,
     };
   } else if (score >= 50) {
     return {
       currentBadge: "골드",
       image: badgeImages.gold,
       nextBadge: "플래티넘",
-      requiredScore: 70
+      requiredScore: 70,
     };
   } else if (score >= 30) {
     return {
       currentBadge: "실버",
       image: badgeImages.silver,
       nextBadge: "골드",
-      requiredScore: 50
+      requiredScore: 50,
     };
   } else if (score >= 10) {
     return {
       currentBadge: "브론즈",
       image: badgeImages.bronze,
       nextBadge: "실버",
-      requiredScore: 30
+      requiredScore: 30,
     };
   } else {
     return {
       currentBadge: "기본",
       image: badgeImages.default,
       nextBadge: "브론즈",
-      requiredScore: 10
+      requiredScore: 10,
     };
   }
 };
 
-function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.Element | null {
-  const [activeTab, setActiveTab] = useState('badge-info');
+function PersonalBadgeModal({
+  isOpen,
+  onClose,
+}: PersonalBadgeModalProps): JSX.Element | null {
+  const [activeTab, setActiveTab] = useState("badge-info");
   const [currentBadgeInfo, setCurrentBadgeInfo] = useState<BadgeInfo>({
-    currentBadge: '기본',
-    nextBadge: '',
-    image: badgeImages.default
+    currentBadge: "기본",
+    nextBadge: "",
+    image: badgeImages.default,
   });
   const [score, setScore] = useState(0);
   const [rank, setRank] = useState(0);
@@ -104,7 +107,7 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
     dietCount: 0,
     exerciseCount: 0,
     postCount: 0,
-    commentCount: 0
+    commentCount: 0,
   });
   const [scoreLeft, setScoreLeft] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -125,21 +128,21 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
   const calculateStats = (activities: ActivityRecord[]): Stats => {
     const exerciseCount = new Set(
       activities
-        .filter(a => a.activityType === 'exercise')
-        .map(a => a.createdDate.split('T')[0])
+        .filter((a) => a.activityType === "exercise")
+        .map((a) => a.createdDate.split("T")[0])
     ).size;
-    
+
     const dietCount = new Set(
       activities
-        .filter(a => a.activityType === 'diet')
-        .map(a => a.createdDate.split('T')[0])
+        .filter((a) => a.activityType === "diet")
+        .map((a) => a.createdDate.split("T")[0])
     ).size;
 
     return {
       dietCount,
       exerciseCount,
       postCount: 0,
-      commentCount: 0
+      commentCount: 0,
     };
   };
 
@@ -147,93 +150,105 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
     const fetchBadgeInfo = async () => {
       try {
         if (!token || !memberId) {
-          console.log('[DEBUG] 인증 정보 없음:', { token: !!token, memberId });
+          console.log("[DEBUG] 인증 정보 없음:", { token: !!token, memberId });
           return;
         }
-    
+
         const config = {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         };
-    
-        const response = await api.get(`/badges/user/${memberId}/badge`, config);
+
+        const response = await api.get(
+          `/badges/user/${memberId}/badge`,
+          config
+        );
         const data = response.data;
-        
-        console.log('[DEBUG] 뱃지 정보:', data);
-        
+
+        console.log("[DEBUG] 뱃지 정보:", data);
+
         setScore(data.current_points || 0);
         const badgeInfo = getBadgeInfo(data.current_points || 0);
-        
+
         setCurrentBadgeInfo({
           currentBadge: data.badge_level,
-          nextBadge: badgeInfo.nextBadge || '',
-          image: badgeImages[data.badge_level.toLowerCase() as keyof typeof badgeImages] || badgeImages.default
+          nextBadge: badgeInfo.nextBadge || "",
+          image:
+            badgeImages[
+              data.badge_level.toLowerCase() as keyof typeof badgeImages
+            ] || badgeImages.default,
         });
 
         if (badgeInfo.requiredScore) {
           const remainingScore = badgeInfo.requiredScore - data.current_points;
           setScoreLeft(remainingScore);
-          
+
           const currentThreshold = getBadgeThreshold(data.current_points);
-          const progressPercentage = ((data.current_points - currentThreshold) / 
-            (badgeInfo.requiredScore - currentThreshold)) * 100;
+          const progressPercentage =
+            ((data.current_points - currentThreshold) /
+              (badgeInfo.requiredScore - currentThreshold)) *
+            100;
           setProgress(Math.min(Math.max(progressPercentage, 0), 100));
         } else {
           setScoreLeft(0);
           setProgress(100);
         }
       } catch (error) {
-        console.error('[DEBUG] 뱃지 정보 조회 실패:', error);
+        console.error("[DEBUG] 뱃지 정보 조회 실패:", error);
       }
     };
 
     const fetchActivities = async () => {
       try {
         if (!token || !memberId) {
-          console.log('[DEBUG] 인증 정보 없음:', { token: !!token, memberId });
+          console.log("[DEBUG] 인증 정보 없음:", { token: !!token, memberId });
           return;
         }
-    
+
         const config = {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         };
-    
-        const response = await api.get(`/badges/user/${memberId}/activities`, config);
-        
+
+        const response = await api.get(
+          `/badges/user/${memberId}/activities`,
+          config
+        );
+
         // 활동 기록이 없는 경우 빈 배열로 처리
         const activities = response.data || [];
-        console.log('[DEBUG] 활동 기록:', activities);
-    
+        console.log("[DEBUG] 활동 기록:", activities);
+
         setActivities(activities);
-        
+
         // 활동 기록이 없어도 기본값으로 통계 표시
-        const calculatedStats = activities.length > 0 
-          ? calculateStats(activities)
-          : {
-              dietCount: 0,
-              exerciseCount: 0,
-              postCount: 0,
-              commentCount: 0
-            };
-        
+        const calculatedStats =
+          activities.length > 0
+            ? calculateStats(activities)
+            : {
+                dietCount: 0,
+                exerciseCount: 0,
+                postCount: 0,
+                commentCount: 0,
+              };
+
         setStats(calculatedStats);
       } catch (error: any) {
-        console.error('[DEBUG] 활동 기록 조회 실패:', {
+        console.error("[DEBUG] 활동 기록 조회 실패:", {
           message: error.message,
-          status: error.response?.status
+          status: error.response?.status,
         });
-        
+
         // 에러 발생 시 기본값 설정
         setStats({
           dietCount: 0,
           exerciseCount: 0,
           postCount: 0,
-          commentCount: 0
+          commentCount: 0,
         });
       }
     };
@@ -248,27 +263,27 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'badge-info':
+      case "badge-info":
         return (
           <>
-            <BadgeScoreSection 
-              score={score} 
-              rank={rank} 
+            <BadgeScoreSection
+              score={score}
+              rank={rank}
               currentBadge={currentBadgeInfo.currentBadge}
             />
             <div className="stats-footer-container">
               <BadgeStatsSection stats={stats} />
-              <BadgeFooterSection 
-                scoreLeft={scoreLeft} 
+              <BadgeFooterSection
+                scoreLeft={scoreLeft}
                 progress={progress}
                 nextBadge={currentBadgeInfo.nextBadge}
               />
             </div>
           </>
         );
-      case 'score-guide':
+      case "score-guide":
         return <BadgeScoreGuide />;
-      case 'rank':
+      case "rank":
         return <BadgeRankSection />;
       default:
         return null;
@@ -276,12 +291,18 @@ function PersonalBadgeModal({ isOpen, onClose }: PersonalBadgeModalProps): JSX.E
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div
+      className="modal-overlay"
+      onClick={onClose}
+      style={{ marginTop: "60px" }}
+    >
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close-button" onClick={onClose}>×</button>
+        <button className="modal-close-button" onClick={onClose}>
+          ×
+        </button>
         <BadgeModalTabs activeTab={activeTab} onTabChange={setActiveTab} />
-        {activeTab === 'badge-info' && (
-          <BadgeModalHeader 
+        {activeTab === "badge-info" && (
+          <BadgeModalHeader
             currentBadge={currentBadgeInfo.currentBadge}
             image={currentBadgeInfo.image}
             isCrew={false}

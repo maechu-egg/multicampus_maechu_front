@@ -1,22 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
-import api from "../../services/api/axios";
+import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
+import CrewBadgeModal from "pages/badge/CrewBadgeModal";
+
 const categories = [
   "내가 쓴 글",
   "좋아요 한 글",
   "내가 참여한 크루",
   "배틀 중",
 ];
+
 function MyPage(): JSX.Element {
   const personalPoints = 75;
   const crewPoints = 50;
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const { state } = useAuth(); // AuthContext에서 상태 가져오기
-  const { token } = state; // 상태에서 token과 memberId 가져오기
-  const [kcalData, setkcalData] = useState();
+  const { state } = useAuth();
+  const { token } = state;
+  const navigate = useNavigate();
+  const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
+  const [isCrewModalOpen, setCrewModalOpen] = useState(false);
+
+  const openPersonalModal = () => setPersonalModalOpen(true);
+  const closePersonalModal = () => setPersonalModalOpen(false);
+
+  const openCrewModal = () => setCrewModalOpen(true);
+  const closeCrewModal = () => setCrewModalOpen(false);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -44,19 +56,24 @@ function MyPage(): JSX.Element {
         </InfoBars>
         <Divider />
         <InfoBars>
-          <Info>
-            <h3>개인 활동 포인트</h3>
+          <Info onClick={openPersonalModal}>
+            <h3>개인 활동 포인트 &nbsp; &gt;&gt; </h3>
             <ProgressBarWrapper>
               <ProgressBar progress={personalPoints} />
               <ProgressLabel>{personalPoints}점</ProgressLabel>
             </ProgressBarWrapper>
+            <PersonalBadgeModal
+              isOpen={isPersonalModalOpen}
+              onClose={closePersonalModal}
+            />
           </Info>
-          <Info>
-            <h3>크루 활동 포인트</h3>
+          <Info onClick={openCrewModal}>
+            <h3>크루 활동 포인트 &nbsp; &gt;&gt; </h3>
             <ProgressBarWrapper>
               <ProgressBar progress={crewPoints} />
               <ProgressLabel>{crewPoints}점</ProgressLabel>
             </ProgressBarWrapper>
+            <CrewBadgeModal isOpen={isCrewModalOpen} onClose={closeCrewModal} />
           </Info>
         </InfoBars>
         <Divider />
@@ -148,6 +165,7 @@ const InfoBars = styled.div`
   display: flex;
   justify-content: space-between;
   text-align: center;
+  cursor: pointer;
 
   @media (min-width: 900px) {
     width: 100%;
@@ -213,6 +231,11 @@ const ProgressBar = styled.div<{ progress: number }>`
     width: ${(props) => props.progress}%;
     background-color: #4caf50;
     transition: width 0.3s ease;
+  }
+
+  &:hover {
+    background-color: #a5a4a4;
+    transition: background-color 0.3s ease;
   }
 
   @media (min-width: 900px) {
