@@ -10,8 +10,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./CommunityPage.css";
 import RecommendedKeywords from "./communityComponent/RecommendedKeywords";
 import categoriesJson from "../../assets/data/categories.json";
+import dataJson from "../../assets/data/data.json";
 import axios from "axios";
-import { recommendedKeywords, post_up_sports, post_sports } from './communityComponent/data';
+// import { recommendedKeywords, post_up_sports, post_sports } from './communityComponent/data';
 import {  useNavigate } from "react-router-dom";
 
 
@@ -60,6 +61,20 @@ interface CategoryData {
     [key: string]: string[];
   };
 }
+// community 데이터
+export interface CommunityData {
+  recommendedKeywords: string[];
+  post_up_sports: string[];
+  post_sports: {
+    [key: string]: string[];
+  };
+}
+// community 적용
+const data: CommunityData = dataJson;
+  // 값 설정
+  const recommendedKeywords = data.recommendedKeywords;
+  const post_up_sports = data.post_up_sports;
+  const post_sports = data.post_sports;
 
 function CommunityPage(): JSX.Element {
   const [showPostForm, setShowPostForm] = useState(false);
