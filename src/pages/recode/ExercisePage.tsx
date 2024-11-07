@@ -3,10 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
 import styled from "styled-components";
+import { format, parse } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 
 function ExercisePage() {
-  const { selectedDate } = useParams();
+  const { selectedDate } = useParams<{ selectedDate: string }>();
   const { state } = useAuth();
   const token = state.token;
   const memberId = state.memberId;
@@ -30,10 +32,10 @@ function ExercisePage() {
       'member_id': memberId,
       'record_date': selectedDate,
     }
-    fetchExerciseData(data);
+    exerciseGet(data);
   }, []);
   
-  const fetchExerciseData = async (data: any) => {
+  const exerciseGet = async (data: any) => {
     try {
       console.log("debug >>> data", data);
       const response = await api.post("record/exercise/get/exerday", data, { headers: { Authorization: `Bearer ${token}` } });
@@ -57,17 +59,30 @@ function ExercisePage() {
 
       const response = await api.post("record/exercise/insert/type", data, { headers: { Authorization: `Bearer ${token}` } });
       console.log("debug >>> response", response);
+      
     } catch (error) {
       console.error("debug >>> error", error);
     }
   }
   
+  const getFormattedDate = () => {
+    try {
+      if (!selectedDate) return new Date();
+      return parse(selectedDate, 'yyyy-MM-dd', new Date());
+    } catch (error) {
+      console.error('날짜 변환 에러:', error);
+      return new Date();
+    }
+  };
+
+  const date = getFormattedDate();
+  
   return (
     <Container>
       <SummaryCard>
         <DateSection>
-          <h2>{selectedDate}</h2>
-          <p>금요일</p>
+          <h2>{format(date, 'yyyy.MM.dd')}</h2>
+          <p>{format(date, 'EEEE', { locale: ko })}</p>
         </DateSection>
         <StatsSection>
           <StatItem>

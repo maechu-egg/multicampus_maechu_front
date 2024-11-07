@@ -8,6 +8,17 @@ import { useAuth } from "../../context/AuthContext";
 import MonthlyRecordChart from "../../components/MonthlyRecordChart";
 import { IoCloseOutline } from "react-icons/io5";
 
+// 타입 정의 추가
+interface ExerciseRecord {
+  record_date: string;
+  totalCalories: number;
+}
+
+interface DietRecord {
+  record_date: string;
+  totalCalories: number;
+}
+
 function RecordPage() {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
   const [dietDates, setDietDates] = useState<string[]>([]);
@@ -18,6 +29,8 @@ function RecordPage() {
   const { state } = useAuth();
   const token = state.token;
   const memberId = state.memberId;
+  const [exerciseCalories, setExerciseCalories] = useState<Record<string, number>>({});
+  const [dietCalories, setDietCalories] = useState<Record<string, number>>({});
 
 
   // 컴포넌트 마운트 시 현재 월 데이터 조회
@@ -45,21 +58,54 @@ function RecordPage() {
         'month': month
       }, { headers });
 
-      console.log("debug >>> exerciseResponse", exerciseResponse);
+      // 운동 데이터 처리
+      const exerciseDatesArray: string[] = [];
+      const exerciseCaloriesMap: Record<string, number> = {};
+      
+      exerciseResponse.data.forEach((record: ExerciseRecord) => {
+        exerciseDatesArray.push(record.record_date);
+        exerciseCaloriesMap[record.record_date] = record.totalCalories;
+      });
+      
+      setExerciseDates(exerciseDatesArray);
+      setExerciseCalories(exerciseCaloriesMap);
+
       // 식단 기록 조회
       const dietResponse = await api.post('record/diet/get/month', {
         'member_id': memberId,
         'year': year,
         'month': month
       }, { headers });
-      console.log("debug >>> dietResponse", dietResponse);
-      // 운동 기록 데이터 저장
-      setExerciseDates(exerciseResponse.data);
-      // 식단 기록 데이터 저장
-      setDietDates(dietResponse.data);
+
+      // 식단 데이터 처리
+      const dietDatesArray: string[] = [];
+      const dietCaloriesMap: Record<string, number> = {};
+      
+      dietResponse.data.forEach((record: DietRecord) => {
+        dietDatesArray.push(record.record_date);
+        dietCaloriesMap[record.record_date] = record.totalCalories;
+      });
+      
+      setDietDates(dietDatesArray);
+      setDietCalories(dietCaloriesMap);
+
     } catch (error) {
       console.error('데이터 조회 실패:', error);
     }
+  };
+
+  // 월간 총 칼로리 계산
+  const calculateMonthlyCalories = () => {
+    const totalBurnedCalories = Object.values(exerciseCalories)
+      .reduce((sum, calories) => sum + calories, 0);
+    
+    const totalConsumedCalories = Object.values(dietCalories)
+      .reduce((sum, calories) => sum + calories, 0);
+
+    return {
+      burned: totalBurnedCalories,
+      consumed: totalConsumedCalories
+    };
   };
 
   // 날짜 클릭 시 모달 표시
@@ -151,7 +197,9 @@ function RecordPage() {
 
   return (
     <Wrapper>
+      <TitleContainer>
       <h1>운동 히스토리</h1>
+      </TitleContainer>
       <Container>
         <Calendar
         onChange={(value) => setValue(value as Date)}
@@ -185,6 +233,8 @@ function RecordPage() {
         exerciseDates={exerciseDates}
         dietDates={dietDates}
         currentMonth={value}
+        burnedCalories={calculateMonthlyCalories().burned}
+        consumedCalories={calculateMonthlyCalories().consumed}
       />
       </Container>
     </Wrapper>
@@ -195,33 +245,46 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  min-height: 100vh;
+  height: 100%;
   padding: 50px;
+  width: 70%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  font-family: 'Noto Sans KR', sans-serif;
+`;
+const TitleContainer = styled.div`
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 3px 10px rgba(0.5, 0.5, 0.5, 0.5); // 그림자
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1025px;
+h1 {
 
-  h1 {
-    width: 100%;
-    max-width: 1000px;
-    margin-bottom: 2rem;
-    font-size: 27px;
-    font-weight: 700;
-    font-family: 'Pretendard', sans-serif;
-    text-align: left;
-  }
+  margin-bottom: 2rem;
+  font-size: 27px;
+  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  text-align: center;
+   margin: 0 auto;  // 중앙 정렬
+}
 
-  @media (max-width: 850px) {
+ @media (max-width: 850px) {
     
     h1 {
-      text-align: left;
-      max-width: 600px;
+      text-align: center;
       font-size: 24px;
     }
   }
 
   @media (max-width: 710px) {
     h1 {
-      text-align: left;
-      max-width: 550px;
+      text-align: center;
       font-size: 20px;
     }
   }
@@ -233,7 +296,6 @@ const Container = styled.div`
   display: flex; // 플렉스 정렬
   flex-direction: row; // 가로 정렬
   justify-content: center; // 중앙 정렬
-  min-height: 100vh; // 화면 높이 최소 100vh
   max-width: 1100px;  // 캘린더 너비와 맞춤
   margin: 0 auto;  // 중앙 정렬
 
@@ -307,25 +369,56 @@ const Container = styled.div`
       color: #cccccc; // 인접 월 텍스트 색상
     }
 
-    // 모바일 화면 스타일
-    @media (max-width: 710px) {
-      width: 100%; // 모바일 화면 너비
-      max-width: 320px; // 모바일 화면 최대 너비
-      // 타일 스타일
-      .react-calendar__tile {
-        padding: 5px; // 타일 내부 여백
-        font-size: 14px; // 타일 텍스트 크기
+ // 태블릿 화면 스타일
+  @media (max-width: 850px) {
+    .react-calendar {
+      width: 420px; // 캘린더 너비
+      border: 0.4px solid lightgray;
+      border-radius: 15px;
+      .emoji {
+        font-size: 3.6rem; // 텍스트 크기
       }
     }
+    .react-calendar__month-view__days {
+      button {
+        position: relative; // 상대 위치
+        display: flex; // 플렉스 정렬
+        height: 90px; // 높이
+        border-right: 1px solid lightgray;  // 두께 증가
+        border-bottom: 1px solid lightgray; // 두께 증가
+        font-size: 18px; // 텍스트 크기
+        font-family: 'Pretendard', sans-serif; // 폰트
+        font-weight: 400; // 텍스트 두께
+        box-sizing: border-box;  // 추가
+      }
+    }
+  }
 
-    // 태블릿 화면 스타일
-    @media (max-width: 850px) {
-      width: 100%; // 모바일 화면 너비
-      max-width: 420px; // 모바일 화면 최대 너비
-      // 타일 스타일
-      .react-calendar__tile {
-        padding: 8px; // 타일 내부 여백
-        font-size: 16px; // 타일 텍스트 크기
+  // 모바일 화면 스타일
+  @media (max-width: 710px) {
+    // 캘린더 스타일
+    .react-calendar {
+      width: 320px; // 캘린더 너비
+      border: 0.4px solid lightgray; // 구분선 추가
+      border-radius: 15px; // 둥근 모서리
+      // 이모지 스타일
+      .emoji {
+        font-size: 2.2rem; // 텍스트 크기
+      }
+    }
+    // 일자 타일 스타일
+    .react-calendar__month-view__days {
+      // 일자 타일 버튼 스타일
+      button {
+        position: relative; // 상대 위치
+        display: flex; // 플렉스 정렬
+        height: 90px; // 높이
+        border-right: 1px solid lightgray;  // 두께 증가
+        border-bottom: 1px solid lightgray; // 두께 증가
+        font-size: 18px; // 텍스트 크기
+        font-family: 'Pretendard', sans-serif; // 폰트
+        font-weight: 400; // 텍스트 두께
+        box-sizing: border-box;  // 추가
       }
     }
   }
@@ -406,59 +499,7 @@ const Container = styled.div`
     text-decoration: none; // 텍스트 장식 제거
   }
 
-  // 태블릿 화면 스타일
-  @media (max-width: 850px) {
-    .react-calendar {
-      width: 420px; // 캘린더 너비
-      border: 0.4px solid lightgray;
-      border-radius: 15px;
-      .emoji {
-        font-size: 3.6rem; // 텍스트 크기
-      }
-    }
-    .react-calendar__month-view__days {
-      button {
-        position: relative; // 상대 위치
-        display: flex; // 플렉스 정렬
-        height: 90px; // 높이
-        border-right: 1px solid lightgray;  // 두께 증가
-        border-bottom: 1px solid lightgray; // 두께 증가
-        font-size: 18px; // 텍스트 크기
-        font-family: 'Pretendard', sans-serif; // 폰트
-        font-weight: 400; // 텍스트 두께
-        box-sizing: border-box;  // 추가
-      }
-    }
-  }
-
-  // 모바일 화면 스타일
-  @media (max-width: 710px) {
-    // 캘린더 스타일
-    .react-calendar {
-      width: 320px; // 캘린더 너비
-      border: 0.4px solid lightgray; // 구분선 추가
-      border-radius: 15px; // 둥근 모서리
-      // 이모지 스타일
-      .emoji {
-        font-size: 2.2rem; // 텍스트 크기
-      }
-    }
-    // 일자 타일 스타일
-    .react-calendar__month-view__days {
-      // 일자 타일 버튼 스타일
-      button {
-        position: relative; // 상대 위치
-        display: flex; // 플렉스 정렬
-        height: 90px; // 높이
-        border-right: 1px solid lightgray;  // 두께 증가
-        border-bottom: 1px solid lightgray; // 두께 증가
-        font-size: 18px; // 텍스트 크기
-        font-family: 'Pretendard', sans-serif; // 폰트
-        font-weight: 400; // 텍스트 두께
-        box-sizing: border-box;  // 추가
-      }
-    }
-  }
+ 
 
   // 날짜 타일 컨텐츠 스타일
   .date-content {
@@ -472,20 +513,6 @@ const Container = styled.div`
       margin-left: 7px; // 왼쪽 여백
       display: flex; // 플렉스 정렬
       font-size: 3.5rem; // 텍스트 크기
-    }
-  }
-
-  // 모바일 화면 스타일
-  @media (max-width: 850px) {
-    .date-content .emoji {
-      font-size: 2.5rem; // 텍스트 크기
-    }
-  }
-
-  // 모바일 화면 스타일
-  @media (max-width: 710px) {
-    .date-content .emoji {
-      font-size: 2rem; // 텍스트 크기
     }
   }
 `;
