@@ -1,9 +1,61 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../../context/AuthContext"; // useAuth import
+import api from "../../services/api/axios";
+
+interface Crew {
+  crew_intro_img: string;
+  crew_name: string;
+  crew_title: string;
+  crew_goal: string;
+}
 
 function HomePage(): JSX.Element {
+  const { state } = useAuth(); // AuthContext에서 상태 가져오기
+  const { token } = state; // 상태에서 token과 memberId 가져오기
+  const [crewData, setCrewData] = useState<Crew[]>([]); // crewData의 타입을 Crew[]로 지정
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isDataFetched, setIsDataFetched] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchCrewData = async () => {
+      try {
+        const response = await api.get("/crew/list/homepage", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setCrewData(response.data); // 응답 데이터를 상태에 저장
+          setIsDataFetched(true);
+        } else {
+          setIsLoggedIn(false); // 응답이 실패했을 때 로그인 상태를 false로 설정
+        }
+      } catch (error) {
+        console.error("데이터를 가져오는 데 실패했습니다:", error);
+        setIsLoggedIn(false); // 데이터를 가져오는 데 실패했을 때 로그인 상태를 false로 설정
+      }
+    };
+
+    if (token) {
+      fetchCrewData();
+    } else {
+      setIsLoggedIn(false); // 토큰이 없을 때 로그인 상태를 false로 설정
+    }
+  }, [token]);
+
+  const fakeCrewData: Crew[] = [
+    {
+      crew_intro_img: "img/Home/homeEx1.png",
+      crew_name: "00크루",
+      crew_title: "00크루에서 0000한 크루원 모집합니다",
+      crew_goal: "헬창",
+    },
+  ];
+
   return (
     <Container>
       <StyledSlider>
@@ -102,70 +154,61 @@ function HomePage(): JSX.Element {
           </button>
         </div>
       </StyledSlider>
+      <SwapSpot>
+        <TextContainer>
+          <h1>Swap-Spot</h1>
+          <span>
+            나에게 필요한 운동 기구/용품를 찾거나, 사용하지 않은 운동
+            기구/용품을 공유해보세요 !
+          </span>
+        </TextContainer>
+      </SwapSpot>
+      <SwapSpot>
+        <TextContainer>
+          <h1>Today Best - 오운완!</h1>
+          <span>
+            워크스페이스의 다양한 운동인들의 운동인증, 기록을 통해 베스트 오운완
+            회원이 되세요 !
+          </span>
+        </TextContainer>
+      </SwapSpot>
       <LocalCrew>
         <Title>
           <TextContainer>
             <h1>My Hometown, New Crew</h1>
             <span>
-              바로 내 지역, 근처에서 모집 중인 최신 크루들을 찾아보세요!
+              바로 내 지역, 근처에서 모집 중인 최신 크루들을 찾아보세요 !
             </span>
+            {!isLoggedIn && (
+              <WarningMessage>
+                회원 전용 정보입니다. 로그인 해주세요
+              </WarningMessage>
+            )}
           </TextContainer>
           <IconWrapper>
             <FontAwesomeIcon icon={faArrowRight} />
           </IconWrapper>
         </Title>
-        <Cards>
-          <div className="card">
-            <img
-              src="img/Home/homeEx1.png"
-              className="card-img-top card-image"
-              alt="..."
-            />
-            <div className="card-body">
-              <h5 className="card-title">전북권 한사랑 산악회</h5>
-              <p className="card-text">
-                전북권 주말 아침 등산하는 직장인을 모집합니다 ~!
-                <br /> ** 점심 제공 **
-              </p>
-              <a href="#" className="btn btn-secondary">
-                Go somewhere
-              </a>
-            </div>
-          </div>
-          <div className="card">
-            <img
-              src="img/Home/homeEx1.png"
-              className="card-img-top card-image"
-              alt="..."
-            />
-            <div className="card-body">
-              <h5 className="card-title">전북권 한사랑 산악회</h5>
-              <p className="card-text">
-                전북권 주말 아침 등산하는 직장인을 모집합니다 ~!
-                <br /> ** 점심 제공 **
-              </p>
-              <a href="#" className="btn btn-secondary">
-                Go somewhere
-              </a>
-            </div>
-          </div>
-          <div className="card">
-            <img
-              src="img/Home/homeEx1.png"
-              className="card-img-top card-image"
-              alt="..."
-            />
-            <div className="card-body">
-              <h5 className="card-title">전북권 한사랑 산악회</h5>
-              <p className="card-text">
-                전북권 주말 아침 등산하는 직장인을 모집합니다 ~!
-                <br /> ** 점심 제공 **
-              </p>
-              <a href="#" className="btn btn-secondary">
-                Go somewhere
-              </a>
-            </div>
-          </div>
+        <Cards isLoggedIn={isLoggedIn}>
+          {(isLoggedIn && isDataFetched ? crewData : fakeCrewData).map(
+            (crew, index) => (
+              <div className="card" key={index}>
+                <img
+                  src={crew.crew_intro_img}
+                  className="card-img-top card-image"
+                  alt={crew.crew_name}
+                />
+                <div className="card-body">
+                  <h5 className="card-title">{crew.crew_name}</h5>
+                  <p className="card-text">{crew.crew_title}</p>
+                  <p className="card-goal">목표: {crew.crew_goal}</p>
+                  <a href="#" className="btn btn-secondary">
+                    자세히 보기
+                  </a>
+                </div>
+              </div>
+            )
+          )}
         </Cards>
       </LocalCrew>
     </Container>
@@ -228,8 +271,13 @@ const StyledSlider = styled.div`
   }
 `;
 
+const SwapSpot = styled.div`
+  width: 80%;
+  margin-top: 70px;
+`;
+
 const LocalCrew = styled.div`
-  width: 90%;
+  width: 80%;
   margin-top: 70px;
 `;
 
@@ -256,18 +304,25 @@ const TextContainer = styled.div`
   }
 `;
 
+const WarningMessage = styled.span`
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
+`;
+
 const IconWrapper = styled.div`
   font-size: 1.5rem;
   margin-left: auto;
   padding-right: 60px;
 `;
 
-const Cards = styled.div`
+const Cards = styled.div<{ isLoggedIn: boolean }>`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
+  filter: ${({ isLoggedIn }) => (isLoggedIn ? "none" : "blur(4px)")};
 
   .card {
     width: 18rem;
@@ -277,7 +332,7 @@ const Cards = styled.div`
   }
 
   .card-image {
-    max-height: 250px; /* Set max-height to control image size */
+    max-height: 250px;
     object-fit: cover;
   }
 
