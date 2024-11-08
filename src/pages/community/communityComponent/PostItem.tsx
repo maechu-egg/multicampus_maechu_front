@@ -11,7 +11,7 @@ interface PostItemProps {
   post_nickname: string;
   post_date: string;
   post_views: number;
-  // comments: number;
+  // comments:  Comment[];
   comments_count:number;
   post_up_sport: string;
   post_sport: string;

@@ -11,7 +11,7 @@ interface Post {
   post_date: string;
   post_views: number;
   comments_count :number;
-  // comments: number;
+  // comments:  Comment[];
   post_up_sport: string;
   post_sport: string;
   post_sports_keyword:string;
@@ -24,7 +24,7 @@ interface Post {
   post_img2:string;
   post_unlike_counts : number;
   member_id: number; 
-  commets_count:number;
+
   author:boolean;
 }
 

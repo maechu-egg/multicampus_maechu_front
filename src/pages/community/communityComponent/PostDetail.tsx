@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import "./PostDetail.css";
 import axios from "axios";
@@ -31,7 +31,7 @@ interface PostDetailProps {
   onEdit: () => void;
   onDelete: () => void;
   currentUserNickname: string;
-  comments: Comment[];
+  // comments: Comment[];
   onAddComment: (content: string) => void;
   onCommentReaction: (commentId: number, type: "like" | "dislike") => void;
   post_img1?:string;
@@ -60,7 +60,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   onEdit,
   onDelete,
   currentUserNickname,
-  comments,
+  // comments,
   onAddComment,
   onCommentReaction,
   post_img1,
@@ -76,12 +76,14 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [disliked, setDisliked] = useState(unlikeStatus);
   const [likeCount, setLikeCount] = useState(post_like_counts);
   const [dislikeCount, setDislikeCount] = useState(post_unlike_counts);
+  const [sortedComments, setSortedComments] = useState<Comment[]>([]);
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : []; // 공백을 기준으로 문자열을 나눠 배열로 변환
-  const handleLike =  async () => {
+ 
   
-
+  // 게시글 좋아요
+  const handleLike =  async () => {
   
     try{
       const token = localStorage.getItem("authToken");
@@ -221,13 +223,13 @@ const PostDetail: React.FC<PostDetailProps> = ({
     }
   };
 
-  const sortedComments = [...comments].sort((a, b) => {
-    if (sortOrder === "asc") {
-      return a.id - b.id;
-    } else {
-      return b.id - a.id;
-    }
-  });
+  // sortedComments = [...comments].sort((a, b) => {
+  //   if (sortOrder === "asc") {
+  //     return a.id - b.id;
+  //   } else {
+  //     return b.id - a.id;
+  //   }
+  // });
 
   return (
     <div className="post-detail">
