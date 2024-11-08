@@ -5,48 +5,61 @@ import "./PostItem.css";
 /* 개별 게시물 항목을 표시하는 컴포넌트 */
 
 interface PostItemProps {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  date: string;
-  views: number;
-  comments: number;
-  category: string;
-  subcategory: string;
-  tags: string[];
-  likeCount: number;
+  post_id: number;
+  post_title: string;
+  post_contents: string;
+  post_nickname: string;
+  post_date: string;
+  post_views: number;
+  // comments:  Comment[];
+  comments_count:number;
+  post_up_sport: string;
+  post_sport: string;
+  post_sports_keyword:string;
+  post_hashtag: string;
+  post_like_counts: number;
+  likeStatus :boolean;
+
   isRecommended?: boolean; 
   onClick: () => void;
 }
 
 const PostItem: React.FC<PostItemProps> = ({
-  title,
-  author,
-  date,
-  views,
-  comments,
-  subcategory,
-  likeCount,
+  post_title,
+  post_nickname,
+  post_date,
+  post_views,
+  comments_count ,
+  // comments,
+  post_sport,
+  post_like_counts,
+  post_hashtag,
+  likeStatus,
   isRecommended, 
   onClick
 }) => {
+
+  // 해시태그 문자열을 쉼표와 공백(", ") 기준으로 나누어 배열로 변환
+  const hashtagArray = post_hashtag ? post_hashtag.split(", ") : [];
+
+
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`} onClick={onClick}>
       <div className="post-content-wrapper">
-        <span className="subcategory">[{subcategory || '자유'}]</span>
-        <span className="post-title">{title}</span>
-        <span className="author">{author}</span>
-        <span className="date">{date}</span>
+        <span className="subcategory">[{post_sport || '자유'}]</span>
+        <span className="post-title">{post_title}</span>
+        <span className="author">{post_nickname}</span>
+        <span className="date">{post_date}</span>
         <div className="post-stats">
           <span className="likes">
-            <FaThumbsUp /> {likeCount}
+            <FaThumbsUp /> {post_like_counts}
           </span>
           <span className="comments">
-            <FaComment /> {comments}
+            {/* <FaComment /> {comments} */}
+            <FaComment /> {comments_count}
           </span>
           <span className="views">
-            <FaEye /> {views}
+            <FaEye /> {post_views}
           </span>
         </div>
       </div>

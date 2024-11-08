@@ -18,7 +18,7 @@ function BadgeFooterSection({ scoreLeft, progress, nextBadge }: BadgeFooterSecti
 
   return (
     <div className="footer">
-      <p>{nextBadge} 등급까지 {scoreLeft}점 남았습니다</p>
+      <p>다음 등급까지 {scoreLeft}점 남았습니다</p>
       <div className="progress-bar">
         <div 
           className="progress" 

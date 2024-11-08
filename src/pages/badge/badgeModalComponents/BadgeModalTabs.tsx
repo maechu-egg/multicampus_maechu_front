@@ -16,14 +16,14 @@ function BadgeModalTabs({ activeTab, onTabChange }: BadgeModalTabsProps) {
         뱃지 정보
       </button>
       <button 
-        className={`tab-button ${activeTab === 'score-guide' ? 'active' : ''}`}  // achievement를 score-guide로 변경
-        onClick={() => onTabChange('score-guide')}  // achievement를 score-guide로 변경
+        className={`tab-button ${activeTab === 'score-guide' ? 'active' : ''}`}  
+        onClick={() => onTabChange('score-guide')} 
       >
         점수 설명
       </button>
       <button 
-        className={`tab-button ${activeTab === 'rank' ? 'active' : ''}`}  // history를 rank로 변경
-        onClick={() => onTabChange('rank')}  // history를 rank로 변경
+        className={`tab-button ${activeTab === 'rank' ? 'active' : ''}`}  
+        onClick={() => onTabChange('rank')}  
       >
         순위
       </button>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import CrewModal from "components/ui/modal/CrewModal";
-import CrewIntroModal from "components/ui/modal/CrewIntroModal";
+import CrewModal from "components/ui/crew/modal/CrewModal";
+import CrewIntroModal from "components/ui/crew/modal/CrewIntroModal";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,6 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
     useEffect(() => {
         const selectCrew = async() => {
             try{
-                /* crewId는 크루 헤더에서 내 크루 클릭시 크루아이디가 props로 넘어옴. */
                 const response = await api.get(`crew/info/${crewId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`

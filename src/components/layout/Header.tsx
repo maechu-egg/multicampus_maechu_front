@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
-import { useAuth } from "../../context/AuthContext"; // useAuth import
+import { useAuth } from "../../context/AuthContext";
 
 const MainLogo = process.env.PUBLIC_URL + "/img/Mainlogo.png";
 
@@ -11,7 +11,7 @@ function Header(): JSX.Element {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isClickMenuBtn, setIsClickMenuBtn] = useState(false);
   const HeaderRef = useRef<HTMLDivElement | null>(null);
-  const { state, dispatch } = useAuth(); // AuthContext에서 state와 dispatch 가져오기
+  const { state, dispatch } = useAuth();
 
   const handleCloseMenu = () => {
     setIsClickMenuBtn(false);
@@ -57,7 +57,7 @@ function Header(): JSX.Element {
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("memberId");
-    dispatch({ type: "LOGOUT" }); // 로그아웃 액션 실행
+    dispatch({ type: "LOGOUT" });
   };
 
   return (
@@ -83,7 +83,7 @@ function Header(): JSX.Element {
           </Link>
         </Tab>
         <Tab>
-          <Link to="/recordpage" onClick={handleNavigate}>
+          <Link to="/recodepage" onClick={handleNavigate}>
             나의 기록
           </Link>
         </Tab>
@@ -123,7 +123,7 @@ function Header(): JSX.Element {
             <Link to="/aboutpage">워크스페이스</Link>
           </Tab>
           <Tab onClick={toggleMenu}>
-            <Link to="/recordpage">나의 기록</Link>
+            <Link to="/recodepage">나의 기록</Link>
           </Tab>
         </SidebarContent>
       </Sidebar>
@@ -131,9 +131,25 @@ function Header(): JSX.Element {
   );
 }
 
+const MenuLinks = ({ handleNavigate }: { handleNavigate: () => void }) => (
+  <>
+    <Tab onClick={handleNavigate}>
+      <Link to="/communitypage">커뮤니티</Link>
+    </Tab>
+    <Tab onClick={handleNavigate}>
+      <Link to="/crewpage">운동 크루</Link>
+    </Tab>
+    <Tab onClick={handleNavigate}>
+      <Link to="/aboutpage">워크스페이스</Link>
+    </Tab>
+    <Tab onClick={handleNavigate}>
+      <Link to="/recordpage">나의 기록</Link>
+    </Tab>
+  </>
+);
+
 export default Header;
 
-// Styled components
 const Container = styled.div`
   height: var(--header-height);
   position: sticky;
@@ -155,12 +171,21 @@ const Container = styled.div`
     backdrop-filter: blur(15px);
     box-shadow: 0 4px 7px rgba(0, 0, 0, 0.15);
   }
+
+  @media (max-width: 500px) {
+    padding: 10px 0;
+  }
 `;
 
 const Logo = styled.img`
-  width: 100px;
+  width: 90px;
   cursor: pointer;
-  margin-left: 60px;
+  margin-left: 20px;
+
+  @media (max-width: 500px) {
+    width: 70px;
+    margin-left: 10px;
+  }
 `;
 
 const Tabs = styled.div`
@@ -188,44 +213,68 @@ const Tab = styled.div`
     justify-content: center;
     align-items: center;
   }
+
+  @media (max-width: 500px) {
+    & a {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const AuthButtons = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 
   @media (max-width: 900px) {
-    margin-right: 20px;
+    margin-right: 10px;
+  }
+
+  @media (max-width: 500px) {
+    gap: 10px;
   }
 `;
 
 const Sign = styled.div`
   font-weight: bold;
   color: black;
+
+  @media (max-width: 500px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Login = styled.div`
-  padding: 10px 20px;
+  padding: 8px 16px;
   background-color: black;
   color: white;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
+  margin-right: 5px;
 
   &:hover {
     background-color: #333;
+  }
+
+  @media (max-width: 500px) {
+    padding: 6px 12px;
+    font-size: 0.9rem;
   }
 `;
 
 const HamburgerMenuIcon = styled(RxHamburgerMenu)`
   display: none;
   cursor: pointer;
-  margin-left: 30px;
-  font-size: 2rem;
+  margin-left: 10px;
+  font-size: 1.5rem;
 
   @media (max-width: 900px) {
     display: block;
+  }
+
+  @media (max-width: 500px) {
+    font-size: 1.2rem;
   }
 `;
 
@@ -234,12 +283,16 @@ const Sidebar = styled.div<{ $isClickMenuBtn: boolean }>`
   top: 0;
   left: 0;
   height: 100%;
-  width: 250px;
+  width: 200px;
   background-color: rgba(255, 255, 255, 0.9);
   z-index: 15;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
   transform: translateX(${(props) => (props.$isClickMenuBtn ? "0" : "-100%")});
   transition: transform 0.3s ease-in-out;
+
+  @media (max-width: 500px) {
+    width: 180px;
+  }
 
   @media (min-width: 901px) {
     display: none;
@@ -248,15 +301,24 @@ const Sidebar = styled.div<{ $isClickMenuBtn: boolean }>`
 
 const CloseIcon = styled(AiOutlineClose)`
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+
+  @media (max-width: 500px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const SidebarContent = styled.div`
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
+
+  @media (max-width: 500px) {
+    padding: 10px;
+    gap: 10px;
+  }
 `;

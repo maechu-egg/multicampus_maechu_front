@@ -5,6 +5,19 @@ import 'react-calendar/dist/Calendar.css';
 import styled from "styled-components";
 import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
+import MonthlyRecordChart from "../../components/MonthlyRecordChart";
+import { IoCloseOutline } from "react-icons/io5";
+
+// 타입 정의 추가
+interface ExerciseRecord {
+  record_date: string;
+  totalCalories: number;
+}
+
+interface DietRecord {
+  record_date: string;
+  totalCalories: number;
+}
 
 function RecordPage() {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
@@ -16,12 +29,15 @@ function RecordPage() {
   const { state } = useAuth();
   const token = state.token;
   const memberId = state.memberId;
+  const [exerciseCalories, setExerciseCalories] = useState<Record<string, number>>({});
+  const [dietCalories, setDietCalories] = useState<Record<string, number>>({});
 
 
   // 컴포넌트 마운트 시 현재 월 데이터 조회
   useEffect(() => {
-    console.log("debug >>> memberId", memberId);
-    console.log("debug >>> token", token);
+    if (!token) {
+      navigate("/login");
+    }
     fetchMonthData(value);
   }, []); // 컴포넌트 마운트 시 1회 실행
 
@@ -42,50 +58,122 @@ function RecordPage() {
         'month': month
       }, { headers });
 
-      console.log("debug >>> exerciseResponse", exerciseResponse);
+      // 운동 데이터 처리
+      const exerciseDatesArray: string[] = [];
+      const exerciseCaloriesMap: Record<string, number> = {};
+      
+      exerciseResponse.data.forEach((record: ExerciseRecord) => {
+        exerciseDatesArray.push(record.record_date);
+        exerciseCaloriesMap[record.record_date] = record.totalCalories;
+      });
+      
+      setExerciseDates(exerciseDatesArray);
+      setExerciseCalories(exerciseCaloriesMap);
+
       // 식단 기록 조회
       const dietResponse = await api.post('record/diet/get/month', {
         'member_id': memberId,
         'year': year,
         'month': month
       }, { headers });
-      console.log("debug >>> dietResponse", dietResponse);
-      // 운동 기록 데이터 저장
-      setExerciseDates(exerciseResponse.data);
-      // 식단 기록 데이터 저장
-      setDietDates(dietResponse.data);
+
+      // 식단 데이터 처리
+      const dietDatesArray: string[] = [];
+      const dietCaloriesMap: Record<string, number> = {};
+      
+      dietResponse.data.forEach((record: DietRecord) => {
+        dietDatesArray.push(record.record_date);
+        dietCaloriesMap[record.record_date] = record.totalCalories;
+      });
+      
+      setDietDates(dietDatesArray);
+      setDietCalories(dietCaloriesMap);
+
     } catch (error) {
       console.error('데이터 조회 실패:', error);
     }
   };
 
+  // 월간 총 칼로리 계산
+  const calculateMonthlyCalories = () => {
+    const totalBurnedCalories = Object.values(exerciseCalories)
+      .reduce((sum, calories) => sum + calories, 0);
+    
+    const totalConsumedCalories = Object.values(dietCalories)
+      .reduce((sum, calories) => sum + calories, 0);
+
+    return {
+      burned: totalBurnedCalories,
+      consumed: totalConsumedCalories
+    };
+  };
+
   // 날짜 클릭 시 모달 표시
   // 날짜 클릭 시 해당 날짜 저장
   const handleClick = (date: Date) => {
-    // 클릭한 날짜 저장
-    const selectedDate = new Date(
+    const clickedMonth = date.getMonth();
+    const currentMonth = value.getMonth();
+
+    // 이전/다음 달 날짜 클릭 시 해당 달로 이동
+    // 이전/다음 달 클릭 시 alert 표시 안되게 하기 위한 코드
+    if (clickedMonth !== currentMonth) {
+      setValue(date);
+      return;
+    }
+
+    const today = new Date();
+    // date 오차 방지
+    today.setHours(0, 0, 0, 0);
+
+    const adjustedDate = new Date(
       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-    )
-    // 날짜 형식 변경, 0000-00-00 형식으로 변경
-    const dateString = selectedDate.toISOString().split('T')[0]
-    setSelectedDate(dateString);
-    // 모달 표시
-    setShowModal(true);
-  }
+    );
+    const formattedDate = adjustedDate.toISOString().split('T')[0];
+
+    const adjustedToday = new Date(
+      Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
+    );
+    const formattedToday = adjustedToday.toISOString().split('T')[0];
+
+    const hasExercise = exerciseDates.some(record => record === formattedDate);
+    const hasDiet = dietDates.some(record => record === formattedDate);
+
+    if (adjustedDate > adjustedToday) {
+      // 미래 날짜 클릭 시
+      alert('미리 기록할 수 없습니다.');
+      // 또는 커스텀 모달 사용:
+      // setModalMessage('미래 날짜는 기록할 수 없습니다.');
+      // setIsWarningModalOpen(true);
+      return;
+    } else if (formattedDate === formattedToday) {
+      setSelectedDate(formattedDate);
+      setShowModal(true);
+    } else if (hasExercise || hasDiet) {
+      // 기록이 있는 날짜 - 기존 모달 표시
+      setSelectedDate(formattedDate);
+      setShowModal(true);
+    } else {
+      // 기록이 없는 과거 날짜
+      alert('해당 날짜에는 기록이 없습니다.');
+      // 또는 커스텀 모달 사용:
+      // setModalMessage('해당 날짜에는 기록이 없습니다.');
+      // setIsWarningModalOpen(true);
+    }
+  };
 
   // 날짜 타일 컨텐츠 표시
   const tileContent = ({ date }: { date: Date }) => {
     
-    // 날짜 조정
+    // 날짜 조정, 서버는 UTC 시간 기준이므로 오차 발생 방지
     const adjustDate = new Date(
       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
     )
     // 날짜 형식 변경, 0000-00-00 형식으로 변경
     const dateString = adjustDate.toISOString().split('T')[0];
-    // 운동 기록 여부 확인
-    const hasExercise = exerciseDates.includes(dateString);
-    // 식단 기록 여부 확인
-    const hasDiet = dietDates.includes(dateString);
+    // 운동 기록 여부 확인  
+    const hasExercise = exerciseDates.some(record => record === dateString);
+    // 식단 기록 여부 확인  
+    const hasDiet = dietDates.some(record => record === dateString);
     
     let emoji = '';
     // 상태에 따른 이모지 설정
@@ -108,9 +196,12 @@ function RecordPage() {
   };
 
   return (
-    <Container>
+    <Wrapper>
+      <TitleContainer>
       <h1>운동 히스토리</h1>
-      <Calendar
+      </TitleContainer>
+      <Container>
+        <Calendar
         onChange={(value) => setValue(value as Date)}
         value={value}
         locale="en-US"
@@ -125,50 +216,104 @@ function RecordPage() {
             <h3>{selectedDate}</h3>
             <div className="button-group">
               <button onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
-                운동 기록
+                🏋️‍♂️
               </button>
               <button onClick={() => navigate(`/record/diet/${selectedDate}`)}>
-                식단 기록
+                🥗
               </button>
             </div>
             <div className="close-button">
-              <button onClick={() => setShowModal(false)}>닫기</button>
+              <button onClick={() => setShowModal(false)}><IoCloseOutline /></button>
             </div>
           </div>
         </div>
       )}
-    </Container>
+
+      <MonthlyRecordChart 
+        exerciseDates={exerciseDates}
+        dietDates={dietDates}
+        currentMonth={value}
+        burnedCalories={calculateMonthlyCalories().burned}
+        consumedCalories={calculateMonthlyCalories().consumed}
+      />
+      </Container>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 50px;
+  width: 70%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  font-family: 'Noto Sans KR', sans-serif;
+`;
+const TitleContainer = styled.div`
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 3px 10px rgba(0.5, 0.5, 0.5, 0.5); // 그림자
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1025px;
+h1 {
+
+  margin-bottom: 2rem;
+  font-size: 27px;
+  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  text-align: center;
+   margin: 0 auto;  // 중앙 정렬
+}
+
+ @media (max-width: 850px) {
+    
+    h1 {
+      text-align: center;
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 710px) {
+    h1 {
+      text-align: center;
+      font-size: 20px;
+    }
+  }
+`;
 
 const Container = styled.div`
 
   // 컨테이너 스타일
   display: flex; // 플렉스 정렬
-  flex-direction: column; // 세로 정렬
+  flex-direction: row; // 가로 정렬
   justify-content: center; // 중앙 정렬
-  min-height: 100vh; // 화면 높이 최소 100vh
-  max-width: 700px;  // 캘린더 너비와 맞춤
+  max-width: 1100px;  // 캘린더 너비와 맞춤
   margin: 0 auto;  // 중앙 정렬
-  
-  // 운동 히스토리 타이틀
-  h1 {
-    align-self: flex-start;  // 왼쪽 정렬
-    margin-bottom: 1rem; // 하단 여백
-    font-size: 24px;  // 필요한 경우 크기 조절
-  }
 
   // 모달 컨텐츠 스타일
   .modal-content {
+    border: 5px solid lightgray;
     border-radius: 20px; // 둥근 모서리
 
     // 모달 타이틀 스타일
     h3 {
       text-align: center; // 중앙 정렬
       margin-bottom: 2rem; // 하단 여백
+      font-size: 1.8rem;
+      font-weight: 600;
     }
     // 모달 내 버튼 그룹 스타일
     .button-group {
+      font-size: 2rem;
       display: flex; // 플렉스 정렬
       justify-content: center; // 중앙 정렬
       margin-bottom: 1rem; // 하단 여백
@@ -178,13 +323,13 @@ const Container = styled.div`
       padding: 0.8rem 1.5rem; // 버튼 크기
       border-radius: 20px;  // 둥근 모서리
       border: none; // 테두리 제거
-      background-color: #f0f0f0; // 배경색
+      background-color: white; // 배경색
       cursor: pointer; // 마우스 오버 시 효과
       transition: all 0.2s ease-in-out; // 효과 시간
       // 버튼 마우스 오버 시 효과
       &:hover {
-        background-color: #e0e0e0; // 마우스 오버 시 배경색
-        transform: scale(1.05); // 마우스 오버 시 크기
+        background-color: lightgray; // 마우스 오버 시 배경색
+        transform: scale(1.1); // 마우스 오버 시 크기
       }
     }
     // 모달 내 닫기 버튼 스타일
@@ -200,7 +345,7 @@ const Container = styled.div`
     height: 670px; // 캘린더 높이
     padding: 20px; // 캘린더 내부 여백
     background-color: white; // 배경색
-    box-shadow: 0 4px 12px rgba(0.3, 0.3, 0.3, 0.3); // 그림자
+    box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5); // 그림자
     border-radius: 15px; // 둥근 모서리
     
     // 캘린더 타일 스타일
@@ -224,25 +369,56 @@ const Container = styled.div`
       color: #cccccc; // 인접 월 텍스트 색상
     }
 
-    // 모바일 화면 스타일
-    @media (max-width: 710px) {
-      width: 100%; // 모바일 화면 너비
-      max-width: 320px; // 모바일 화면 최대 너비
-      // 타일 스타일
-      .react-calendar__tile {
-        padding: 5px; // 타일 내부 여백
-        font-size: 14px; // 타일 텍스트 크기
+ // 태블릿 화면 스타일
+  @media (max-width: 850px) {
+    .react-calendar {
+      width: 420px; // 캘린더 너비
+      border: 0.4px solid lightgray;
+      border-radius: 15px;
+      .emoji {
+        font-size: 3.6rem; // 텍스트 크기
       }
     }
+    .react-calendar__month-view__days {
+      button {
+        position: relative; // 상대 위치
+        display: flex; // 플렉스 정렬
+        height: 90px; // 높이
+        border-right: 1px solid lightgray;  // 두께 증가
+        border-bottom: 1px solid lightgray; // 두께 증가
+        font-size: 18px; // 텍스트 크기
+        font-family: 'Pretendard', sans-serif; // 폰트
+        font-weight: 400; // 텍스트 두께
+        box-sizing: border-box;  // 추가
+      }
+    }
+  }
 
-    // 태블릿 화면 스타일
-    @media (max-width: 850px) {
-      width: 100%; // 모바일 화면 너비
-      max-width: 420px; // 모바일 화면 최대 너비
-      // 타일 스타일
-      .react-calendar__tile {
-        padding: 8px; // 타일 내부 여백
-        font-size: 16px; // 타일 텍스트 크기
+  // 모바일 화면 스타일
+  @media (max-width: 710px) {
+    // 캘린더 스타일
+    .react-calendar {
+      width: 320px; // 캘린더 너비
+      border: 0.4px solid lightgray; // 구분선 추가
+      border-radius: 15px; // 둥근 모서리
+      // 이모지 스타일
+      .emoji {
+        font-size: 2.2rem; // 텍스트 크기
+      }
+    }
+    // 일자 타일 스타일
+    .react-calendar__month-view__days {
+      // 일자 타일 버튼 스타일
+      button {
+        position: relative; // 상대 위치
+        display: flex; // 플렉스 정렬
+        height: 90px; // 높이
+        border-right: 1px solid lightgray;  // 두께 증가
+        border-bottom: 1px solid lightgray; // 두께 증가
+        font-size: 18px; // 텍스트 크기
+        font-family: 'Pretendard', sans-serif; // 폰트
+        font-weight: 400; // 텍스트 두께
+        box-sizing: border-box;  // 추가
       }
     }
   }
@@ -307,15 +483,9 @@ const Container = styled.div`
     color: blue !important;
   }
 
-  // 현재 날짜 타일 마우스 오버 시 효과
-  .react-calendar__tile--now:enabled:hover {
-    background-color: #e8e8e8 !important; // 배경색
-  }
-
   // 날짜 타일 포커스 시 효과
   .react-calendar__tile--active {
-    background: rgb(180, 185, 180) !important;  /* 원하는 색상으로 직접 지정 */
-    color: blue !important;
+    color: black;
   }
     
   // 인접 월 타일 스타일
@@ -329,59 +499,7 @@ const Container = styled.div`
     text-decoration: none; // 텍스트 장식 제거
   }
 
-  // 태블릿 화면 스타일
-  @media (max-width: 850px) {
-    .react-calendar {
-      width: 420px; // 캘린더 너비
-      border: 0.4px solid lightgray;
-      border-radius: 15px;
-      .emoji {
-        font-size: 3.6rem; // 텍스트 크기
-      }
-    }
-    .react-calendar__month-view__days {
-      button {
-        position: relative; // 상대 위치
-        display: flex; // 플렉스 정렬
-        height: 90px; // 높이
-        border-right: 1px solid lightgray;  // 두께 증가
-        border-bottom: 1px solid lightgray; // 두께 증가
-        font-size: 18px; // 텍스트 크기
-        font-family: 'Pretendard', sans-serif; // 폰트
-        font-weight: 400; // 텍스트 두께
-        box-sizing: border-box;  // 추가
-      }
-    }
-  }
-
-  // 모바일 화면 스타일
-  @media (max-width: 710px) {
-    // 캘린더 스타일
-    .react-calendar {
-      width: 320px; // 캘린더 너비
-      border: 0.4px solid lightgray; // 구분선 추가
-      border-radius: 15px; // 둥근 모서리
-      // 이모지 스타일
-      .emoji {
-        font-size: 2.2rem; // 텍스트 크기
-      }
-    }
-    // 일자 타일 스타일
-    .react-calendar__month-view__days {
-      // 일자 타일 버튼 스타일
-      button {
-        position: relative; // 상대 위치
-        display: flex; // 플렉스 정렬
-        height: 90px; // 높이
-        border-right: 1px solid lightgray;  // 두께 증가
-        border-bottom: 1px solid lightgray; // 두께 증가
-        font-size: 18px; // 텍스트 크기
-        font-family: 'Pretendard', sans-serif; // 폰트
-        font-weight: 400; // 텍스트 두께
-        box-sizing: border-box;  // 추가
-      }
-    }
-  }
+ 
 
   // 날짜 타일 컨텐츠 스타일
   .date-content {
@@ -395,20 +513,6 @@ const Container = styled.div`
       margin-left: 7px; // 왼쪽 여백
       display: flex; // 플렉스 정렬
       font-size: 3.5rem; // 텍스트 크기
-    }
-  }
-
-  // 모바일 화면 스타일
-  @media (max-width: 850px) {
-    .date-content .emoji {
-      font-size: 2.5rem; // 텍스트 크기
-    }
-  }
-
-  // 모바일 화면 스타일
-  @media (max-width: 710px) {
-    .date-content .emoji {
-      font-size: 2rem; // 텍스트 크기
     }
   }
 `;

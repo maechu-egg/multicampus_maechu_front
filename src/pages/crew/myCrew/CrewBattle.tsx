@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import CrewBattleModal from "components/ui/modal/CrewBattleModal";
-import CrewBattleCard from "components/ui/card/CrewBattleCard";
-import CrewBattleFeedDetailModal from "components/ui/modal/CrewBattleFeedDetailModal";
+import CrewBattleModal from "components/ui/crew/modal/CrewBattleModal";
+import CrewBattleCard from "components/ui/crew/card/CrewBattleCard";
+import CrewBattleFeedDetailModal from "components/ui/crew/modal/CrewBattleFeedDetailModal";
 import api from "services/api/axios";
-import CrewBattleFeedModal from "components/ui/modal/CrewBattleFeedModal";
+import CrewBattleFeedModal from "components/ui/crew/modal/CrewBattleFeedModal";
 import { useAuth } from "context/AuthContext";
-import CrewJoinBattleModal from "components/ui/modal/CrewJoinBattleModal";
+import CrewJoinBattleModal from "components/ui/crew/modal/CrewJoinBattleModal";
 
 interface CrewBattleProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
@@ -67,6 +67,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                                                 <CrewBattleCard 
                                                     battle={battle} 
                                                     onDetailClick={() => setSelectedBattleId(battle.battle_id)}
+                                                    crewId={crewId}
                                                 />
                                             </div>
                                         ))}
@@ -86,7 +87,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewBattleFeedDetailModal battleId={selectedBattleId} /> {/* battleId 전달 */}
+                            <CrewBattleFeedDetailModal battleId={selectedBattleId} crewId={crewId}/> {/* battleId 전달 */}
                         </div>
                     </div>
                 </div>
@@ -101,7 +102,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewBattleModal />
+                            <CrewBattleModal crewId={crewId}/>
                         </div>
                     </div>
                 </div>
@@ -116,7 +117,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewBattleFeedModal battle_id={selectedBattleId}/>
+                            <CrewBattleFeedModal battle_id={selectedBattleId} crewId={crewId}/>
                         </div>
                     </div>
                 </div>
@@ -131,7 +132,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewJoinBattleModal battle_id={selectedBattleId}/>
+                            <CrewJoinBattleModal battle_id={selectedBattleId} crewId={crewId}/>
                         </div>
                     </div>
                 </div>
