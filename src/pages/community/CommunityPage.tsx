@@ -36,7 +36,7 @@ interface Post {
   post_nickname: string;
   post_date: string;
   post_views: number;
-  // comments: number;
+  // comments: Comment[];
   comments_count:number;      
   post_up_sport: string;
   post_sport: string;
@@ -49,7 +49,7 @@ interface Post {
   post_img1:string;
   post_img2:string;
   post_unlike_counts : number;
-  commets_count:number;
+ 
   member_id: number; 
   author:boolean;
 }
@@ -80,26 +80,41 @@ function CommunityPage(): JSX.Element {
   const [showPostForm, setShowPostForm] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchResults, setSearchResults] = useState<Post[] | null>(null);
+
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [activeTab, setActiveTab] = useState("헬스 및 피트니스");
   const [activePost_sport, setActivePost_sport] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentInput, setCommentInput] = useState<string>(""); // 댓글 입력 상태
   const [isEditing, setIsEditing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const postsPerPage = 10;
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  
 
   // 게시글 목록 로드
+
   useEffect(() => {
-    fetchPosts();
+    if (!isSearchActive) {
+      fetchPosts();
+    }
   }, [activeTab, activePost_sport, currentPage]);
+  
+  // postlist 상태
+  useEffect(() => {
+    
+    console.log("Updated posts:", posts);
+    console.log("filteredPosts:", filteredPosts);
+  }, [posts]);
 
   const fetchPosts = async (selectedCategory = activeTab, selectedSubcategory = activePost_sport) => {
     console.log("selectedCategory", selectedCategory);
     console.log("selectedSubcategory", selectedSubcategory);
 
     console.log("Fetching posts..."); // 요청 시작 시 로그 출력
+    setLoading(true); 
     try {
       const token = localStorage.getItem("authToken"); 
       if (!token) {
@@ -126,6 +141,8 @@ function CommunityPage(): JSX.Element {
       console.log("Response data:", response.data); // 응답 데이터 출력
 
       const fetchedPosts = response.data.posts || response.data;
+      
+      console.log("Fetched posts:", fetchedPosts);
       const mappedPosts = fetchedPosts.map((post: Post) => ({
         post_id: post.post_id,
         post_title: post.post_title,
@@ -141,8 +158,10 @@ function CommunityPage(): JSX.Element {
         isRecommended: post.isRecommended || false,
       }));
       setPosts(mappedPosts);
+      console.log("Mapped Posts", mappedPosts);
     } catch (error) {
       console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
+      setLoading(false);
     }
   };
 
@@ -167,8 +186,8 @@ function CommunityPage(): JSX.Element {
     formData.append("post_contents", post_contents);
     formData.append("post_up_sport", post_up_sport);
     formData.append("post_sport", post_sport);
-    formData.append("post_hashtag", post_hashtag);; // post_hashtag 배열 추가
-    formData.append("post_sports_keyword", post_sports_keyword);; // post_hashtag 배열 추가
+    formData.append("post_hashtag", post_hashtag); // post_hashtag 배열 추가
+    formData.append("post_sports_keyword", post_sports_keyword); // post_hashtag 배열 추가
 
     if (imageFiles) {
       for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
@@ -323,6 +342,7 @@ function CommunityPage(): JSX.Element {
 
   const [isAuthor, setIsAuthor] = useState(false);
 
+
   /* 게시물 상세보기 및 클릭 핸들러, 클릭 시 조회수 증가 */
   const handlePostClick = async  (post: Post) => {
     try{
@@ -346,9 +366,13 @@ function CommunityPage(): JSX.Element {
       });
 
       console.log("게시글 상세 정보 : ", response.data);
-
+      console.log("commnet list : " , response.data.comments);
       setSelectedPost(response.data);
       setIsAuthor(response.data.Author);
+      if (response.data.comments != null) {  // null 또는 undefined 둘 다 체크
+        setComments(response.data.comments);
+        console.log("set commnet list : " , comments);
+    }
       console.log("Author" , response.data.Author);
 
     } catch (error) {
@@ -381,118 +405,87 @@ function CommunityPage(): JSX.Element {
       })
     );
   };
-
-  /* 댓글 작성 핸들러 */
-  const handleAddComment = (postId: number, content: string) => {
-    const now = new Date();
-    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-
-    const newComment: Comment = {
-      id: comments.length + 1,
-      postId,
-      author: "댓글 작성자",
-      content,
-      date: formattedDate,
-      likeCount: 0,
-      dislikeCount: 0,
-    };
-
-    setComments([...comments, newComment]);
-
-    // 게시글의 댓글 수 업데이트
-    setPosts(posts.map(post => {
-      if (post.post_id === postId) {
-        // return { ...post, comments: post.comments + 1 };
-        return { ...post, comments_count: post.comments_count + 1 };
-      }
-      return post;
-    }));
-
-    // 현재 선택된 게시글의 댓글 수 업데이트
-    if (selectedPost && selectedPost.post_id === postId) {
-      // setSelectedPost(prev => prev ? { ...prev, comments: prev.comments + 1 } : null);
-      setSelectedPost(prev => prev ? { ...prev, comments: prev.comments_count + 1 } : null);
-    }
-  };
-
-  /* 카테고리 변경 핸들러 */
-  const handleCategoryChange = (post_up_sport: string) => {
-    console.log("카테고리 변경됨:", post_up_sport);
-    setActiveTab(post_up_sport);
-    setActivePost_sport("");
-    fetchPosts(post_up_sport, ""); // 
-  };
-
-  /* 카테고리 소분류 변경 핸들러 */
-  const handleSubcategoryChange = async (post_sport: string) => {
-    console.log("서브카테고리 변경됨:", post_sport);
-    setActivePost_sport(post_sport);
-    fetchPosts(activeTab, post_sport);
-
-  };
-
   
-
-  /* 검색 핸들러 */
-  const handleSearch = async (searchTerm: string) => {
-    // 검색 로직 구현
-    console.log("Searching for:", searchTerm);
-    if(searchTerm.trim() === ""){
-      setSearchResults(null);
+  
+  const handleCommentSubmit = async (postId: number, content: string) => {
+    if (!content.trim()) {
+      alert("댓글을 입력하세요.");
       return;
     }
-
-    try{
+  
+    try {
       const token = localStorage.getItem("authToken");
       if(!token){
-        console.error("로그인 토큰이 없습니다.");
-        return;
+
+        alert("로그인이 필요합니다.");
+        return; 
       }
+      console.log("token" , token);
+      const commentData = {
+        comments_contents: content,
+        post_id: postId,
+      };
+  
+      const response = await axios.post( "http://localhost:8001/community/comment/saveComment",
+        commentData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status === 201) {
+        const serverComment = response.data.commentList; // 서버에서 반환된 새 댓글 데이터
+        console.log("serverComment", serverComment);
 
-      // 서버 
-      const response = await axios.get("http://localhost:8001/community/posts/search", {
-        params:{
-          keyword:searchTerm,
-          page:currentPage,
-          size:postsPerPage,
-        },
-        headers:{
-          Authorization: `Bearer ${token}`,
-        },
+        const newComment: Comment = {
+          id : serverComment.comment_id,
+          postId : serverComment.post_id,
+          author : serverComment.c_nickname,
+          content : serverComment.comments_contents,
+          date : serverComment.comments_date,
+          likeCount : serverComment.comment_like_count,
+          dislikeCount : serverComment.comment_unlike_count,
+        }
+        console.log("newComment", newComment);
+        setComments([...comments, newComment]);
 
-      });
-      if(response.status === 200){
-        const fetchedPosts = response.data.posts;
-        // 오류 방지
-        const mappedPosts = fetchedPosts.map((post: Post) => ({
-          post_id: post.post_id,
-          post_title: post.post_title,
-          post_contents: post.post_contents || '',
-          post_nickname: post.post_nickname,
-          post_date: post.post_date,
-          post_views: post.post_views,
-          comments_count: post.comments_count || 0,
-          post_up_sport: post.post_up_sport || '',
-          post_sport: post.post_sport,
-          post_hashtag: post.post_hashtag || '',
-          post_like_counts: post.post_like_counts,
-          isRecommended: post.isRecommended || false,
-        }));
-        
-        setSearchResults(mappedPosts);
-
+    
+        setCommentInput(""); // 입력 필드 초기화
+        alert(response.data.message);
       }else{
-        console.error("검색 결과를 가져오는 중 오류 발생 : " ,response.statusText );
-        alert("검색 결과를 가져오던 중 오류가 발생했습니다.");
-        setSearchResults([]);
+        alert(response.data.message);
       }
-    }catch(error){
-      console.error("서버와의 통신 중 오류 발생 : " , error);
-      alert("서버와의 통신에서 오류가 발생했습니다.");
-      setSearchResults([]);
+    } catch (error) {
+      console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
     }
+
+  }
+
+  /* 카테고리 변경 핸들러 */
+const handleCategoryChange = (post_up_sport: string) => {
+  console.log("카테고리 변경됨:", post_up_sport);
+  setActiveTab(post_up_sport);
+  setActivePost_sport("");
+  setIsSearchActive(false);
+  fetchPosts(post_up_sport, "");
+  setShowPostForm(false);
+};
+
+/* 카테고리 소분류 변경 핸들러 */
+const handleSubcategoryChange = async (post_sport: string) => {
+  console.log("서브카테고리 변경됨:", post_sport);
+  setActivePost_sport(post_sport);
+  setIsSearchActive(false);
+  fetchPosts(activeTab, post_sport);
+  setShowPostForm(false);
+};
+
  
-  };
+
+  const [isSearchActive, setIsSearchActive] = useState(false);
+
 
   /* 페이지 번호 변경 핸들러 */
   const handlePageChange = (pageNumber: number) => {
@@ -503,7 +496,9 @@ function CommunityPage(): JSX.Element {
   // 페이지네이션 관련 계산
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const filteredPosts = searchResults ? searchResults.sort((a, b) => b.post_id - a.post_id) : posts
+  const filteredPosts =  searchResults && searchResults.length > 0  
+            ? searchResults.sort((a, b) => b.post_id - a.post_id) 
+            : posts
     // .filter(post => {
     //   const matchesPost_up_sport = post.post_up_sport === activeTab;
     //   const matchesPost_sport = activePost_sport === "" || post.post_sport === activePost_sport;
@@ -514,6 +509,123 @@ function CommunityPage(): JSX.Element {
     const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
     const calculatedTotalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
+
+
+    const handleSearch = async (searchTerm: string) => {
+      console.log("Searching for:", searchTerm);
+      if (searchTerm.trim() === "") {
+        setIsSearchActive(false);
+        return;
+      }
+    
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.error("로그인 토큰이 없습니다.");
+          return;
+        }
+    
+        setLoading(true);
+    
+        const response = await axios.get("http://localhost:8001/community/posts/search", {
+          params: {
+            keyword: searchTerm,
+            page: currentPage,
+            size: postsPerPage,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+  	   validateStatus: (status) => {
+          return status >= 200 && status < 500; // 400번대 상태 코드를 오류로 간주하지 않음
+        },
+        });
+    
+        console.log("response type", typeof response.data);
+    
+        if (response.status === 200) {
+          const fetchedPosts = response.data.posts;
+          if (!fetchedPosts || fetchedPosts.length === 0) {
+            setPosts([]);
+            alert("검색 결과가 없습니다.");
+          } else {
+ //오류 방지
+             const mappedPosts = fetchedPosts.map((post: Post) => ({
+               post_id: post.post_id,
+               post_title: post.post_title,
+               post_contents: post.post_contents || '',
+               post_nickname: post.post_nickname,
+               post_date: post.post_date,
+               post_views: post.post_views,
+               comments_count: post.comments_count || 0,
+               post_up_sport: post.post_up_sport || '',
+               post_sport: post.post_sport,
+               post_hashtag: post.post_hashtag || '',
+               post_like_counts: post.post_like_counts,
+               isRecommended: post.isRecommended || false,
+             }));
+            setPosts(mappedPosts);
+            setIsSearchActive(true);
+          }
+        }else if (response.status === 404) {
+       console.error("검색 결과가 없습니다: ", response.statusText);
+       alert("검색 결과가 없습니다.");
+       setPosts([]);
+    } else if (response.status >= 400) {
+         console.error("검색 결과를 가져오는 중 오류 발생: ", response.statusText);
+         alert("검색 결과를 가져오던 중 오류가 발생했습니다.");
+        setPosts([]);
+   }
+      } catch (error) {
+        console.error("서버와의 통신 중 오류 발생:", error);
+        alert("서버와의 통신에서 오류가 발생했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    const handleKeywordClick = async (keyword: string) => {
+      console.log("키워드  : ", keyword);
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.error("로그인 토큰이 없습니다.");
+          return;
+        }
+    
+        setLoading(true);
+    
+        const response = await axios.get(`http://localhost:8001/community/posts/sport/${keyword}`, {
+          params: {
+            page: currentPage,
+            size: postsPerPage,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+    
+        console.log("response", response.status);
+    
+        if (response.status === 200) {
+          const fetchedPosts = response.data.searchList;
+          if (!fetchedPosts || fetchedPosts.length === 0) {
+            setPosts([]);
+            alert("검색 결과가 없습니다.");
+          } else {
+            setPosts(fetchedPosts);
+            setIsSearchActive(true);
+          }
+        } else {
+          console.error("키워드 검색 결과를 가져오는 중 오류 발생:", response.statusText);
+          alert("키워드 검색 결과를 가져오던 중 오류가 발생했습니다.");
+        }
+      } catch (error) {
+        console.error("서버와의 통신 중 오류 발생:", error);
+        alert("서버와의 통신에서 오류가 발생했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   /**
    * 게시물 수정 모드일 때의 렌더링
@@ -571,8 +683,9 @@ function CommunityPage(): JSX.Element {
         onEdit={handleEdit}
         onDelete={handleDelete}
         currentUserNickname={""}
-        comments={postComments}
-        onAddComment={(content) => handleAddComment(selectedPost.post_id, content)}
+        // comments={postComments}
+      
+        onAddComment={(content) => handleCommentSubmit(selectedPost.post_id, content)}
         onCommentReaction={handleCommentReaction}
       />
     );
@@ -613,7 +726,10 @@ function CommunityPage(): JSX.Element {
         />
       ) : (
         <>
-         <RecommendedKeywords keywords={recommendedKeywords} /> 
+         <RecommendedKeywords 
+                        keywords={recommendedKeywords} 
+                        onKeywordClick={handleKeywordClick}
+           /> 
 
           {/* 검색바와 게시물 작성 버튼 */}
           <div className="search-and-write">

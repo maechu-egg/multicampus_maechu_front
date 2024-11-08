@@ -13,6 +13,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   const handleSearch = () => {
     onSearch(searchTerm);
+    setSearchTerm("");
   };
 
   return (

@@ -5,15 +5,20 @@ interface RecommendedKeywordsProps {
   keywords: string[];
 }
 
-const RecommendedKeywords: React.FC<RecommendedKeywordsProps> = ({ keywords }) => {
+interface RecommendedKeywordsProps {
+  keywords: string[];
+  onKeywordClick: (keyword: string) => void;
+}
+
+const RecommendedKeywords: React.FC<RecommendedKeywordsProps> = ({ keywords, onKeywordClick }) => {
   return (
     <div className="recommended-keywords">
-      <div className="keyword-list">
-        {keywords.slice(0, 5).map((keyword, index) => (
-          <span key={index} className="keyword">
-            {keyword}
-          </span>
-        ))}
+       <div className="keyword-list">
+      {keywords.map((keyword, index) => (
+        <button className="keyword" key={index} onClick={() => onKeywordClick(keyword)}>
+          {keyword}
+        </button>
+      ))}
       </div>
     </div>
   );
