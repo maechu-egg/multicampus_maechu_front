@@ -28,18 +28,19 @@ function ExercisePage() {
       console.log("debug >>> token is null");
       navigate("/loginpage");
     }
-    const data = {
-      'member_id': memberId,
-      'record_date': selectedDate,
-    }
-    exerciseGet(data);
+    console.log("debug >>> token : " + token);
+    console.log("debug >>> memberId : " + memberId);
+    // 운동 조회
+    exerciseGet(selectedDate);
   }, []);
   
-  const exerciseGet = async (data: any) => {
+  const exerciseGet = async (recodr_date: any) => {
     try {
-      console.log("debug >>> data", data);
-      const response = await api.post("record/exercise/get/exerday", data, { headers: { Authorization: `Bearer ${token}` } });
-      
+      console.log("debug >>> data", recodr_date);
+      const response = await api.get("record/exercise/get/exerday", {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { recodr_date }
+      });
       console.log("debug >>> response", response);
       setExerciseData(response.data);
 
@@ -53,8 +54,7 @@ function ExercisePage() {
       const data = {
         'exercise_type': exerciseType,
         'intensity': intensity,
-        'duration': duration,
-        'member_id': memberId,
+        'duration': duration
       }
 
       const response = await api.post("record/exercise/insert/type", data, { headers: { Authorization: `Bearer ${token}` } });
@@ -64,7 +64,7 @@ function ExercisePage() {
       console.error("debug >>> error", error);
     }
   }
-  
+  // URL의 날짜를 Date 타입으로 변환
   const getFormattedDate = () => {
     try {
       if (!selectedDate) return new Date();
@@ -81,6 +81,7 @@ function ExercisePage() {
     <Container>
       <SummaryCard>
         <DateSection>
+          {/* 날짜 포맷팅 */}
           <h2>{format(date, 'yyyy.MM.dd')}</h2>
           <p>{format(date, 'EEEE', { locale: ko })}</p>
         </DateSection>

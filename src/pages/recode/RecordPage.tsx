@@ -38,6 +38,9 @@ function RecordPage() {
     if (!token) {
       navigate("/login");
     }
+    console.log("debug >>> memberId : " + memberId);
+    console.log("debug >>> token : " + token);
+    
     fetchMonthData(value);
   }, []); // 컴포넌트 마운트 시 1회 실행
 
@@ -53,7 +56,6 @@ function RecordPage() {
 
       // 운동 기록 조회
       const exerciseResponse = await api.post('record/exercise/get/month', {
-        'member_id': memberId,
         'year': year,
         'month': month
       }, { headers });
@@ -72,7 +74,6 @@ function RecordPage() {
 
       // 식단 기록 조회
       const dietResponse = await api.post('record/diet/get/month', {
-        'member_id': memberId,
         'year': year,
         'month': month
       }, { headers });
