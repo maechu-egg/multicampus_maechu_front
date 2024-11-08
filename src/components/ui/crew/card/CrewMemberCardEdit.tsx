@@ -76,7 +76,6 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> acceptHandler response", response.data);
             alert("승인되었습니다.");
-            navigate(`/`);
         } catch (error) {
             console.log('Error accepting crew member:', error);
         }
@@ -96,7 +95,6 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> rejectHandler response", response.data);
             alert("거절되었습니다.");
-            navigate(`/`);
         } catch (error) {
             console.log('Error rejecting crew member:', error);
         }   
@@ -116,7 +114,7 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> exitHandler response", response.data);
             alert("탈퇴 하였습니다.");
-            navigate(`/`);
+            window.location.reload(); // 현재 페이지 리로딩
         } catch (error) {
             console.log('Error exitHandler crew member:', error);
         }  
@@ -136,7 +134,7 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> expulsionHandler response", response.data);
             alert("탈퇴 되었습니다.");
-            navigate(`/`);
+            window.location.reload(); // 현재 페이지 리로딩
         } catch (error) {
             console.log('Error expulsionHandler crew member:', error);
         }  

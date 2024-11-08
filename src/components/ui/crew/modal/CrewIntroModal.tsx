@@ -40,7 +40,6 @@ function CrewIntroModal({ crew_id }: { crew_id: number }) {
                 });
                 console.log("debug >>> updateCrewIntro response", response);
                 alert("크루 소개글 수정이 완료되었습니다.");
-                navigate("/");
             } catch (error) {
                 console.error('Error updating crew intro:', error);
                 alert("크루 소개글 수정에 실패 했습니다.");

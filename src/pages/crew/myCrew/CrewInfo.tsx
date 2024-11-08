@@ -46,7 +46,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
             }
         }
         selectCrew();
-    },[crewId]);
+    },[crewName, crewIntroImg, crewIntroPost]);
     
 
     const formattedCrewDate = new Date(crewDate).toLocaleDateString('ko-KR', {
@@ -67,7 +67,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> handleDeleteCrew response", response.data);
             alert("크루 삭제가 완료되었습니다.");
-            navigate("/");
+            window.location.reload(); // 현재 페이지 리로딩
         } catch (error) {
             console.log('Error deleting crew:', error);
         }

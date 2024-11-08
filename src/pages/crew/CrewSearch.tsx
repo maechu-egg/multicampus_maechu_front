@@ -43,7 +43,7 @@ function CrewSearch(): JSX.Element {
             }
         };
         getCrewList();
-    }, []);
+    }, [crewList]);
 
 
     const setsearchSports = (searchSport: string) => {

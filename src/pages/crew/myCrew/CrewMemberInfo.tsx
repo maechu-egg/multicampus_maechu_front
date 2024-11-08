@@ -26,7 +26,7 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
             }
         };
         selectCrewMember();
-    }, []);
+    }, [crewMembers]);
     {/* 
         useEffect를 사용해서 crewId에 맞는 정보 불러오고
         뱃지, 닉네임, 나이, 지역, 배틀 승리 횟수, 주간 운동 횟수 보여주기 (카드형식)

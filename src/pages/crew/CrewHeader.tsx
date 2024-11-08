@@ -49,10 +49,12 @@ function CrewHeader(): JSX.Element {
                         role="tab" 
                         aria-controls="crew-search-pane" 
                         aria-selected="true"
+                        style={{fontStyle:'bold', backgroundColor:'rgba(231, 237, 237)', border:'2px solid rgba(222, 226, 230)'}}
                     >
                         크루 찾기
                     </button>
                 </li>
+                
                 {myCrew.map((crew, index) => (
                     <li className="nav-item" role="presentation" key={crew.crew_id}>
                         <button

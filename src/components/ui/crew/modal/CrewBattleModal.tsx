@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './Modal.css';
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
@@ -39,7 +39,6 @@ function CrewBattleModal({ crewId }: CrewBattleProps) {
                     }
                 });
                 alert('배틀을 생성하였습니다.');
-                navigate('/');
                 console.log("debug >>> createBattle response", response.data);
             } catch (error) {
                 console.error('Error creating crew:', error);
@@ -48,6 +47,7 @@ function CrewBattleModal({ crewId }: CrewBattleProps) {
         };
         createBattle();
     };
+
 
     return(
         <div className="container">

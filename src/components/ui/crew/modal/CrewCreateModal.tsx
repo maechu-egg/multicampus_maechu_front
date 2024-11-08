@@ -62,7 +62,6 @@ function CrewCreateModal() {
                 });
                 console.log("debug >>> createCrew response", response);
                 alert("크루 생성이 완료되었습니다.");
-                navigate("/");
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("크루 생성에 실패 했습니다.");

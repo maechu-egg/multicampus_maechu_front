@@ -10,7 +10,7 @@ function CrewModal({ crew_id }: { crew_id: number}) {
     const { state } = useAuth();
     const token = state.token;
     const member_id = state.memberId;
-    const navigate = useNavigate();
+
     // 입력 필드 상태 관리
     const [crew_name, setCrew_name] = useState('');
     const [crew_title, setCrew_title] = useState('');
@@ -87,7 +87,6 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 });
                 console.log("debug >>> createCrew response", response);
                 alert("크루 수정이 완료되었습니다.");
-                //navigate("/");
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("크루 수정에 실패 했습니다.");

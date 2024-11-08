@@ -90,7 +90,7 @@ function CrewJoinModal({ crew_id }: { crew_id: number}) {
                 });
                 console.log("debug >>> createCrew response", response);
                 alert("크루 가입 신청이 완료되었습니다.");
-                navigate("/");
+                window.location.reload(); // 현재 페이지 리로딩
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("크루 가입 신청에 실패 했습니다.");

@@ -32,7 +32,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
             }
         };
         getBattleList();
-    }, [crewId]);
+    }, [battleList]);
 
     return (
         <div className="container">

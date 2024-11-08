@@ -30,8 +30,6 @@ function CrewJoinBattleModal({battle_id, crewId}: {battle_id: number, crewId:num
             });
             alert("배틀에 참여 되었습니다.");
             console.log("debug >>> handleSubmit response", response.data);
-            
-            navigate(`/`);
         } catch (error) {
             console.log("debug >>> handleSubmit error", error);
         }
