@@ -542,7 +542,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
       case '간식':
         return { icon: '🍎', color: '#9C27B0', label: '간식', order: 4 };
       default:
-        return { icon: '🍽️', color: '#757575', label: '식���', order: 5 };
+        return { icon: '🍽️', color: '#757575', label: '식단', order: 5 };
     }
   };
 

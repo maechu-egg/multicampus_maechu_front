@@ -83,7 +83,7 @@ function Header(): JSX.Element {
           </Link>
         </Tab>
         <Tab>
-          <Link to="/recodepage" onClick={handleNavigate}>
+          <Link to="/recordpage" onClick={handleNavigate}>
             나의 기록
           </Link>
         </Tab>
@@ -123,7 +123,7 @@ function Header(): JSX.Element {
             <Link to="/aboutpage">워크스페이스</Link>
           </Tab>
           <Tab onClick={toggleMenu}>
-            <Link to="/recodepage">나의 기록</Link>
+            <Link to="/recordpage">나의 기록</Link>
           </Tab>
         </SidebarContent>
       </Sidebar>
