@@ -28,22 +28,27 @@ function CrewSearch(): JSX.Element {
         crew.crew_sport && crew.crew_sport.toLowerCase().includes(searchSport.toLowerCase())
     );
 
+    const getCrewList = async () => {
+        try {
+            const response = await api.get("crew/list", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(response.data);
+            setCrewList(response.data);
+        } catch (error) {
+            console.error("크루 목록 조회 실패", error);
+        }
+    };
+
     useEffect(() => {
-        const getCrewList = async () => {
-            try {
-                const response = await api.get("crew/list", {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log(response.data);
-                setCrewList(response.data);
-            } catch (error) {
-                console.error("크루 목록 조회 실패", error);
-            }
-        };
         getCrewList();
-    }, [crewList]);
+    }, [crewList.length]);
+
+    useEffect(() => {
+        getCrewList();
+    }, [])
 
 
     const setsearchSports = (searchSport: string) => {

@@ -17,22 +17,27 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
     const [battleList, setBattleList] = useState<any[]>([]);
     const [selectedBattleId, setSelectedBattleId] = useState(0);
 
+    const getBattleList = async() => {
+        try{
+            const response = await api.get(`crew/battle/list?crew_id=${crewId}`,{
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("debug >>> getBattleList정보 response", response.data);
+            setBattleList(response.data);
+        } catch(e){
+            console.log("debug >>> getBattleList error", e);
+        }
+    };
+
     useEffect(() => {
-        const getBattleList = async() => {
-            try{
-                const response = await api.get(`crew/battle/list?crew_id=${crewId}`,{
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log("debug >>> getBattleList정보 response", response.data);
-                setBattleList(response.data);
-            } catch(e){
-                console.log("debug >>> getBattleList error", e);
-            }
-        };
         getBattleList();
-    }, [battleList]);
+    }, [battleList.length]);
+
+    useEffect(() => {
+        getBattleList();
+    },[])
 
     return (
         <div className="container">
