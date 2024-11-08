@@ -67,7 +67,26 @@ function Header(): JSX.Element {
         <Logo src={MainLogo} alt="Main Logo" />
       </Link>
       <Tabs>
-        <MenuLinks handleNavigate={handleNavigate} />
+        <Tab>
+          <Link to="/communitypage" onClick={handleNavigate}>
+            커뮤니티
+          </Link>
+        </Tab>
+        <Tab>
+          <Link to="/crewpage" onClick={handleNavigate}>
+            운동 크루
+          </Link>
+        </Tab>
+        <Tab>
+          <Link to="/aboutpage" onClick={handleNavigate}>
+            워크스페이스
+          </Link>
+        </Tab>
+        <Tab>
+          <Link to="/recodepage" onClick={handleNavigate}>
+            나의 기록
+          </Link>
+        </Tab>
       </Tabs>
 
       <AuthButtons>
@@ -94,7 +113,18 @@ function Header(): JSX.Element {
       <Sidebar $isClickMenuBtn={isClickMenuBtn}>
         <CloseIcon onClick={handleCloseMenu} />
         <SidebarContent>
-          <MenuLinks handleNavigate={toggleMenu} />
+          <Tab onClick={toggleMenu}>
+            <Link to="/communitypage">커뮤니티</Link>
+          </Tab>
+          <Tab onClick={toggleMenu}>
+            <Link to="/crewpage">운동 크루</Link>
+          </Tab>
+          <Tab onClick={toggleMenu}>
+            <Link to="/aboutpage">워크스페이스</Link>
+          </Tab>
+          <Tab onClick={toggleMenu}>
+            <Link to="/recodepage">나의 기록</Link>
+          </Tab>
         </SidebarContent>
       </Sidebar>
     </Container>
