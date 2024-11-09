@@ -131,18 +131,21 @@ function PersonalBadgeModal({
         .filter((a) => a.activityType === "exercise")
         .map((a) => a.createdDate.split("T")[0])
     ).size;
-
+  
     const dietCount = new Set(
       activities
         .filter((a) => a.activityType === "diet")
         .map((a) => a.createdDate.split("T")[0])
     ).size;
-
+  
+    const postCount = activities.filter(a => a.activityType === "post").length;
+    const commentCount = activities.filter(a => a.activityType === "comment").length;
+  
     return {
       dietCount,
       exerciseCount,
-      postCount: 0,
-      commentCount: 0,
+      postCount,
+      commentCount,
     };
   };
 
@@ -153,41 +156,49 @@ function PersonalBadgeModal({
           console.log("[DEBUG] 인증 정보 없음:", { token: !!token, memberId });
           return;
         }
-
+    
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         };
-
-        const response = await api.get(
-          `/badges/user/${memberId}/badge`,
-          config
-        );
-        const data = response.data;
-
-        console.log("[DEBUG] 뱃지 정보:", data);
-
-        setScore(data.current_points || 0);
-        const badgeInfo = getBadgeInfo(data.current_points || 0);
-
+    
+        // 기존 뱃지 정보 조회
+        const badgeResponse = await api.get(`/badges/user/${memberId}/badge`, config);
+        const badgeData = badgeResponse.data;
+    
+        // 순위 퍼센트 조회 추가
+        const rankResponse = await api.get(`/badges/getrankpercentage`, {
+          ...config,
+          params: { member_id: memberId }
+        });
+    
+        console.log("[DEBUG] 순위 정보:", rankResponse.data);
+        
+        // rank 상태 업데이트
+        setRank(rankResponse.data.rank_percentage || 0);
+    
+        
+        setScore(badgeData.current_points || 0);
+        const badgeInfo = getBadgeInfo(badgeData.current_points || 0);
+    
         setCurrentBadgeInfo({
-          currentBadge: data.badge_level,
+          currentBadge: badgeData.badge_level,
           nextBadge: badgeInfo.nextBadge || "",
           image:
             badgeImages[
-              data.badge_level.toLowerCase() as keyof typeof badgeImages
+              badgeData.badge_level.toLowerCase() as keyof typeof badgeImages
             ] || badgeImages.default,
         });
-
+    
         if (badgeInfo.requiredScore) {
-          const remainingScore = badgeInfo.requiredScore - data.current_points;
+          const remainingScore = badgeInfo.requiredScore - badgeData.current_points;
           setScoreLeft(remainingScore);
-
-          const currentThreshold = getBadgeThreshold(data.current_points);
+    
+          const currentThreshold = getBadgeThreshold(badgeData.current_points);
           const progressPercentage =
-            ((data.current_points - currentThreshold) /
+            ((badgeData.current_points - currentThreshold) /
               (badgeInfo.requiredScore - currentThreshold)) *
             100;
           setProgress(Math.min(Math.max(progressPercentage, 0), 100));
@@ -196,7 +207,7 @@ function PersonalBadgeModal({
           setProgress(100);
         }
       } catch (error) {
-        console.error("[DEBUG] 뱃지 정보 조회 실패:", error);
+        console.error("[DEBUG] 정보 조회 실패:", error);
       }
     };
 
@@ -206,43 +217,43 @@ function PersonalBadgeModal({
           console.log("[DEBUG] 인증 정보 없음:", { token: !!token, memberId });
           return;
         }
-
+    
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         };
-
+    
+        console.log("[DEBUG] 활동 기록 요청:", {
+          url: `/badges/user/${memberId}/activities`,
+          config
+        });
+    
         const response = await api.get(
           `/badges/user/${memberId}/activities`,
           config
         );
-
+    
+        console.log("[DEBUG] 활동 기록 응답:", response.data);
+    
         // 활동 기록이 없는 경우 빈 배열로 처리
         const activities = response.data || [];
-        console.log("[DEBUG] 활동 기록:", activities);
-
         setActivities(activities);
-
-        // 활동 기록이 없어도 기본값으로 통계 표시
-        const calculatedStats =
-          activities.length > 0
-            ? calculateStats(activities)
-            : {
-                dietCount: 0,
-                exerciseCount: 0,
-                postCount: 0,
-                commentCount: 0,
-              };
-
+    
+        // 활동 기록 계산
+        const calculatedStats = calculateStats(activities);
+        console.log("[DEBUG] 계산된 통계:", calculatedStats);
+        
         setStats(calculatedStats);
       } catch (error: any) {
         console.error("[DEBUG] 활동 기록 조회 실패:", {
           message: error.message,
           status: error.response?.status,
+          data: error.response?.data, // 백엔드 에러 메시지 확인
+          error: error
         });
-
+    
         // 에러 발생 시 기본값 설정
         setStats({
           dietCount: 0,
