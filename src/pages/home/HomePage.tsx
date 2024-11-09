@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "../../context/AuthContext"; // useAuth import
+import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
+import internal from "stream";
 
 interface Crew {
   crew_intro_img: string;
@@ -12,12 +13,74 @@ interface Crew {
   crew_goal: string;
 }
 
+interface Swap {
+  post_nickname: string; //작성자
+  post_title: string; //제목
+  post_views: number; // 조회수
+  post_like_counts: number; //좋아요 수
+  post_date: string; // 작성날짜
+  post_up_sport: string; // 운동 대분류 키워드
+}
+
+const fakeCrewData: Crew[] = [
+  {
+    crew_intro_img: "img/Home/homeEx1.png",
+    crew_name: "00크루",
+    crew_title: "00크루에서 0000한 크루원 모집합니다",
+    crew_goal: "헬창",
+  },
+];
+// 날짜 형식을 변환하는 헬퍼 함수
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // 월 (0부터 시작하므로 +1)
+  const day = String(date.getDate()).padStart(2, "0"); // 일
+  const hours = String(date.getHours()).padStart(2, "0"); // 시
+  const minutes = String(date.getMinutes()).padStart(2, "0"); // 분
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
 function HomePage(): JSX.Element {
-  const { state } = useAuth(); // AuthContext에서 상태 가져오기
-  const { token } = state; // 상태에서 token과 memberId 가져오기
-  const [crewData, setCrewData] = useState<Crew[]>([]); // crewData의 타입을 Crew[]로 지정
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const { state } = useAuth();
+  const { token } = state;
+  const [crewData, setCrewData] = useState<Crew[]>([]);
   const [isDataFetched, setIsDataFetched] = useState<boolean>(false);
+  const [swapData, setSwapData] = useState<Swap[]>([]);
+  const [isSwapDataLoading, setIsSwapDataLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const getSwapData = async () => {
+      setIsSwapDataLoading(true);
+      try {
+        const response = await api.get(
+          "/community/home/posts/searchMarketplace"
+        );
+        console.log("중고거래 키워드 응답 : ", response.data);
+        if (response.status === 200) {
+          // swapData에 list 속성의 배열을 저장
+          setSwapData(response.data.list || []);
+        }
+      } catch (error) {
+        console.log("swap 데이터를 가져오는데 실패했습니다.", error);
+      } finally {
+        setIsSwapDataLoading(false);
+      }
+    };
+    getSwapData();
+  }, []);
+
+  useEffect(() => {
+    const getTodayData = async () => {
+      try {
+        const response = await api.get("/community/home/posts/searchToday");
+        console.log("오운완 데이터 응답: ", response.data);
+      } catch (error) {
+        console.log("오운완 데이터를 가져오는데 실패했습니다.", error);
+      }
+    };
+    getTodayData();
+  }, []);
 
   useEffect(() => {
     const fetchCrewData = async () => {
@@ -27,34 +90,26 @@ function HomePage(): JSX.Element {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log("지역 별 크루 추천 응답: ", response.data);
 
         if (response.status === 200) {
-          setCrewData(response.data); // 응답 데이터를 상태에 저장
+          setCrewData(response.data);
           setIsDataFetched(true);
         } else {
-          setIsLoggedIn(false); // 응답이 실패했을 때 로그인 상태를 false로 설정
+          setIsDataFetched(false); // Fall back to fake data if the status is not 200
         }
       } catch (error) {
         console.error("데이터를 가져오는 데 실패했습니다:", error);
-        setIsLoggedIn(false); // 데이터를 가져오는 데 실패했을 때 로그인 상태를 false로 설정
+        setIsDataFetched(false); // Fall back to fake data if an error occurs
       }
     };
 
     if (token) {
       fetchCrewData();
     } else {
-      setIsLoggedIn(false); // 토큰이 없을 때 로그인 상태를 false로 설정
+      setIsDataFetched(false); // If no token, fall back to fake data
     }
   }, [token]);
-
-  const fakeCrewData: Crew[] = [
-    {
-      crew_intro_img: "img/Home/homeEx1.png",
-      crew_name: "00크루",
-      crew_title: "00크루에서 0000한 크루원 모집합니다",
-      crew_goal: "헬창",
-    },
-  ];
 
   return (
     <Container>
@@ -66,102 +121,111 @@ function HomePage(): JSX.Element {
           data-bs-interval="3000"
         >
           <div className="carousel-indicators">
-            <button
-              type="button"
-              data-bs-target="#carouselExampleCaptions"
-              data-bs-slide-to="0"
-              className="active"
-              aria-current="true"
-              aria-label="Slide 1"
-            ></button>
-            <button
-              type="button"
-              data-bs-target="#carouselExampleCaptions"
-              data-bs-slide-to="1"
-              aria-label="Slide 2"
-            ></button>
-            <button
-              type="button"
-              data-bs-target="#carouselExampleCaptions"
-              data-bs-slide-to="2"
-              aria-label="Slide 3"
-            ></button>
+            {[...Array(3)].map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to={idx}
+                className={idx === 0 ? "active" : ""}
+                aria-current={idx === 0 ? "true" : undefined}
+                aria-label={`Slide ${idx + 1}`}
+              ></button>
+            ))}
           </div>
-          <div className="carousel-inner">
-            <div className="carousel-item active">
-              <img
-                src="img/Home/Banner1.png"
-                className="d-block w-100 carousel-image"
-                alt="..."
-              />
-              <div className="carousel-caption d-none d-md-block">
-                <h5>First slide label</h5>
-                <p>
-                  Some representative placeholder content for the first slide.
-                </p>
-              </div>
-            </div>
-            <div className="carousel-item">
-              <img
-                src="img/Home/Banner3.png"
-                className="d-block w-100 carousel-image"
-                alt="..."
-              />
-              <div className="carousel-caption d-none d-md-block">
-                <h5>Second slide label</h5>
-                <p>
-                  Some representative placeholder content for the second slide.
-                </p>
-              </div>
-            </div>
-            <div className="carousel-item">
-              <img
-                src="img/Home/Banner2.png"
-                className="d-block w-100 carousel-image"
-                alt="..."
-              />
-              <div className="carousel-caption d-none d-md-block">
-                <h5>Third slide label</h5>
-                <p>
-                  Some representative placeholder content for the third slide.
-                </p>
-              </div>
-            </div>
-          </div>
-          <button
+
+          <CarouselInner className="carousel-inner">
+            {["Banner1.png", "Banner3.png", "Banner2.png"].map(
+              (imgSrc, idx) => (
+                <div
+                  key={idx}
+                  className={`carousel-item ${idx === 0 ? "active" : ""}`}
+                >
+                  <img
+                    src={`img/Home/${imgSrc}`}
+                    className="d-block w-100 carousel-image"
+                    alt={`Slide ${idx + 1}`}
+                  />
+                  <div className="carousel-caption d-none d-md-block">
+                    <h5>{`Slide ${idx + 1} label`}</h5>
+                    <p>
+                      Some representative placeholder content for slide{" "}
+                      {idx + 1}.
+                    </p>
+                  </div>
+                </div>
+              )
+            )}
+          </CarouselInner>
+
+          <CarouselControl
             className="carousel-control-prev"
             type="button"
             data-bs-target="#carouselExampleCaptions"
             data-bs-slide="prev"
+            position="prev"
           >
             <span
               className="carousel-control-prev-icon"
               aria-hidden="true"
             ></span>
             <span className="visually-hidden">Previous</span>
-          </button>
-          <button
+          </CarouselControl>
+
+          <CarouselControl
             className="carousel-control-next"
             type="button"
             data-bs-target="#carouselExampleCaptions"
             data-bs-slide="next"
+            position="next"
           >
             <span
               className="carousel-control-next-icon"
               aria-hidden="true"
             ></span>
             <span className="visually-hidden">Next</span>
-          </button>
+          </CarouselControl>
         </div>
       </StyledSlider>
       <SwapSpot>
-        <TextContainer>
-          <h1>Swap-Spot</h1>
-          <span>
-            나에게 필요한 운동 기구/용품를 찾거나, 사용하지 않은 운동
-            기구/용품을 공유해보세요 !
-          </span>
-        </TextContainer>
+        <Title>
+          <TextContainer>
+            <h1>Swap-Spot</h1>
+            <span>
+              나에게 필요한 운동 기구/용품를 찾거나, 사용하지 않은 운동
+              기구/용품을 공유해보세요 !
+            </span>
+          </TextContainer>
+          <IconWrapper>
+            <FontAwesomeIcon icon={faArrowRight} />
+          </IconWrapper>
+        </Title>
+        <div className="list-group">
+          {isSwapDataLoading ? (
+            <p>중고거래 데이터를 불러오는 중입니다...</p>
+          ) : swapData.length > 0 ? (
+            swapData.slice(0, 4).map((swap, index) => (
+              <a
+                href="#"
+                className="list-group-item list-group-item-action"
+                key={index}
+              >
+                <div className="d-flex w-100 justify-content-between">
+                  <h5 className="mb-1">{swap.post_title}</h5>
+                  <small className="text-body-secondary">
+                    {formatDate(swap.post_date)}
+                  </small>
+                </div>
+                <p className="mb-2">작성자: {swap.post_nickname}</p>
+                <small className="text-body-secondary">
+                  조회수: {swap.post_views} | 좋아요: {swap.post_like_counts}
+                </small>
+              </a>
+            ))
+          ) : (
+            <p>등록된 중고거래 게시물이 없습니다.</p>
+          )}
+        </div>
       </SwapSpot>
       <SwapSpot>
         <TextContainer>
@@ -179,9 +243,9 @@ function HomePage(): JSX.Element {
             <span>
               바로 내 지역, 근처에서 모집 중인 최신 크루들을 찾아보세요 !
             </span>
-            {!isLoggedIn && (
+            {!isDataFetched && (
               <WarningMessage>
-                회원 전용 정보입니다. 로그인 해주세요
+                회원 전용 정보입니다. 회원가입 및 로그인 해주세요
               </WarningMessage>
             )}
           </TextContainer>
@@ -189,26 +253,28 @@ function HomePage(): JSX.Element {
             <FontAwesomeIcon icon={faArrowRight} />
           </IconWrapper>
         </Title>
-        <Cards isLoggedIn={isLoggedIn}>
-          {(isLoggedIn && isDataFetched ? crewData : fakeCrewData).map(
-            (crew, index) => (
-              <div className="card" key={index}>
-                <img
-                  src={crew.crew_intro_img}
-                  className="card-img-top card-image"
-                  alt={crew.crew_name}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">{crew.crew_name}</h5>
-                  <p className="card-text">{crew.crew_title}</p>
-                  <p className="card-goal">목표: {crew.crew_goal}</p>
-                  <a href="#" className="btn btn-secondary">
-                    자세히 보기
-                  </a>
-                </div>
+        <Cards isBlurred={!isDataFetched}>
+          {(isDataFetched ? crewData : fakeCrewData).map((crew, index) => (
+            <div className="card" key={index}>
+              <img
+                src={
+                  crew.crew_intro_img === "img"
+                    ? "/img/Home/homeEx1.png"
+                    : crew.crew_intro_img
+                }
+                className="card-img-top card-image"
+                alt={crew.crew_name}
+              />
+              <div className="card-body">
+                <h5 className="card-title">{crew.crew_name}</h5>
+                <p className="card-text">{crew.crew_title}</p>
+                <p className="card-goal">목표: {crew.crew_goal}</p>
+                <a href="#" className="btn btn-outline-dark">
+                  자세히 보기
+                </a>
               </div>
-            )
-          )}
+            </div>
+          ))}
         </Cards>
       </LocalCrew>
     </Container>
@@ -238,11 +304,11 @@ const StyledSlider = styled.div`
     width: 100%;
     height: 100%;
   }
+`;
 
-  .carousel-inner {
-    width: 100%;
-    height: 100%;
-  }
+const CarouselInner = styled.div`
+  width: 100%;
+  height: 100%;
 
   .carousel-item {
     height: 100%;
@@ -253,27 +319,51 @@ const StyledSlider = styled.div`
     height: 100%;
     width: 100%;
   }
+`;
 
-  .carousel-control-prev,
-  .carousel-control-next {
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-    width: 5%;
-  }
+const CarouselControl = styled.button<{ position: "prev" | "next" }>`
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 5%;
+  position: absolute;
+  ${({ position }) => position}: 10px;
 
-  .carousel-control-prev {
-    left: 10px;
-  }
-
-  .carousel-control-next {
-    right: 10px;
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    display: inline-block;
+    width: 100%;
   }
 `;
 
 const SwapSpot = styled.div`
   width: 80%;
-  margin-top: 70px;
+  margin-top: 100px;
+
+  .list-group {
+    margin-top: 40px;
+    padding: 0;
+
+    .list-group-item {
+      height: 120px;
+      margin-top: -15px;
+      padding: 15px 15px 18px 23px;
+      background-color: #fff;
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
 `;
 
 const LocalCrew = styled.div`
@@ -316,33 +406,75 @@ const IconWrapper = styled.div`
   padding-right: 60px;
 `;
 
-const Cards = styled.div<{ isLoggedIn: boolean }>`
+const Cards = styled.div<{ isBlurred: boolean }>`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
-  filter: ${({ isLoggedIn }) => (isLoggedIn ? "none" : "blur(4px)")};
+  filter: ${({ isBlurred }) => (isBlurred ? "blur(4px)" : "none")};
 
   .card {
-    width: 18rem;
     flex: 1 1 30%;
+    max-width: 100%;
     overflow: hidden;
-    margin: 15px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px); /* 살짝 위로 이동 */
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+    }
   }
 
   .card-image {
-    max-height: 250px;
+    max-height: 200px;
     object-fit: cover;
+    opacity: 0.9; /* 기본 흐림 */
+    filter: grayscale(20%); /* 약간의 회색 필터 */
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
+
+    /* Hover 시 이미지 선명하게 */
+    .card:hover & {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
   }
 
-  @media (max-width: 992px) {
+  .card-body {
+    padding: 15px;
+    text-align: center;
+
+    .btn {
+      background-color: #1d2636;
+      color: #fff;
+      border: none;
+
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+
+      &:hover {
+        background-color: #414d60;
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  /* 반응형 */
+  @media (max-width: 1000px) {
     .card {
       flex: 1 1 45%;
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 700px) {
     .card {
       flex: 1 1 100%;
     }
