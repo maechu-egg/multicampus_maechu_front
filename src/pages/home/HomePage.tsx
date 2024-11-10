@@ -44,7 +44,6 @@ const fakeCrewData: Crew[] = [
     crew_goal: "헬창",
   },
 ];
-
 // 날짜 형식을 변환하는 헬퍼 함수
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -101,6 +100,17 @@ function HomePage(): JSX.Element {
     getTodayData();
   }, [token]);
 
+  // Function to handle automatic slide of cards
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTodayWorkout((prev) => {
+        if (prev.length === 0) return prev;
+        return [...prev.slice(1), prev[0]];
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [todayWorkout]);
+
   useEffect(() => {
     const fetchCrewData = async () => {
       try {
@@ -132,6 +142,120 @@ function HomePage(): JSX.Element {
 
   return (
     <Container>
+      <StyledSlider>
+        <div
+          id="carouselExampleCaptions"
+          className="carousel slide"
+          data-bs-ride="carousel"
+          data-bs-interval="3000"
+        >
+          <div className="carousel-indicators">
+            {[...Array(3)].map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                data-bs-target="#carouselExampleCaptions"
+                data-bs-slide-to={idx}
+                className={idx === 0 ? "active" : ""}
+                aria-current={idx === 0 ? "true" : undefined}
+                aria-label={`Slide ${idx + 1}`}
+              ></button>
+            ))}
+          </div>
+
+          <CarouselInner className="carousel-inner">
+            {["Banner1.png", "Banner3.png", "Banner2.png"].map(
+              (imgSrc, idx) => (
+                <div
+                  key={idx}
+                  className={`carousel-item ${idx === 0 ? "active" : ""}`}
+                >
+                  <img
+                    src={`img/Home/${imgSrc}`}
+                    className="d-block w-100 carousel-image"
+                    alt={`Slide ${idx + 1}`}
+                  />
+                  <div className="carousel-caption d-none d-md-block">
+                    <h5>{`Slide ${idx + 1} label`}</h5>
+                    <p>
+                      Some representative placeholder content for slide{" "}
+                      {idx + 1}.
+                    </p>
+                  </div>
+                </div>
+              )
+            )}
+          </CarouselInner>
+
+          <CarouselControl
+            className="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="prev"
+            position="prev"
+          >
+            <span
+              className="carousel-control-prev-icon"
+              aria-hidden="true"
+            ></span>
+            <span className="visually-hidden">Previous</span>
+          </CarouselControl>
+
+          <CarouselControl
+            className="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="next"
+            position="next"
+          >
+            <span
+              className="carousel-control-next-icon"
+              aria-hidden="true"
+            ></span>
+            <span className="visually-hidden">Next</span>
+          </CarouselControl>
+        </div>
+      </StyledSlider>
+      <SwapSpot>
+        <Title>
+          <TextContainer>
+            <h1>Swap-Spot</h1>
+            <span>
+              나에게 필요한 운동 기구/용품를 찾거나, 사용하지 않은 운동
+              기구/용품을 공유해보세요 !
+            </span>
+          </TextContainer>
+          <IconWrapper>
+            <FontAwesomeIcon icon={faArrowRight} />
+          </IconWrapper>
+        </Title>
+        <div className="list-group">
+          {isSwapDataLoading ? (
+            <p>중고거래 데이터를 불러오는 중입니다...</p>
+          ) : swapData.length > 0 ? (
+            swapData.slice(0, 4).map((swap, index) => (
+              <a
+                href="#"
+                className="list-group-item list-group-item-action"
+                key={index}
+              >
+                <div className="d-flex w-100 justify-content-between">
+                  <h5 className="mb-1">{swap.post_title}</h5>
+                  <small className="text-body-secondary">
+                    {formatDate(swap.post_date)}
+                  </small>
+                </div>
+                <p className="mb-2">작성자: {swap.post_nickname}</p>
+                <small className="text-body-secondary">
+                  조회수: {swap.post_views} | 좋아요: {swap.post_like_counts}
+                </small>
+              </a>
+            ))
+          ) : (
+            <p>등록된 중고거래 게시물이 없습니다.</p>
+          )}
+        </div>
+      </SwapSpot>
       <WorkSpace>
         <Title>
           <TextContainer>
@@ -176,13 +300,54 @@ function HomePage(): JSX.Element {
           </CardSlider>
         </CardContainer>
       </WorkSpace>
+      <LocalCrew>
+        <Title>
+          <TextContainer>
+            <h1>My Hometown, New Crew</h1>
+            <span>
+              바로 내 지역, 근처에서 모집 중인 최신 크루들을 찾아보세요 !
+            </span>
+            {!isDataFetched && (
+              <WarningMessage>
+                회원 전용 정보입니다. 회원가입 및 로그인 해주세요
+              </WarningMessage>
+            )}
+          </TextContainer>
+          <IconWrapper>
+            <FontAwesomeIcon icon={faArrowRight} />
+          </IconWrapper>
+        </Title>
+        <Cards isBlurred={!isDataFetched}>
+          {(isDataFetched ? crewData : fakeCrewData).map((crew, index) => (
+            <div className="card" key={index}>
+              <img
+                src={
+                  crew.crew_intro_img === "img"
+                    ? "/img/Home/homeEx1.png"
+                    : crew.crew_intro_img
+                }
+                className="card-img-top card-image"
+                alt={crew.crew_name}
+              />
+              <div className="card-body">
+                <h5 className="card-title">{crew.crew_name}</h5>
+                <p className="card-text">{crew.crew_title}</p>
+                <p className="card-goal">목표: {crew.crew_goal}</p>
+                <a href="#" className="btn btn-outline-dark">
+                  자세히 보기
+                </a>
+              </div>
+            </div>
+          ))}
+        </Cards>
+      </LocalCrew>
     </Container>
   );
 }
 
 const slideAnimation = keyframes`
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-100%); }
 `;
 
 const Container = styled.div`
@@ -192,6 +357,82 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledSlider = styled.div`
+  width: 90%;
+  height: 650px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  border-radius: 20px;
+  overflow: hidden;
+
+  .carousel {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const CarouselInner = styled.div`
+  width: 100%;
+  height: 100%;
+
+  .carousel-item {
+    height: 100%;
+  }
+
+  .carousel-image {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
+`;
+
+const CarouselControl = styled.button<{ position: "prev" | "next" }>`
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 5%;
+  position: absolute;
+  ${({ position }) => position}: 10px;
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    display: inline-block;
+    width: 100%;
+  }
+`;
+
+const SwapSpot = styled.div`
+  width: 80%;
+  margin-top: 100px;
+
+  .list-group {
+    margin-top: 40px;
+    padding: 0;
+
+    .list-group-item {
+      height: 120px;
+      margin-top: -15px;
+      padding: 15px 15px 18px 23px;
+      background-color: #fff;
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
 `;
 
 const WorkSpace = styled.div`
@@ -238,7 +479,7 @@ const Card = styled.div<{ backgroundImage: string; isCenter: boolean }>`
   filter: ${(props) => (props.isCenter ? "brightness(1)" : "brightness(0.7)")};
 
   &:hover {
-    transform: scale(1.09);
+    transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   }
 `;
@@ -254,6 +495,11 @@ const Info = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+`;
+
+const LocalCrew = styled.div`
+  width: 80%;
+  margin-top: 70px;
 `;
 
 const Title = styled.div`
@@ -279,10 +525,91 @@ const TextContainer = styled.div`
   }
 `;
 
+const WarningMessage = styled.span`
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
+`;
+
 const IconWrapper = styled.div`
   font-size: 1.5rem;
   margin-left: auto;
   padding-right: 60px;
+`;
+
+const Cards = styled.div<{ isBlurred: boolean }>`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  filter: ${({ isBlurred }) => (isBlurred ? "blur(4px)" : "none")};
+
+  .card {
+    flex: 1 1 30%;
+    max-width: 100%;
+    overflow: hidden;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px); /* 살짝 위로 이동 */
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+    }
+  }
+
+  .card-image {
+    max-height: 200px;
+    object-fit: cover;
+    opacity: 0.9; /* 기본 흐림 */
+    filter: grayscale(20%); /* 약간의 회색 필터 */
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
+
+    /* Hover 시 이미지 선명하게 */
+    .card:hover & {
+      opacity: 1;
+      filter: grayscale(0%);
+    }
+  }
+
+  .card-body {
+    padding: 15px;
+    text-align: center;
+
+    .btn {
+      background-color: #1d2636;
+      color: #fff;
+      border: none;
+
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+
+      &:hover {
+        background-color: #414d60;
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  /* 반응형 */
+  @media (max-width: 1100px) {
+    .card {
+      flex: 1 1 45%;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .card {
+      flex: 1 1 100%;
+    }
+  }
 `;
 
 export default HomePage;
