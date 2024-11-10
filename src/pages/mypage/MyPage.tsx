@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
+import api from "../../services/api/axios";
+const BASE_URL = "http://localhost:8001";
 
 const categories = [
   "내가 쓴 글",
@@ -13,14 +13,14 @@ const categories = [
   "내가 참여한 크루",
   "배틀 중",
 ];
-
+const personalPoints = 75;
+const crewPoints = 50;
 function MyPage(): JSX.Element {
-  const personalPoints = 75;
-  const crewPoints = 50;
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { state } = useAuth();
-  const { token } = state;
-  const navigate = useNavigate();
+  const { token, memberId } = state;
+  const [userInfo, setUserInfo] = useState<any>(null);
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
   const [isCrewModalOpen, setCrewModalOpen] = useState(false);
 
@@ -34,13 +34,44 @@ function MyPage(): JSX.Element {
     setSelectedCategory(category);
   };
 
+  useEffect(() => {
+    const userInfo = async () => {
+      try {
+        console.log("함수 실행 시 현재 상태:", { token, memberId }); // 함수 실행 시 현재 상태 출력
+        const response = await api.get("/user/info", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
+          },
+        });
+
+        console.log("사용자 정보 응답:", response.data); // 응답 데이터 콘솔 출력
+        setUserInfo(response.data); // 사용자 정보 상태 업데이트
+      } catch (error) {
+        console.error("사용자 정보 조회 오류:", error);
+      }
+    };
+    userInfo();
+  }, [token, state]);
+
   return (
     <Container>
       <Header>
-        <IconWrapper>
-          <FontAwesomeIcon icon={faUser} />
-          <NickName>NickName</NickName>
-        </IconWrapper>
+        {userInfo ? (
+          <IconWrapper>
+            <ProfileImage
+              src={
+                userInfo.memberImg === "/static/null"
+                  ? "/img/default/UserDefault.png"
+                  : `${BASE_URL}${userInfo.memberImg}`
+              }
+              alt="Profile"
+            />
+            <NickName>{userInfo.nickname}</NickName>
+          </IconWrapper>
+        ) : (
+          <p>사용자 정보를 불러오는 중...</p>
+        )}
+
         <Divider />
         <InfoBars>
           <Info>
@@ -141,6 +172,13 @@ const IconWrapper = styled.div`
   @media (min-width: 900px) {
     align-self: center;
   }
+`;
+
+const ProfileImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const NickName = styled.h2`
