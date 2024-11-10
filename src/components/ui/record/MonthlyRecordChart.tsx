@@ -18,7 +18,7 @@ const MonthlyRecordChart = ({
   currentMonth,
   burnedCalories,
   consumedCalories
-}: MonthlyRecordChartProps) => {
+}: MonthlyRecordChartProps): JSX.Element => {
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
     currentMonth.getMonth() + 1,

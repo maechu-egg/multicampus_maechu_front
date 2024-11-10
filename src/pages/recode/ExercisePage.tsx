@@ -5,13 +5,18 @@ import { useAuth } from "../../context/AuthContext";
 import styled from "styled-components";
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import ExerciseInfo from "../../components/ui/record/ExerciseInfo";
 
 
-function ExercisePage() {
+
+function ExercisePage(): JSX.Element {
   const { selectedDate } = useParams<{ selectedDate: string }>();
   const { state } = useAuth();
   const token = state.token;
   const memberId = state.memberId;
+  
+  const [todayCalorie,setTodayCalorie] = useState<number>(0);
+  const [todayTime,setTodayTime] = useState<number>(0);
 
   const [exerciseType, setExerciseType] = useState("");
   const [intensity, setIntensity] = useState("");
@@ -19,7 +24,7 @@ function ExercisePage() {
 
   const navigate = useNavigate();
   
-  const [exerciseData,setExerciseData] = useState({});
+  const [exerciseData,setExerciseData] = useState([]);
 
   console.log("debug >>> selectedDate:", selectedDate);
   
@@ -34,16 +39,26 @@ function ExercisePage() {
     exerciseGet(selectedDate);
   }, []);
   
-  const exerciseGet = async (recodr_date: any) => {
+  const exerciseGet = async (record_date: any) => {
     try {
-      console.log("debug >>> data", recodr_date);
+      console.log("debug >>> data", record_date);
       const response = await api.get("record/exercise/get/exerday", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { recodr_date }
+        params: { record_date }
       });
-      console.log("debug >>> response", response);
+      console.log("debug >>> exer Info : ", response.data);
+      
+      // 운동 정보 저장
       setExerciseData(response.data);
+      
+      // 일일 소모 칼로리
+      const totalCalories = response.data.reduce((acc:number, exer:any) => acc + exer.calories, 0);
+      setTodayCalorie(totalCalories);
 
+      // 일일 운동 시간
+      const totalTime = response.data.reduce((acc:number, exer:any) => acc + exer.duration, 0);
+      setTodayTime(totalTime);
+    
     } catch (error) {
       console.error("debug >>> error", error);
     }
@@ -58,7 +73,7 @@ function ExercisePage() {
       }
 
       const response = await api.post("record/exercise/insert/type", data, { headers: { Authorization: `Bearer ${token}` } });
-      console.log("debug >>> response", response);
+      console.log("debug >>> exer Insert : ", response);
       
     } catch (error) {
       console.error("debug >>> error", error);
@@ -88,11 +103,11 @@ function ExercisePage() {
         <StatsSection>
           <StatItem>
             <h3>오늘 태운 칼로리</h3>
-            <p>150 kcal</p>
+            <p>{todayCalorie} kcal</p>
           </StatItem>
           <StatItem>
             <h3>오늘 운동한 시간</h3>
-            <p>3000 kg</p>
+            <p>{todayTime > 60 ? `${Math.floor(todayTime / 60)} 시간 ${todayTime % 60} 분` : `${todayTime} 분`}</p>
           </StatItem>
         </StatsSection>
       </SummaryCard>
@@ -103,6 +118,12 @@ function ExercisePage() {
           placeholder="운동 종목을 검색하세요"
         />
       </SearchBar>
+
+      <ExerciseList>
+        {exerciseData.map((exercise, index) => {
+          return <ExerciseInfo key={index} exercise={exercise} />;
+        })}
+      </ExerciseList>
     </Container>
   );
 };
@@ -184,6 +205,20 @@ const SearchBar = styled.div`
   }
 `;
 
+const ExerciseList = styled.div`
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin: 20px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+`;
 
 
 export default ExercisePage;

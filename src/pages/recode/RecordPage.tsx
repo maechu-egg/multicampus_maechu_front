@@ -5,7 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import styled from "styled-components";
 import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
-import MonthlyRecordChart from "../../components/MonthlyRecordChart";
+import MonthlyRecordChart from "../../components/ui/record/MonthlyRecordChart";
 import { IoCloseOutline } from "react-icons/io5";
 // 타입 정의 추가
 interface ExerciseRecord {
@@ -18,7 +18,7 @@ interface DietRecord {
   totalCalories: number;
 }
 
-function RecordPage() {
+function RecordPage(): JSX.Element {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
   const [dietDates, setDietDates] = useState<string[]>([]);
   const [value, setValue] = useState<Date>(new Date());
