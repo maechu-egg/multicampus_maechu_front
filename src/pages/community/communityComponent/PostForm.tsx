@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./PostForm.css";
 
@@ -10,22 +10,27 @@ interface PostFormProps {
     post_up_sport: string;
     post_sport: string;
     post_hashtag: string;
-    post_sports_keyword:string;
+    post_sports_keyword: string;
   };
-  onSave: (post_title: string, post_contents: string, 
-          post_up_sport: string, post_sport: string,
-          post_hashtag: string, post_sports_keyword:string,
-          imageFiles :FileList | null ) => void;
+  onSave: (
+    post_title: string,
+    post_contents: string,
+    post_up_sport: string,
+    post_sport: string,
+    post_hashtag: string,
+    post_sports_keyword: string,
+    imageFiles: FileList | null
+  ) => void;
   onCancel: () => void;
   post_up_sports: string[];
   post_sports: { [key: string]: string[] };
-  recommendedKeywords:string[];
+  recommendedKeywords: string[];
 }
 
-const PostForm: React.FC<PostFormProps> = ({ 
-  mode, 
-  initialData, 
-  onSave, 
+const PostForm: React.FC<PostFormProps> = ({
+  mode,
+  initialData,
+  onSave,
   onCancel,
   post_up_sports,
   post_sports,
@@ -33,47 +38,44 @@ const PostForm: React.FC<PostFormProps> = ({
 }) => {
   const [post_title, setPost_title] = useState(initialData?.post_title || "");
   const [post_contents, setPost_contents] = useState(initialData?.post_contents || "");
-  const [post_up_sport, setPost_up_sport] = useState(initialData?.post_up_sport || ""); 
+  const [post_up_sport, setPost_up_sport] = useState(initialData?.post_up_sport || "");
   const [post_sport, setPost_sport] = useState(initialData?.post_sport || "");
   const [post_sports_keyword, setPost_sports_keyword] = useState(initialData?.post_sports_keyword || "");
-  const [imageFiles, setImageFiles] = useState<FileList | null>(null); // 이미지 파일 상태 추가
+  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const [tagInput, setTagInput] = useState("");
   const [tagList, setTagList] = useState<string[]>(
     initialData?.post_hashtag ? initialData.post_hashtag.split(", ") : []
   );
 
-
-
-  // 이미지 파일 선택 핸들러
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0 ) {
+    if (e.target.files && e.target.files.length > 0) {
       setImageFiles(e.target.files);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (post_title.trim() === "") {
       alert("제목을 입력해주세요!");
       return;
     }
-  
+
     if (post_contents.trim() === "") {
       alert("내용을 입력해주세요!");
       return;
     }
-  
+
     if (post_up_sport === "") {
       alert("카테고리를 선택해주세요!");
       return;
     }
-  
+
     if (post_sport === "") {
       alert("카테고리 소분류를 선택하세요!");
       return;
     }
-  
+
     onSave(post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, tagList.join(", "), imageFiles);
   };
 
@@ -96,105 +98,137 @@ const PostForm: React.FC<PostFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 border rounded bg-light">
-      <h2>{mode === "create" ? "게시물 작성" : "게시물 수정"}</h2>
-      <div className="mb-3">
-  <label className="form-label">카테고리:</label>
-  <select className="form-select" value={post_up_sport} onChange={(e) => setPost_up_sport(e.target.value)} required>
-    <option value="">선택하세요</option>
-    {post_up_sports.map((cat) => (
-      <option key={cat} value={cat}>
-        {cat}
-      </option>
-    ))}
-  </select>
-</div>
-<div className="mb-3">
-  <label className="form-label">카테고리 소분류:</label>
-  <select className="form-select" value={post_sport} onChange={(e) => setPost_sport(e.target.value)}>
-    <option value="">선택하세요</option>
-    {post_sports[post_up_sport]?.map((subcat) => (
-      <option key={subcat} value={subcat}>
-        {subcat}
-      </option>
-    ))}
-  </select>
-</div>
-
-<div className="mb-3">
-  <label className="form-label">키워드</label>
-  <select className="form-select" value={post_sports_keyword} onChange={(e) => setPost_sports_keyword(e.target.value)}>
-    <option value="">선택하세요</option>
-    {recommendedKeywords?.map((skeyword) => (
-      <option key={skeyword} value={skeyword}>
-        {skeyword}
-      </option>
-    ))}
-  </select>
-</div>
-      <div className="mb-3">
-        <label className="form-label">제목:</label>
-        <input
-          type="text"
-          className="form-control"
-          value={post_title}
-          onChange={(e) => setPost_title(e.target.value)}
-        />
-      </div>
-      <div className="mb-3">
-        <label className="form-label">내용:</label>
-        <textarea
-          className="form-control post-content"
-          value={post_contents}
-          onChange={(e) => setPost_contents(e.target.value)}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">이미지 업로드:</label>
-        <input type="file" className="form-control" multiple onChange={handleImageChange} /> {/* 이미지 파일 업로드 */}
-        {imageFiles && <div className="mt-2">업로드된 파일: 
-          <ul>
-            {Array.from(imageFiles).map((file, index)=>(
-              <li key={index}>{file.name}</li>
+    <div className="post-form-container">
+      <h2 className="form-title">{mode === "create" ? "게시물 작성" : "게시물 수정"}</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label">카테고리:</label>
+          <select 
+            className="form-select" 
+            value={post_up_sport} 
+            onChange={(e) => setPost_up_sport(e.target.value)} 
+            required
+          >
+            <option value="">선택하세요</option>
+            {post_up_sports.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
             ))}
-          </ul>  
-        </div>}
-      </div>
+          </select>
+        </div>
 
+        <div className="mb-3">
+          <label className="form-label">카테고리 소분류:</label>
+          <select 
+            className="form-select" 
+            value={post_sport} 
+            onChange={(e) => setPost_sport(e.target.value)}
+          >
+            <option value="">선택하세요</option>
+            {post_sports[post_up_sport]?.map((subcat) => (
+              <option key={subcat} value={subcat}>
+                {subcat}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div className="mb-3">
-        <label className="form-label">태그:</label>
-        <div className="tags-input-container form-control">
-          {tagList.map((post_hashtag, index) => (
-            <span key={index} className="tag-item">
-              {post_hashtag}
-              <button 
-                type="button" 
-                className="tag-remove-btn"
-                onClick={() => removeTag(post_hashtag)}
-              >
-                ×
-              </button>
-            </span>
-          ))}
+        <div className="mb-3">
+          <label className="form-label">키워드:</label>
+          <select 
+            className="form-select" 
+            value={post_sports_keyword} 
+            onChange={(e) => setPost_sports_keyword(e.target.value)}
+          >
+            <option value="">선택하세요</option>
+            {recommendedKeywords?.map((keyword) => (
+              <option key={keyword} value={keyword}>
+                {keyword}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">제목:</label>
           <input
             type="text"
-            className="tag-input"
-            placeholder="태그를 입력하고 Enter를 누르세요"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={handleTagKeyDown}
+            className="form-control"
+            value={post_title}
+            onChange={(e) => setPost_title(e.target.value)}
+            placeholder="제목을 입력하세요"
           />
         </div>
-      </div>
-      <button type="submit" className="btn btn-primary me-2">
-        {mode === "create" ? "작성하기" : "수정하기"}
-      </button>
-      <button type="button" className="btn btn-secondary" onClick={onCancel}>
-        {mode === "create" ? "작성취소" : "수정취소"}
-      </button>
-    </form>
+
+        <div className="mb-3">
+          <label className="form-label">내용:</label>
+          <textarea
+            className="form-control post-content"
+            value={post_contents}
+            onChange={(e) => setPost_contents(e.target.value)}
+            placeholder="내용을 입력하세요"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">이미지 업로드:</label>
+          <input 
+            type="file" 
+            className="form-control" 
+            multiple 
+            onChange={handleImageChange}
+            accept="image/*"
+          />
+          {imageFiles && (
+            <div className="mt-2">
+              업로드된 파일:
+              <ul className="list-unstyled">
+                {Array.from(imageFiles).map((file, index) => (
+                  <li key={index}>{file.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">태그:</label>
+          <div className="tags-input-container">
+            {tagList.map((tag, index) => (
+              <span key={index} className="tag-item me-2">
+                {tag}
+                <button
+                  type="button"
+                  className="tag-remove-btn"
+                  onClick={() => removeTag(tag)}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+            <input
+              type="text"
+              className="tag-input border-0"
+              placeholder="태그를 입력하고 Enter를 누르세요"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleTagKeyDown}
+            />
+          </div>
+        </div>
+
+        <div className="d-flex justify-content-end gap-2">
+          <button type="submit" className="btn btn-primary">
+            {mode === "create" ? "작성하기" : "수정하기"}
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={onCancel}>
+            {mode === "create" ? "작성취소" : "수정취소"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
+
 export default PostForm;
