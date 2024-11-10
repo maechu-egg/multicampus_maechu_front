@@ -12,7 +12,7 @@ import RecommendedKeywords from "./communityComponent/RecommendedKeywords";
 import categoriesJson from "../../assets/data/categories.json";
 import dataJson from "../../assets/data/data.json";
 import axios from "axios";
-
+import CategoryDropdown from './communityComponent/CategoryDropdown';
 import {  useNavigate } from "react-router-dom";
 
 
@@ -694,17 +694,16 @@ const handleSubcategoryChange = async (post_sport: string) => {
   /* 메인 화면 렌더링 */
   return (
     <div className="community-container">
-      <CategoryTabs
+    {/* 카테고리(대,소분류) 드롭다운으로 교체 */}
+    {!showPostForm && (
+      <CategoryDropdown
         post_up_sports={post_up_sports}
         activeTab={activeTab}
-        onTabChange={handleCategoryChange}
-      />
-
-      <SubcategoryTabs
-        post_sports={post_sports[activeTab] || []}
         activePost_sport={activePost_sport}
+        onTabChange={handleCategoryChange}
         onSubcategoryChange={handleSubcategoryChange}
       />
+    )}
 
       {/* 게시물 작성 폼 또는 게시물 목록 표시 */}
       {showPostForm ? (
