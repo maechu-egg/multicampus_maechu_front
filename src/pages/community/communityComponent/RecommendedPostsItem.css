@@ -1,0 +1,61 @@
+.post-item {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;  
+    margin-bottom: 10px;
+    padding: 15px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .post-item:hover {
+    /*background-color: #f8f9fa; */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);  
+    transform: translateY(-2px); 
+  }
+  
+  .post-item.recommended {
+    border: 2px solid #FFD700;  /* 추천 게시물 노란색 테두리 */
+  }
+  
+  .post-content-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .post-title {
+    flex: 1;
+    font-weight: 500;
+    color: #212529;
+    margin-right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .author {
+    color: #495057;
+    white-space: nowrap;
+  }
+  
+  .date {
+    color: #6c757d;
+    white-space: nowrap;
+  }
+  
+  .post-stats {
+    display: flex;
+    gap: 15px;
+    color: #6c757d;
+    white-space: nowrap;
+  }
+  
+  .post-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .likes, .comments, .views {
+    display: flex;
+    align-items: center;
+  }
