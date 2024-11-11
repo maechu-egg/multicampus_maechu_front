@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import styled from "styled-components";
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import ExerciseInfo from "../../components/ui/record/ExerciseInfo";
+import ExerciseInfo from "../../components/ui/record/list/ExerciseInfo";
 
 
 

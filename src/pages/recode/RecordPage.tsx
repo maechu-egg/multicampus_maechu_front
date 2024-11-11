@@ -5,7 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import styled from "styled-components";
 import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
-import MonthlyRecordChart from "../../components/ui/record/MonthlyRecordChart";
+import MonthlyRecordChart from "../../components/ui/record/calendar/MonthlyRecordChart";
 import { IoCloseOutline } from "react-icons/io5";
 // 타입 정의 추가
 interface ExerciseRecord {

@@ -21,7 +21,7 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo }: SetInfoModalProps): JSX.E
         {modalInfo ? (
           setInfo.map((set, index) => (
             <SetInfoWrapper key={set.set_id}>
-              <InfoText>세트 : {index + 1}</InfoText>
+              <InfoText>세트 {index + 1}</InfoText>
               <InfoText>{set.weight !== 0 ? `무게 : ${set.weight} kg`
                 : null
               }</InfoText>
@@ -60,7 +60,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: white;
+  background: #fff;
   padding: 24px;
   border-radius: 12px;
   max-width: 400px;
@@ -71,8 +71,8 @@ const ModalContent = styled.div`
   h3 {
     margin: 0 0 16px;
     font-size: 1.5rem;
+    font-weight: 550;
     color: #333;
-    text-align: center;
   }
 
   @keyframes fadeIn {
@@ -104,6 +104,7 @@ const SetTitle = styled.h4`
 const InfoText = styled.p`
   margin: 4px 0;
   font-size: 1rem;
+  font-weight: 550;
   color: #666;
 `;
 
