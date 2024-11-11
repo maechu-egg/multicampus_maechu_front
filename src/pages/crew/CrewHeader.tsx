@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import CrewSearch from "./CrewSearch";
-import MyCrewHeader from "./MyCrewHeader";
 import './CrewPage.css';
 import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
+import MyCrew from "./MyCrew";
 
 function CrewHeader(): JSX.Element {
     const { state } = useAuth();
@@ -49,29 +49,28 @@ function CrewHeader(): JSX.Element {
                         role="tab" 
                         aria-controls="crew-search-pane" 
                         aria-selected="true"
-                        style={{fontStyle:'bold', backgroundColor:'rgba(231, 237, 237)', border:'2px solid rgba(222, 226, 230)'}}
+                        style={{fontSize: '30px'}}
                     >
-                        크루 찾기
+                        Find Crew
                     </button>
                 </li>
                 
-                {myCrew.map((crew, index) => (
-                    <li className="nav-item" role="presentation" key={crew.crew_id}>
-                        <button
-                            className={`nav-link ${activeCrewTab === index + 1 ? 'active' : ''}`}
-                            onClick={() => handleCrewTabClick(index + 1)}
-                            id={`my-crew${index + 1}`}
-                            data-bs-toggle="tab"
-                            data-bs-target={`#my-crew${index + 1}-pane`}
-                            type="button"
-                            role="tab"
-                            aria-controls={`my-crew${index + 1}-pane`}
-                            aria-selected={activeCrewTab === index + 1}
-                        >
-                            {crew.crew_name}
-                        </button>
-                    </li>
-                ))}
+                <li className="nav-item" role="presentation">
+                    <button
+                        className={`nav-link ${activeCrewTab === 1 ? 'active' : ''}`}
+                        onClick={() => handleCrewTabClick(1)}
+                        id="my-crew"
+                        data-bs-toggle="tab"
+                        data-bs-target="#my-crew-pane"
+                        type="button"
+                        role="tab"
+                        aria-controls="my-crew-pane"
+                        aria-selected="true"
+                        style={{fontSize: '30px'}}
+                    >
+                        My Crew
+                    </button>
+                </li>
             </ul>
 
             <div className="tab-content" id="myTabContent">
@@ -87,21 +86,18 @@ function CrewHeader(): JSX.Element {
                         <CrewSearch />
                     </div>
                 )}
-                {myCrew.map((crew, index) => (
-                    activeCrewTab === index + 1 && (
-                        <div 
-                            className="tab-pane fade show active"
-                            id={`my-crew${index + 1}-pane`} 
-                            role="tabpanel" 
-                            aria-labelledby={`my-crew${index + 1}`} 
-                            tabIndex={0}
-                            key={crew.crew_id}
-                        >
-                            <br/>
-                            <MyCrewHeader crewId={crew.crew_id} /> 
-                        </div>
-                    )
-                ))}
+                {activeCrewTab === 1 && (
+                    <div 
+                        className="tab-pane fade show active"
+                        id="my-crew-pane" 
+                        role="tabpanel" 
+                        aria-labelledby="my-crew" 
+                        tabIndex={0}
+                    >
+                        <br/>
+                        <MyCrew myCrew={myCrew}/>
+                    </div>
+                )}
             </div>
         </div>
     );

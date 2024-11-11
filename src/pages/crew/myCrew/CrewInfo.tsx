@@ -15,7 +15,6 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
     const { state } = useAuth();
     const token = state.token;
     const memberId = state.memberId;
-    const navigate = useNavigate();
     {/* 
         useEffect로 crewId에 맞는 정보 불러와서 crew_intro_img 왼쪽에 보여주고
         crew_name 오른쪽 윗부분, crew_intro_post 오른쪽 아래부분
@@ -23,30 +22,38 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
     const [crewName, setCrewName] = useState<string>("");
 
     const [crewIntroImg, setCrewIntroImg] = useState<string>("");
+    const [imgPath, setImgPath] = useState<string>("");
     const [crewIntroPost, setCrewIntroPost] = useState<string>("");
     const [crewDate, setCrewDate] = useState<string>("");
     const [crewLeader, setCrewLeader] = useState(0);
 
-    useEffect(() => {
-        const selectCrew = async() => {
-            try{
-                const response = await api.get(`crew/info/${crewId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log("debug >>> 크루소개페이지 response", response.data);
-                setCrewName(response.data.crew_name);
-                setCrewIntroImg(response.data.crew_intro_img);
-                setCrewIntroPost(response.data.crew_intro_post);
-                setCrewDate(response.data.crew_date);
-                setCrewLeader(response.data.member_id);
-            } catch (error) {
-                console.log('Error selecting crew:', error);
-            }
+    const selectCrew = async() => {
+        try{
+            const response = await api.get(`crew/info/${crewId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("debug >>> 크루소개페이지 response", response.data);
+            setCrewName(response.data.crew_name);
+            setCrewIntroImg(response.data.crew_intro_img);
+            setCrewIntroPost(response.data.crew_intro_post);
+            setCrewDate(response.data.crew_date);
+            setCrewLeader(response.data.member_id);
+        } catch (error) {
+            console.log('Error selecting crew:', error);
         }
+    }
+
+    useEffect(() => {
         selectCrew();
-    },[crewName, crewIntroImg, crewIntroPost]);
+    },[]);
+
+    useEffect(() => {
+        if(crewIntroImg === "CrewDefault") {
+            setImgPath("img/default/CrewDefault.png")
+        }
+    })
     
 
     const formattedCrewDate = new Date(crewDate).toLocaleDateString('ko-KR', {
@@ -109,7 +116,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
             <div className="row mt-3 d-flex justify-content-around align-items-center">
                 <div className="col-md-8 col-12 d-flex justify-content-center">
                     <img
-                        src="/img/person.png"
+                        src={imgPath}
                         alt="크루 이미지"
                         className="img-fluid"
                         style={{marginRight: "0px"}}
@@ -140,7 +147,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewModal crew_id={crewId}/>
+                            <CrewModal crew_id={crewId} onClick={selectCrew}/>
                         </div>
                     </div>
                 </div>
@@ -156,7 +163,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewIntroModal crew_id={crewId}/>
+                            <CrewIntroModal crew_id={crewId} onClick={selectCrew}/>
                         </div>
                     </div>
                 </div>

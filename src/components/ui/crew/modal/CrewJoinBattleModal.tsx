@@ -4,7 +4,7 @@ import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-function CrewJoinBattleModal({battle_id, crewId}: {battle_id: number, crewId:number}) {
+function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, crewId:number, onClick:() => void}) {
     const { state } = useAuth();
     const token = state.token;  
     const memberId = state.memberId;
@@ -30,6 +30,7 @@ function CrewJoinBattleModal({battle_id, crewId}: {battle_id: number, crewId:num
             });
             alert("배틀에 참여 되었습니다.");
             console.log("debug >>> handleSubmit response", response.data);
+            onClick();
         } catch (error) {
             console.log("debug >>> handleSubmit error", error);
         }

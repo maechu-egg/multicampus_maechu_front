@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface CrewBattleProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
+    onClick: () => void;
 }
 
-function CrewBattleModal({ crewId }: CrewBattleProps) {
+function CrewBattleModal({ crewId, onClick }: CrewBattleProps) {
     const { state } = useAuth();
     const token = state.token;
 
@@ -40,6 +41,7 @@ function CrewBattleModal({ crewId }: CrewBattleProps) {
                 });
                 alert('배틀을 생성하였습니다.');
                 console.log("debug >>> createBattle response", response.data);
+                onClick();
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("배틀 생성에 실패 했습니다.");

@@ -33,10 +33,6 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
 
     useEffect(() => {
         getBattleList();
-    }, [battleList.length]);
-
-    useEffect(() => {
-        getBattleList();
     },[])
 
     return (
@@ -107,7 +103,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewBattleModal crewId={crewId}/>
+                            <CrewBattleModal crewId={crewId} onClick={getBattleList}/>
                         </div>
                     </div>
                 </div>
@@ -137,7 +133,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewJoinBattleModal battle_id={selectedBattleId} crewId={crewId}/>
+                            <CrewJoinBattleModal battle_id={selectedBattleId} crewId={crewId} onClick={getBattleList}/>
                         </div>
                     </div>
                 </div>

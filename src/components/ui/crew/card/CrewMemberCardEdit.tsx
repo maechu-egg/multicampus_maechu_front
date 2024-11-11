@@ -18,9 +18,10 @@ interface Member {
 interface CrewInfoProps {
     member: Member;
     crewId: number;
+    onClick: () => void;
 }
 
-function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
+function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Element {
     const { state } = useAuth();
     const memberId = state.memberId;
     const token = state.token;
@@ -76,6 +77,7 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> acceptHandler response", response.data);
             alert("승인되었습니다.");
+            onClick();
         } catch (error) {
             console.log('Error accepting crew member:', error);
         }
@@ -95,6 +97,7 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> rejectHandler response", response.data);
             alert("거절되었습니다.");
+            onClick();
         } catch (error) {
             console.log('Error rejecting crew member:', error);
         }   
@@ -114,7 +117,7 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> exitHandler response", response.data);
             alert("탈퇴 하였습니다.");
-            window.location.reload(); // 현재 페이지 리로딩
+            window.location.reload();
         } catch (error) {
             console.log('Error exitHandler crew member:', error);
         }  
@@ -124,7 +127,7 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
         const data = {
             crew_id : crewId,
             member_id : member.member_id
-        }   
+        }
         try{
             const response = await api.delete(`crew/member/delete`,{
                 headers: {
@@ -134,7 +137,7 @@ function CrewMemberCardEdit({ member, crewId }: CrewInfoProps): JSX.Element {
             });
             console.log("debug >>> expulsionHandler response", response.data);
             alert("탈퇴 되었습니다.");
-            window.location.reload(); // 현재 페이지 리로딩
+            onClick();
         } catch (error) {
             console.log('Error expulsionHandler crew member:', error);
         }  

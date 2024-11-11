@@ -11,22 +11,23 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
     const token = state.token;
     const [crewMembers, setCrewMembers] = useState<any[]>([]);
 
+    const selectCrewMember = async () => {
+        try {
+            const response = await api.get(`http://localhost:8001/crew/member/list/${crewId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log("debug >>> 크루멤버정보 response", response.data);
+            setCrewMembers(response.data);
+        } catch (error) {
+            console.log('Error selecting crew member:', error);
+        }
+    };
+
     useEffect(() => {
-        const selectCrewMember = async () => {
-            try {
-                const response = await api.get(`http://localhost:8001/crew/member/list/${crewId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                console.log("debug >>> 크루멤버정보 response", response.data);
-                setCrewMembers(response.data);
-            } catch (error) {
-                console.log('Error selecting crew member:', error);
-            }
-        };
         selectCrewMember();
-    }, [crewMembers.length]);
+    }, []);
     {/* 
         useEffect를 사용해서 crewId에 맞는 정보 불러오고
         뱃지, 닉네임, 나이, 지역, 배틀 승리 횟수, 주간 운동 횟수 보여주기 (카드형식)
@@ -42,7 +43,7 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
             <div className="row">
                 {crewMembers.map(member => (
                     <div key={member.crew_member_id} className="col-md-4 mb-4 d-flex justify-content-center">
-                        <CrewMemberCardEdit member={member} crewId={crewId} />
+                        <CrewMemberCardEdit member={member} crewId={crewId} onClick={selectCrewMember}/>
                     </div>
                 ))}
             </div>

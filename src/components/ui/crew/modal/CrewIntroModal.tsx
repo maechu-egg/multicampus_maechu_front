@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import './Modal.css';
-import axios from "axios";
 import { useAuth } from "context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import api from "services/api/axios";
 
-function CrewIntroModal({ crew_id }: { crew_id: number }) {
+function CrewIntroModal({ crew_id, onClick }: { crew_id: number, onClick: () => void }) {
     const { state } = useAuth();
     const token = state.token;
     const member_id = state.memberId;
@@ -25,7 +25,7 @@ function CrewIntroModal({ crew_id }: { crew_id: number }) {
         const data = {
             crew_name,
             crew_intro_post,
-            crew_intro_img: crew_intro_img ? crew_intro_img : null,
+            ...(crew_intro_img ? { crew_intro_img } : {}),
             crew_id,
             member_id
         };
@@ -33,13 +33,14 @@ function CrewIntroModal({ crew_id }: { crew_id: number }) {
 
         const updateCrewIntro = async() => {
             try {
-                const response = await axios.patch(`http://localhost:8001/crew/intro/update`, data, {
+                const response = await api.patch(`crew/intro/update`, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
                 console.log("debug >>> updateCrewIntro response", response);
                 alert("크루 소개글 수정이 완료되었습니다.");
+                onClick();
             } catch (error) {
                 console.error('Error updating crew intro:', error);
                 alert("크루 소개글 수정에 실패 했습니다.");

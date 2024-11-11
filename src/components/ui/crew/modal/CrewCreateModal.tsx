@@ -49,7 +49,7 @@ function CrewCreateModal() {
             crew_state,
             crew_age: selectedAges,
             crew_sport,
-            member_id
+            member_id,
         };
         console.log("debug >>> data", data);
 
@@ -62,6 +62,7 @@ function CrewCreateModal() {
                 });
                 console.log("debug >>> createCrew response", response);
                 alert("크루 생성이 완료되었습니다.");
+                window.location.reload();
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("크루 생성에 실패 했습니다.");

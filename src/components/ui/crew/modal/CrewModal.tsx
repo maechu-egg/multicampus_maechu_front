@@ -6,7 +6,7 @@ import CrewSearchDivEdit from '../selectDiv/CrewSearchDivEdit';
 import CrewLocationDiv from '../selectDiv/CrewLocationDiv';
 import api from 'services/api/axios';
 
-function CrewModal({ crew_id }: { crew_id: number}) {
+function CrewModal({ crew_id, onClick }: { crew_id: number, onClick: () => void}) {
     const { state } = useAuth();
     const token = state.token;
     const member_id = state.memberId;
@@ -87,6 +87,7 @@ function CrewModal({ crew_id }: { crew_id: number}) {
                 });
                 console.log("debug >>> createCrew response", response);
                 alert("크루 수정이 완료되었습니다.");
+                onClick();
             } catch (error) {
                 console.error('Error creating crew:', error);
                 alert("크루 수정에 실패 했습니다.");

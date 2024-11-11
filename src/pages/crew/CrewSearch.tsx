@@ -5,7 +5,6 @@ import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
 import CrewCard from "components/ui/crew/card/CrewCard";
 import CrewCreateModal from "components/ui/crew/modal/CrewCreateModal";
 import CrewSearchDivEdit from "components/ui/crew/selectDiv/CrewSearchDivEdit";
-import "./CrewPage.css";
 
 function CrewSearch(): JSX.Element {
     const { state } = useAuth();
@@ -44,11 +43,8 @@ function CrewSearch(): JSX.Element {
 
     useEffect(() => {
         getCrewList();
-    }, [crewList.length]);
+    }, []);
 
-    useEffect(() => {
-        getCrewList();
-    }, [])
 
 
     const setsearchSports = (searchSport: string) => {
@@ -64,23 +60,23 @@ function CrewSearch(): JSX.Element {
         }
     }
 
+
     return (
         <div className="container">
             {/* 토글 & 검색바와 게시물 작성 버튼 */}
-            <div className="d-flex justify-content-between align-center">
-                <div className="container1">
-                    <div 
-                        className="btn btn-outline-dark"
-                        onClick={searchSportHandler}
-                    >
-                        <span className="btn-text">종목 선택</span>
-                    </div>
+            <div className="d-flex justify-content-between ">
+                <div 
+                    className="btn btn-outline-dark "
+                    onClick={searchSportHandler}
+                >
+                    <span className="btn-text">종목 선택</span>
                 </div>
                 <input
                     type="text"
                     className="form-control"
                     placeholder="검색어를 입력하세요"
                     value={searchTerm}
+                    style={{width: '40%'}}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button className="btn btn-primary"
