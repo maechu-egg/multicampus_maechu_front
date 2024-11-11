@@ -845,13 +845,15 @@ const handleSubcategoryChange = async (post_sport: string) => {
     <div className="community-container">
     {/* 카테고리(대,소분류) 드롭다운으로 교체 */}
     {!showPostForm && (
-      <CategoryDropdown
-        post_up_sports={post_up_sports}
-        activeTab={activeTab}
-        activePost_sport={activePost_sport}
-        onTabChange={handleCategoryChange}
-        onSubcategoryChange={handleSubcategoryChange}
-      />
+       <CategoryDropdown
+       post_up_sports={post_up_sports}
+       activeTab={activeTab}
+       activePost_sport={activePost_sport}
+       onTabChange={handleCategoryChange}
+       onSubcategoryChange={handleSubcategoryChange}
+       recommendedKeywords={recommendedKeywords}  // 추가
+       onKeywordClick={handleKeywordClick}  // 추가
+     />
     )}
 
       {/* 게시물 작성 폼 또는 게시물 목록 표시 */}
@@ -874,10 +876,12 @@ const handleSubcategoryChange = async (post_sport: string) => {
         />
       ) : (
         <>
-         <RecommendedKeywords 
+        
+       {/*  <RecommendedKeywords 
                         keywords={recommendedKeywords} 
                         onKeywordClick={handleKeywordClick}
            /> 
+       */}
 
           {/* 검색바와 게시물 작성 버튼 */}
           <div className="search-and-write">
