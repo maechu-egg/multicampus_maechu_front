@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './Modal.css';
 import { useAuth } from "context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,23 @@ function CrewIntroModal({ crew_id, onClick }: { crew_id: number, onClick: () => 
             setCrew_intro_img(e.target.files[0]);
         }
     };
+
+    useEffect(() => {
+        const getIntro = async() => {
+            try {
+                const response = await api.get(`crew/info/${crew_id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setCrew_name(response.data.crew_name);
+                setCrew_intro_post(response.data.crew_intro_post);
+            } catch (err) {
+                console.error('크루 정보 불러오기 에러:', err);
+            }
+        }
+        getIntro();
+    },[])
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
