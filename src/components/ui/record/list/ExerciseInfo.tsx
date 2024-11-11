@@ -14,13 +14,22 @@ interface ExerciseInfoProps {
     met: number;
     record_date: string;
   };
+  receiveUpdatedExer: (updatedExercise: any) => void;
 }
 
-const ExerciseInfo = ({ exercise }: ExerciseInfoProps): JSX.Element => {
+interface SetInfo {
+  set_id: number; 
+  weight: number;
+  distance: number;
+  repetitions: number;
+  exercise_id: number;
+}
+
+const ExerciseInfo = ({ exercise, receiveUpdatedExer }: ExerciseInfoProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
 
-  const [setInfo, setSetInfo] = useState<any[]>([]);
+  const [setInfo, setSetInfo] = useState<SetInfo[]>([]);
   const [isSetModalOpen, setIsSetModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -37,29 +46,42 @@ const ExerciseInfo = ({ exercise }: ExerciseInfoProps): JSX.Element => {
     }
   };
 
-  const closeModal = () => {
+  const closeSetModal = () => {
     setIsSetModalOpen(false);
   };
 
-  const closeEditModal = () => {
+  const closeExerModal = () => {
     setIsEditModalOpen(false);
   };
 
-  const openEditModal = () => {
+  const openExerModal = () => {
     setIsEditModalOpen(true);
   }
 
-  const updateExerInfo = async () => {
+  const setSave = (setInfo:SetInfo) => {
+    setSetInfo((prevSetInfo) =>
+      prevSetInfo.map((set) =>
+        set.set_id === setInfo.set_id ? setInfo : set
+      )
+    );
+  };
+
+  const updateExerInfo = async (duration: number, intensity: string) => {
     try {
       const response = await api.put("record/exercise/update/exer", {
         exercise_id: exercise.exercise_id,
-        duration: exercise.duration,
-        intensity: exercise.intensity,
-      }, { headers: { Authorization: `Bearer ${token}` },
-    });
-
-      console.log("debug >>> update row : " + response.data);
-      closeEditModal();
+        duration,
+        intensity,
+      }, { headers: { Authorization: `Bearer ${token}` } } );
+  
+      const updatedExercise = {
+        ...exercise,
+        duration,
+        intensity,
+      };
+  
+      receiveUpdatedExer(updatedExercise); // ExercisePage로 업데이트 전달
+      closeExerModal();
     } catch (error) {
       console.log("debug >>> error : " + error);
     }
@@ -92,28 +114,31 @@ const ExerciseInfo = ({ exercise }: ExerciseInfoProps): JSX.Element => {
       <InfoText>강도 : {exercise.intensity}</InfoText>
       <InfoText>칼로리 : {exercise.calories} kcal</InfoText>
       <ControlButtonContainer>
-        <ControlButton onClick={openEditModal}>+</ControlButton>
+        <ControlButton onClick={openExerModal}>+</ControlButton>
         <ControlButton onClick={deleteExerInfo}>-</ControlButton>
       </ControlButtonContainer>
       <ActionButton onClick={showSetInfo}>세트</ActionButton>
       {isSetModalOpen && (
         <SetInfoModal
           setInfo={setInfo}
-          onClose={closeModal}
+          onClose={closeSetModal}
           modalInfo={setInfo.length > 0}
+          receiveUpdatedSet={setSave}
         />
       )}
       {isEditModalOpen && (
         <EditExerciseModal
           currentDuration={exercise.duration}
           currentIntensity={exercise.intensity}
-          onClose={closeEditModal}
+          onClose={closeExerModal}
           onSave={updateExerInfo}
         />
       )}      
     </ExercisePoint>
   );
 };
+
+export default ExerciseInfo;
 
 const ExercisePoint = styled.div`
   display: flex;
@@ -198,4 +223,3 @@ const ActionButton = styled.button`
   }
 `;
 
-export default ExerciseInfo;

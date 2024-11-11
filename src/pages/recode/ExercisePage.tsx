@@ -24,20 +24,9 @@ function ExercisePage(): JSX.Element {
 
   const navigate = useNavigate();
   
-  const [exerciseData,setExerciseData] = useState([]);
+  const [exerciseData,setExerciseData] = useState<any[]>([]);
 
   console.log("debug >>> selectedDate:", selectedDate);
-  
-  useEffect(() => {
-    if (!token) {
-      console.log("debug >>> token is null");
-      navigate("/loginpage");
-    }
-    console.log("debug >>> token : " + token);
-    console.log("debug >>> memberId : " + memberId);
-    // 운동 조회
-    exerciseGet(selectedDate);
-  }, []);
   
   const exerciseGet = async (record_date: any) => {
     try {
@@ -64,6 +53,17 @@ function ExercisePage(): JSX.Element {
     }
   }
 
+useEffect(() => {
+    if (!token) {
+      console.log("debug >>> token is null");
+      navigate("/loginpage");
+    }
+    console.log("debug >>> token : " + token);
+    console.log("debug >>> memberId : " + memberId);
+    // 운동 조회
+    exerciseGet(selectedDate);
+  }, []);
+
   const exerciseInsert = async () => {
     try {
       const data = {
@@ -79,6 +79,18 @@ function ExercisePage(): JSX.Element {
       console.error("debug >>> error", error);
     }
   }
+
+  const exerSave = (updatedExercise: any) => {
+    setExerciseData((exer) =>
+      exer.map((exercise) =>
+        exercise.exercise_id === updatedExercise.exercise_id ? updatedExercise : exercise
+      )
+    );
+
+    console.log("debug >>> exerciseData : " + exerciseData);
+  };
+
+
   // URL의 날짜를 Date 타입으로 변환
   const getFormattedDate = () => {
     try {
@@ -121,7 +133,7 @@ function ExercisePage(): JSX.Element {
 
       <ExerciseList>
         {exerciseData.map((exercise, index) => {
-          return <ExerciseInfo key={index} exercise={exercise} />;
+          return <ExerciseInfo key={index} exercise={exercise} receiveUpdatedExer={exerSave}/>;
         })}
       </ExerciseList>
     </Container>
