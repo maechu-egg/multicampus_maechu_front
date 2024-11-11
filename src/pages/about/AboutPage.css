@@ -172,7 +172,7 @@
   }
 
   .info-image img {
-    max-width: 300px; /* 작은 화면에서 최대 너비 조정 */
+    max-width: 300px; 
   }
 }
 
@@ -185,21 +185,20 @@
   }
 
   .info-text {
-    font-size: 1.1rem; /* 기본 텍스트 크기 줄임 */
+    font-size: 1.1rem;
     line-height: 1.7;
   }
 
   .info-text h2 {
-    font-size: 1.8rem; /* h2 크기 줄임 */
+    font-size: 1.8rem; 
   }
 
   .info-text h3 {
-    font-size: 1.3rem; /* h3 크기 줄임 */
+    font-size: 1.3rem; 
   }
 
   .info-text p {
-    font-size: 1.1rem; /* p 태그 크기 줄임 */
-    line-height: 1.5;
+    font-size: 1.1rem; 
   }
 
   .info-image img {
@@ -216,7 +215,7 @@
   }
 
   .info-image img {
-    max-width: 400px; /* 큰 화면에서 최대 너비 설정 */
+    max-width: 400px; 
   }
 }
 
@@ -238,7 +237,7 @@
 }
 
 .info-image img {
-  width: 100%; /* 섹션에 비례하여 크기 조정 */
+  width: 100%; 
   height: auto;
   transition: all 0.3s ease;
 }

@@ -408,7 +408,7 @@ const SignForm = styled.div`
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px; /* 내부 여백 추가 */
-  margin-top: 30%;
+  margin-top: 15%;
 `;
 
 const Title = styled.h1`

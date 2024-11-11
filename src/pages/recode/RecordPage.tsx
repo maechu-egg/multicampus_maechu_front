@@ -7,7 +7,6 @@ import api from "../../services/api/axios";
 import { useAuth } from "../../context/AuthContext";
 import MonthlyRecordChart from "../../components/MonthlyRecordChart";
 import { IoCloseOutline } from "react-icons/io5";
-
 // 타입 정의 추가
 interface ExerciseRecord {
   record_date: string;
@@ -176,12 +175,10 @@ function RecordPage() {
     // 식단 기록 여부 확인  
     const hasDiet = dietDates.some(record => record === dateString);
     
-    let emoji = '';
+    let emoji = null;
     // 상태에 따른 이모지 설정
-    if (hasExercise && hasDiet) emoji = '😁';  // 둘 다 있을 때
-    else if (hasExercise) emoji = '😊';        // 운동만 있을 때
-    else if (hasDiet) emoji = '😋';            // 식단만 있을 때
-    
+    if (hasExercise && hasDiet)  emoji = <img src="/img/record/pass.png" alt="Pass" />;  // 둘 다 있을 때
+    else if (hasExercise||hasDiet)  emoji = <img src="/img/record/perfect.png" alt="Perfect" />;;    
     return (
       <div className="date-content">
         {emoji && <span className="emoji">{emoji}</span>}
@@ -198,326 +195,356 @@ function RecordPage() {
 
   return (
     <Wrapper>
+    <div className="calendar-header">
       <TitleContainer>
-      <h1>운동 히스토리</h1>
+        <h1>운동 히스토리</h1>
       </TitleContainer>
+    </div>
       <Container>
         <Calendar
-        onChange={(value) => setValue(value as Date)}
-        value={value}
-        locale="en-US"
-        onClickDay={handleClick}
-        tileContent={tileContent}
-        onActiveStartDateChange={handleActiveStartDateChange}
-      />
+          onChange={(value) => setValue(value as Date)}
+          value={value}
+          locale="en-US"
+          onClickDay={handleClick}
+          tileContent={tileContent}
+          onActiveStartDateChange={handleActiveStartDateChange}
+        />
 
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>{selectedDate}</h3>
-            <div className="button-group">
-              <button onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
-                🏋️‍♂️
-              </button>
-              <button onClick={() => navigate(`/record/diet/${selectedDate}`)}>
-                🥗
-              </button>
-            </div>
-            <div className="close-button">
-              <button onClick={() => setShowModal(false)}><IoCloseOutline /></button>
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3>{selectedDate}</h3>
+              <div className="button-group">
+                <button onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
+                  🏋️‍♂️
+                </button>
+                <button onClick={() => navigate(`/record/diet/${selectedDate}`)}>
+                  🥗
+                </button>
+              </div>
+              <div className="close-button">
+                <button onClick={() => setShowModal(false)}><IoCloseOutline /></button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <MonthlyRecordChart 
-        exerciseDates={exerciseDates}
-        dietDates={dietDates}
-        currentMonth={value}
-        burnedCalories={calculateMonthlyCalories().burned}
-        consumedCalories={calculateMonthlyCalories().consumed}
-      />
+        <MonthlyRecordChart 
+          exerciseDates={exerciseDates}
+          dietDates={dietDates}
+          currentMonth={value}
+          burnedCalories={calculateMonthlyCalories().burned}
+          consumedCalories={calculateMonthlyCalories().consumed}
+        />
       </Container>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top : 0px;
+  background: #f3f4f6;  /* Soft, neutral background for the calendar container */
+  border-radius: 12px;
+  border: 1px solid #d1d5db; /* Light gray border to frame the calendar */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
-  padding: 50px;
-  width: 70%;
-  height: 100%;
-  margin: 0 auto;
-  padding: 20px;
-  background: linear-gradient(to right, #f8f9fa, #e9ecef);
-  font-family: 'Noto Sans KR', sans-serif;
+
+  /* Calendar "Header" Feel for Title */
+  .calendar-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #d1d5db;
+    padding: 15px;
+    width: 100%;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 850px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 710px) {
+    padding: 10px;
+  }
 `;
+
 const TitleContainer = styled.div`
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 3px 10px rgba(0.5, 0.5, 0.5, 0.5); // 그림자
-  margin-bottom: 30px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 1025px;
-h1 {
-
-  margin-bottom: 2rem;
-  font-size: 27px;
-  font-weight: 700;
-  font-family: 'Pretendard', sans-serif;
+  background: none;
   text-align: center;
-   margin: 0 auto;  // 중앙 정렬
-}
 
- @media (max-width: 850px) {
-    
+  h1 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 550;
+    font-family: 'Pretendard', sans-serif;
+    color: #333333; /* Darker color for contrast */
+  }
+
+  @media (max-width: 850px) {
     h1 {
-      text-align: center;
-      font-size: 24px;
+      font-size: 20px;
     }
   }
 
   @media (max-width: 710px) {
     h1 {
-      text-align: center;
-      font-size: 20px;
+      font-size: 15px;
     }
   }
 `;
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: 30px;
 
-  // 컨테이너 스타일
-  display: flex; // 플렉스 정렬
-  flex-direction: row; // 가로 정렬
-  justify-content: center; // 중앙 정렬
-  max-width: 1100px;  // 캘린더 너비와 맞춤
-  margin: 0 auto;  // 중앙 정렬
+  @media (max-width: 850px) {
+    flex-direction: column;
+    align-items: center;
+  }
 
-  // 모달 컨텐츠 스타일
   .modal-content {
     border: 5px solid lightgray;
-    border-radius: 20px; // 둥근 모서리
+    border-radius: 20px;
 
-    // 모달 타이틀 스타일
     h3 {
-      text-align: center; // 중앙 정렬
-      margin-bottom: 2rem; // 하단 여백
+      text-align: center;
+      margin-bottom: 2rem;
       font-size: 1.8rem;
       font-weight: 600;
     }
-    // 모달 내 버튼 그룹 스타일
+
     .button-group {
       font-size: 2rem;
-      display: flex; // 플렉스 정렬
-      justify-content: center; // 중앙 정렬
-      margin-bottom: 1rem; // 하단 여백
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
     }
-    // 모달 내 버튼 스타일
+
     button {
-      padding: 0.8rem 1.5rem; // 버튼 크기
-      border-radius: 20px;  // 둥근 모서리
-      border: none; // 테두리 제거
-      background-color: white; // 배경색
-      cursor: pointer; // 마우스 오버 시 효과
-      transition: all 0.2s ease-in-out; // 효과 시간
-      // 버튼 마우스 오버 시 효과
+      padding: 0.8rem 1.5rem;
+      border-radius: 20px;
+      border: none;
+      background-color: white;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+
       &:hover {
-        background-color: lightgray; // 마우스 오버 시 배경색
-        transform: scale(1.1); // 마우스 오버 시 크기
+        background-color: lightgray;
+        transform: scale(1.1);
       }
     }
-    // 모달 내 닫기 버튼 스타일
+
     .close-button {
-      display: flex; // 플렉스 정렬
-      justify-content: center; // 중앙 정렬
+      display: flex;
+      justify-content: center;
     }
   }
 
-  // 캘린더 스타일
   .react-calendar {
-    width: 700px; // 캘린더 너비
-    height: 670px; // 캘린더 높이
-    padding: 20px; // 캘린더 내부 여백
-    background-color: white; // 배경색
-    box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5); // 그림자
-    border-radius: 15px; // 둥근 모서리
+    width: 100%;
+    min-width: 700px;
+    height: 620px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5);
+    border-radius: 15px;
+  
+      @media (max-width: 850px) {
+        min-width: 500px;
+      }
     
-    // 캘린더 타일 스타일
+      @media (max-width: 710px) {
+        min-width: 200px;
+      }    
+  }
     .react-calendar__tile {
-      padding: 10px; // 타일 내부 여백
-      background: none; // 배경색
-      text-align: center; // 텍스트 중앙 정렬
-      // 타일 마우스 오버 시 효과
+      padding: 5px;
+      background: none;
+      text-align: center;
+
       &:hover {
-        background-color: #f0f0f0; // 마우스 오버 시 배경색
+        background-color: #f0f0f0;
       }
     }
 
-    // 주말 타일 스타일
     .react-calendar__month-view__days__day--weekend {
-      color: #ff0000; // 주말 텍스트 색상
+      color: #ff0000;
     }
 
-    // 인접 월 타일 스타일
     .react-calendar__month-view__days__day--neighboringMonth {
-      color: #cccccc; // 인접 월 텍스트 색상
+      color: #cccccc;
     }
 
- // 태블릿 화면 스타일
+    .react-calendar__navigation {
+      border-bottom: 1px solid gray;
+      padding-bottom: 5px;
+
+      button {
+        border-radius: 15px;
+        min-width: 50px;
+        background: none;
+        font-size: 17px;
+      }
+
+      @media (max-width: 850px) {
+        button {
+          font-size: 15px;
+        }
+      }
+    
+      @media (max-width: 710px) {
+        button {
+          font-size: 13px;
+        }
+      }
+    }
+
+    /* 세기 선택 화면의 스타일 */
+  .react-calendar__century-view__decades__decade {
+      padding: 20px; /* 세기 버튼의 여백을 조정 */
+      font-size: 16px; /* 텍스트 크기 */
+      border-radius: 10px; /* 둥근 모서리 */      
+  }
+  /* 년도 선택 화면의 스타일 */
+  .react-calendar__decade-view__years__year {
+      padding: 20px; /* 년도 버튼의 여백 */
+      font-size: 16px; /* 텍스트 크기 */
+      border-radius: 10px; /* 둥근 모서리 */
+  }
+  /* 각 월 버튼 스타일 */
+  .react-calendar__year-view__months__month {
+      padding: 20px; /* 여백을 늘려 버튼 크기 조절 */
+      font-size: 16px; /* 폰트 크기 증가 */
+      border-radius: 10px; /* 둥근 모서리 */
+  }            
+  /* 반응형 조정 예시 */
   @media (max-width: 850px) {
-    .react-calendar {
-      width: 420px; // 캘린더 너비
-      border: 0.4px solid lightgray;
-      border-radius: 15px;
-      .emoji {
-        font-size: 3.6rem; // 텍스트 크기
-      }
-    }
-    .react-calendar__month-view__days {
-      button {
-        position: relative; // 상대 위치
-        display: flex; // 플렉스 정렬
-        height: 90px; // 높이
-        border-right: 1px solid lightgray;  // 두께 증가
-        border-bottom: 1px solid lightgray; // 두께 증가
-        font-size: 18px; // 텍스트 크기
-        font-family: 'Pretendard', sans-serif; // 폰트
-        font-weight: 400; // 텍스트 두께
-        box-sizing: border-box;  // 추가
-      }
+      .react-calendar__century-view__decades__decade,
+      .react-calendar__decade-view__years__year,
+      .react-calendar__year-view__months__month {
+          font-size: 14px;
     }
   }
-
-  // 모바일 화면 스타일
   @media (max-width: 710px) {
-    // 캘린더 스타일
-    .react-calendar {
-      width: 320px; // 캘린더 너비
-      border: 0.4px solid lightgray; // 구분선 추가
-      border-radius: 15px; // 둥근 모서리
-      // 이모지 스타일
-      .emoji {
-        font-size: 2.2rem; // 텍스트 크기
+      .react-calendar__century-view__decades__decade,
+      .react-calendar__decade-view__years__year,
+      .react-calendar__year-view__months__month{
+          font-size: 12px;
+      }
+  }
+    
+    .react-calendar__month-view__weekdays {
+      font-size: 15px;
+      font-weight: 400;
+      color: gray;
+      border-bottom: 1px solid gray;
+      padding-bottom: 5px;
+
+      div {
+        height: 30px;
+      }
+    
+      @media (max-width: 850px) {
+          font-size: 13px;
+      }
+      @media (max-width: 710px) {
+          font-size: 10px;
       }
     }
-    // 일자 타일 스타일
+
     .react-calendar__month-view__days {
-      // 일자 타일 버튼 스타일
       button {
-        position: relative; // 상대 위치
-        display: flex; // 플렉스 정렬
-        height: 90px; // 높이
-        border-right: 1px solid lightgray;  // 두께 증가
-        border-bottom: 1px solid lightgray; // 두께 증가
-        font-size: 18px; // 텍스트 크기
-        font-family: 'Pretendard', sans-serif; // 폰트
-        font-weight: 400; // 텍스트 두께
-        box-sizing: border-box;  // 추가
+        position: relative;
+        display: flex;
+        height: 80px;
+        border-left: 0.1px solid lightgray;
+        border-right: 0.1px solid lightgray;
+        border-bottom: 0.1px solid lightgray;
+        font-size: 13px;
+        font-family: 'Pretendard', sans-serif;
+        font-weight: 450;
+      }
+
+      button:last-child {
+        border-radius: 0px 0px 15px 0px;
+      }
+
+      button:nth-child(29) {
+        border-radius: 0px 0px 0px 15px;
+      }
+
+      @media (max-width: 850px) {
+        button{
+          font-size: 12px;
+        }  
+      }
+
+      @media (max-width: 710px) {
+        button{
+          font-size: 11px;
+        }
       }
     }
-  }
 
-  // 네비게이션 스타일
-  .react-calendar__navigation {
-    margin: 0; // 여백 제거
-    margin-top: 5px; // 여백
-    border-bottom: 1px solid gray;  // 구분선 추가
-    padding-bottom: 5px;  // 구분선과의 간격
-    
-    // 네비게이션 버튼 스타일
-    button {
-      min-width: 50px; // 최소 너비
-      background: none; // 배경색
-      font-size: 20px; // 텍스트 크기
+    .react-calendar__tile--now {
+      background-color: #e8e8e8 !important;
+      color: blue !important;
+    }
+
+    .react-calendar__tile--active {
+      color: black;
+    }
+
+    .react-calendar__month-view__days__day--neighboringMonth {
+      background: #e9e9e9;
+      opacity: 0.5;
+    }
+
+    .date-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      .emoji {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 7px;
+
+        /* img 요소에 직접 스타일 적용 */
+        img {
+          width: 55px; /* 원하는 크기로 설정 */
+          height: 55px; /* 원하는 크기로 설정 */
+        }
+
+        @media (max-width: 850px) {
+          img {
+            width: 50px; /* 반응형 크기 조정 */
+            height: 50px;
+          }
+        }
+        @media (max-width: 710px) {
+          img {
+            width: 45px;
+            height: 45px;
+          }
+        }
       }
     }
-  }
-
-  // 요일(sun, mon, tue, wed, thu, fri, sat) 타일 스타일
-  .react-calendar__month-view__weekdays {
-    
-    font-size: 17px; // 텍스트 크기
-    font-weight: 400; // 텍스트 두께
-    color: gray; // 텍스트 색상
-    border-bottom: 1px solid gray;  // 구분선 추가
-    padding-bottom: 5px;  // 구분선과의 간격
-    // 주중 타일 스타일
-    div {
-      height: 30px; // 높이
-    }
-  }
-
-  // 날짜(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11... 31) 타일 스타일
-  .react-calendar__month-view__days {
-    // 날짜 타일 버튼 스타일
-    button {
-      position: relative; // 상대 위치
-      display: flex; // 플렉스 정렬
-      height: 90px; // 높이
-      border-left: 0.1px solid lightgray; // 구분선 추가
-      border-right: 0.1px solid lightgray; // 구분선 추가
-      border-bottom: 0.1px solid lightgray; // 구분선 추가
-      font-size: 16px; // 텍스트 크기
-      font-family: 'Pretendard', sans-serif; // 폰트
-      font-weight: 550; // 텍스트 두께
-    }
-    // 맨 오른쪽 하단 타일 스타일
-    button:last-child {
-      border-radius: 0px 0px 15px 0px;
-    }
-    // 맨 왼쪽 하단 타일 스타일
-    button:nth-child(29) {
-      border-radius: 0px 0px 0px 15px;
-    }
-  }
-
-  // 현재 날짜 타일 스타일
-  .react-calendar__tile--now {
-    background-color: #e8e8e8 !important;
-    color: blue !important;
-  }
-
-  // 날짜 타일 포커스 시 효과
-  .react-calendar__tile--active {
-    color: black;
-  }
-    
-  // 인접 월 타일 스타일
-  .react-calendar__month-view__days__day--neighboringMonth {
-    background: #e9e9e9; // 배경색
-    opacity: 0.5; // 투명도
-  }
-
-  // 캘린더 날짜 타일 스타일
-  .react-calendar__tile {
-    text-decoration: none; // 텍스트 장식 제거
-  }
-
- 
-
-  // 날짜 타일 컨텐츠 스타일
-  .date-content {
-    position: absolute; // 절대 위치
-    top: 50%;  // 중앙 정렬
-    left: 50%; // 중앙 정렬
-    transform: translate(-50%, -50%); // 위치 이동
-    // 이모지 스타일
-    .emoji {
-      padding: 0 auto; // 자동 여백
-      margin-left: 7px; // 왼쪽 여백
-      display: flex; // 플렉스 정렬
-      font-size: 3.5rem; // 텍스트 크기
-    }
-  }
 `;
 
-
 export default RecordPage;
-  
