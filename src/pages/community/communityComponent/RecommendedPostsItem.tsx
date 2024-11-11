@@ -13,7 +13,7 @@ interface Comment {
   dislikeCount: number;
 }
 
-interface PostItemProps {
+interface RecommendedPostsProps {
   post_id: number;
   post_title: string;
   post_contents: string;
@@ -33,7 +33,7 @@ interface PostItemProps {
   onClick: () => void;
 }
 
-const PostItem: React.FC<PostItemProps> = ({
+const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
   post_title,
   post_nickname,
   post_date,
@@ -76,4 +76,4 @@ const PostItem: React.FC<PostItemProps> = ({
   );
 };
 
-export default PostItem;
+export default RecommendedPostsItem;

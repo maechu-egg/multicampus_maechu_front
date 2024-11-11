@@ -1,7 +1,18 @@
 import React from "react";
 import PostItem from "./PostItem";
+import RecommendedPostsItem from "./RecommendedPostsItem";
+
 
 /* 게시물 목록을 표시하는 컴포넌트 */
+interface Comment {
+  id: number;
+  postId: number;
+  author: string;
+  content: string;
+  date: string;
+  likeCount: number;
+  dislikeCount: number;
+}
 
 interface Post {
   post_id: number;
@@ -11,7 +22,7 @@ interface Post {
   post_date: string;
   post_views: number;
   comments_count :number;
-  // comments:  Comment[];
+  comments:  Comment[];
   post_up_sport: string;
   post_sport: string;
   post_sports_keyword:string;
@@ -30,20 +41,31 @@ interface Post {
 
 interface PostListProps {
   posts: Post[];
+  recommendedPosts?:Post[];
   onPostClick: (post: Post) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts, onPostClick }) => {
+const PostList: React.FC<PostListProps> = ({ posts, recommendedPosts, onPostClick }) => {
   console.log("PostList posts : ", posts);
   return (
     <div>
-    {posts.length === 0 ? (
-      <p>게시글이 없습니다.</p>
-    ) : (
-      posts.map((post) => (
-        <PostItem key={post.post_id} {...post} onClick={() => onPostClick(post)} />
-      ))
-    )}
+      {recommendedPosts && recommendedPosts.length > 0  && (
+        <>
+          <h2>추천 게시글</h2>
+          {recommendedPosts.map((post) => (
+            <RecommendedPostsItem key={post.post_id} {...post} onClick={() => onPostClick(post)} isRecommended={true} />
+          ))}
+        </>
+      )}
+
+      {/* <h2>전체 게시글</h2> */}
+        {posts.length === 0 ? (
+          <p>게시글이 없습니다.</p>
+        ) : (
+          posts.map((post) => (
+            <PostItem key={post.post_id} {...post} onClick={() => onPostClick(post)} isRecommended={false} />
+          ))
+        )}
   </div>
   );
 };
