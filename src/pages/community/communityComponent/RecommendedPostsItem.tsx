@@ -1,6 +1,7 @@
 import React from "react";
 import { FaThumbsUp, FaComment, FaEye } from "react-icons/fa";
 import "./PostItem.css";
+import { formatDate } from '../../../utils/dateFormat'; 
 
 /* 개별 게시물 항목을 표시하는 컴포넌트 */
 interface Comment {
@@ -58,7 +59,7 @@ const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
         <span className="subcategory">[{post_sport || '자유'}]</span>
         <span className="post-title">{post_title}</span>
         <span className="author">{post_nickname}</span>
-        <span className="date">{post_date}</span>
+        <span className="date">{formatDate(post_date)}</span> 
         <div className="post-stats">
           <span className="likes">
             <FaThumbsUp /> {post_like_counts}
