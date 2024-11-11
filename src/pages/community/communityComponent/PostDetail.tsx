@@ -30,8 +30,9 @@ interface PostDetailProps {
   onBack: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onCommentDelete: (commentId: number, postId : number) => void; 
   currentUserNickname: string;
-  // comments: Comment[];
+  comments: Comment[];
   onAddComment: (content: string) => void;
   onCommentReaction: (commentId: number, type: "like" | "dislike") => void;
   post_img1?:string;
@@ -59,8 +60,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
   onBack,
   onEdit,
   onDelete,
+  onCommentDelete,
   currentUserNickname,
-  // comments,
+  comments,
   onAddComment,
   onCommentReaction,
   post_img1,
@@ -76,15 +78,23 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [disliked, setDisliked] = useState(unlikeStatus);
   const [likeCount, setLikeCount] = useState(post_like_counts);
   const [dislikeCount, setDislikeCount] = useState(post_unlike_counts);
-  const [sortedComments, setSortedComments] = useState<Comment[]>([]);
-
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : []; // 공백을 기준으로 문자열을 나눠 배열로 변환
- 
+  
+  
+  
+  
+  useEffect(() => {
+    if (comments.length > 0) {
+      console.log('detail comments:', comments);
+     
+    }
+  }, [comments]);
+
   
   // 게시글 좋아요
   const handleLike =  async () => {
-  
+    
     try{
       const token = localStorage.getItem("authToken");
 
@@ -223,16 +233,11 @@ const PostDetail: React.FC<PostDetailProps> = ({
     }
   };
 
-  // sortedComments = [...comments].sort((a, b) => {
-  //   if (sortOrder === "asc") {
-  //     return a.id - b.id;
-  //   } else {
-  //     return b.id - a.id;
-  //   }
-  // });
+ 
 
   return (
     <div className="post-detail">
+       <input type="hidden" value={post_id} />
       <div className="post-category">{post_up_sport} 게시판 - {post_sport} - {post_sports_keyword}</div> 
       <hr className="border border-secondary border-1 opacity-50" />
       <div className="post-header">
@@ -251,12 +256,12 @@ const PostDetail: React.FC<PostDetailProps> = ({
       <div className="post-images">
         {post_img1 && (
           <div className="post-image">
-            <img src={post_img1} alt="게시글 이미지 1" style={{ maxWidth: "100%", height: "auto" }} />
+            <img src={`http://localhost:8001${post_img1}`} alt="게시글 이미지 1" style={{ maxWidth: "100%", height: "auto" }} />
           </div>
         )}
         {post_img2 && (
           <div className="post-image">
-            <img src={post_img2} alt="게시글 이미지 2" style={{ maxWidth: "100%", height: "auto" }} />
+            <img src={`http://localhost:8001${post_img2}`} alt="게시글 이미지 2" style={{ maxWidth: "100%", height: "auto" }} />
           </div>
         )}
       </div>
@@ -319,7 +324,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
         </div>
 
         <div className="comments-list">
-          {sortedComments.map((comment) => (
+         
+          {comments.map((comment) => (
             <div key={comment.id} className="comment">
               <div className="comment-header">
                 <span className="comment-author">{comment.author}</span>
@@ -327,6 +333,10 @@ const PostDetail: React.FC<PostDetailProps> = ({
               </div>
               <div className="comment-content">{comment.content}</div>
               <div className="comment-reactions">
+              <button className="btn btn-danger me-2" 
+                onClick={() => onCommentDelete(comment.id, post_id)}>
+                   삭제
+                </button>
                 <button
                   className="btn btn-sm btn-outline-primary me-2"
                   onClick={() => onCommentReaction(comment.id, "like")}
