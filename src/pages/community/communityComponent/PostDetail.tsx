@@ -2,6 +2,7 @@ import React, {  useEffect, useState } from "react";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import "./PostDetail.css";
 import axios from "axios";
+import { formatDate } from '../../../utils/dateFormat';  
 
 
 interface Comment {
@@ -245,7 +246,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
         <div className="post-info">
           <span className="author">{post_nickname}</span>
           <div className="info-right">
-            <span className="date">{post_date}</span>
+          <span className="date">{formatDate(post_date)}</span>
             <span className="views">조회수: {post_views}</span>
           </div>
         </div>
@@ -329,7 +330,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
             <div key={comment.id} className="comment">
               <div className="comment-header">
                 <span className="comment-author">{comment.author}</span>
-                <span className="comment-date">{comment.date}</span>
+                <span className="comment-date">{formatDate(comment.date)}</span> 
               </div>
               <div className="comment-content">{comment.content}</div>
               <div className="comment-reactions">
