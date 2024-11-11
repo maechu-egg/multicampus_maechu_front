@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import './Modal.css';
 import { useAuth } from "context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import api from "services/api/axios";
 
 function CrewIntroModal({ crew_id, onClick }: { crew_id: number, onClick: () => void }) {
     const { state } = useAuth();
     const token = state.token;
     const member_id = state.memberId;
-    const navigate = useNavigate();
 
     const [crew_name, setCrew_name] = useState('');
     const [crew_intro_post, setCrew_intro_post] = useState('');
@@ -39,20 +37,23 @@ function CrewIntroModal({ crew_id, onClick }: { crew_id: number, onClick: () => 
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = {
-            crew_name,
-            crew_intro_post,
-            ...(crew_intro_img ? { crew_intro_img } : {}),
-            crew_id,
-            member_id
-        };
+        const data = new FormData();
+        data.append('crew_name', crew_name);
+        data.append('crew_intro_post', crew_intro_post);
+        if (crew_intro_img) {
+            data.append('crew_intro_img', crew_intro_img);
+        }
+        data.append('crew_id', String(crew_id));
+        data.append('member_id', String(member_id));
+
         console.log('Data:', data);
 
         const updateCrewIntro = async() => {
             try {
                 const response = await api.patch(`crew/intro/update`, data, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
                     }
                 });
                 console.log("debug >>> updateCrewIntro response", response);
