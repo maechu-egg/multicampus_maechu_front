@@ -13,7 +13,7 @@ import categoriesJson from "../../assets/data/categories.json";
 import dataJson from "../../assets/data/data.json";
 import axios from "axios";
 import CategoryDropdown from './communityComponent/CategoryDropdown';
-import {  useNavigate, useParams } from "react-router-dom";
+import {  useLocation, useNavigate, useParams } from "react-router-dom";
 
 
 
@@ -105,6 +105,28 @@ function CommunityPage(): JSX.Element {
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
   const { postId } = useParams<{ postId: string }>(); 
 
+  const location = useLocation();
+
+  // 페이지 상태 초기화 함수
+  const resetPageState = () => {
+    setShowPostForm(false);
+    setSelectedPost(null);
+    setIsEditing(false);
+    setCurrentPage(1);
+    setSearchResults(null);
+    setIsSearchActive(false);  
+    setActiveTab("헬스 및 피트니스");  // 기본 카테고리로 초기화
+    setActivePost_sport("");  // 서브카테고리 초기화
+  };
+  
+  // location이 변경될 때마다 상태 초기화
+  useEffect(() => {
+    resetPageState();
+    fetchPosts();
+  }, [location.key]);
+
+
+  
   // 게시글 목록 로드
 
   useEffect(() => {
@@ -845,13 +867,15 @@ const handleSubcategoryChange = async (post_sport: string) => {
     <div className="community-container">
     {/* 카테고리(대,소분류) 드롭다운으로 교체 */}
     {!showPostForm && (
-      <CategoryDropdown
-        post_up_sports={post_up_sports}
-        activeTab={activeTab}
-        activePost_sport={activePost_sport}
-        onTabChange={handleCategoryChange}
-        onSubcategoryChange={handleSubcategoryChange}
-      />
+       <CategoryDropdown
+       post_up_sports={post_up_sports}
+       activeTab={activeTab}
+       activePost_sport={activePost_sport}
+       onTabChange={handleCategoryChange}
+       onSubcategoryChange={handleSubcategoryChange}
+       recommendedKeywords={recommendedKeywords}  // 추가
+       onKeywordClick={handleKeywordClick}  // 추가
+     />
     )}
 
       {/* 게시물 작성 폼 또는 게시물 목록 표시 */}
@@ -874,10 +898,12 @@ const handleSubcategoryChange = async (post_sport: string) => {
         />
       ) : (
         <>
-         <RecommendedKeywords 
+        
+       {/*  <RecommendedKeywords 
                         keywords={recommendedKeywords} 
                         onKeywordClick={handleKeywordClick}
            /> 
+       */}
 
           {/* 검색바와 게시물 작성 버튼 */}
           <div className="search-and-write">
