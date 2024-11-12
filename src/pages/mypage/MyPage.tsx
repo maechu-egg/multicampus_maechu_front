@@ -13,6 +13,31 @@ const categories = [
   "내가 참여한 크루",
   "배틀 중",
 ];
+
+interface todayRecord {
+  burnedCalories: number;
+  consumed: {
+    calorie: number;
+    carb: number;
+    fat: number;
+    protein: number;
+    quantity: number;
+  };
+  recommended: {
+    bmr: number;
+    carbRate: number;
+    fatRate: number;
+    goal: string;
+    proteinRate: number;
+    recommendedCalories: number;
+    recommendedCarb: number;
+    recommendedFat: number;
+    recommendedProtein: number;
+    tdee: number;
+    weight: number;
+  };
+}
+
 const personalPoints = 75;
 const crewPoints = 50;
 function MyPage(): JSX.Element {
@@ -21,6 +46,7 @@ function MyPage(): JSX.Element {
   const { state } = useAuth();
   const { token, memberId } = state;
   const [userInfo, setUserInfo] = useState<any>(null);
+  const [kcalInfo, setKcalInfo] = useState<todayRecord | null>(null);
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
   const [isCrewModalOpen, setCrewModalOpen] = useState(false);
 
@@ -38,7 +64,7 @@ function MyPage(): JSX.Element {
     const userInfo = async () => {
       try {
         console.log("함수 실행 시 현재 상태:", { token, memberId }); // 함수 실행 시 현재 상태 출력
-        const response = await api.get("/user/info", {
+        const response = await api.get("/info", {
           headers: {
             Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
           },
@@ -51,6 +77,24 @@ function MyPage(): JSX.Element {
       }
     };
     userInfo();
+  }, [token, state]);
+
+  useEffect(() => {
+    const userKcalInfo = async () => {
+      try {
+        console.log("함수 실행 시 현재 상태:", { token, memberId }); // 함수 실행 시 현재 상태 출력
+        const response = await api.get("/record/summary/daily", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
+          },
+        });
+        console.log("하루 칼로리 정보 응답 : ", response.data);
+        setKcalInfo(response.data);
+      } catch (error) {
+        console.error("사용자 칼로리 조회 오류:", error);
+      }
+    };
+    userKcalInfo();
   }, [token, state]);
 
   return (
@@ -73,18 +117,34 @@ function MyPage(): JSX.Element {
         )}
 
         <Divider />
-        <InfoBars>
-          <Info>
-            <h3>오늘 칼로리 (탄/단/지)</h3>
-            <h1>In : 1300Kcal (30% / 42% / 28%)</h1>
-            <h1>Out : 300Kcal </h1>
-          </Info>
-          <Info>
-            <h3>목표 칼로리 (탄/단/지)</h3>
-            <h1>15000Kcal (30% / 50% / 20%)</h1>
-            <h1>500Kcal 더 먹을 수 있어요!</h1>
-          </Info>
-        </InfoBars>
+        {kcalInfo ? (
+          <InfoBars>
+            <Info>
+              <h3>오늘 칼로리 (탄/단/지)</h3>
+              <h1>
+                In : {kcalInfo.consumed.calorie}Kcal ({kcalInfo.consumed.carb}%
+                / {kcalInfo.consumed.protein}% / {kcalInfo.consumed.fat}%)
+              </h1>
+              <h1>Out : {kcalInfo.burnedCalories}Kcal </h1>
+            </Info>
+            <Info>
+              <h3>목표 칼로리 (탄/단/지)</h3>
+              <h1>
+                {kcalInfo.recommended.recommendedCalories}Kcal (
+                {kcalInfo.recommended.carbRate * 100}% /{" "}
+                {kcalInfo.recommended.proteinRate * 100}% /{" "}
+                {kcalInfo.recommended.fatRate * 100}%)
+              </h1>
+              <h1>
+                {kcalInfo.recommended.recommendedCalories -
+                  kcalInfo.consumed.calorie}
+                Kcal 더 먹을 수 있어요!
+              </h1>
+            </Info>
+          </InfoBars>
+        ) : (
+          <p>칼로리 정보를 불러오는 중...</p>
+        )}
         <Divider />
         <InfoBars>
           <Info onClick={openPersonalModal}>

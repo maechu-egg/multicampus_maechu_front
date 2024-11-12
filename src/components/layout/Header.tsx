@@ -156,7 +156,7 @@ const Container = styled.div`
   top: 0;
   z-index: 10;
   background-color: white;
-  padding: 15px 0;
+  padding: 15px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -205,8 +205,8 @@ const Tab = styled.div`
 
   & a {
     text-decoration: none;
-    font-weight: 500;
-    font-size: 1.15rem;
+    font-weight: 600;
+    font-size: 1.25rem;
     color: black;
     padding: 15px 0;
     display: flex;
@@ -266,7 +266,7 @@ const Login = styled.div`
 const HamburgerMenuIcon = styled(RxHamburgerMenu)`
   display: none;
   cursor: pointer;
-  margin-left: 10px;
+  margin-left: 15px;
   font-size: 1.5rem;
 
   @media (max-width: 900px) {
