@@ -38,8 +38,6 @@ interface todayRecord {
   };
 }
 
-const personalPoints = 75;
-const crewPoints = 50;
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -49,6 +47,10 @@ function MyPage(): JSX.Element {
   const [kcalInfo, setKcalInfo] = useState<todayRecord | null>(null);
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
   const [isCrewModalOpen, setCrewModalOpen] = useState(false);
+  const [personalPoints, setPersonalPoints] = useState(0);
+  const [crewPoints, setCrewPoints] = useState(0);
+  const [personalLevel, setPersonalLevel] = useState("기본");
+  const [crewLevel, setCrewLevel] = useState("기본");
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -63,15 +65,12 @@ function MyPage(): JSX.Element {
   useEffect(() => {
     const userInfo = async () => {
       try {
-        console.log("함수 실행 시 현재 상태:", { token, memberId }); // 함수 실행 시 현재 상태 출력
         const response = await api.get("/info", {
           headers: {
-            Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
+            Authorization: `Bearer ${token}`,
           },
         });
-
-        console.log("사용자 정보 응답:", response.data); // 응답 데이터 콘솔 출력
-        setUserInfo(response.data); // 사용자 정보 상태 업데이트
+        setUserInfo(response.data);
       } catch (error) {
         console.error("사용자 정보 조회 오류:", error);
       }
@@ -82,13 +81,11 @@ function MyPage(): JSX.Element {
   useEffect(() => {
     const userKcalInfo = async () => {
       try {
-        console.log("함수 실행 시 현재 상태:", { token, memberId }); // 함수 실행 시 현재 상태 출력
         const response = await api.get("/record/summary/daily", {
           headers: {
-            Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
+            Authorization: `Bearer ${token}`,
           },
         });
-        console.log("하루 칼로리 정보 응답 : ", response.data);
         setKcalInfo(response.data);
       } catch (error) {
         console.error("사용자 칼로리 조회 오류:", error);
@@ -96,6 +93,38 @@ function MyPage(): JSX.Element {
     };
     userKcalInfo();
   }, [token, state]);
+
+  useEffect(() => {
+    const userPoint = async () => {
+      try {
+        const response = await api.get("/badges/getBadge", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const { current_points, crew_current_points } = response.data;
+        setPersonalPoints(current_points);
+        setCrewPoints(crew_current_points);
+
+        // Set levels based on point thresholds
+        setPersonalLevel(getLevelLabel(current_points));
+        setCrewLevel(getLevelLabel(crew_current_points));
+      } catch (error) {
+        console.log("사용자별 포인트 조회 오류:", error);
+      }
+    };
+    userPoint();
+  }, [token, state]);
+
+  const getLevelLabel = (points: number) => {
+    if (points >= 100) return "다이아몬드";
+    if (points >= 70) return "플래티넘";
+    if (points >= 50) return "골드";
+    if (points >= 30) return "실버";
+    if (points >= 10) return "브론즈";
+    return "기본";
+  };
 
   return (
     <Container>
@@ -151,7 +180,9 @@ function MyPage(): JSX.Element {
             <h3>개인 활동 포인트 &nbsp; &gt;&gt; </h3>
             <ProgressBarWrapper>
               <ProgressBar progress={personalPoints} />
-              <ProgressLabel>{personalPoints}점</ProgressLabel>
+              <ProgressLabel>
+                {personalPoints}점 - {personalLevel}
+              </ProgressLabel>
             </ProgressBarWrapper>
             <PersonalBadgeModal
               isOpen={isPersonalModalOpen}
@@ -162,7 +193,9 @@ function MyPage(): JSX.Element {
             <h3>크루 활동 포인트 &nbsp; &gt;&gt; </h3>
             <ProgressBarWrapper>
               <ProgressBar progress={crewPoints} />
-              <ProgressLabel>{crewPoints}점</ProgressLabel>
+              <ProgressLabel>
+                {crewPoints}점 - {crewLevel}
+              </ProgressLabel>
             </ProgressBarWrapper>
             <CrewBadgeModal isOpen={isCrewModalOpen} onClose={closeCrewModal} />
           </Info>
@@ -313,7 +346,7 @@ const ProgressBarWrapper = styled.div`
 `;
 
 const ProgressBar = styled.div<{ progress: number }>`
-  width: 70%;
+  width: 100%;
   height: 20px;
   background-color: #e0e0e0;
   border-radius: 10px;
@@ -326,7 +359,7 @@ const ProgressBar = styled.div<{ progress: number }>`
     top: 0;
     left: 0;
     height: 100%;
-    width: ${(props) => props.progress}%;
+    width: ${(props) => Math.min(props.progress, 100)}%;
     background-color: #4caf50;
     transition: width 0.3s ease;
   }
@@ -334,10 +367,6 @@ const ProgressBar = styled.div<{ progress: number }>`
   &:hover {
     background-color: #a5a4a4;
     transition: background-color 0.3s ease;
-  }
-
-  @media (min-width: 900px) {
-    width: 100%;
   }
 `;
 
