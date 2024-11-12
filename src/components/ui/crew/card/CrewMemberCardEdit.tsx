@@ -3,7 +3,6 @@ import './Card.css';
 import './MemberCard.css';
 import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
-import { useNavigate } from "react-router-dom";
 
 interface Member {
     member_id: number;
@@ -25,10 +24,10 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
     const { state } = useAuth();
     const memberId = state.memberId;
     const token = state.token;
-    const navigate = useNavigate();
     const [imgPath, setImgPath] = useState<string>("");
     const [crewLeader, setCrewLeader] = useState<number>(0);
 
+    // 뱃지 레벨에 따른 이미지 세팅
     useEffect(() => {
         if(member.badge_level === "브론즈") {
             setImgPath("/img/crewMemberBadge/CrewBadgeBronze.png");
@@ -47,6 +46,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
         }
     }, [member]);
 
+    // 특정 크루의 정보 조회 API
     useEffect(() => {
         const getCrewInfo = async() => {
             try {
@@ -64,6 +64,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
         getCrewInfo();
     },[crewId])
 
+    // 크루장만 가능한 가입 승인 버튼 활성화
     const acceptHandler = async() => {
         const data = {
             crew_id : crewId,
@@ -83,6 +84,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
         }
     }
 
+    // 크루장만 가능한 가입 거절 버튼 활성화
     const rejectHandler = async() => {
         const data = {
             crew_id : crewId,
@@ -103,6 +105,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
         }   
     }
 
+    // 스스로 크루에서 나가는 버튼 활성화
     const exitHandler = async() => {
         const data = {
             crew_id : crewId,
@@ -123,6 +126,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
         }  
     }
 
+    // 크루장만 가능한 크루에서 탈퇴시키는 버튼 활성화
     const expulsionHandler = async() => {
         const data = {
             crew_id : crewId,

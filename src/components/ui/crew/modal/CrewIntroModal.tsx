@@ -18,6 +18,7 @@ function CrewIntroModal({ crew_id, onClick }: { crew_id: number, onClick: () => 
         }
     };
 
+    // 크루 소개글 조회 API
     useEffect(() => {
         const getIntro = async() => {
             try {
@@ -43,12 +44,13 @@ function CrewIntroModal({ crew_id, onClick }: { crew_id: number, onClick: () => 
         if (crew_intro_img) {
             data.append('crew_intro_img', crew_intro_img);
         }
-        data.append('crew_id', String(crew_id));
+        data.append('crew_id', crew_id.toString());
 
         for (let [key, value] of data.entries()) {
             console.log(`${key}:`, value);
-          }
+        }
 
+        // 크루 소개글 관리 업데이트 API
         const updateCrewIntro = async() => {
             try {
                 const response = await api.patch(`crew/intro/update`, data, {

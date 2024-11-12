@@ -8,7 +8,6 @@ function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, c
     const { state } = useAuth();
     const token = state.token;  
     const memberId = state.memberId;
-    const navigate = useNavigate();
 
     const [battle_goal, setGoal] = useState('');
     const [battle_name, setBattleName] = useState('');
@@ -23,6 +22,7 @@ function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, c
                 member_id: memberId,
                 crew_id: crewId
             }
+            // 크루 배틀 참가 API
             const response = await api.post(`crew/battle/member/join`, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -36,6 +36,7 @@ function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, c
         }
     };
 
+    // 특정 배틀에 대한 정보 조회 API
     useEffect(() => {
         const getBattleInfo = async () => {
             try{

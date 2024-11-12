@@ -38,6 +38,7 @@ function CrewCreateModal() {
     // 폼 제출 핸들러
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // CHECKBOX 로 고른 여러 VALUE를 ,로 구분하는 문자열로 전환
         const selectedAges = crew_age.join(', ');
         const data = {
             crew_name,
@@ -53,6 +54,7 @@ function CrewCreateModal() {
         };
         console.log("debug >>> data", data);
 
+        //크루 생성 API
         const createCrew = async() => {
             try {
                 const response = await api.post(`crew/create`, data, {

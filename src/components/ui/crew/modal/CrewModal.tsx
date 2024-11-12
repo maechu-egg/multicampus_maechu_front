@@ -26,6 +26,7 @@ function CrewModal({ crew_id, onClick }: { crew_id: number, onClick: () => void}
     // 체크박스 상태 관리 (선호 나이)
     const [crew_age, setCrew_age] = useState<string[]>([]);
 
+    // 특정 크루 정보 조회 API
     useEffect(() => {
         const getCrewInfo = async() => {
             try{
@@ -78,6 +79,7 @@ function CrewModal({ crew_id, onClick }: { crew_id: number, onClick: () => void}
         };
         console.log("debug >>> data", data);
 
+        // 크루 관리 수정 API
         const updateCrew = async() => {
             try {
                 const response = await api.patch(`crew/info/update`, data, {

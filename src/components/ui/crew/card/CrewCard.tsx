@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CiLocationOn } from "react-icons/ci";
+const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
 
 function CrewCard({crew, onCrewClick}: { crew: any; onCrewClick: () => void }) {
 
@@ -7,8 +8,11 @@ function CrewCard({crew, onCrewClick}: { crew: any; onCrewClick: () => void }) {
     
     useEffect(() => {
         if(crew.crew_intro_img === "CrewDefault") {
-            setImgPath('img/default/CrewDefault.png')
+            setImgPath('img/default/CrewDefault.png');
+        } else if(crew.crew_intro_img != "CrewDefault") {
+            setImgPath(`${BASE_URL}${crew.crew_intro_img}`);
         }
+        console.log("이미지 경로", imgPath);
     })
     return (
         <div className="card card-crew" style={{"width": "100%"}} 

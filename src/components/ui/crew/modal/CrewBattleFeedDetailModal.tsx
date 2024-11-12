@@ -19,6 +19,7 @@ function CrewBattleFeedDetailModal({battleId, crewId}:CrewInfoProps): JSX.Elemen
     const [battleMember, setBattleMember] = useState<any[]>([]);
     const [battleFeed, setBattleFeed] = useState<any[]>([]);
 
+    // 현재 배틀에 참가중인 멤버의 피드 리스트 조회 API
     useEffect(() => {
         const getBattleFeed = async () => {
             try{
@@ -36,6 +37,7 @@ function CrewBattleFeedDetailModal({battleId, crewId}:CrewInfoProps): JSX.Elemen
         getBattleFeed();
     }, [participantId]);
 
+    // 현재 베틀에 참가중인 멤버들의 목록 조회 API
     useEffect(() => {
         const getBattleMember = async () => {
             try{

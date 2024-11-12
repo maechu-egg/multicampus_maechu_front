@@ -1,18 +1,18 @@
 .accept-btn {
     background-color: #add8e6;
-    border-radius: 0px;
     border-bottom-left-radius: 13px;
     border-color: #add8e6;
     color: black;
+    height: 40px;
 }
 
 
 .reject-btn {
     background-color: #f08080;
-    border-radius: 0px;
     border-bottom-right-radius: 13px;
     border-color: #f08080;
     color: black;
+    height: 40px;
 }
 
 .exit-btn {
@@ -22,6 +22,7 @@
     border-bottom-left-radius: 13px;
     border-color: #f08080;
     color: black;
+    height: 40px;
 }
 
 .card-crew:hover {

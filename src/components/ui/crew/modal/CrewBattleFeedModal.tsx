@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import './Modal.css';
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
+import CrewSearchDivEdit from "../selectDiv/CrewSearchDivEdit";
 
 interface CrewInfoProps {
     battle_id: number;
@@ -17,8 +18,8 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
     const [kcalType, setKcalType] = useState('direct');
     const [feed_kcal, setFeedKcal] = useState(0);
     const [feed_exTime, setFeedExTime] = useState<number | string>(0); // 초기값을 숫자로 설정
-    const [feed_sport, setFeedSport] = useState('');
     const [participantId, setParticipantId] = useState(0);
+    const [crew_sport, setCrew_sport] = useState('');
 
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,6 +27,8 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
             setSelectedFile(e.target.files[0]);
         }
     };
+
+    // 배틀에 참가중인 멤버 목록 조회 API
     useEffect( () => {
         const getBattleMember = async () => {
             try{
@@ -54,11 +57,12 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
             feed_post,
             feed_kcal,
             feed_exTime,
-            feed_sport,
+            crew_sport,
             battle_id,
             participant_id: participantId
         };
         console.log('Form Data:', data);
+        // 피드 생성 API
         const createFeed = async() => {
             try{
                 const response = await api.post(`crew/battle/feed/create`, data, {
@@ -74,6 +78,10 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
         }
         createFeed();
     };
+
+    const setCrewSports = (crewSport: string) => {
+        setCrew_sport(crewSport);
+    }
 
     return (
         <div className="container">
@@ -152,23 +160,9 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
                     <>
                         <div className='form-group form-control' style={{ width: '100%' }}>
                             <label>운동 종목</label>
-                            <input 
-                                className='form-control' 
-                                type="text" 
-                                list="list" 
-                                id="sport" 
-                                value={feed_sport} // 선택된 값 표시
-                                onChange={(e) => setFeedSport(e.target.value)} // 값이 변경될 때 상태 업데이트
-                                style={{ width: '100%' }}
-                            />
-                            <datalist id="list">
-                                <option value="산악" />
-                                <option value="달리기" />
-                                <option value="걷기" />
-                                <option value="자전거" />
-                                <option value="헬스" />
-                                <option value="배드민턴" />
-                            </datalist>
+                            <CrewSearchDivEdit onSearchSport={setCrewSports}/>
+                            <br />
+                            <h5>선택된 운동 종목 : {crew_sport}</h5>
                         </div>
                         <br />
                     </>

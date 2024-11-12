@@ -27,6 +27,7 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBat
     const memberId = state.memberId;
     const token = state.token;
 
+    // 뱃지 레벨에 맞게 뱃지 이미시 세팅
     useEffect(() => {
         if(member.badge_level === "브론즈") {
             setImgPath("/img/crewBadge/CrewBadgeBronze.png");
@@ -45,6 +46,7 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBat
         }
     }, [member]);
 
+    // 투표 하기 API 
     const VoteHandler = async() => {
         const data = {
             battle_id: battleId,
@@ -91,23 +93,26 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBat
                         </ul>
                     </div>
                     <div className="d-flex">
+                        {/* 현재 로그인된 계정과 카드의 MEMBERID가 같을경우에만 피드추가 버튼 활성화 */}
                         {memberId == member.member_id && (
                             <button 
-                                className="btn btn-primary flex-fill accept-btn"
+                                className=" flex-fill accept-btn"
                                 data-bs-toggle="modal"
                                 data-bs-target="#battleFeedModal"
                             >
                                 피드 추가
                             </button>
                         )}
+                        {/* 내 카드에도 투표하기가 나오도록 같이 활성화 */}
                         {memberId == member.member_id && (
                             <button
-                                className="btn btn-danger flex-fill reject-btn"
+                                className=" flex-fill reject-btn"
                                 onClick={VoteHandler}
                             >
                                 투표 하기
                             </button>
                         )}
+                        {/* 로그인 계정과 카드의 MEMBERID가 다를경우에는 투표하기 버튼만 활성화 */}
                         {memberId != member.member_id && (
                             <button
                                 className="btn btn-danger flex-fill exit-btn"

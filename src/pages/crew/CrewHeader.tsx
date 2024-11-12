@@ -16,6 +16,7 @@ function CrewHeader(): JSX.Element {
         setActiveCrewTab(index); // Update active tab index
     };
 
+    // 내가 가입한 크루 목록 불러오기 API
     useEffect(() => {
         const getMyCrew = async() => {
             try {

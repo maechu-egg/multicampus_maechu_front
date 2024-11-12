@@ -22,11 +22,13 @@ function CrewSearch(): JSX.Element {
         setSelectedCrewId(crewId);
     };
 
+    //제목과 운동종목에 따른 필터링
     const filteredData = crewList.filter(crew => 
         crew.crew_title && crew.crew_title.toLowerCase().includes(searchTerm.toLowerCase()) &&
         crew.crew_sport && crew.crew_sport.toLowerCase().includes(searchSport.toLowerCase())
     );
 
+    // 나에게 추천되는 크루 목록 불러오기 API
     const getCrewList = async () => {
         try {
             const response = await api.get("crew/list", {
@@ -51,6 +53,7 @@ function CrewSearch(): JSX.Element {
         setSearchSport(searchSport);
     }
 
+    // 종목선택 DIV 활성화 비활성화 버튼
     const searchSportHandler = () => {
         if(open === true) {
             setOpen(false);
@@ -112,7 +115,7 @@ function CrewSearch(): JSX.Element {
                 )}
             </div>
 
-            {/* join modal */}
+            {/* 크루 가입 모달창 */}
             <div className="modal fade" id="crewJoinModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewJoinModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
@@ -129,7 +132,7 @@ function CrewSearch(): JSX.Element {
                 </div>
             </div>
 
-            {/* create modal */}
+            {/* 크루 생성 모달창 */}
             <div className="modal fade" id="crewCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewCreateModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>

@@ -17,6 +17,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
     const [battleList, setBattleList] = useState<any[]>([]);
     const [selectedBattleId, setSelectedBattleId] = useState(0);
 
+    // 특정 크루의 배틀 리스트 조회 API
     const getBattleList = async() => {
         try{
             const response = await api.get(`crew/battle/list?crew_id=${crewId}`,{
@@ -57,6 +58,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                     </button>
                 </div>
 
+                {/* 카드 슬라이더 */}
                 <div className="col-12">
                     <div id="carousel" className="carousel slide" data-bs-ride="false">
                         <div className="carousel-inner">
@@ -80,7 +82,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                 </div>
             </div>
 
-            {/* CrewBattleFeedDetailModal 모달 */}
+            {/* 배틀피드 상세보기 모달창 */}
             <div className="modal fade" id="battleFeedDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleFeedDetailModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl" >
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
@@ -94,7 +96,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                 </div>
             </div>
 
-            {/* create battle modal */}
+            {/* 크루 배틀 생성 모달창 */}
             <div className="modal fade" id="battleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
@@ -109,7 +111,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                 </div>
             </div>
 
-            {/* feed modal */}
+            {/* 피드 추가 모달창 */}
             <div className="modal fade" id="battleFeedModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleFeedModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
@@ -124,7 +126,7 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
                 </div>
             </div>
 
-            {/* join modal */}
+            {/* 크루 배틀 참가 모달창 */}
             <div className="modal fade" id="battleJoinModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="battleJoinModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>

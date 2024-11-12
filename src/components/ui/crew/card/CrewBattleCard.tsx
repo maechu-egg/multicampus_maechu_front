@@ -29,12 +29,16 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
     const [firstPercent, setFirstPercent] = useState<number>(0);
     const [secondPercent, setSecondPercent] = useState<number>(0);
 
+
     useEffect(() => {
+        //변경 가능한 변수로 투표수 선언
         let firstScoreMemberVote = firstScoreMember?.vote_count || 0;
         let secondScoreMemberVote = secondScoreMember?.vote_count || 0;
 
+        // 평균을 내기위한 투표수 총합
         const totalVote = firstScoreMemberVote + secondScoreMemberVote;
 
+        // 받은 투표수를 백분율로 변경
         const firstPercentValue = Math.round((firstScoreMemberVote / totalVote) * 100);
         const secondPercentValue = Math.round((secondScoreMemberVote / totalVote) * 100);
 
@@ -43,6 +47,7 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
 
     }, [firstScoreMember, secondScoreMember]);
     
+    // 배틀 참가 멤버 조회 API를 사용하여 가장 투표를 많이 받은 TOP2명의 정보 불러오기 & 내가 배틀에 속해있는지 확인하기 위함
     useEffect(() => {
         const getBattleMember = async () => {
             try {
@@ -72,6 +77,7 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
         getBattleMember();
     }, [battle.battle_id]);
 
+    // 날짜 포멧 변경
     const formattedBattleEndDate = new Date(battle.battle_end_date).toLocaleDateString('ko-KR', {
         year: 'numeric',
         month: 'long',
@@ -118,6 +124,7 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
                 </div>
                 <p className="card-text" style={{ fontSize: "15px" }}>{battle.battle_content}</p>
                 <div className="mt-auto">
+                    {/* 배틀에 참가중이면서 배틀이 시작되었을 때는 상세보기 버튼 활성화 */}
                     {isMember == true && battle.battle_state == 1 && (
                         <button 
                             className="btn btn-secondary" 
@@ -128,6 +135,7 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
                             상세 보기
                         </button>
                     )}
+                    {/* 배틀에 참가중이지만 아직 모집중일 때는 상세보기 버튼 비활성화 */}
                     {isMember == true && battle.battle_state == 0 && (
                         <button 
                             className="btn btn-secondary" 
@@ -139,6 +147,7 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
                             상세보기
                         </button>
                     )}
+                    {/* 배틀에 참가하지 않았으면서 모집중일 때는 참가하기 버튼 활성화 */}
                     {isMember == false && battle.battle_state == 0 && (
                         <button 
                             className="btn btn-secondary" 
@@ -149,6 +158,7 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
                             참가하기
                         </button>
                     )}
+                    {/* 배틀에 참가중이지 않지만 배틀이 시작하면 피드보기로 버튼 활성화 */}
                     {isMember == false && battle.battle_state == 1 && (
                         <button 
                             className="btn btn-secondary" 

@@ -13,8 +13,6 @@ function CrewBattleModal({ crewId, onClick }: CrewBattleProps) {
     const { state } = useAuth();
     const token = state.token;
 
-    const navigate = useNavigate();
-
     const [battle_goal, setGoal] = useState('');
     const [battle_name, setBattleName] = useState('');
     const [battle_content, setBattleContent] = useState('');
@@ -32,6 +30,7 @@ function CrewBattleModal({ crewId, onClick }: CrewBattleProps) {
             crew_id:crewId
         };
         console.log('Form Data:', data);
+        // 배틀 생성 API
         const createBattle = async() => {
             try {
                 const response = await api.post(`crew/battle/create`, data, {

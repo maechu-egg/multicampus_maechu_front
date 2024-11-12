@@ -25,6 +25,7 @@ function CrewJoinModal({ crew_id }: { crew_id: number}) {
     // 크루에 속한 멤버인지 판별
     const [isMember, setIsMember] = useState(false);
 
+    // 특정 크루 정보 조회 API
     useEffect(() => {
         const getCrewInfo = async() => {
             try{
@@ -48,6 +49,7 @@ function CrewJoinModal({ crew_id }: { crew_id: number}) {
             }
         };
 
+        // 크루에 속한 멤버 조회 API를 사용하여 내가 가입되어있는지 판별
         const getCrewMemberInfo = async() => {
             try {
                 const response = await api.get(`crew/member/list/${crew_id}`, {
@@ -81,6 +83,7 @@ function CrewJoinModal({ crew_id }: { crew_id: number}) {
         };
         console.log("debug >>> data", data);
 
+        // 크루 가입 신청 API
         const insertCrew = async() => {
             try {
                 const response = await api.post(`crew/member/add`, data, {
