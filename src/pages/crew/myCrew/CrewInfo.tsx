@@ -4,7 +4,6 @@ import CrewModal from "components/ui/crew/modal/CrewModal";
 import CrewIntroModal from "components/ui/crew/modal/CrewIntroModal";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 
 interface CrewInfoProps {

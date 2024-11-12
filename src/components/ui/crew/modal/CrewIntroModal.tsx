@@ -44,9 +44,10 @@ function CrewIntroModal({ crew_id, onClick }: { crew_id: number, onClick: () => 
             data.append('crew_intro_img', crew_intro_img);
         }
         data.append('crew_id', String(crew_id));
-        data.append('member_id', String(member_id));
 
-        console.log('Data:', data);
+        for (let [key, value] of data.entries()) {
+            console.log(`${key}:`, value);
+          }
 
         const updateCrewIntro = async() => {
             try {
