@@ -1,4 +1,3 @@
-import React from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import styled from 'styled-components';
@@ -19,7 +18,7 @@ const MonthlyRecordChart = ({
   currentMonth,
   burnedCalories,
   consumedCalories
-}: MonthlyRecordChartProps) => {
+}: MonthlyRecordChartProps): JSX.Element => {
   const daysInMonth = new Date(
     currentMonth.getFullYear(),
     currentMonth.getMonth() + 1,
