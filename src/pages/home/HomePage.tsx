@@ -100,17 +100,6 @@ function HomePage(): JSX.Element {
     getTodayData();
   }, [token]);
 
-  // Function to handle automatic slide of cards
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTodayWorkout((prev) => {
-        if (prev.length === 0) return prev;
-        return [...prev.slice(1), prev[0]];
-      });
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [todayWorkout]);
-
   useEffect(() => {
     const fetchCrewData = async () => {
       try {
@@ -216,6 +205,47 @@ function HomePage(): JSX.Element {
           </CarouselControl>
         </div>
       </StyledSlider>
+      <LocalCrew>
+        <Title>
+          <TextContainer>
+            <h1>My Hometown, New Crew</h1>
+            <span>
+              바로 내 지역, 근처에서 모집 중인 최신 크루들을 찾아보세요 !
+            </span>
+            {!isDataFetched && (
+              <WarningMessage>
+                회원 전용 정보입니다. 회원가입 및 로그인 해주세요
+              </WarningMessage>
+            )}
+          </TextContainer>
+          <IconWrapper>
+            <FontAwesomeIcon icon={faArrowRight} />
+          </IconWrapper>
+        </Title>
+        <Cards isBlurred={!isDataFetched}>
+          {(isDataFetched ? crewData : fakeCrewData).map((crew, index) => (
+            <div className="card" key={index}>
+              <img
+                src={
+                  crew.crew_intro_img === "CrewDefault"
+                    ? "/img/Home/homeEx1.png"
+                    : crew.crew_intro_img
+                }
+                className="card-img-top card-image"
+                alt={crew.crew_name}
+              />
+              <div className="card-body">
+                <h5 className="card-title">{crew.crew_name}</h5>
+                <p className="card-text">{crew.crew_title}</p>
+                <p className="card-goal">목표: {crew.crew_goal}</p>
+                <a href="#" className="btn btn-outline-dark">
+                  자세히 보기
+                </a>
+              </div>
+            </div>
+          ))}
+        </Cards>
+      </LocalCrew>
       <SwapSpot>
         <Title>
           <TextContainer>
@@ -271,7 +301,7 @@ function HomePage(): JSX.Element {
         </Title>
         <CardContainer>
           <CardSlider>
-            {todayWorkout.concat(todayWorkout).map((workout, index) => (
+            {[...todayWorkout, ...todayWorkout].map((workout, index) => (
               <Card
                 key={index}
                 backgroundImage={
@@ -300,54 +330,13 @@ function HomePage(): JSX.Element {
           </CardSlider>
         </CardContainer>
       </WorkSpace>
-      <LocalCrew>
-        <Title>
-          <TextContainer>
-            <h1>My Hometown, New Crew</h1>
-            <span>
-              바로 내 지역, 근처에서 모집 중인 최신 크루들을 찾아보세요 !
-            </span>
-            {!isDataFetched && (
-              <WarningMessage>
-                회원 전용 정보입니다. 회원가입 및 로그인 해주세요
-              </WarningMessage>
-            )}
-          </TextContainer>
-          <IconWrapper>
-            <FontAwesomeIcon icon={faArrowRight} />
-          </IconWrapper>
-        </Title>
-        <Cards isBlurred={!isDataFetched}>
-          {(isDataFetched ? crewData : fakeCrewData).map((crew, index) => (
-            <div className="card" key={index}>
-              <img
-                src={
-                  crew.crew_intro_img === "img"
-                    ? "/img/Home/homeEx1.png"
-                    : crew.crew_intro_img
-                }
-                className="card-img-top card-image"
-                alt={crew.crew_name}
-              />
-              <div className="card-body">
-                <h5 className="card-title">{crew.crew_name}</h5>
-                <p className="card-text">{crew.crew_title}</p>
-                <p className="card-goal">목표: {crew.crew_goal}</p>
-                <a href="#" className="btn btn-outline-dark">
-                  자세히 보기
-                </a>
-              </div>
-            </div>
-          ))}
-        </Cards>
-      </LocalCrew>
     </Container>
   );
 }
 
 const slideAnimation = keyframes`
   0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  100% { transform: translateX(-50%); }
 `;
 
 const Container = styled.div`
@@ -411,12 +400,11 @@ const SwapSpot = styled.div`
 
   .list-group {
     margin-top: 40px;
-    padding: 0;
 
     .list-group-item {
-      height: 120px;
-      margin-top: -15px;
-      padding: 15px 15px 18px 23px;
+      height: 100px;
+      margin-bottom: 10px;
+      padding: 10px 20px 10px 20px;
       background-color: #fff;
       border: none;
       border-radius: 20px;
@@ -436,7 +424,7 @@ const SwapSpot = styled.div`
 `;
 
 const WorkSpace = styled.div`
-  width: 80%;
+  width: 85%;
   margin-top: 100px;
 `;
 
@@ -447,7 +435,7 @@ const CardContainer = styled.div`
   width: 100%;
   height: 400px;
   margin-top: 50px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   overflow: hidden;
   position: relative;
 `;
@@ -498,7 +486,7 @@ const Info = styled.div`
 `;
 
 const LocalCrew = styled.div`
-  width: 80%;
+  width: 85%;
   margin-top: 70px;
 `;
 
