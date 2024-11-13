@@ -6,11 +6,11 @@ import SetInfoModal from "../modal/SetInfoModal";
 import EditExerciseModal from "../modal/EditExerciseModal";
 interface ExerciseInfoProps {
   exercise: {
+    exercise_id: number;
     exercise_type: string;
     duration: number;
     intensity: string;
     calories: number;
-    exercise_id: number;
     met: number;
     record_date: string;
   };

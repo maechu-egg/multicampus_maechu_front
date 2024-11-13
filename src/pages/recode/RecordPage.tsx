@@ -177,8 +177,8 @@ function RecordPage(): JSX.Element {
     
     let emoji = null;
     // 상태에 따른 이모지 설정
-    if (hasExercise && hasDiet)  emoji = <img src="/img/record/pass.png" alt="Pass" />;  // 둘 다 있을 때
-    else if (hasExercise||hasDiet)  emoji = <img src="/img/record/perfect.png" alt="Perfect" />;;    
+    if (hasExercise && hasDiet)  emoji = <img src="/img/record/perfect.png" alt="Pass" />;  // 둘 다 있을 때
+    else if (hasExercise||hasDiet)  emoji = <img src="/img/record/pass.png" alt="Perfect" />;;    
     return (
       <div className="date-content">
         {emoji && <span className="emoji">{emoji}</span>}

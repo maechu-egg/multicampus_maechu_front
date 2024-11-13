@@ -89,8 +89,12 @@ useEffect(() => {
   }, []);
 
   // ExerciseAddModal을 통해 추가된 운동을 exerciseData에 반영
-  const addNewExercise = (newExercise: any) => {
-    setExerciseData((prevData) => [...prevData, newExercise]); // 새 운동 추가
+  const addNewExercise = (successBoolean: boolean) => {
+    if (successBoolean) {
+      exerciseGet(selectedDate); // 운동 데이터 새로 불러오기
+    } else {
+      console.log("debug >>> exerInsert 실패");
+    }
   };
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,9 +166,9 @@ useEffect(() => {
         <ExerciseAddModal
           searchTerm={searchTerm}
           onClose={() => setIsAddModalOpen(false)}
-          receiveInsertExer={addNewExercise} // 새 운동 추가
+          successExerInsert={addNewExercise} // 새 운동 추가 후 연동
         />
-      )}      
+      )}     
     </Container>
   );
 };
