@@ -423,7 +423,7 @@ const CaloriesCell = styled.td`
 `;
 
 // DietPlanSection 컴포넌트 수정
-const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
+const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; onLunchClick: () => void; onDinnerClick: () => void; onSnackClick: () => void }> = ({ dietPlan, onBreakfastClick, onLunchClick, onDinnerClick, onSnackClick }) => {
   console.log('DietPlanSection received:', dietPlan); // 컴포넌트가 받은 데이터 로깅
 
   const getMealData = (plan: any): MealPlanData => {
@@ -439,13 +439,11 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
       let isTableData = false;
 
       lines.forEach((line: string) => {
-        // 테이블 시작 확인
         if (line.includes('| 식사') || line.includes('|------')) {
           isTableData = true;
           return;
         }
 
-        // 테이블 데이터 처리
         if (isTableData && line.includes('|')) {
           const parts = line.split('|')
             .map(part => part.trim())
@@ -454,7 +452,6 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
           if (parts.length >= 3) {
             const [mealType, food, amount] = parts;
 
-            // 식사 타입에 따라 분류 (간식 포함)
             if (mealType.includes('아침')) {
               meals.breakfast.foods.push(food);
               meals.breakfast.amounts.push(amount);
@@ -470,35 +467,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
             }
           }
         }
-
-        // 간식 옵션 섹션 처리
-        if (line.includes('간식 옵션:')) {
-          let isSnackSection = true;
-          let snackStarted = false;
-
-          lines.forEach((snackLine: string) => {
-            if (snackStarted && snackLine.startsWith('*') && !snackLine.includes('**')) {
-              const snackOption = snackLine.replace('*', '').trim();
-              if (snackOption && !snackOption.includes('열량:') && 
-                  !snackOption.includes('단백질:') && 
-                  !snackOption.includes('탄수화물:') && 
-                  !snackOption.includes('지방:')) {
-                meals.snack.foods.push(snackOption);
-                meals.snack.amounts.push('선택 가능');
-              }
-            }
-            if (line.includes('간식 옵션:')) {
-              snackStarted = true;
-            }
-            if (snackStarted && line.includes('**') && !line.includes('간식')) {
-              isSnackSection = false;
-            }
-          });
-        }
       });
-
-      console.log('Raw dietPlan:', plan.dietPlan);
-      console.log('Parsed meals:', meals);
     }
 
     return meals;
@@ -516,7 +485,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
       <ResultSection>
         <SectionTitle>
           <SectionIcon>🍽️</SectionIcon>
-          맞춤형 단 계획
+          맞춤형 식단 계획
         </SectionTitle>
         <SectionContent>
           <div style={{ textAlign: 'center', padding: '20px' }}>
@@ -534,7 +503,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
       case '아침 식사':
         return { icon: '🌅', color: '#FF9800', label: '아침', order: 1 };
       case '점심식사':
-      case '점심 식':
+      case '점심 식사':
         return { icon: '☀️', color: '#4CAF50', label: '점심', order: 2 };
       case '저녁식사':
       case '저녁 식사':
@@ -542,7 +511,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
       case '간식':
         return { icon: '🍎', color: '#9C27B0', label: '간식', order: 4 };
       default:
-        return { icon: '🍽️', color: '#757575', label: '식단', order: 5 };
+        return { icon: '🍽️', color: '#757575', label: '식사', order: 5 };
     }
   };
 
@@ -661,7 +630,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
         <TimelineContainer>
           <MealTimelineGrid>
             {/* 아침 식사 */}
-            <TimelineMealCard $backgroundColor="#FF9800">
+            <TimelineMealCard $backgroundColor="#FF9800" onClick={onBreakfastClick}>
               <TimelineMealHeader $backgroundColor="#FF9800">
                 <DietMealIcon>🌅</DietMealIcon>
                 <MealTitle>아침</MealTitle>
@@ -682,7 +651,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
             </TimelineMealCard>
 
             {/* 점심 식사 */}
-            <TimelineMealCard $backgroundColor="#4CAF50">
+            <TimelineMealCard $backgroundColor="#4CAF50" onClick={onLunchClick}>
               <TimelineMealHeader $backgroundColor="#4CAF50">
                 <DietMealIcon>☀️</DietMealIcon>
                 <MealTitle>점심</MealTitle>
@@ -703,7 +672,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
             </TimelineMealCard>
 
             {/* 저녁 식사 */}
-            <TimelineMealCard $backgroundColor="#2196F3">
+            <TimelineMealCard $backgroundColor="#2196F3" onClick={onDinnerClick}>
               <TimelineMealHeader $backgroundColor="#2196F3">
                 <DietMealIcon>🌙</DietMealIcon>
                 <MealTitle>저녁</MealTitle>
@@ -725,7 +694,7 @@ const DietPlanSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
 
             {/* 간식 */}
             {meals.snack.foods.length > 0 && (
-              <TimelineMealCard $backgroundColor="#9C27B0">
+              <TimelineMealCard $backgroundColor="#9C27B0" onClick={onSnackClick}>
                 <TimelineMealHeader $backgroundColor="#9C27B0">
                   <DietMealIcon>🍎</DietMealIcon>
                   <MealTitle>간식</MealTitle>
@@ -959,6 +928,54 @@ const CautionText = styled.p`
   font-size: 15px;
 `;
 
+// getMealData 함수 정의를 DietPage 컴포넌트 외부로 이동
+const getMealData = (plan: any): MealPlanData => {
+  const meals: MealPlanData = {
+    breakfast: { foods: [], amounts: [] },
+    lunch: { foods: [], amounts: [] },
+    dinner: { foods: [], amounts: [] },
+    snack: { foods: [], amounts: [] }
+  };
+
+  if (plan && plan.dietPlan) {
+    const lines: string[] = plan.dietPlan.split('\n');
+    let isTableData = false;
+
+    lines.forEach((line: string) => {
+      if (line.includes('| 식사') || line.includes('|------')) {
+        isTableData = true;
+        return;
+      }
+
+      if (isTableData && line.includes('|')) {
+        const parts = line.split('|')
+          .map(part => part.trim())
+          .filter(part => part !== '');
+
+        if (parts.length >= 3) {
+          const [mealType, food, amount] = parts;
+
+          if (mealType.includes('아침')) {
+            meals.breakfast.foods.push(food);
+            meals.breakfast.amounts.push(amount);
+          } else if (mealType.includes('점심')) {
+            meals.lunch.foods.push(food);
+            meals.lunch.amounts.push(amount);
+          } else if (mealType.includes('저녁')) {
+            meals.dinner.foods.push(food);
+            meals.dinner.amounts.push(amount);
+          } else if (mealType.toLowerCase().includes('간식')) {
+            meals.snack.foods.push(food);
+            meals.snack.amounts.push(amount);
+          }
+        }
+      }
+    });
+  }
+
+  return meals;
+};
+
 function DietPage() {
   const navigate = useNavigate(); // useNavigate 훅 사용
   const { state } = useAuth(); // 로그인한 사용자 정보 가져오기
@@ -987,11 +1004,17 @@ function DietPage() {
   const [cookingPreference, setCookingPreference] = useState<string>("");
 
   const dietRecords = [
-    { food: "아침" },
-    { food: "점심" },
-    { food: "저녁" },
-    { food: "간식" },
+    { food: "breakfast"},
+    { food: "lunch" },
+    { food: "dinner" },
+    { food: "snack" },
   ];
+  const foodLabels = {
+    breakfast: "아침",
+    lunch: "점심",
+    dinner: "저녁",
+    snack: "간식",
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1046,6 +1069,7 @@ function DietPage() {
     if (data && state.token) {
       const requestBody = {
         calories: data.recommendedCalories,
+        goal: data.goal,
         ingredients: ingredients,
         dietaryRestrictions: dietaryRestrictions.split(",").map(item => item.trim()),
         allergies: allergies.split(",").map(item => item.trim()),
@@ -1073,8 +1097,10 @@ function DietPage() {
         if (response.data) {
           console.log('API Response:', response.data);
           setDietPlan(response.data);
+          setMeals(getMealData(response.data)); // meals 상태 업데이트
           setIsModalOpen(false);
           setIsResultModalOpen(true);
+          console.log(dietPlan);
         }
       } catch (error: any) {
         console.error('식단 추천 API 호출 중 오류 발생:', error);
@@ -1112,14 +1138,14 @@ function DietPage() {
     }
   };
 
-  // 식단 추천 버튼 클릭 핸들러 (인 화면의 버튼)
+  // 식단 추천 버튼 클릭 들러 (인 화면의 버튼)
   const handleRecommendationClick = () => {
     setIsModalOpen(true); // 첫 번째 모달 열기
   };
 
   // 식단 항목 클릭 시 페이지 이동
   const handleRecordClick = (food: string) => {
-    navigate(`/diet/${food}`); // 해당 식단에 맞는 페이지로 이동
+    navigate(`./${food}`); // 해당 식단에 맞는 페이지로 이동
   };
 
   // 모달 닫기
@@ -1132,6 +1158,32 @@ function DietPage() {
     setIsResultModalOpen(false);
     setDietPlan(null); // 결과 모달을 닫을 때 식 계획 초기화
   };
+
+  // 모달 상태 추가
+  const [isBreakfastDetailModalOpen, setIsBreakfastDetailModalOpen] = useState(false);
+  const [isLunchDetailModalOpen, setIsLunchDetailModalOpen] = useState(false);
+  const [isDinnerDetailModalOpen, setIsDinnerDetailModalOpen] = useState(false);
+  const [isSnackDetailModalOpen, setIsSnackDetailModalOpen] = useState(false);
+
+  // 아침 클릭 시 상세 모달 열기
+  const handleBreakfastClick = () => {
+    setIsBreakfastDetailModalOpen(true);
+  };
+
+  const handleLunchClick = () => {
+    setIsLunchDetailModalOpen(true);
+  };
+
+  const handleDinnerClick = () => {
+    setIsDinnerDetailModalOpen(true);
+  };
+
+  const handleSnackClick = () => {
+    setIsSnackDetailModalOpen(true);
+  };
+
+  const [meals, setMeals] = useState<MealPlanData | null>(null); // meals 상태 추가
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   return (
     <Container>
@@ -1170,14 +1222,24 @@ function DietPage() {
 
       <RecordList>
         {dietRecords.map((record, index) => (
-          <RecordItem key={index} onClick={() => handleRecordClick(record.food)}>
+          <RecordItem key={index} onClick={() => {
+            if (record.food === "breakfast") {
+              handleRecordClick(record.food);
+            } else if (record.food === "lunch") {
+              handleRecordClick(record.food); 
+            } else if (record.food === "dinner") {
+              handleRecordClick(record.food); 
+            } else if (record.food === "snack") {
+              handleRecordClick(record.food);
+            }
+          }}>
             <FoodIcon>
-              {record.food === "아침" ? "🍎" : 
-               record.food === "점심" ? "🍚" : 
-               record.food === "저녁" ? "🥗" : 
-               record.food === "간식" ? "🍰" : ""}
+              {record.food === "breakfast" ? "🍳" : 
+               record.food === "lunch" ? "🍚" : 
+               record.food === "dinner" ? "🥗" : 
+               record.food === "snack" ? "🍰" : ""}
             </FoodIcon>
-            <FoodName>{record.food}</FoodName>
+            <FoodName>{foodLabels[record.food as keyof typeof foodLabels]}</FoodName>
           </RecordItem>
         ))}
       </RecordList>
@@ -1194,27 +1256,37 @@ function DietPage() {
               <InputContainer>
                 <label>목표 칼로리:</label>
                 <Input type="number" value={data?.recommendedCalories || 0} readOnly />
+
+                <label>식단 목표:</label>
+                <Input type="text" value={data?.goal || ""} readOnly />
                 
-                <label>재료 (쉼표로 구분):</label>
+                <label>재료 (쉼표로 구분 예: 쌀, 계란, 닭가슴살):</label>
                 <Input type="text" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
                 
-                <label>식 제한 (쉼표로 구분):</label>
+                <label>식 제한 (쉼표로 구분 예: 고단백질, 저탄수화물):</label>
                 <Input type="text" value={dietaryRestrictions} onChange={(e) => setDietaryRestrictions(e.target.value)} />
                 
-                <label>알레르기 (쉼표로 구분):</label>
+                <label>알레르기 (쉼표로 구분 예: 우유, 땅콩):</label>
                 <Input type="text" value={allergies} onChange={(e) => setAllergies(e.target.value)} />
                 
-                <label>의료 조건 (쉼표로 구분):</label>
+                <label>의료 조건 (쉼표로 구분 예: 당뇨, 고혈압):</label>
                 <Input type="text" value={medicalConditions} onChange={(e) => setMedicalConditions(e.target.value)} />
                 
                 <label>하루 식사 횟수:</label>
-                <Input type="text" value={mealsPerDay} onChange={(e) => setMealsPerDay(e.target.value)} />
+                <Input as="select" value={mealsPerDay} onChange={(e) => setMealsPerDay(e.target.value)}>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </Input>
                 
-                <label>조리 난이도 (쉼표 구분):</label>
-                <Input type="text" value={cookingPreference} onChange={(e) => setCookingPreference(e.target.value)} />
+                <label>조리 난이도:</label>
+                <Input as="select" value={cookingPreference} onChange={(e) => setCookingPreference(e.target.value)}>
+                    <option value="쉬움">쉬움</option>
+                    <option value="보통">보통</option>
+                    <option value="어려움">어려움</option>
+                </Input>
 
-                <RecommendButton onClick={handleRecommend}>
-                  추천받기
+                <RecommendButton onClick={handleRecommend} disabled={isLoading}>
+                  {isLoading ? '추천받는 중...' : '추천받기'}
                 </RecommendButton>
               </InputContainer>
             </ModalBody>
@@ -1222,7 +1294,7 @@ function DietPage() {
         </ModalOverlay>
       )}
 
-      {/* 두 번째 모달 - 결과 표시 */}
+      {/* 두 번째 모달 - 과 표시 */}
       {isResultModalOpen && (
         <ModalOverlay>
           <ModalContent>
@@ -1233,7 +1305,7 @@ function DietPage() {
             <ModalBody>
               {dietPlan ? (
                 <>
-                  <DietPlanSection dietPlan={dietPlan} />
+                  <DietPlanSection dietPlan={dietPlan} onBreakfastClick={handleBreakfastClick} onLunchClick={handleLunchClick} onDinnerClick={handleDinnerClick} onSnackClick={handleSnackClick} />
                   <CautionSection dietPlan={dietPlan} />
                   <CloseModalButton onClick={closeResultModal}>
                     닫기
@@ -1255,9 +1327,95 @@ function DietPage() {
           </ModalContent>
         </ModalOverlay>
       )}
+
+      {/* 아침 상세 모달 */}
+      {isBreakfastDetailModalOpen && (
+        <ModalOverlay>
+          <ModalContent>
+            <ModalHeader>
+              <h2>아침 상세 정보</h2>
+              <CloseButton onClick={() => setIsBreakfastDetailModalOpen(false)}>X</CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              {meals && (
+                <div>
+                  <h3>아침 식사 계획</h3>
+                  <p>음식: {meals.breakfast.foods.join(', ')}</p>
+                  <p>양: {meals.breakfast.amounts.join(', ')}</p>
+                </div>
+              )}
+            </ModalBody>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {/* 점심 상세 모달 */}
+      {isLunchDetailModalOpen && (
+        <ModalOverlay>
+          <ModalContent>
+            <ModalHeader>
+              <h2>점심 상세 정보</h2>
+              <CloseButton onClick={() => setIsLunchDetailModalOpen(false)}>X</CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              {meals && (
+                <div>
+                  <h3>점심 식사 계획</h3>
+                  <p>음식: {meals.lunch.foods.join(', ')}</p>
+                  <p>양: {meals.lunch.amounts.join(', ')}</p>
+                </div>
+              )}
+            </ModalBody>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {/* 저녁 상세 모달 */}
+      {isDinnerDetailModalOpen && (
+        <ModalOverlay>
+          <ModalContent>
+            <ModalHeader>
+              <h2>저녁 상세 정보</h2>
+              <CloseButton onClick={() => setIsDinnerDetailModalOpen(false)}>X</CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              {meals && (
+                <div>
+                  <h3>저녁 식사 계획</h3>
+                  <p>음식: {meals.dinner.foods.join(', ')}</p>
+                  <p>양: {meals.dinner.amounts.join(', ')}</p>
+                </div>
+              )}
+            </ModalBody>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {/* 간식 상세 모달 */}
+      {isSnackDetailModalOpen && (
+        <ModalOverlay>
+          <ModalContent>
+            <ModalHeader>
+              <h2>간식 상세 정보</h2>
+              <CloseButton onClick={() => setIsSnackDetailModalOpen(false)}>X</CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              {meals && (
+                <div>
+                  <h3>간식 계획</h3>
+                  <p>음식: {meals.snack.foods.join(', ')}</p>
+                  <p>양: {meals.snack.amounts.join(', ')}</p>
+                </div>
+              )}
+            </ModalBody>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </Container>
   );
 }
+
+
 
 export default DietPage;
 
