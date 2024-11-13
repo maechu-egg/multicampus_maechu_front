@@ -3,10 +3,12 @@ import { useAuth } from 'context/AuthContext';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-
+import api from "../../services/api/axios"
 interface DietResponseDTO {
-  id: number;
-  name: string;
+  diet_id: number;
+  record_date: string;
+  meal_type: string; 
+  member_id: number;
 }
 
 const Container = styled.div`
@@ -34,26 +36,25 @@ const ErrorMessage = styled.div`
 `;
 
 const DietDetailPage = () => {
-  const { date, food } = useParams<{ date: string; food: string }>(); // URL에서 날짜와 음식 가져오기
-  const memberId = localStorage.getItem('memberId'); // 로그인한 멤버 ID 가져오기 (예시)
+  const { selectedDate, food } = useParams<{ selectedDate: string; food: string }>(); // URL에서 날짜와 음식 가져오기
   const { state } = useAuth(); // 로그인한 사용자 정보 가져오기
-  const [dietData, setDietData] = useState<DietResponseDTO[] | null>(null);
+  const memberId = state.memberId // 로그인한 멤버 ID 가져오기 (예시)
+  const [dietData, setDietData] = useState<DietResponseDTO[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchDietData = async () => {
     if (memberId !== undefined && state.token) {
         try {
           const token = state.token;
-          console.log('Token:', token); // 토큰 확인용 로그
-      const response = await axios.get('http://localhost:8001/record/diet/get/diet', {
-        params: {
-          record_date: date // record_date
-        },
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
+          console.log('debug >>> token : ', token); // 토큰 확인용 로그
+          console.log("debug >>> record_date : " + selectedDate);
+      const response = await api.post('record/diet/get/diet', {
+          meal_type: food,
+          record_date: selectedDate // record_date
+        }, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }
+      );
       console.log('API Response:', response.data); // 응답 데이터 로그 추가
       setDietData(response.data);
     } catch (err) {
@@ -65,7 +66,7 @@ const DietDetailPage = () => {
 
   useEffect(() => {
     fetchDietData();
-  }, [date, food]);
+  }, []);
 
   if (error) {
     return <ErrorMessage>{error}</ErrorMessage>;
@@ -76,8 +77,8 @@ const DietDetailPage = () => {
       <Title>식단 세부 정보</Title>
       {dietData ? (
         dietData.map((item) => (
-          <Card key={item.id}>
-            <h2>아침: {item.name}</h2>
+          <Card key={item.diet_id}>
+            <h2>아침: {item.meal_type}</h2>
           </Card>
         ))
       ) : (
