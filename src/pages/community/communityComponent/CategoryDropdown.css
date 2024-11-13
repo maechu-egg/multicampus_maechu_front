@@ -1,5 +1,8 @@
 .filter-section {
   border: 1px solid #e0e0e0;
+  max-width: 1200px;  /* 최대 너비 설정 */
+  margin: 0 auto;     /* 중앙 정렬 */
+  width: 95%;   
 }
 
 .section-headers {
@@ -41,16 +44,19 @@
   display: flex;
   padding: 20px;
   gap: 20px;
+  max-height: 300px; /* 최대 높이 설정 */
 }
 
 .category-section {
   flex: 1;
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 표시 */
 }
 
 .category-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-height: 100%; /* 부모 높이에 맞춤 */
 }
 
 .category-item {
@@ -86,4 +92,22 @@
 .keyword:hover {
   background-color: #f0f0f0;
   transform: translateY(-2px);
+}
+
+/* 스크롤바 스타일링 */
+.category-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.category-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.category-section::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.category-section::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
