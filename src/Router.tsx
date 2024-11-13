@@ -20,6 +20,7 @@ import ProfilePage from "./pages/login/ProfilePage";
 
 import BadgeStatusPage from "pages/badge/BadgeStatusPage";
 import DietPage from "pages/recode/DietPage";
+import DietDetailPage from "pages/recode/DietDetailPage";
 import ExercisePage from "pages/recode/ExercisePage";
 
 function AppRouter() {
@@ -38,6 +39,7 @@ function AppRouter() {
         <Route path="/recordpage" element={<RecordPage />}></Route>
         <Route path="/record/exercise/:selectedDate" element={<ExercisePage />}></Route>
         <Route path="/record/diet/:selectedDate" element={<DietPage />}></Route>
+        <Route path="/diet/:food" element={<DietDetailPage />}></Route>
         <Route path="/aboutpage" element={<AboutPage />}></Route>
         <Route path="/loginpage" element={<LoginPage />}></Route>
         <Route path="/badgestatuspage" element={<BadgeStatusPage />}></Route>
