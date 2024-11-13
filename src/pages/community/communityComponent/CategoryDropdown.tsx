@@ -31,26 +31,22 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   const [selectedMain, setSelectedMain] = useState(activeTab);
   const [isOpen, setIsOpen] = useState(true);
 
-  // 대분류 선택 처리
   const handleMainCategorySelect = (post_up_sport: string) => {
     setSelectedMain(post_up_sport);
     onTabChange(post_up_sport);
-    onSubcategoryChange(""); // 대분류 변경 시 소분류 초기화
+    onSubcategoryChange(""); 
   };
 
-  // 소분류 선택 처리
   const handleSubCategorySelect = (post_sport: string) => {
     onSubcategoryChange(post_sport);
   };
 
-  // 현재 선택된 대분류에 해당하는 소분류 목록 가져오기
   const currentSubCategories = selectedMain ? 
     (categoriesData as CategoriesData).subcategories[selectedMain] || [] 
     : [];
 
   return (
     <div className="filter-section">
-      {/* 헤더 섹션 */}
       <div className="section-headers">
         <div className="header-item">카테고리 선택</div>
         <div className="header-item">상세 카테고리</div>
@@ -63,10 +59,8 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
         </button>
       </div>
 
-      {/* 컨텐츠 섹션 */}
       {isOpen && (
         <div className="filter-container">
-          {/* 대분류 섹션 */}
           <div className="category-section main-category">
             <div className="category-list">
               {post_up_sports.map((post_up_sport) => (
@@ -81,7 +75,6 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
             </div>
           </div>
 
-          {/* 소분류 섹션 */}
           <div className="category-section sub-category">
             <div className="category-list">
               <div
@@ -102,7 +95,6 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
             </div>
           </div>
 
-          {/* 키워드 섹션 */}
           <div className="category-section keyword-section">
             <div className="keyword-list">
               {recommendedKeywords.map((keyword, index) => (
