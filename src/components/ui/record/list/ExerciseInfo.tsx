@@ -141,24 +141,27 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: Exerc
 
 export default ExerciseInfo;
 
+
+
+
 const ExercisePoint = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 48px 16px 16px;
   margin: 16px 0;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   background-color: #fafafa;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  position: relative; /* 자식 요소의 절대 위치를 위한 설정 */
+  position: relative;
 
   &:hover {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   }
 
   @media (max-width: 768px) {
-    padding: 12px;
+    padding: 44px 12px 12px;
     margin: 8px 0;
   }
 `;
