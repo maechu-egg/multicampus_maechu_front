@@ -11,8 +11,11 @@ interface Comment {
   author: string;
   content: string;
   date: string;
-  likeCount: number;
-  dislikeCount: number;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status:boolean;
+  comment_dislike_status:boolean;
+  commentAuthor:boolean;
 }
 
 interface PostDetailProps {
@@ -35,7 +38,9 @@ interface PostDetailProps {
   currentUserNickname: string;
   comments: Comment[];
   onAddComment: (content: string) => void;
-  onCommentReaction: (commentId: number, type: "like" | "dislike") => void;
+  // onCommentReaction: (commentId: number,  post_id:number) => void;
+  onCommentLike: (commentId: number,  post_id:number) => void;
+  onCommentDislike: (commentId: number,  post_id:number) => void;
   post_img1?:string;
   post_img2?:string;
   post_unlike_counts : number;
@@ -43,6 +48,7 @@ interface PostDetailProps {
   commets_count:number;
   member_id : number;
   author:boolean;
+  // commentAuthor:boolean;
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
@@ -65,7 +71,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
   currentUserNickname,
   comments,
   onAddComment,
-  onCommentReaction,
+  // onCommentReaction,
+  onCommentLike,
+  onCommentDislike,
   post_img1,
   post_img2,
   post_unlike_counts ,
@@ -73,6 +81,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
   commets_count,
   member_id,
   author,
+ 
+ 
+  // commentAuthor,
 }) => {
   const [commentInput, setCommentInput] = useState("");
   const [liked, setLiked] = useState(likeStatus);
@@ -82,7 +93,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : []; // 공백을 기준으로 문자열을 나눠 배열로 변환
   
-  
+
   
   
   useEffect(() => {
@@ -117,7 +128,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
         });
         console.log(response.data);
         if(response.status === 200){
-          if(response.data.Extagle){
+          if(response.data.Extable){
             alert('이미 좋아요를 눌렀습니다.');
 
           }else if(response.data.result){
@@ -257,12 +268,12 @@ const PostDetail: React.FC<PostDetailProps> = ({
       <div className="post-images">
         {post_img1 && (
           <div className="post-image">
-            <img src={`http://localhost:8001${post_img1}`} alt="게시글 이미지 1" style={{ maxWidth: "100%", height: "auto" }} />
+            <img src={`http://localhost:8001/static/${post_img1}`} alt="게시글 이미지 1" style={{ maxWidth: "100%", height: "auto" }} />
           </div>
         )}
         {post_img2 && (
           <div className="post-image">
-            <img src={`http://localhost:8001${post_img2}`} alt="게시글 이미지 2" style={{ maxWidth: "100%", height: "auto" }} />
+            <img src={`http://localhost:8001/static/${post_img2}`} alt="게시글 이미지 2" style={{ maxWidth: "100%", height: "auto" }} />
           </div>
         )}
       </div>
@@ -328,28 +339,31 @@ const PostDetail: React.FC<PostDetailProps> = ({
          
           {comments.map((comment) => (
             <div key={comment.id} className="comment">
+              <input type="hidden" value={comment.id}/>
               <div className="comment-header">
                 <span className="comment-author">{comment.author}</span>
                 <span className="comment-date">{formatDate(comment.date)}</span> 
               </div>
               <div className="comment-content">{comment.content}</div>
               <div className="comment-reactions">
-              <button className="btn btn-danger me-2" 
+                {comment.commentAuthor && (
+                <button className="btn btn-danger me-2" 
                 onClick={() => onCommentDelete(comment.id, post_id)}>
                    삭제
                 </button>
-                <button
-                  className="btn btn-sm btn-outline-primary me-2"
-                  onClick={() => onCommentReaction(comment.id, "like")}
+                )}
+                <button 
+                  className={`btn ${comment.comment_like_status  ? "btn-primary" : "btn-outline-primary"} me-2`}
+                  onClick={() => onCommentLike(comment.id, post_id)}
                 >
-                  <FaThumbsUp /> {comment.likeCount}
+                  <FaThumbsUp /> {comment.comment_like_counts}
                 </button>
                 <button
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => onCommentReaction(comment.id, "dislike")}
+                  className={`btn ${comment.comment_dislike_status ? "btn-danger" : "btn-outline-danger"}`}
+                  onClick={() => onCommentDislike(comment.id, post_id)}
                 >
-                  <FaThumbsDown /> {comment.dislikeCount}
-                </button>
+                <FaThumbsDown /> {comment.comment_dislike_counts}
+              </button>
               </div>
             </div>
           ))}

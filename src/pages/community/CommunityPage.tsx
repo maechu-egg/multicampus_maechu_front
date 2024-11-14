@@ -14,6 +14,7 @@ import dataJson from "../../assets/data/data.json";
 import axios from "axios";
 import CategoryDropdown from './communityComponent/CategoryDropdown';
 import {  useLocation, useNavigate, useParams } from "react-router-dom";
+import { param } from "jquery";
 
 
 
@@ -24,8 +25,11 @@ interface Comment {
   author: string;
   content: string;
   date: string;
-  likeCount: number;
-  dislikeCount: number;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status:boolean;
+  comment_dislike_status:boolean;
+  commentAuthor:boolean;
 }
 
 // 게시물 타입 정의
@@ -68,8 +72,9 @@ interface ServerComment  {
   c_nickname: string;
   comments_date: string;
   comments_contents: string;
-  comment_like_count: number;
-  comment_unlike_count: number;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  commentAuthor:boolean;
 };
 
 // community 데이터
@@ -96,10 +101,11 @@ function CommunityPage(): JSX.Element {
   const [activeTab, setActiveTab] = useState("헬스 및 피트니스");
   const [activePost_sport, setActivePost_sport] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
+  
   const [commentInput, setCommentInput] = useState<string>(""); // 댓글 입력 상태
   const [isEditing, setIsEditing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const postsPerPage = 10;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -138,9 +144,11 @@ function CommunityPage(): JSX.Element {
   // 추천 게시글
   useEffect(() => {
     if (!isSearchActive && activePost_sport === "") {
+      setRecommendedPosts([]);
       fetchRecommendedPosts(activeTab, activePost_sport);
     }
   }, [activeTab, activePost_sport, currentPage]);
+
 
   // 소분류가 선택되었을 때 추천 게시글을 숨기도록 상태 변경
   useEffect(() => {
@@ -151,8 +159,8 @@ function CommunityPage(): JSX.Element {
 
   // postlist 상태
   useEffect(() => {  
-    console.log("Updated posts:", posts);
-    console.log("filteredPosts:", filteredPosts);
+ 
+  
   }, [posts]);
   
   useEffect(() => {
@@ -162,7 +170,8 @@ function CommunityPage(): JSX.Element {
     }
   }, [comments]);
 
-  const fetchPosts = async (selectedCategory = activeTab, selectedSubcategory = activePost_sport) => {
+  // 게시글 조회
+  const fetchPosts = async (selectedCategory = activeTab, selectedSubcategory = activePost_sport, page = currentPage) => {
     console.log("selectedCategory", selectedCategory);
     console.log("selectedSubcategory", selectedSubcategory);
 
@@ -177,11 +186,10 @@ function CommunityPage(): JSX.Element {
       
       const categoryParam = selectedCategory !== "" ? selectedCategory  : undefined;
       const subcategoryParam = selectedSubcategory !== "" ? selectedSubcategory : undefined;
-      console.log("token" , token);
-      console.log("await");
+   
       const response = await axios.get("http://localhost:8001/community/posts", {
         params:{
-          page:currentPage,
+          page:page,
           size:postsPerPage,
           post_up_sport: categoryParam,
           post_sport: subcategoryParam,
@@ -194,8 +202,10 @@ function CommunityPage(): JSX.Element {
       console.log("Response data:", response.data); // 응답 데이터 출력
 
       const fetchedPosts = response.data.posts || response.data;
+
+      setTotalPages(response.data.totalPages);
       
-      console.log("Fetched posts:", fetchedPosts);
+    
       const mappedPosts = fetchedPosts.map((post: Post) => ({
         post_id: post.post_id,
         post_title: post.post_title,
@@ -211,7 +221,8 @@ function CommunityPage(): JSX.Element {
         isRecommended: post.isRecommended || false,
       }));
       setPosts(mappedPosts);
-      console.log("Mapped Posts", mappedPosts);
+      
+     
     } catch (error) {
       console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
       setLoading(false);
@@ -225,7 +236,7 @@ function CommunityPage(): JSX.Element {
     console.log("소분류  : " , activePost_sport);
 
     setLoading(true); 
-   
+    setRecommendedPosts([]);
       const token = localStorage.getItem("authToken"); 
       if (!token) {
         console.error("로그인 토큰이 없습니다.");
@@ -233,7 +244,7 @@ function CommunityPage(): JSX.Element {
       }
 
       if (selectedCategory && (!selectedSubcategory || selectedSubcategory === "")){
-        console.log("추천 게시글 axios");
+      
         try {
           const response = await axios.get('http://localhost:8001/community/posts/userRC', {
             params:{
@@ -243,9 +254,10 @@ function CommunityPage(): JSX.Element {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }); // 추천 게시글을 가져오는 API
-          console.log("response data", response.data);
+          }); 
+        
           setRecommendedPosts(response.data);
+          console.log(response.data, "+++++++++++++++++++++++++");
         } catch (error) {
           console.error('추천 게시글 불러오기 오류:', error);
         }
@@ -265,7 +277,8 @@ function CommunityPage(): JSX.Element {
                           post_up_sport: string, post_sport: string,
                           post_sports_keyword:string,
                           post_hashtag: string,
-                          imageFiles: FileList | null 
+                          // imageFiles: FileList | null 
+                          imageFiles: File[] | null 
                         ) => {
     
     const formData = new FormData();
@@ -337,7 +350,9 @@ function CommunityPage(): JSX.Element {
                             post_up_sport: string, post_sport: string, 
                             post_sports_keyword:string,
                             post_hashtag: string,
-                            imageFiles: FileList | null) => {
+                            // imageFiles: FileList | null
+                            imageFiles: File[] | null
+                          ) => {
     if (selectedPost) {
 
       const formData = new FormData();
@@ -376,7 +391,7 @@ function CommunityPage(): JSX.Element {
             
         if(response.status >= 200 && response.status < 300){
             const updatedPost = response.data;
-            console.log("updatePost" , updatedPost);
+           
             setPosts((posts) =>
               posts.map( (post) => 
               post.post_id === selectedPost.post_id ? updatedPost : post
@@ -424,41 +439,10 @@ function CommunityPage(): JSX.Element {
     }
   };
 
-    /*댓글 삭제 핸들러 */
-    const handleCommentDelete = async(commentId: number, postId : number) => {
-      if (selectedPost && window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-       
-          console.log("commentId", commentId);
-          const updatedComments = selectedPost.comments.filter(comment => comment.id !== commentId);
-          setSelectedPost({ ...selectedPost, comments: updatedComments });
-     
-
-
-        try{
-          const token = localStorage.getItem('authToken');
-          const response = await axios.delete(`http://localhost:8001/community/comment/delete/${commentId}`, {
-            headers:{
-              Authorization : `Bearer ${token}`
-            }
-          });
-  
-          if(response.status=== 200){
-                 getComments(postId);
-          }else{
-            alert(response.data);
-           
-          }
-  
-        }catch(error){
-          console.error('서버와의 통신 중 오류가 발생했습니다.: ' + error);
-        }
-      }
-    };
-  const [isAuthor, setIsAuthor] = useState(false);
-
+ 
 
   /* 게시물 상세보기 및 클릭 핸들러, 클릭 시 조회수 증가 */
-  const handlePostClick = async  (post: Post) => {
+  const handlePostClick = async  (post: Post, isRecommended :boolean) => {
     try{
       console.log("게시글 클릭됨 : " , post);
       // 서버와의 비동기 통신 시작
@@ -477,6 +461,9 @@ function CommunityPage(): JSX.Element {
             
           Authorization: `Bearer ${token}`,
         },
+        params:{
+          isRecommended:isRecommended,
+        }
       });
 
       console.log("게시글 상세 정보 : ", response.data);
@@ -499,13 +486,14 @@ function CommunityPage(): JSX.Element {
           author: serverComment.c_nickname,
           date: serverComment.comments_date,
           content: serverComment.comments_contents,
-          likeCount: serverComment.comment_like_count,
-          dislikeCount: serverComment.comment_unlike_count,
+          comment_like_counts: serverComment.comment_like_counts,
+          comment_dislike_counts: serverComment.comment_dislike_counts,
+          commentAuthor: serverComment.commentAuthor,
         }));
         setComments(mappedComments);
         console.log("set commnet list : " , comments);
     }
-    console.log("2. set commnet list : " , comments);
+   
   
 
     } catch (error) {
@@ -519,25 +507,7 @@ function CommunityPage(): JSX.Element {
     setSelectedPost(null);
     setIsEditing(false);
   };
-
-  /* 댓글 좋아요/싫어요 핸들러 */
-  const handleCommentReaction = (
-    commentId: number,
-    reactionType: "like" | "dislike"
-  ) => {
-    setComments(
-      comments.map((comment) => {
-        if (comment.id === commentId) {
-          if (reactionType === "like") {
-            return { ...comment, likeCount: comment.likeCount + 1 };
-          } else {
-            return { ...comment, dislikeCount: comment.dislikeCount + 1 };
-          }
-        }
-        return comment;
-      })
-    );
-  };
+ 
   
   // 댓글 등록
   const handleCommentSubmit = async (postId: number, content: string) => {
@@ -592,7 +562,12 @@ function CommunityPage(): JSX.Element {
         alert("로그인이 필요합니다.");
         return; 
       }
-      
+       // 현재 로그인한 사용자 ID 가져오기
+       const currentUserId = parseInt(localStorage.getItem("memberId") || "0"); 
+       if (!currentUserId) {
+           alert("사용자 정보를 가져올 수 없습니다.");
+           return;
+       }
   
       const response = await axios.get( `http://localhost:8001/community/comment/getComment/${postId}`,
         {
@@ -616,8 +591,9 @@ function CommunityPage(): JSX.Element {
             author: serverComment.c_nickname ?? "Unknown", // c_nickname이 없는 경우 기본값 설정
             content: serverComment.comments_contents,
             date: serverComment.comments_date,
-            likeCount: serverComment.comment_like_count ?? 0,
-            dislikeCount: serverComment.comment_unlike_count ?? 0,
+            comment_like_counts: serverComment.comment_like_counts ?? 0,
+            comment_dislike_counts: serverComment.comment_dislike_counts ?? 0,
+            commentAuthor: serverComment.member_id === currentUserId,
           };
         });
         console.log("newComment", newComment);
@@ -630,6 +606,37 @@ function CommunityPage(): JSX.Element {
     }
 
   }
+   /*댓글 삭제 핸들러 */
+   const handleCommentDelete = async(commentId: number, postId : number) => {
+    if (selectedPost && window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+     
+        console.log("commentId", commentId);
+        const updatedComments = selectedPost.comments.filter(comment => comment.id !== commentId);
+        setSelectedPost({ ...selectedPost, comments: updatedComments });
+   
+
+
+      try{
+        const token = localStorage.getItem('authToken');
+        const response = await axios.delete(`http://localhost:8001/community/comment/delete/${commentId}`, {
+          headers:{
+            Authorization : `Bearer ${token}`
+          }
+        });
+
+        if(response.status=== 200){
+               getComments(postId);
+        }else{
+          alert(response.data);
+         
+        }
+
+      }catch(error){
+        console.error('서버와의 통신 중 오류가 발생했습니다.: ' + error);
+      }
+    }
+  };
+const [isAuthor, setIsAuthor] = useState(false);
 
 
 
@@ -639,8 +646,9 @@ const handleCategoryChange = (post_up_sport: string) => {
   setActiveTab(post_up_sport);
   setActivePost_sport("");
   setIsSearchActive(false);
-  fetchPosts(post_up_sport, "");
+  fetchPosts(post_up_sport, "",1);
   setShowPostForm(false);
+  setCurrentPage(1);
 };
 
 /* 카테고리 소분류 변경 핸들러 */
@@ -654,13 +662,21 @@ const handleSubcategoryChange = async (post_sport: string) => {
 
  
 
-  const [isSearchActive, setIsSearchActive] = useState(false);
 
 
   /* 페이지 번호 변경 핸들러 */
   const handlePageChange = (pageNumber: number) => {
+    console.log("pageNum ", pageNumber);
     setCurrentPage(pageNumber);
-  
+    if(isSearchActive){
+      if(searchKeyword){
+        handleKeywordClick(searchKeyword, activeTab);
+      }else if(searchTerm){
+        handleSearch(searchTerm, pageNumber);
+      }
+    }else{
+      fetchPosts(undefined, undefined, pageNumber);
+    }
   };
 
   // 페이지네이션 관련 계산
@@ -679,9 +695,11 @@ const handleSubcategoryChange = async (post_sport: string) => {
     const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
     const calculatedTotalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-
+    const [isSearchActive, setIsSearchActive] = useState(false);
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [searchKeyword, setSearchKeyword] = useState<string>(""); 
     //  검색  
-    const handleSearch = async (searchTerm: string) => {
+    const handleSearch = async (searchTerm: string, page:number = 1) => {
       console.log("Searching for:", searchTerm);
       if (searchTerm.trim() === "") {
         setIsSearchActive(false);
@@ -694,13 +712,17 @@ const handleSubcategoryChange = async (post_sport: string) => {
           console.error("로그인 토큰이 없습니다.");
           return;
         }
-    
+        setIsSearchActive(true);
+        setSearchTerm(searchTerm);
+        setSearchKeyword("");
+        setCurrentPage(page);
+        setPosts([]);
         setLoading(true);
     
         const response = await axios.get("http://localhost:8001/community/posts/search", {
           params: {
             keyword: searchTerm,
-            page: currentPage,
+            page: page,
             size: postsPerPage,
           },
           headers: {
@@ -712,7 +734,8 @@ const handleSubcategoryChange = async (post_sport: string) => {
         });
     
         console.log("response type", typeof response.data);
-    
+        console.log("response data ", response.data);
+        console.log("검색용 totalpage : " + response.data.totalPages);
         if (response.status === 200) {
           const fetchedPosts = response.data.posts;
           if (!fetchedPosts || fetchedPosts.length === 0) {
@@ -735,67 +758,308 @@ const handleSubcategoryChange = async (post_sport: string) => {
                isRecommended: post.isRecommended || false,
              }));
             setPosts(mappedPosts);
-            setIsSearchActive(true);
+          
+           
+            setTotalPages( response.data.totalPages);
           }
         }else if (response.status === 404) {
-       console.error("검색 결과가 없습니다: ", response.statusText);
-       alert("검색 결과가 없습니다.");
-       setPosts([]);
-    } else if (response.status >= 400) {
-         console.error("검색 결과를 가져오는 중 오류 발생: ", response.statusText);
-         alert("검색 결과를 가져오던 중 오류가 발생했습니다.");
-        setPosts([]);
-   }
+            console.error("검색 결과가 없습니다: ", response.statusText);
+            alert("검색 결과가 없습니다.");
+            setPosts([]);
+            setCurrentPage(1);
+            setTotalPages(1);
+        } else if (response.status >= 400) {
+            console.error("검색 결과를 가져오는 중 오류 발생: ", response.statusText);
+            alert("검색 결과를 가져오던 중 오류가 발생했습니다.");
+            setPosts([]);
+        }
       } catch (error) {
         console.error("서버와의 통신 중 오류 발생:", error);
         alert("서버와의 통신에서 오류가 발생했습니다.");
       } finally {
-        setLoading(false);
+          setLoading(false);
       }
     };
-    const handleKeywordClick = async (keyword: string) => {
+
+    const [keyword, setKeyword] = useState<string>("");
+    // 키워드 
+    const handleKeywordClick = async (keyword: string, selectedCategory = activeTab) => {
       console.log("키워드  : ", keyword);
+      console.log("대분류  : ", selectedCategory);
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
           console.error("로그인 토큰이 없습니다.");
           return;
         }
-    
+        setSearchKeyword(keyword);
+        setSearchTerm("");
+        setIsSearchActive(true);
+
+        setPosts([]);
+      
         setLoading(true);
+       
     
         const response = await axios.get(`http://localhost:8001/community/posts/sport/${keyword}`, {
           params: {
-            page: currentPage,
+            page: 1,
             size: postsPerPage,
+            post_up_sport : selectedCategory,
           },
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-    
+        setCurrentPage(1);
         console.log("response", response.status);
     
         if (response.status === 200) {
           const fetchedPosts = response.data.searchList;
+          console.log("keyword ------------ response.data" , response.data );
           if (!fetchedPosts || fetchedPosts.length === 0) {
             setPosts([]);
             alert("검색 결과가 없습니다.");
+            setCurrentPage(1);
+            setTotalPages(1);
           } else {
             setPosts(fetchedPosts);
             setIsSearchActive(true);
+            console.log("keyword ------------ response.data" , response.data.totalPages );
+            setTotalPages(response.data.totalPages);
           }
         } else {
           console.error("키워드 검색 결과를 가져오는 중 오류 발생:", response.statusText);
           alert("키워드 검색 결과를 가져오던 중 오류가 발생했습니다.");
+          
         }
       } catch (error) {
         console.error("서버와의 통신 중 오류 발생:", error);
         alert("서버와의 통신에서 오류가 발생했습니다.");
+      
       } finally {
         setLoading(false);
       }
     };
+
+
+  
+  /* 댓글 좋아요/싫어요 핸들러 */
+  // const handleCommentReaction = (
+  //   commentId: number,
+  //   reactionType: "like" | "dislike"
+  // ) => {
+  //   setComments(
+  //     comments.map((comment) => {
+  //       if (comment.id === commentId) {
+  //         if (reactionType === "like") {
+  //           return { ...comment, likeCount: comment.comment_like_counts + 1 };
+  //         } else {
+  //           return { ...comment, dislikeCount: comment.comment_dislike_counts + 1 };
+  //         }
+  //       }
+  //       return comment;
+  //     })
+  //   );
+  // };
+
+  
+useEffect(() =>{
+
+
+}, [])
+
+const handleCommentLike = async (commentId: number, post_id: number) => {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.error("로그인 토큰이 없습니다.");
+    return;
+  }
+
+  const targetComment = comments.find(comment => comment.id === commentId);
+
+  if (targetComment && !targetComment.comment_like_status) {
+    // 좋아요 추가 요청
+    try {
+      const response = await axios.post(
+        `http://localhost:8001/community/comment/${commentId}/commentlikeinsert`,
+        {},  // 본문 데이터를 null로 설정
+        {
+          params: { post_id: post_id },  // 쿼리 파라미터로 전달
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const { result, Extable, comment_like_count } = response.data;
+
+        if (result) {
+          const updatedComments = comments.map((comment) =>
+            comment.id === commentId
+              ? { 
+                  ...comment, 
+                  comment_like_counts: comment_like_count || comment.comment_like_counts,
+                  comment_like_status: true
+                }
+              : comment
+          );
+          setComments(updatedComments);
+          alert("좋아요 추가 성공");
+        } else if (Extable) {
+          alert("테이블에 이미 있습니다.");
+        } else {
+          alert("좋아요 추가 실패");
+        }
+      } else if (response.status === 400) {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("좋아요 요청 중 오류 발생:", error);
+      alert("서버 오류로 좋아요 요청이 실패했습니다.");
+    }
+  } else if (targetComment && targetComment.comment_like_status) {
+    // 좋아요 삭제 요청
+    try {
+      const response = await axios.delete(
+        `http://localhost:8001/community/comment/${commentId}/commentlikedelete`,
+        {
+          params: { post_id: post_id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const { result, Extable, comment_like_count } = response.data;
+
+        if (result) {
+          const updatedComments = comments.map((comment) =>
+            comment.id === commentId
+              ? { 
+                  ...comment, 
+                  comment_like_counts: comment_like_count || comment.comment_like_counts,
+                  comment_like_status: false // 좋아요 상태를 false로 변경
+                }
+              : comment
+          );
+          setComments(updatedComments);
+          alert("좋아요 삭제 성공");
+        } else if (Extable) {
+          alert("좋아요가 이미 취소된 상태입니다.");
+        } else {
+          alert("좋아요 취소 실패");
+        }
+      } else if (response.status === 400) {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("좋아요 삭제 요청 중 오류 발생:", error);
+      alert("서버 오류로 좋아요 삭제 요청이 실패했습니다.");
+    }
+  } else {
+    alert("이미 좋아요를 누른 댓글입니다.");
+  }
+};
+
+
+
+const handleCommentDisLike = async (commentId: number, post_id: number) => {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.error("로그인 토큰이 없습니다.");
+    return;
+  }
+
+  const targetComment = comments.find(comment => comment.id === commentId);
+
+  if (targetComment && !targetComment.comment_dislike_status) {
+    // 싫어요 추가 요청
+    try {
+      const response = await axios.post(
+        `http://localhost:8001/community/comment/${commentId}/commentdislikeinsert`,
+        { post_id: post_id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const { result, Extable, comment_dislike_count } = response.data;
+
+        if (result) {
+          const updatedComments = comments.map((comment) =>
+            comment.id === commentId
+              ? { 
+                  ...comment, 
+                  comment_dislike_counts: comment_dislike_count || comment.comment_dislike_counts,
+                  comment_dislike_status: true
+                }
+              : comment
+          );
+          setComments(updatedComments);
+          alert("싫어요 추가 성공");
+        } else if (Extable) {
+          alert("테이블에 이미 있습니다.");
+        } else {
+          alert("싫어요 추가 실패");
+        }
+      } else if (response.status === 400) {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("싫어요 요청 중 오류 발생:", error);
+      alert("서버 오류로 싫어요 요청이 실패했습니다.");
+    }
+  } else if (targetComment && targetComment.comment_dislike_status) {
+    // 싫어요 삭제 요청
+    try {
+      const response = await axios.delete(
+        `http://localhost:8001/community/comment/${commentId}/commentdislikedelete`,
+        {
+          params: { post_id: post_id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const { result, Extable, comment_dislike_count } = response.data;
+
+        if (result) {
+          const updatedComments = comments.map((comment) =>
+            comment.id === commentId
+              ? { 
+                  ...comment, 
+                  comment_dislike_counts: comment_dislike_count || comment.comment_dislike_counts,
+                  comment_dislike_status: false // 좋아요 상태를 false로 변경
+                }
+              : comment
+          );
+          setComments(updatedComments);
+          alert("싫어요 삭제 성공");
+        } else if (Extable) {
+          alert("싫어요가 이미 취소된 상태입니다.");
+        } else {
+          alert("싫어요 취소 실패");
+        }
+      } else if (response.status === 400) {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("싫어요 삭제 요청 중 오류 발생:", error);
+      alert("서버 오류로 싫어요 삭제 요청이 실패했습니다.");
+    }
+  } else {
+    alert("이미 싫어요를 누른 댓글입니다.");
+  }
+};
+
 
   /**
    * 게시물 수정 모드일 때의 렌더링
@@ -854,10 +1118,10 @@ const handleSubcategoryChange = async (post_sport: string) => {
         onDelete={handleDelete}
         onCommentDelete={handleCommentDelete}
         currentUserNickname={""}
-        // comments={postComments}
         comments={comments}  
         onAddComment={(content) => handleCommentSubmit(selectedPost.post_id, content)}
-        onCommentReaction={handleCommentReaction}
+        onCommentLike={handleCommentLike}
+        onCommentDislike={handleCommentDisLike}
       />
     );
   }
@@ -917,13 +1181,13 @@ const handleSubcategoryChange = async (post_sport: string) => {
           </div>
 
           {/* 게시물 목록 */}
-          <PostList posts={currentPosts} recommendedPosts={recommendedPosts}  onPostClick={handlePostClick} />
+          <PostList posts={posts} recommendedPosts={recommendedPosts}  onPostClick={handlePostClick} />
 
           {/* 페이지네이션 */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
           />
         </>
       )}
