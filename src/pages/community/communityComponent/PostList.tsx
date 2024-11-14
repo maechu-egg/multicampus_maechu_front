@@ -54,7 +54,7 @@ const PostList: React.FC<PostListProps> = ({ posts, recommendedPosts, onPostClic
     <div>
       {recommendedPosts && recommendedPosts.length > 0  && (
         <>
-          <h2>추천 게시글</h2>
+          {/*<h2>추천 게시글</h2>*/}
           {recommendedPosts.map((post) => (
             <RecommendedPostsItem key={post.post_id} {...post} onClick={() => onPostClick(post, true)} isRecommended={true} />
           ))}
