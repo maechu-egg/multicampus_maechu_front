@@ -5,14 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
 import api from "../../services/api/axios";
+import PostList from "./PostList";
 const BASE_URL = "http://localhost:8001";
 
-const categories = [
-  "내가 쓴 글",
-  "좋아요 한 글",
-  "내가 참여한 크루",
-  "배틀 중",
-];
+const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 
 interface todayRecord {
   burnedCalories: number;
@@ -40,9 +36,9 @@ interface todayRecord {
 
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { state } = useAuth();
   const { token, memberId } = state;
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [kcalInfo, setKcalInfo] = useState<todayRecord | null>(null);
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
@@ -51,26 +47,42 @@ function MyPage(): JSX.Element {
   const [crewPoints, setCrewPoints] = useState(0);
   const [personalLevel, setPersonalLevel] = useState("기본");
   const [crewLevel, setCrewLevel] = useState("기본");
+  const [postData, setPostData] = useState<any[]>([]);
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
-
   const openCrewModal = () => setCrewModalOpen(true);
   const closeCrewModal = () => setCrewModalOpen(false);
 
-  const handleCategoryClick = (category: string) => {
+  const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
+    let endpoint = "";
+    if (category === "내가 쓴 글") {
+      endpoint = "/community/myPage/myPosts";
+    } else if (category === "좋아요 한 글") {
+      endpoint = "/community/myPage/myLikePosts";
+    }
+    if (endpoint) {
+      try {
+        const response = await api.get(endpoint, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("내 커뮤니티 활동 응답 : ", response.data.list);
+        setPostData(response.data.list);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    }
   };
 
   useEffect(() => {
     const userInfo = async () => {
       try {
         const response = await api.get("/info", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setUserInfo(response.data);
+        console.log("사용자 정보 조회 응답 데이터 : ", response.data);
       } catch (error) {
         console.error("사용자 정보 조회 오류:", error);
       }
@@ -82,9 +94,7 @@ function MyPage(): JSX.Element {
     const userKcalInfo = async () => {
       try {
         const response = await api.get("/record/summary/daily", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setKcalInfo(response.data);
       } catch (error) {
@@ -98,16 +108,11 @@ function MyPage(): JSX.Element {
     const userPoint = async () => {
       try {
         const response = await api.get("/badges/getBadge", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
         const { current_points, crew_current_points } = response.data;
         setPersonalPoints(current_points);
         setCrewPoints(crew_current_points);
-
-        // Set levels based on point thresholds
         setPersonalLevel(getLevelLabel(current_points));
         setCrewLevel(getLevelLabel(crew_current_points));
       } catch (error) {
@@ -205,41 +210,45 @@ function MyPage(): JSX.Element {
           {categories.map((category) => (
             <CategoryItem
               key={category}
+              isSelected={selectedCategory === category}
               onClick={() => handleCategoryClick(category)}
             >
               {category}
             </CategoryItem>
           ))}
         </Category>
-        {selectedCategory && (
-          <CategoryContent>
-            <h3>{selectedCategory}</h3>
-            <p>{`${selectedCategory}에 대한 상세 정보를 여기에 표시합니다.`}</p>
-          </CategoryContent>
-        )}
       </Header>
+      <Content>
+        <PostList postData={postData} />
+      </Content>
     </Container>
   );
 }
 
 const Container = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+
+  height: 100%;
+  background-color: #b6c0d3;
 
   @media (min-width: 900px) {
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
   }
 `;
 
 const Header = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  width: 100%;
+  border-bottom: 0.8px solid #666;
+  background-color: #f4f4f4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding-top: 20px;
 
   @media (min-width: 900px) {
     width: 30%;
@@ -247,11 +256,19 @@ const Header = styled.div`
     position: fixed;
     top: 10%;
     left: 0;
-    background-color: #fafafa;
+    background-color: #f4f4f4;
     border-right: 1px solid #ddd;
-    padding: 40px 25px 0 25px;
+    padding: 40px 25px 80px 25px;
     align-items: flex-start;
     overflow-y: auto;
+  }
+`;
+
+const Content = styled.div`
+  width: 80%;
+  height: 1000px;
+  @media (min-width: 900px) {
+    margin-left: 30%;
   }
 `;
 
@@ -281,9 +298,9 @@ const NickName = styled.h2`
 `;
 
 const Divider = styled.hr`
-  width: 75%;
+  width: 80%;
   border: none;
-  border-top: 1.5px solid #999;
+  border-top: 1.5px solid #777;
   margin: 16px 0;
 
   @media (min-width: 900px) {
@@ -346,7 +363,7 @@ const ProgressBarWrapper = styled.div`
 `;
 
 const ProgressBar = styled.div<{ progress: number }>`
-  width: 100%;
+  width: 85%;
   height: 20px;
   background-color: #e0e0e0;
   border-radius: 10px;
@@ -360,7 +377,7 @@ const ProgressBar = styled.div<{ progress: number }>`
     left: 0;
     height: 100%;
     width: ${(props) => Math.min(props.progress, 100)}%;
-    background-color: #4caf50;
+    background-color: #1d2636;
     transition: width 0.3s ease;
   }
 
@@ -378,7 +395,6 @@ const ProgressLabel = styled.span`
 
 const Category = styled.div`
   width: 75%;
-  margin-top: 16px;
   display: flex;
   justify-content: space-between;
   text-align: center;
@@ -390,7 +406,7 @@ const Category = styled.div`
   }
 `;
 
-const CategoryItem = styled.div`
+const CategoryItem = styled.div<{ isSelected: boolean }>`
   flex: 1;
   display: flex;
   align-items: center;
@@ -398,9 +414,11 @@ const CategoryItem = styled.div`
   font-size: 1em;
   color: #333;
   cursor: pointer;
+  padding: 10px 0;
+  border-bottom: ${(props) => (props.isSelected ? "2px solid #333" : "none")};
 
   &:hover {
-    text-decoration: underline;
+    border-bottom: 2px solid #333;
   }
 
   @media (min-width: 900px) {
@@ -408,27 +426,6 @@ const CategoryItem = styled.div`
     margin: 0;
     justify-content: flex-start;
     padding-left: 16px;
-  }
-`;
-
-const CategoryContent = styled.div`
-  width: 75%;
-  margin-top: 16px;
-  padding: 16px;
-  background-color: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  text-align: left;
-
-  h3 {
-    margin-bottom: 8px;
-    font-size: 1.2em;
-    color: #333;
-  }
-
-  p {
-    font-size: 1em;
-    color: #666;
   }
 `;
 
