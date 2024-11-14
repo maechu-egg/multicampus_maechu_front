@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../../services/api/axios";
-import { useAuth } from "../../context/AuthContext";
+import api from "../../../services/api/axios";
+import { useAuth } from "../../../context/AuthContext";
 import styled from "styled-components";
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import ExerciseInfo from "../../components/ui/record/list/ExerciseInfo";
+import ExerciseInfo from "../../../components/ui/record/list/ExerciseInfo";
 import ExerciseAddModal from "components/ui/record/modal/ExerciseAddModal";
 
 interface ExerciseInfo {
