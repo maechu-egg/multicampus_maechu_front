@@ -3,7 +3,7 @@ import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import "./PostDetail.css";
 import axios from "axios";
 import { formatDate } from '../../../utils/dateFormat';  
-
+import CommentSection from "./CommentSection";
 
 interface Comment {
   id: number;
@@ -13,9 +13,9 @@ interface Comment {
   date: string;
   comment_like_counts: number;
   comment_dislike_counts: number;
-  comment_like_status:boolean;
-  comment_dislike_status:boolean;
-  commentAuthor:boolean;
+  comment_like_status: boolean;
+  comment_dislike_status: boolean;
+  commentAuthor: boolean;
 }
 
 interface PostDetailProps {
@@ -38,9 +38,6 @@ interface PostDetailProps {
   currentUserNickname: string;
   comments: Comment[];
   onAddComment: (content: string) => void;
-  // onCommentReaction: (commentId: number,  post_id:number) => void;
-  onCommentLike: (commentId: number,  post_id:number) => void;
-  onCommentDislike: (commentId: number,  post_id:number) => void;
   post_img1?:string;
   post_img2?:string;
   post_unlike_counts : number;
@@ -48,7 +45,6 @@ interface PostDetailProps {
   commets_count:number;
   member_id : number;
   author:boolean;
-  // commentAuthor:boolean;
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
@@ -68,24 +64,15 @@ const PostDetail: React.FC<PostDetailProps> = ({
   onEdit,
   onDelete,
   onCommentDelete,
-  currentUserNickname,
   comments,
   onAddComment,
-  // onCommentReaction,
-  onCommentLike,
-  onCommentDislike,
   post_img1,
   post_img2,
   post_unlike_counts ,
   post_like_counts,
-  commets_count,
-  member_id,
   author,
- 
- 
-  // commentAuthor,
 }) => {
-  const [commentInput, setCommentInput] = useState("");
+  
   const [liked, setLiked] = useState(likeStatus);
   const [disliked, setDisliked] = useState(unlikeStatus);
   const [likeCount, setLikeCount] = useState(post_like_counts);
@@ -93,8 +80,21 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : []; // 공백을 기준으로 문자열을 나눠 배열로 변환
   
+ 
 
+  // 댓글 정렬하기 (asc: 등록순, desc: 최신순)
+  const sortedComments = [...comments].sort((a, b) => {
+    if (sortOrder === "asc") {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    } else {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    }
+  });
   
+  const handleSortOrderChange = (order: "asc" | "desc") => {
+    console.log("정렬");
+    setSortOrder(order);
+  };
   
   useEffect(() => {
     if (comments.length > 0) {
@@ -136,6 +136,14 @@ const PostDetail: React.FC<PostDetailProps> = ({
             setLiked(true);
             if(disliked){
               setDislikeCount(prev => prev - 1);
+               await axios.delete( `http://localhost:8001/useractivity/${post_id}/unlikedelete`,
+                {
+                  headers: {
+                  
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
               setDisliked(false);
             }
           }else{
@@ -158,6 +166,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
             alert('이미 좋아요를 취소한 상태입니다.');
           }else if(response.data.result){
             setLikeCount(response.data.likeCount);
+            console.log("likecount ", response.data.likeCount);
             setLiked(false);
           }else{
             alert(response.data.message || '좋아요 취소에 실패했습니다.');
@@ -202,6 +211,14 @@ const PostDetail: React.FC<PostDetailProps> = ({
             setDisliked(true);
             if(liked){
               setLikeCount(prev => prev - 1);
+               await axios.delete( `http://localhost:8001/useractivity/${post_id}/likedelete`,
+                {
+                  headers: {
+                  
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
               setLiked(false);
             }
           }else{
@@ -234,14 +251,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
       }
     }catch(error){
       console.log('싫어요 요청 중 오류 발생', error);
-    }
-  };
-
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (commentInput.trim() !== "") {
-      onAddComment(commentInput);
-      setCommentInput("");
     }
   };
 
@@ -318,71 +327,31 @@ const PostDetail: React.FC<PostDetailProps> = ({
         </button>
       </div>
 
+
       <hr className="mt-4" />
       <div className="comments-section">
         <div className="comment-sort-buttons">
           <button
             className={`btn btn-sm ${sortOrder === "asc" ? "btn-primary" : "btn-outline-primary"} me-2`}
-            onClick={() => setSortOrder("asc")}
+            onClick={() => handleSortOrderChange("asc")}
           >
             등록순
           </button>
           <button
             className={`btn btn-sm ${sortOrder === "desc" ? "btn-primary" : "btn-outline-primary"}`}
-            onClick={() => setSortOrder("desc")}
+            onClick={() => handleSortOrderChange("desc")}
           >
             최신순
           </button>
         </div>
 
-        <div className="comments-list">
-         
-          {comments.map((comment) => (
-            <div key={comment.id} className="comment">
-              <input type="hidden" value={comment.id}/>
-              <div className="comment-header">
-                <span className="comment-author">{comment.author}</span>
-                <span className="comment-date">{formatDate(comment.date)}</span> 
-              </div>
-              <div className="comment-content">{comment.content}</div>
-              <div className="comment-reactions">
-                {comment.commentAuthor && (
-                <button className="btn btn-danger me-2" 
-                onClick={() => onCommentDelete(comment.id, post_id)}>
-                   삭제
-                </button>
-                )}
-                <button 
-                  className={`btn ${comment.comment_like_status  ? "btn-primary" : "btn-outline-primary"} me-2`}
-                  onClick={() => onCommentLike(comment.id, post_id)}
-                >
-                  <FaThumbsUp /> {comment.comment_like_counts}
-                </button>
-                <button
-                  className={`btn ${comment.comment_dislike_status ? "btn-danger" : "btn-outline-danger"}`}
-                  onClick={() => onCommentDislike(comment.id, post_id)}
-                >
-                <FaThumbsDown /> {comment.comment_dislike_counts}
-              </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <form onSubmit={handleCommentSubmit} className="comment-form">
-          <div className="input-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              value={commentInput}
-              onChange={(e) => setCommentInput(e.target.value)}
-              placeholder="댓글을 입력하세요"
-            />
-            <button type="submit" className="btn btn-primary">
-              작성
-            </button>
-          </div>
-        </form>
+          {/* CommentSection 컴포넌트 추가 */}
+          <CommentSection
+            comments={sortedComments}
+            postId={post_id}
+            onAddComment={onAddComment}
+            onCommentDelete={onCommentDelete}
+          />
       </div>
     </div>
   );
