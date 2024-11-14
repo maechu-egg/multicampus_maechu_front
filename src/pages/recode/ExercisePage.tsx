@@ -183,12 +183,14 @@ useEffect(() => {
 };
 
 const Container = styled.div`
-  width: 70%;
+  width: 100%; // 너비를 100%로 설정하여 화면에 맞춤
+  max-width: 1200px; // 최대 너비를 설정하여 중앙에 고정
   height: 100vh;
   margin: 0 auto;
   padding: 20px;
   background: linear-gradient(to right, #f8f9fa, #e9ecef);
   font-family: 'Noto Sans KR', sans-serif;
+  overflow-x: hidden; // 가로 스크롤 방지
 `;
 
 const SummaryCard = styled.div`

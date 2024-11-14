@@ -24,7 +24,7 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
 
   const [exerciseType, setExerciseType] = useState(searchTerm);
   const [duration, setDuration] = useState<number>(0);
-  const [intensity, setIntensity] = useState<string>("");
+  const [intensity, setIntensity] = useState<string>("HIGH");
   const [exerciseId, setExerciseId] = useState<number>(0);
   const [sets, setSets] = useState<SetInfo[]>([]); // 세트 정보를 저장하는 상태
   const [isSetModalOpen, setIsSetModalOpen] = useState(false); // 세트 추가 모달 상태
