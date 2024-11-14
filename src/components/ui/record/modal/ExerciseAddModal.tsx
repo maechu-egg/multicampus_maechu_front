@@ -53,7 +53,6 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
   // 세트 추가 함수
   const setInsert = async (exerciseId: number) => {
     if (sets.length === 0) {
-      // 세트가 없는 경우 바로 true 반환
       console.log("debug >>> No sets to insert");
       return true;
     }
@@ -63,10 +62,10 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
         ...set,
         exercise_id: exerciseId,
       }));
-
+      console.log("debug >>> setsWithExerciseId : ", setsWithExerciseId);
       const response = await api.post(
         "record/exercise/insert/set",
-        { sets: setsWithExerciseId },
+        setsWithExerciseId,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -81,8 +80,10 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
  // 저장 버튼 클릭 시
   const handleSave = async () => {
     const exerciseResponse = await exerciseInsert();
+    console.log("debug >>> exerciseResponse : ", exerciseResponse);
     if (exerciseResponse) {
       const isSuccess = await setInsert(exerciseResponse); // 운동 추가 후 세트 추가
+      console.log("debug >>> isSuccess : ", isSuccess);
       successExerInsert(isSuccess);
     } else {
       successExerInsert(false);
@@ -126,13 +127,13 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
           </select>
         </Label>
 
-        <h4>세트 정보</h4>
+        <h4> </h4>
         {sets.map((set, index) => (
           <div key={index}>
             <p>무게: {set.weight} kg, 거리: {set.distance} m, 반복: {set.repetitions}회</p>
           </div>
         ))}
-        <button onClick={openSetModal}>세트 추가</button>
+        <AddSetButton onClick={openSetModal}>세트 추가</AddSetButton>
 
         <ButtonContainer>
           <SaveButton onClick={handleSave}>저장</SaveButton>
@@ -154,6 +155,23 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
 export default ExerciseAddModal;
 
 // 스타일 정의
+
+const AddSetButton = styled.button`
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #1D2636; // 통일된 버튼 색상
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  &:hover {
+    background-color: #333C4D; // 버튼 호버 시 색상
+  }
+`;
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -205,14 +223,14 @@ const SaveButton = styled.button`
   padding: 10px 20px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #4caf50;
+  background-color: #1D2636; // 통일된 버튼 색상
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #333C4D; // 버튼 호버 시 색상
   }
 `;
 
@@ -220,13 +238,13 @@ const CancelButton = styled.button`
   padding: 10px 20px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #f44336;
+  background-color: #4A5568; // 통일된 버튼 색상
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #d32f2f;
+    background-color: #2D3748; // 버튼 호버 시 색상
   }
 `;

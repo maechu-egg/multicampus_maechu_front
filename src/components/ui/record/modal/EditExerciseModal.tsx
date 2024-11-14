@@ -123,7 +123,7 @@ const ButtonContainer = styled.div`
 
 const SaveButton = styled.button`
   padding: 12px 20px;
-  background-color: #007bff;
+  background-color: #1D2636;
   color: white;
   border: none;
   border-radius: 6px;
@@ -133,7 +133,7 @@ const SaveButton = styled.button`
   transition: background 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #333C4D;
   }
 
   &:focus {
@@ -144,7 +144,7 @@ const SaveButton = styled.button`
 
 const CancelButton = styled.button`
   padding: 12px 20px;
-  background-color: #dc3545;
+  background-color: #4A5568;
   color: white;
   border: none;
   border-radius: 6px;
@@ -154,11 +154,11 @@ const CancelButton = styled.button`
   transition: background 0.3s ease;
 
   &:hover {
-    background-color: #c82333;
+    background-color: #2D3748;
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 4px rgba(220, 53, 69, 0.6);
+    box-shadow: 0 0 4px rgba(74, 85, 104, 0.6);
   }
 `;
