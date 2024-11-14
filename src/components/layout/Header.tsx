@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
 import { useAuth } from "../../context/AuthContext";
@@ -12,6 +12,7 @@ function Header(): JSX.Element {
   const [isClickMenuBtn, setIsClickMenuBtn] = useState(false);
   const HeaderRef = useRef<HTMLDivElement | null>(null);
   const { state, dispatch } = useAuth();
+  const navigate = useNavigate();
 
   const handleCloseMenu = () => {
     setIsClickMenuBtn(false);
@@ -58,6 +59,7 @@ function Header(): JSX.Element {
     localStorage.removeItem("authToken");
     localStorage.removeItem("memberId");
     dispatch({ type: "LOGOUT" });
+    navigate("/");
   };
 
   return (

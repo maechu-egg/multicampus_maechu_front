@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
 import api from "../../services/api/axios";
-import PostList from "./PostList";
+import PostList from "./mypageComponent/PostList";
 import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";

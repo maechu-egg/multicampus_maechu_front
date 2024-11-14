@@ -65,7 +65,7 @@ const BattleContainer = styled.div`
 
 const BattleCard = styled.div`
   width: 100%;
-  max-width: 400px;
+
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
