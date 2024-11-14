@@ -8,6 +8,12 @@ import styled from "styled-components";
 interface MealData {
   foods: string[];
   amounts: string[];
+  nutritionalInfo: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  }[];
 }
 
 interface MealPlanData {
@@ -19,50 +25,50 @@ interface MealPlanData {
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
-  max-width: 700px;
+  padding: 20px;
+  max-width: 800px;
   margin: 0 auto;
+  background-color: #f9f9f9; // 배경색 추가
+  border-radius: 10px; // 모서리 둥글게
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); // 그림자 추가
 `;
 
 const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f0f8ff;
-  padding: 20px;
-  border-radius: 10px;
+  text-align: center;
   margin-bottom: 20px;
 `;
 
 const Title = styled.h1`
   font-size: 24px;
-  margin: 0;
+  color: #333; // 제목 색상
 `;
 
 const InfoContainer = styled.div`
-  text-align: right;
+  margin-bottom: 20px;
 `;
 
 const TotalCalories = styled.div`
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #4caf50; // 칼로리 색상
 `;
 
 const CurrentDate = styled.div`
   font-size: 16px;
+  color: #666; // 날짜 색상
 `;
 
 const GoalContainer = styled.div`
-  background: #e0f7fa;
-  padding: 15px;
-  border-radius: 10px;
   margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff; // 목표 컨테이너 배경색
+  border-radius: 10px; // 모서리 둥글게
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // 그림자 추가
 `;
 
 const Goal = styled.div`
   font-size: 16px;
+  color: #333; // 목표 색상
 `;
 
 const RecordList = styled.div`
@@ -72,22 +78,24 @@ const RecordList = styled.div`
   margin-top: 20px;
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(4, 1fr); // 4개의 열로 변경
+    grid-template-columns: repeat(4, 1fr);
   }
 `;
 
 const RecordItem = styled.div`
-  background: #f0f8ff;
-  border-radius: 10px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  background: #ffffff; // 배경색을 흰색으로 설정
+  border: 1px solid #e0e0e0; // 테두리 추가
+  border-radius: 10px; // 모서리 둥글게
+  padding: 20px; // 패딩
+  text-align: center; // 중앙 정렬
+  cursor: pointer; // 커서 포인터
+  transition: all 0.3s ease; // 부드러운 전환 효과
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // 그림자 효과
 
   &:hover {
-    background-color: #e0f7fa;
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #f5f5f5; // 호버 시 배경색 변경
+    transform: translateY(-3px); // 위로 이동 효과
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); // 호버 시 그림자 효과 증가
   }
 `;
 
@@ -102,6 +110,7 @@ const FoodName = styled.div`
   color: #333;
 `;
 
+// 추천받기 버튼 스타일 추가
 const RecommendationButton = styled.button`
   background-color: #4caf50; // 버튼 색상
   color: white;
@@ -109,12 +118,15 @@ const RecommendationButton = styled.button`
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #45a049; // 호버 색상
   }
 `;
 
+// 모달 스타일
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -241,7 +253,7 @@ const ResultTable = styled.div`
   }
 
   th {
-    background-color: #f0f8ff;
+    background-color: #e0f7fa; // 헤더 배경색
     font-weight: bold;
   }
 
@@ -297,10 +309,10 @@ const parseMealPlan = (dietPlan: string): MealPlanData => {
   console.log('Parsing diet plan:', dietPlan); // 파싱할 데이터 확인
   
   const meals: MealPlanData = {
-    breakfast: { foods: [], amounts: [] },
-    lunch: { foods: [], amounts: [] },
-    dinner: { foods: [], amounts: [] },
-    snack: { foods: [], amounts: [] }
+    breakfast: { foods: [], amounts: [], nutritionalInfo: [] },
+    lunch: { foods: [], amounts: [], nutritionalInfo: [] },
+    dinner: { foods: [], amounts: [], nutritionalInfo: [] },
+    snack: { foods: [], amounts: [], nutritionalInfo: [] }
   };
 
   if (!dietPlan) return meals;
@@ -428,10 +440,10 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
 
   const getMealData = (plan: any): MealPlanData => {
     const meals: MealPlanData = {
-      breakfast: { foods: [], amounts: [] },
-      lunch: { foods: [], amounts: [] },
-      dinner: { foods: [], amounts: [] },
-      snack: { foods: [], amounts: [] }
+      breakfast: { foods: [], amounts: [], nutritionalInfo: [] },
+      lunch: { foods: [], amounts: [], nutritionalInfo: [] },
+      dinner: { foods: [], amounts: [], nutritionalInfo: [] },
+      snack: { foods: [], amounts: [], nutritionalInfo: [] }
     };
 
     if (plan && plan.dietPlan) {
@@ -452,16 +464,19 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
           if (parts.length >= 3) {
             const [mealType, food, amount] = parts;
 
-            if (mealType.includes('아침')) {
+            // 식사 타입을 대문자로 변환
+            const upperMealType = mealType.toUpperCase();
+
+            if (upperMealType.includes('아침')) {
               meals.breakfast.foods.push(food);
               meals.breakfast.amounts.push(amount);
-            } else if (mealType.includes('점심')) {
+            } else if (upperMealType.includes('점심')) {
               meals.lunch.foods.push(food);
               meals.lunch.amounts.push(amount);
-            } else if (mealType.includes('저녁')) {
+            } else if (upperMealType.includes('저녁')) {
               meals.dinner.foods.push(food);
               meals.dinner.amounts.push(amount);
-            } else if (mealType.toLowerCase().includes('간식')) {
+            } else if (upperMealType.includes('간식')) {
               meals.snack.foods.push(food);
               meals.snack.amounts.push(amount);
             }
@@ -931,10 +946,10 @@ const CautionText = styled.p`
 // getMealData 함수 정의를 DietPage 컴포넌트 외부로 이동
 const getMealData = (plan: any): MealPlanData => {
   const meals: MealPlanData = {
-    breakfast: { foods: [], amounts: [] },
-    lunch: { foods: [], amounts: [] },
-    dinner: { foods: [], amounts: [] },
-    snack: { foods: [], amounts: [] }
+    breakfast: { foods: [], amounts: [], nutritionalInfo: [] },
+    lunch: { foods: [], amounts: [], nutritionalInfo: [] },
+    dinner: { foods: [], amounts: [], nutritionalInfo: [] },
+    snack: { foods: [], amounts: [], nutritionalInfo: [] }
   };
 
   if (plan && plan.dietPlan) {
@@ -970,6 +985,40 @@ const getMealData = (plan: any): MealPlanData => {
           }
         }
       }
+    });
+  }
+
+  return meals;
+};
+
+const parseDietPlan = (dietPlan: string) => {
+  const meals: MealData = {
+    foods: [],
+    amounts: [],
+    nutritionalInfo: [],
+  };
+
+  // 식사 섹션을 정규 표현식으로 추출
+  const mealSections = dietPlan.match(/(\*\*아침 식사\*\*|아침 식사|점심 식사|저녁 식사|간식)([\s\S]*?)(?=\*\*|$)/g);
+
+  if (mealSections) {
+    mealSections.forEach(section => {
+      const lines = section.split('\n').filter(line => line.trim() !== '');
+      lines.forEach(line => {
+        const parts = line.split('|').map(part => part.trim()).filter(part => part);
+        if (parts.length === 7) { // 식사 정보가 있는 경우
+          const food = parts[1]; // 음식
+          const amount = parts[2]; // 양
+          const calories = parseInt(parts[3]); // 열량
+          const protein = parseInt(parts[4]); // 단백질
+          const carbs = parseInt(parts[5]); // 탄수화물
+          const fat = parseInt(parts[6]); // 지방
+
+          meals.foods.push(food);
+          meals.amounts.push(amount);
+          meals.nutritionalInfo.push({ calories, protein, carbs, fat });
+        }
+      });
     });
   }
 
@@ -1015,6 +1064,66 @@ function DietPage() {
     dinner: "저녁",
     snack: "간식",
   };
+
+  // ... existing code ...
+
+const handleAddMeal = async (mealType: keyof MealPlanData) => {
+  if (memberId !== undefined && state.token) {
+    try {
+      const token = state.token;
+      const mealTypeMap = {
+        breakfast: 'BREAKFAST',
+        lunch: 'LUNCH',
+        dinner: 'DINNER',
+        snack: 'SNACK',
+      };
+
+      const response = await axios.get(`http://localhost:8001/insert/meal`, {
+        params: { meal_type: mealTypeMap[mealType] },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (meals) {
+        const dietId = response.data; // 추가된 diet_id
+        await addItemsToDiet(dietId, meals[mealType]);
+        alert('식단이 추가되었습니다.');
+      }
+    } catch (error) {
+      console.error('식단 추가 중 오류 발생:', error);
+      alert('식단 추가에 실패했습니다.');
+    }
+  }
+};
+
+const addItemsToDiet = async (dietId: number, mealData: MealData) => {
+  const { foods, amounts, nutritionalInfo } = mealData;
+
+  for (let i = 0; i < foods.length; i++) {
+    const food = foods[i];
+    const amount = parseInt(amounts[i], 10); // 양을 정수로 변환
+    const nutrition = nutritionalInfo[i];
+
+    const itemRequest = {
+      item_name: food,
+      quantity: amount,
+      carbs: nutrition.carbs,
+      protein: nutrition.protein,
+      fat: nutrition.fat,
+      calories: nutrition.calories,
+      diet_id: dietId,
+    };
+
+    try {
+      await axios.post('http://localhost:8001/insert/item', itemRequest);
+    } catch (error) {
+      console.error('식품 추가 중 오류 발생:', error);
+    }
+  }
+};
+
+// ... existing code ...
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1097,7 +1206,7 @@ function DietPage() {
         if (response.data) {
           console.log('API Response:', response.data);
           setDietPlan(response.data);
-          setMeals(getMealData(response.data)); // meals 상태 업데이트
+          setMeals(getMealData(response.data)); // meals 태 업데이트
           setIsModalOpen(false);
           setIsResultModalOpen(true);
           console.log(dietPlan);
@@ -1299,7 +1408,7 @@ function DietPage() {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>맞춤형 식단 계획</h2>
+              <h2>맞춤 식단 계획</h2>
               <CloseButton onClick={closeResultModal}>×</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -1328,7 +1437,9 @@ function DietPage() {
         </ModalOverlay>
       )}
 
-      {/* 아침 상세 모달 */}
+
+
+      {/* 아침 상세 달 */}
       {isBreakfastDetailModalOpen && (
         <ModalOverlay>
           <ModalContent>
@@ -1342,6 +1453,7 @@ function DietPage() {
                   <h3>아침 식사 계획</h3>
                   <p>음식: {meals.breakfast.foods.join(', ')}</p>
                   <p>양: {meals.breakfast.amounts.join(', ')}</p>
+                  <button onClick={() => handleAddMeal('breakfast')}>식단 추가</button>
                 </div>
               )}
             </ModalBody>
@@ -1363,6 +1475,7 @@ function DietPage() {
                   <h3>점심 식사 계획</h3>
                   <p>음식: {meals.lunch.foods.join(', ')}</p>
                   <p>양: {meals.lunch.amounts.join(', ')}</p>
+                  <button onClick={() => handleAddMeal('lunch')}>식단 추가</button>
                 </div>
               )}
             </ModalBody>
@@ -1384,6 +1497,7 @@ function DietPage() {
                   <h3>저녁 식사 계획</h3>
                   <p>음식: {meals.dinner.foods.join(', ')}</p>
                   <p>양: {meals.dinner.amounts.join(', ')}</p>
+                  <button onClick={() => handleAddMeal('dinner')}>식단 추가</button>
                 </div>
               )}
             </ModalBody>
@@ -1405,6 +1519,7 @@ function DietPage() {
                   <h3>간식 계획</h3>
                   <p>음식: {meals.snack.foods.join(', ')}</p>
                   <p>양: {meals.snack.amounts.join(', ')}</p>
+                  <button onClick={() => handleAddMeal('snack')}>식단 추가</button>
                 </div>
               )}
             </ModalBody>
