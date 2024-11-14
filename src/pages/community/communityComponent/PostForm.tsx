@@ -19,7 +19,8 @@ interface PostFormProps {
     post_sport: string,
     post_hashtag: string,
     post_sports_keyword: string,
-    imageFiles: FileList | null
+    // imageFiles: FileList | null
+    imageFiles: File[] | null
   ) => void;
   onCancel: () => void;
   post_up_sports: string[];
@@ -41,7 +42,8 @@ const PostForm: React.FC<PostFormProps> = ({
   const [post_up_sport, setPost_up_sport] = useState(initialData?.post_up_sport || "");
   const [post_sport, setPost_sport] = useState(initialData?.post_sport || "");
   const [post_sports_keyword, setPost_sports_keyword] = useState(initialData?.post_sports_keyword || "");
-  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
+  // const [imageFiles, setImageFiles] = useState<FileList | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[] | null>(null);
   const [tagInput, setTagInput] = useState("");
   const [tagList, setTagList] = useState<string[]>(
     initialData?.post_hashtag ? initialData.post_hashtag.split(", ") : []
@@ -49,7 +51,15 @@ const PostForm: React.FC<PostFormProps> = ({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setImageFiles(e.target.files);
+      const newFiles = Array.from(e.target.files);
+      const totalFiles = [...(imageFiles || []), ...newFiles];
+  
+      if (totalFiles.length > 2) {
+        alert("최대 2개의 이미지만 업로드할 수 있습니다.");
+        return;
+      }
+  
+      setImageFiles(totalFiles);
     }
   };
 
