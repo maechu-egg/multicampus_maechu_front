@@ -5,7 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
 import api from "../../services/api/axios";
-import PostList from "./PostList";
+import PostList from "./mypageComponent/PostList";
+import CrewList from "./mypageComponent/CrewList";
+import BattleList from "./mypageComponent/BattleList";
+import AccountModal from "./mypageComponent/AccountModal";
 const BASE_URL = "http://localhost:8001";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
@@ -43,16 +46,21 @@ function MyPage(): JSX.Element {
   const [kcalInfo, setKcalInfo] = useState<todayRecord | null>(null);
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
   const [isCrewModalOpen, setCrewModalOpen] = useState(false);
+  const [isAccountModalOpen, setAccountModalOpen] = useState(false);
   const [personalPoints, setPersonalPoints] = useState(0);
   const [crewPoints, setCrewPoints] = useState(0);
   const [personalLevel, setPersonalLevel] = useState("기본");
   const [crewLevel, setCrewLevel] = useState("기본");
   const [postData, setPostData] = useState<any[]>([]);
+  const [crewData, setCrewData] = useState<any[]>([]);
+  const [battleData, setBattleData] = useState<any[]>([]);
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
   const openCrewModal = () => setCrewModalOpen(true);
   const closeCrewModal = () => setCrewModalOpen(false);
+  const openaccountModal = () => setAccountModalOpen(true);
+  const closeAccountModal = () => setAccountModalOpen(false);
 
   const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
@@ -61,16 +69,28 @@ function MyPage(): JSX.Element {
       endpoint = "/community/myPage/myPosts";
     } else if (category === "좋아요 한 글") {
       endpoint = "/community/myPage/myLikePosts";
+    } else if (category === "참여한 크루") {
+      endpoint = "/crew/my";
+    } else if (category === "배틀 중") {
+      endpoint = "/crew/battle/list/my";
     }
+
     if (endpoint) {
       try {
         const response = await api.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("내 커뮤니티 활동 응답 : ", response.data.list);
-        setPostData(response.data.list);
+        if (category === "참여한 크루") {
+          console.log("내 크루 응답 : ", response.data);
+          setCrewData(response.data.list); // CrewList에 사용할 데이터
+        } else if (category === "배틀 중") {
+          console.log("내 배틀 응답 : ", response.data);
+          setBattleData(response.data); // BattleList에 사용할 데이터
+        } else {
+          setPostData(response.data.list);
+        }
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching data:", error);
       }
     }
   };
@@ -135,7 +155,7 @@ function MyPage(): JSX.Element {
     <Container>
       <Header>
         {userInfo ? (
-          <IconWrapper>
+          <IconWrapper onClick={openaccountModal}>
             <ProfileImage
               src={
                 userInfo.memberImg === "/static/null"
@@ -148,6 +168,13 @@ function MyPage(): JSX.Element {
           </IconWrapper>
         ) : (
           <p>사용자 정보를 불러오는 중...</p>
+        )}
+        {isAccountModalOpen && (
+          <AccountModal
+            isOpen={isAccountModalOpen}
+            onClose={closeAccountModal}
+            userInfo={userInfo}
+          />
         )}
 
         <Divider />
@@ -219,7 +246,14 @@ function MyPage(): JSX.Element {
         </Category>
       </Header>
       <Content>
-        <PostList postData={postData} />
+        {selectedCategory === "내가 쓴 글" ||
+        selectedCategory === "좋아요 한 글" ? (
+          <PostList postData={postData} />
+        ) : selectedCategory === "참여한 크루" ? (
+          <CrewList crewData={crewData} />
+        ) : selectedCategory === "배틀 중" ? (
+          <BattleList battleData={battleData} /> // battleData가 제대로 전달되었는지 확인
+        ) : null}
       </Content>
     </Container>
   );
@@ -278,6 +312,7 @@ const IconWrapper = styled.div`
   gap: 10px;
   margin-bottom: 0;
   font-size: 1.5em;
+  cursor: pointer;
 
   @media (min-width: 900px) {
     align-self: center;
