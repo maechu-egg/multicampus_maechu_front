@@ -15,6 +15,7 @@ interface ExerciseInfoProps {
     record_date: string;
   };
   receiveUpdatedExer: (updatedExercise: any) => void;
+  receiveDeletedExer: (deletedExerciseId: number) => void;
 }
 
 interface SetInfo {
@@ -25,7 +26,7 @@ interface SetInfo {
   exercise_id: number;
 }
 
-const ExerciseInfo = ({ exercise, receiveUpdatedExer }: ExerciseInfoProps): JSX.Element => {
+const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: ExerciseInfoProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
 
@@ -95,7 +96,7 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer }: ExerciseInfoProps): JSX.
       });
 
       console.log("debug >>> delete row : " + response.data);
-
+      receiveDeletedExer(exercise.exercise_id);
     } catch(error) {
       console.log("debug >>> error : " + error );
     }

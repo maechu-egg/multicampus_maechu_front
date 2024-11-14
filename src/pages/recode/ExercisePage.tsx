@@ -111,6 +111,12 @@ useEffect(() => {
 
     console.log("debug >>> exerciseData : " + exerciseData);
   };
+  // 삭제된 ExerciseInfo ExercisePage에 넘겨줌
+  const deleteExercise = (deletedExerciseId: number) => {
+    setExerciseData((prevExerciseData) =>
+      prevExerciseData.filter((exercise) => exercise.exercise_id !== deletedExerciseId)
+    );
+  };
 
   // URL의 날짜를 Date 타입으로 변환
   const getFormattedDate = () => {
@@ -146,20 +152,24 @@ useEffect(() => {
       </SummaryCard>
       
       <SearchBar>
-      <input
+        <input
           type="text"
           placeholder="운동 종목을 검색하세요"
           value={searchTerm}
           onChange={handleSearchInputChange}
         />
-      <button onClick={ () => {searchTerm.length > 0 ? setIsAddModalOpen(true) : setIsAddModalOpen(false)}}>
-        검색
-      </button>        
+        <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
+          검색
+        </button>
       </SearchBar>
-
       <ExerciseList>
         {Array.isArray(exerciseData) && exerciseData.map((exercise, index) => (
-         <ExerciseInfo key={index} exercise={exercise} receiveUpdatedExer={exerSave} />
+          <ExerciseInfo
+            key={index}
+            exercise={exercise}
+            receiveUpdatedExer={exerSave}
+            receiveDeletedExer={deleteExercise}
+          />
         ))}
       </ExerciseList>
       {isAddModalOpen && (
@@ -167,8 +177,7 @@ useEffect(() => {
           searchTerm={searchTerm}
           onClose={() => setIsAddModalOpen(false)}
           successExerInsert={addNewExercise} // 새 운동 추가 후 연동
-        />
-      )}     
+      ></ExerciseAddModal>)}     
     </Container>
   );
 };
@@ -233,10 +242,10 @@ const StatItem = styled.div`
 const SearchBar = styled.div`
   position: relative;
   margin-bottom: 30px;
-  
+
   input {
     width: 100%;
-    padding: 15px 20px;
+    padding: 15px 60px 15px 20px; /* 오른쪽에 버튼 공간 확보 */
     border: none;
     border-radius: 10px;
     background: white;
@@ -246,6 +255,24 @@ const SearchBar = styled.div`
     &:focus {
       outline: none;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 8px 16px;
+    background-color: #bfc4c9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #45a049;
     }
   }
 `;
