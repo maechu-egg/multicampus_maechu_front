@@ -78,7 +78,10 @@ const DietDetailPage = () => {
       {dietData ? (
         dietData.map((item) => (
           <Card key={item.diet_id}>
-            <h2>아침: {item.meal_type}</h2>
+            <h2>{item.meal_type === "breakfast" && "아침"}
+                {item.meal_type === "lunch" && "점심"}
+                {item.meal_type === "dinner" && "저녁"}
+                {item.meal_type === "snack" && "간식"}</h2>
           </Card>
         ))
       ) : (
