@@ -4,7 +4,8 @@ import { useAuth } from "context/AuthContext";
 import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
 import CrewCard from "components/ui/crew/card/CrewCard";
 import CrewCreateModal from "components/ui/crew/modal/CrewCreateModal";
-import CrewSearchDivEdit from "components/ui/crew/selectDiv/CrewSearchDivEdit";
+import CategoryDropdown from "pages/community/communityComponent/CategoryDropdown";
+import categoriesData from "assets/data/categories.json";
 
 function CrewSearch(): JSX.Element {
     const { state } = useAuth();
@@ -12,23 +13,19 @@ function CrewSearch(): JSX.Element {
     const [crewList, setCrewList] = useState<any[]>([]);
     const [selectedCrewId, setSelectedCrewId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchSport, setSearchSport] = useState("");
-    
-    // 종목검색 div 열지 판단
-    const [open, setOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("");
+    const [activePostSport, setActivePostSport] = useState("");
 
     const handlePostClick = (crewId: number) => {
         console.log(`Post clicked for crew ID: ${crewId}`);
         setSelectedCrewId(crewId);
     };
 
-    //제목과 운동종목에 따른 필터링
     const filteredData = crewList.filter(crew => 
         crew.crew_title && crew.crew_title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        crew.crew_sport && crew.crew_sport.toLowerCase().includes(searchSport.toLowerCase())
+        crew.crew_sport && crew.crew_sport.toLowerCase().includes(activePostSport.toLowerCase())
     );
 
-    // 나에게 추천되는 크루 목록 불러오기 API
     const getCrewList = async () => {
         try {
             const response = await api.get("crew/list", {
@@ -47,39 +44,25 @@ function CrewSearch(): JSX.Element {
         getCrewList();
     }, []);
 
-
-
-    const setsearchSports = (searchSport: string) => {
-        setSearchSport(searchSport);
-    }
-
-    // 종목선택 DIV 활성화 비활성화 버튼
-    const searchSportHandler = () => {
-        if(open === true) {
-            setOpen(false);
-            setSearchSport("");
-        } else {
-            setOpen(true);
-        }
-    }
-
-
     return (
         <div className="container">
-            {/* 토글 & 검색바와 게시물 작성 버튼 */}
-            <div className="d-flex justify-content-between ">
-                <div 
-                    className="btn btn-outline-dark "
-                    onClick={searchSportHandler}
-                >
-                    <span className="btn-text">종목 선택</span>
-                </div>
+            <div className="d-flex flex-column flex-md-row align-items-center mb-3">
+                <CategoryDropdown
+                    post_up_sports={categoriesData.categories}
+                    activeTab={activeTab}
+                    activePost_sport={activePostSport}
+                    onTabChange={setActiveTab}
+                    onSubcategoryChange={setActivePostSport}
+                    recommendedKeywords={[]}
+                    onKeywordClick={() => {}}
+                    showKeywords={false}
+                />
                 <input
                     type="text"
-                    className="form-control"
+                    className="form-control mx-2"
                     placeholder="검색어를 입력하세요"
                     value={searchTerm}
-                    style={{width: '40%'}}
+                    style={{ width: '40%' }}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button className="btn btn-primary"
@@ -89,13 +72,6 @@ function CrewSearch(): JSX.Element {
                     크루 생성
                 </button>
             </div>
-            <br />
-            {/* 종목검색 선택 div */}
-            {open && 
-                <CrewSearchDivEdit onSearchSport={setsearchSports}/>
-            }
-            <br />
-            {/* 게시물 목록 */}
             <div className="row">
                 {filteredData.length > 0 ? (
                     filteredData.map((crew) => {
@@ -115,7 +91,6 @@ function CrewSearch(): JSX.Element {
                 )}
             </div>
 
-            {/* 크루 가입 모달창 */}
             <div className="modal fade" id="crewJoinModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewJoinModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
@@ -132,7 +107,6 @@ function CrewSearch(): JSX.Element {
                 </div>
             </div>
 
-            {/* 크루 생성 모달창 */}
             <div className="modal fade" id="crewCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewCreateModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>

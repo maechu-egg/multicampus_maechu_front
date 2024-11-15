@@ -10,6 +10,7 @@ interface CategoryDropdownProps {
   onSubcategoryChange: (post_sport: string) => void;
   recommendedKeywords: string[];
   onKeywordClick: (keyword: string) => void;
+  showKeywords?: boolean;
 }
 
 interface CategoriesData {
@@ -27,9 +28,11 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   onSubcategoryChange,
   recommendedKeywords,
   onKeywordClick,
+  showKeywords = true,
 }) => {
   const [selectedMain, setSelectedMain] = useState(activeTab);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [maxHeight, setMaxHeight] = useState('0px');
 
   const handleMainCategorySelect = (post_up_sport: string) => {
     setSelectedMain(post_up_sport);
@@ -41,6 +44,11 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
     onSubcategoryChange(post_sport);
   };
 
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    setMaxHeight(isOpen ? '0px' : '300px');
+  };
+
   const currentSubCategories = selectedMain ? 
     (categoriesData as CategoriesData).subcategories[selectedMain] || [] 
     : [];
@@ -50,51 +58,51 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
       <div className="section-headers">
         <div className="header-item">카테고리 선택</div>
         <div className="header-item">상세 카테고리</div>
-        <div className="header-item">추천 키워드</div>
+        {showKeywords && <div className="header-item">추천 키워드</div>}
         <button 
           className="toggle-button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleToggle}
         >
           {isOpen ? '▼' : '▲'}
         </button>
       </div>
 
-      {isOpen && (
-        <div className="filter-container">
-          <div className="category-section main-category">
-            <div className="category-list">
-              {post_up_sports.map((post_up_sport) => (
-                <div
-                  key={post_up_sport}
-                  className={`category-item ${activeTab === post_up_sport ? 'active' : ''}`}
-                  onClick={() => handleMainCategorySelect(post_up_sport)}
-                >
-                  {post_up_sport}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="category-section sub-category">
-            <div className="category-list">
+      <div className="filter-container" style={{ maxHeight: maxHeight }}>
+        <div className="category-section main-category">
+          <div className="category-list">
+            {post_up_sports.map((post_up_sport) => (
               <div
-                className={`category-item ${activePost_sport === "" ? 'active' : ''}`}
-                onClick={() => handleSubCategorySelect("")}
+                key={post_up_sport}
+                className={`category-item ${activeTab === post_up_sport ? 'active' : ''}`}
+                onClick={() => handleMainCategorySelect(post_up_sport)}
               >
-                전체
+                {post_up_sport}
               </div>
-              {currentSubCategories.map((subCategory: string) => (
-                <div
-                  key={subCategory}
-                  className={`category-item ${activePost_sport === subCategory ? 'active' : ''}`}
-                  onClick={() => handleSubCategorySelect(subCategory)}
-                >
-                  {subCategory}
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
+        </div>
 
+        <div className="category-section sub-category">
+          <div className="category-list">
+            <div
+              className={`category-item ${activePost_sport === "" ? 'active' : ''}`}
+              onClick={() => handleSubCategorySelect("")}
+            >
+              전체
+            </div>
+            {currentSubCategories.map((subCategory: string) => (
+              <div
+                key={subCategory}
+                className={`category-item ${activePost_sport === subCategory ? 'active' : ''}`}
+                onClick={() => handleSubCategorySelect(subCategory)}
+              >
+                {subCategory}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {showKeywords && (
           <div className="category-section keyword-section">
             <div className="keyword-list">
               {recommendedKeywords.map((keyword, index) => (
@@ -108,8 +116,8 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
               ))}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
