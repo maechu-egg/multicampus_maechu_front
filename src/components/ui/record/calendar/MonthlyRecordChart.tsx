@@ -55,7 +55,7 @@ const MonthlyRecordChart = ({
         backgroundColor: [
           '#333C4D',  
           '#ABC7FF',  
-          '#735793',  
+          '#228be6',  
           '#E8E8E8',  
         ],
       },
@@ -195,24 +195,25 @@ const CaloriesSection = styled.div`
 `;
 
 const CalorieItem = styled.div`
-  background-color: #4A5568;
-  border-radius: 8px;
-  padding: 10px;
+  background-color: #2D3748;
+  border-radius: 12px;
+  padding: 10px 20px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const CalorieLabel = styled.span`
-  color: #ffffff;
-  font-size: 1rem;
+  color: #E2E8F0;
+  font-size: 0.8rem;
   font-weight: bold;
 `;
 
 const CalorieValue = styled.span`
-  color: #ffffff;
-  font-size: 1rem;
+  color: #E2E8F0;
+  font-size: 0.7rem;
   font-weight: bold;
 `;
 
