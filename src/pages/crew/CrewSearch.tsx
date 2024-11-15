@@ -46,31 +46,36 @@ function CrewSearch(): JSX.Element {
 
     return (
         <div className="container">
-            <div className="d-flex flex-column flex-md-row align-items-center mb-3">
-                <CategoryDropdown
-                    post_up_sports={categoriesData.categories}
-                    activeTab={activeTab}
-                    activePost_sport={activePostSport}
-                    onTabChange={setActiveTab}
-                    onSubcategoryChange={setActivePostSport}
-                    recommendedKeywords={[]}
-                    onKeywordClick={() => {}}
-                    showKeywords={false}
-                />
-                <input
-                    type="text"
-                    className="form-control mx-2"
-                    placeholder="검색어를 입력하세요"
-                    value={searchTerm}
-                    style={{ width: '40%' }}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button className="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#crewCreateModal"
-                >
-                    크루 생성
-                </button>
+            <div className="d-flex flex-column mb-3">
+                <div className="dropdown-container mb-3">
+                    <CategoryDropdown
+                        post_up_sports={categoriesData.categories}
+                        activeTab={activeTab}
+                        activePost_sport={activePostSport}
+                        onTabChange={setActiveTab}
+                        onSubcategoryChange={setActivePostSport}
+                        recommendedKeywords={[]}
+                        onKeywordClick={() => {}}
+                        showKeywords={false}
+                    />
+                </div>
+                <div className="search-button-container d-flex align-items-center">
+                    <input
+                        type="text"
+                        className="form-control mx-2"
+                        placeholder="검색어를 입력하세요"
+                        value={searchTerm}
+                        style={{ width: '70%' }}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <button className="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#crewCreateModal"
+                        style={{ height: '38px' }}
+                    >
+                        크루 생성
+                    </button>
+                </div>
             </div>
             <div className="row">
                 {filteredData.length > 0 ? (
