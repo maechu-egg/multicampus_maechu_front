@@ -13,6 +13,21 @@ import ProfileModal from "./mypageComponent/ProfileModal";
 const BASE_URL = "http://localhost:8001";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
+interface ProfileData {
+  member_id: number;
+  profile_age: number;
+  profile_allergy: string;
+  profile_gender: string;
+  profile_goal: string;
+  profile_height: number;
+  profile_id: number;
+  profile_region: string;
+  profile_sport1: string;
+  profile_sport2: string;
+  profile_sport3: string;
+  profile_weight: number;
+  profile_workout_frequency: number;
+}
 
 interface todayRecord {
   burnedCalories: number;
@@ -56,6 +71,8 @@ function MyPage(): JSX.Element {
   const [postData, setPostData] = useState<any[]>([]);
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [imgPath, setImgPath] = useState("");
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -146,6 +163,21 @@ function MyPage(): JSX.Element {
     userPoint();
   }, [token, state]);
 
+  useEffect(() => {
+    const userProfile = async () => {
+      try {
+        const response = await api.get("/profile/info", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("사용자 프로필 내역 조회 : ", response.data);
+        setProfileData(response.data);
+      } catch (error) {
+        console.log("사용자별 프로필 조회 오류:", error);
+      }
+    };
+    userProfile();
+  }, [token, state]);
+
   const getLevelLabel = (points: number) => {
     if (points >= 100) return "다이아몬드";
     if (points >= 70) return "플래티넘";
@@ -178,10 +210,11 @@ function MyPage(): JSX.Element {
               </IconWrapper>
               <ProfileButton onClick={openProfileModal}>Profile</ProfileButton>
             </FlexRowContainer>
-            {isProfileModalOpen && (
+            {isProfileModalOpen && profileData && (
               <ProfileModal
                 isOpen={isProfileModalOpen}
                 onClose={closeProfileModal}
+                profileData={profileData}
               />
             )}
           </>
@@ -307,11 +340,12 @@ const Header = styled.div`
     width: 30%;
     height: 100%;
     position: fixed;
-    top: 10%;
+    top: 0;
     left: 0;
     background-color: #f4f4f4;
     border-right: 1px solid #ddd;
-    padding: 40px 25px 80px 25px;
+
+    padding: 150px 25px 80px 25px;
     align-items: flex-start;
     overflow-y: auto;
   }
@@ -360,9 +394,16 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileButton = styled.button`
-  font-size: 0.9em;
+  font-size: 0.8em;
   padding: 6px 12px;
   cursor: pointer;
+  border-radius: 20px;
+
+  &: hover {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const NickName = styled.h2`

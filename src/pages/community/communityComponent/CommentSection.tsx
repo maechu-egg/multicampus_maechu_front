@@ -1,6 +1,6 @@
-import React from 'react';
-import CommentItem from './CommentItem';
-import type { Comment } from '../../../hooks/community/useComment';  // type-only import 사용
+import React from "react";
+import CommentItem from "./CommentItem";
+import type { Comment } from "../../../hooks/community/useComment"; // type-only import 사용
 
 interface CommentSectionProps {
   comments: Comment[];
@@ -17,13 +17,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   onAddComment,
   onCommentDelete,
   commentInput,
-  setCommentInput
+  setCommentInput,
 }) => {
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (commentInput.trim() !== '') {
+    if (commentInput.trim() !== "") {
       onAddComment(commentInput);
-      setCommentInput('');
+      setCommentInput("");
     }
   };
 
@@ -31,7 +31,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     <div className="comments-section">
       <div className="comments-list">
         {comments.map((comment) => (
-            <CommentItem  
+          <CommentItem
             key={comment.id}
             comment={comment}
             onCommentDelete={onCommentDelete}
