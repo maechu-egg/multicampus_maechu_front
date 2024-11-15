@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { postApi } from '../../services/api/community/postApi';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export interface Comment {
   id: number;
@@ -45,6 +46,11 @@ export const usePost = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isAuthor, setIsAuthor] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [dislikeCount, setDislikeCount] = useState(0);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const navigate = useNavigate();
 
   // 게시글 목록 조회
@@ -143,14 +149,18 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
       return;
     }
 
-    // postId, isRecommended, token 순서로 전달
     const response = await postApi.getPostDetail(post.post_id, isRecommended, token);
     setSelectedPost(response.data);
     setIsAuthor(response.data.Author);
+    setLiked(response.data.likeStatus);
+    setDisliked(response.data.unlikeStatus);
+    setLikeCount(response.data.post_like_counts);
+    setDislikeCount(response.data.post_unlike_counts);
   } catch (error) {
     console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
   }
 };
+
   // 게시글 작성
   const handleSavePost = async (
     post_title: string,
@@ -173,32 +183,49 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
       formData.append("post_contents", post_contents);
       formData.append("post_up_sport", post_up_sport);
       formData.append("post_sport", post_sport);
-      formData.append("post_hashtag", post_hashtag);
       formData.append("post_sports_keyword", post_sports_keyword);
+      formData.append("post_hashtag", post_hashtag);
   
-      // 이미지 파일 처리
+      // 이미지 파일 처리 - 백엔드의 @RequestParam 이름과 일치시킴
       if (imageFiles && imageFiles.length > 0) {
         imageFiles.forEach((file, index) => {
           if (index < 2) {
-            formData.append(`post_img${index + 1}`, file);
+            formData.append("images", file);  // "post_img1", "post_img2" 대신 "images"로 변경
+            console.log(`이미지 ${index + 1} 추가:`, file.name);
           }
         });
       }
   
+      console.log("=== 전송 데이터 ===");
+      for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(`${key}:`, {
+            name: value.name,
+            type: value.type,
+            size: value.size
+          });
+        } else {
+          console.log(`${key}:`, value);
+        }
+      }
+  
       const response = await postApi.createPost(formData, token);
   
-      if (response.status === 201 || response.status === 200) {
+      if (response.status === 200) {
         alert("게시글이 성공적으로 저장되었습니다.");
         await fetchPosts();
         navigate('/communitypage');
         return true;
       }
   
-      alert(response.data.message || "게시글 저장에 실패했습니다.");
       return false;
     } catch (error: any) {
-      console.error("게시글 저장 중 오류:", error);
-      alert(error.message || "서버와의 통신 중 오류가 발생했습니다.");
+      console.error("게시글 저장 중 오류:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      alert(error.message || "게시글 저장에 실패했습니다.");
       return false;
     }
   };
@@ -287,7 +314,134 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
     }
     return false;
   };
+  const handleLike = async (postId: number) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
 
+      let response;
+      if (!liked) {
+        response = await axios.post(
+          `http://localhost:8001/useractivity/${postId}/likeinsert`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          if (response.data.Extable) {
+            alert("이미 좋아요를 눌렀습니다.");
+          } else if (response.data.result) {
+            setLikeCount(response.data.likeCount);
+            setLiked(true);
+            if (disliked) {
+              setDislikeCount((prev) => prev - 1);
+              await axios.delete(
+                `http://localhost:8001/useractivity/${postId}/unlikedelete`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              setDisliked(false);
+            }
+          }
+        }
+      } else {
+        response = await axios.delete(
+          `http://localhost:8001/useractivity/${postId}/likedelete`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          if (response.data.result) {
+            setLikeCount(response.data.likeCount);
+            setLiked(false);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("좋아요 처리 중 오류:", error);
+    }
+  };
+
+  // 싫어요 처리
+  const handleDislike = async (postId: number) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      let response;
+      if (!disliked) {
+        response = await axios.post(
+          `http://localhost:8001/useractivity/${postId}/unlikeinsert`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          if (response.data.Extable) {
+            alert("이미 싫어요를 눌렀습니다.");
+          } else if (response.data.result) {
+            setDislikeCount(response.data.unLikeCount);
+            setDisliked(true);
+            if (liked) {
+              setLikeCount((prev) => prev - 1);
+              await axios.delete(
+                `http://localhost:8001/useractivity/${postId}/likedelete`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              setLiked(false);
+            }
+          }
+        }
+      } else {
+        response = await axios.delete(
+          `http://localhost:8001/useractivity/${postId}/unlikedelete`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          if (response.data.result) {
+            setDislikeCount(response.data.unLikeCount);
+            setDisliked(false);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("싫어요 처리 중 오류:", error);
+    }
+  };
+  // 정렬 순서 변경
+  const handleSortOrderChange = (order: "asc" | "desc") => {
+    setSortOrder(order);
+  };
   return {
     posts,
     setPosts,
@@ -298,11 +452,19 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
     loading,
     totalPages,
     isAuthor,
+    liked,
+    disliked,
+    likeCount,
+    dislikeCount,
+    sortOrder,
     fetchPosts,
     fetchRecommendedPosts,
     handlePostClick,
     handleSavePost,
     handleUpdatePost,
     handleDelete,
+    handleLike,
+    handleDislike,
+    handleSortOrderChange,
   };
 };

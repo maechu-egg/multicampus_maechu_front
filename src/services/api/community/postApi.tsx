@@ -45,49 +45,49 @@ export const postApi = {
     }
   },
 
-  // 게시글 작성
- // 게시글 작성
-createPost: async (formData: FormData, token: string) => {
-  try {
-    // FormData 내용 디버깅
-    console.log("Creating post with token:", token);
-    for (let [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}:`, {
-          name: value.name,
-          type: value.type,
-          size: value.size
-        });
-      } else {
-        console.log(`${key}:`, value);
-      }
-    }
 
+ // 게시글 작성
+ createPost: async (formData: FormData, token: string) => {
+  try {
+    // 요청 헤더 설정
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
+      }
+    };
+
+    console.log("=== 요청 정보 ===");
+    console.log("Token:", token);
+    console.log("Headers:", config.headers);
+    
     const response = await axios.post(
       "http://localhost:8001/community/posts/effortpost",
       formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-        validateStatus: (status) => {
-          return status < 500; // 500 미만의 상태 코드는 에러로 처리하지 않음
-        }
-      }
+      config
     );
 
-    if (response.status >= 400) {
-      throw new Error(response.data.message || "게시글 생성에 실패했습니다.");
-    }
+    console.log("=== 서버 응답 ===");
+    console.log("Status:", response.status);
+    console.log("Data:", response.data);
 
     return response;
   } catch (error: any) {
-    console.error('게시글 생성 중 상세 에러:', error.response?.data || error.message);
-    if (error.response?.status === 403) {
-      throw new Error("게시글을 작성할 권한이 없습니다.");
+    console.error('게시글 생성 중 상세 에러:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+    });
+
+    if (error.response?.status === 401) {
+      throw new Error("로그인 한 사용자만 글쓰기가 가능합니다.");
     }
-    throw new Error(error.response?.data?.message || "게시글 생성 중 오류가 발생했습니다.");
+    
+    throw new Error(
+      error.response?.data || 
+      error.message || 
+      "게시글 생성 중 오류가 발생했습니다."
+    );
   }
 },
 
