@@ -24,7 +24,7 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
 
   const [exerciseType, setExerciseType] = useState(searchTerm);
   const [duration, setDuration] = useState<number>(0);
-  const [intensity, setIntensity] = useState<string>("");
+  const [intensity, setIntensity] = useState<string>("HIGH");
   const [exerciseId, setExerciseId] = useState<number>(0);
   const [sets, setSets] = useState<SetInfo[]>([]); // 세트 정보를 저장하는 상태
   const [isSetModalOpen, setIsSetModalOpen] = useState(false); // 세트 추가 모달 상태
@@ -53,7 +53,6 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
   // 세트 추가 함수
   const setInsert = async (exerciseId: number) => {
     if (sets.length === 0) {
-      // 세트가 없는 경우 바로 true 반환
       console.log("debug >>> No sets to insert");
       return true;
     }
@@ -63,10 +62,10 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
         ...set,
         exercise_id: exerciseId,
       }));
-
+      console.log("debug >>> setsWithExerciseId : ", setsWithExerciseId);
       const response = await api.post(
         "record/exercise/insert/set",
-        { sets: setsWithExerciseId },
+        setsWithExerciseId,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -81,8 +80,10 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
  // 저장 버튼 클릭 시
   const handleSave = async () => {
     const exerciseResponse = await exerciseInsert();
+    console.log("debug >>> exerciseResponse : ", exerciseResponse);
     if (exerciseResponse) {
       const isSuccess = await setInsert(exerciseResponse); // 운동 추가 후 세트 추가
+      console.log("debug >>> isSuccess : ", isSuccess);
       successExerInsert(isSuccess);
     } else {
       successExerInsert(false);
@@ -126,13 +127,13 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
           </select>
         </Label>
 
-        <h4>세트 정보</h4>
+        <h4> </h4>
         {sets.map((set, index) => (
           <div key={index}>
             <p>무게: {set.weight} kg, 거리: {set.distance} m, 반복: {set.repetitions}회</p>
           </div>
         ))}
-        <button onClick={openSetModal}>세트 추가</button>
+        <AddSetButton onClick={openSetModal}>세트 추가</AddSetButton>
 
         <ButtonContainer>
           <SaveButton onClick={handleSave}>저장</SaveButton>
@@ -154,6 +155,25 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
 export default ExerciseAddModal;
 
 // 스타일 정의
+
+const AddSetButton = styled.button`
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #1D2636;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #ffffff;
+    color: #1D2636;
+  }
+`;
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -168,12 +188,13 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 400px;
+  width: 450px;
   background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  color: #1D2636;
 `;
 
 const Label = styled.label`
@@ -202,31 +223,35 @@ const ButtonContainer = styled.div`
 `;
 
 const SaveButton = styled.button`
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: bold;
-  background-color: #4caf50;
+  background-color: #1D2636;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #ffffff;
+    color: #1D2636;
   }
 `;
 
 const CancelButton = styled.button`
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: bold;
-  background-color: #f44336;
+  background-color: #1D2636;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #d32f2f;
+    background-color: #ffffff;
+    color: #1D2636;
   }
 `;

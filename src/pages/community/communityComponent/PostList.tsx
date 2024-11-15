@@ -10,8 +10,11 @@ interface Comment {
   author: string;
   content: string;
   date: string;
-  likeCount: number;
-  dislikeCount: number;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status:boolean;
+  comment_dislike_status:boolean;
+  commentAuthor:boolean;
 }
 
 interface Post {
@@ -42,7 +45,7 @@ interface Post {
 interface PostListProps {
   posts: Post[];
   recommendedPosts?:Post[];
-  onPostClick: (post: Post) => void;
+  onPostClick: (post: Post, isRecommended:boolean) => void;
 }
 
 const PostList: React.FC<PostListProps> = ({ posts, recommendedPosts, onPostClick }) => {
@@ -51,9 +54,9 @@ const PostList: React.FC<PostListProps> = ({ posts, recommendedPosts, onPostClic
     <div>
       {recommendedPosts && recommendedPosts.length > 0  && (
         <>
-          <h2>추천 게시글</h2>
+          {/*<h2>추천 게시글</h2>*/}
           {recommendedPosts.map((post) => (
-            <RecommendedPostsItem key={post.post_id} {...post} onClick={() => onPostClick(post)} isRecommended={true} />
+            <RecommendedPostsItem key={post.post_id} {...post} onClick={() => onPostClick(post, true)} isRecommended={true} />
           ))}
         </>
       )}
@@ -63,7 +66,7 @@ const PostList: React.FC<PostListProps> = ({ posts, recommendedPosts, onPostClic
           <p>게시글이 없습니다.</p>
         ) : (
           posts.map((post) => (
-            <PostItem key={post.post_id} {...post} onClick={() => onPostClick(post)} isRecommended={false} />
+            <PostItem key={post.post_id} {...post} onClick={() => onPostClick(post, false)} isRecommended={false} />
           ))
         )}
   </div>

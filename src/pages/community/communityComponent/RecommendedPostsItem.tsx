@@ -1,6 +1,6 @@
 import React from "react";
 import { FaThumbsUp, FaComment, FaEye } from "react-icons/fa";
-import "./PostItem.css";
+import "./RecommendedPostsItem.css";  
 import { formatDate } from '../../../utils/dateFormat'; 
 
 /* 개별 게시물 항목을 표시하는 컴포넌트 */
@@ -10,8 +10,11 @@ interface Comment {
   author: string;
   content: string;
   date: string;
-  likeCount: number;
-  dislikeCount: number;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status:boolean;
+  comment_dislike_status:boolean;
+  commentAuthor:boolean;
 }
 
 interface RecommendedPostsProps {
@@ -58,19 +61,33 @@ const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
       <div className="post-content-wrapper">
         <span className="subcategory">[{post_sport || '자유'}]</span>
         <span className="post-title">{post_title}</span>
-        <span className="author">{post_nickname}</span>
-        <span className="date">{formatDate(post_date)}</span> 
-        <div className="post-stats">
-          <span className="likes">
-            <FaThumbsUp /> {post_like_counts}
-          </span>
-          <span className="comments">
-            {/* <FaComment /> {comments} */}
-            <FaComment /> {comments_count}
-          </span>
-          <span className="views">
-            <FaEye /> {post_views}
-          </span>
+        {hashtagArray.length > 0 && (
+          <div className="post-tags">
+            {hashtagArray.map((tag, index) => (
+              <span key={index} className="tag-item">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        
+        {/* 하단 정보 영역 구조 수정 */}
+        <div className="post-info-wrapper">
+          <div className="author">
+            <span>{post_nickname}</span>
+          </div>
+          <div className="post-stats">
+            <span className="date">{formatDate(post_date)}</span>
+            <span className="likes">
+              <FaThumbsUp /> {post_like_counts}
+            </span>
+            <span className="comments">
+              <FaComment /> {comments_count}
+            </span>
+            <span className="views">
+              <FaEye /> {post_views}
+            </span>
+          </div>
         </div>
       </div>
     </div>

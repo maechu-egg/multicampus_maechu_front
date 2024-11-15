@@ -46,52 +46,47 @@ function ExercisePage(): JSX.Element {
   console.log("debug >>> selectedDate:", selectedDate);
   
   // 운동 리스트 가져오기
-  const exerciseGet = async (record_date: any) => {
+  const exerciseGet = async (record_date: string) => {
     try {
-      // url로 가져온 날짜 파라미터 확인
-      console.log("debug >>> data", record_date);
-      // axios get을 통해 운동 리스트 가져오기
       const response = await api.get("record/exercise/get/exerday", {
         headers: { Authorization: `Bearer ${token}` },
         params: { record_date }
       });
-      // 결과 확인
-      console.log("debug >>> exer Info : ", response.data);
-      
-      // 운동 정보 저장
-      setExerciseData(response.data);
-      
-      // 일일 소모 칼로리 계산
-      const totalCalories = response.data.reduce((acc:number, exer:any) => acc + exer.calories, 0);
-      setTodayCalorie(totalCalories);
 
-      // 일일 운동 시간 계산
-      const totalTime = response.data.reduce((acc:number, exer:any) => acc + exer.duration, 0);
+      // 운동 데이터 업데이트
+      setExerciseData(response.data);
+
+      // 일일 소모 칼로리 및 운동 시간 계산
+      const totalCalories = response.data.reduce((acc: number, exer: any) => acc + exer.calories, 0);
+      const totalTime = response.data.reduce((acc: number, exer: any) => acc + exer.duration, 0);
+
+      // 상태 업데이트
+      setTodayCalorie(totalCalories);
       setTodayTime(totalTime);
     
     } catch (error) {
-      // axios 중 에러 발생 시 debug 확인
       console.error("debug >>> error", error);
     }
-  }
-// 마운트 시 exericseGet 실행
-useEffect(() => {
-    // 토큰 값이 없을 시 로그인 페이지로 리턴
+  };
+
+  // 마운트 시 exericseGet 실행
+  useEffect(() => {
     if (!token) {
       console.log("debug >>> token is null");
       navigate("/loginpage");
+      return;
     }
-    // 토큰, 멤버 번호 확인
-    console.log("debug >>> token : " + token);
-    console.log("debug >>> memberId : " + memberId);
-    // 운동 조회
-    exerciseGet(selectedDate);
-  }, []);
+
+    // selectedDate가 정의된 경우에만 exerciseGet 호출
+    if (selectedDate) {
+      exerciseGet(selectedDate);
+    }
+  }, [selectedDate, token]);
 
   // ExerciseAddModal을 통해 추가된 운동을 exerciseData에 반영
   const addNewExercise = (successBoolean: boolean) => {
-    if (successBoolean) {
-      exerciseGet(selectedDate); // 운동 데이터 새로 불러오기
+    if (successBoolean && selectedDate) { // selectedDate가 정의된 경우에만 호출
+      exerciseGet(selectedDate);
     } else {
       console.log("debug >>> exerInsert 실패");
     }
@@ -113,9 +108,19 @@ useEffect(() => {
   };
   // 삭제된 ExerciseInfo ExercisePage에 넘겨줌
   const deleteExercise = (deletedExerciseId: number) => {
-    setExerciseData((prevExerciseData) =>
-      prevExerciseData.filter((exercise) => exercise.exercise_id !== deletedExerciseId)
-    );
+    setExerciseData((prevExerciseData) => {
+      const updatedExerciseData = prevExerciseData.filter((exercise) => exercise.exercise_id !== deletedExerciseId);
+      
+      // 칼로리 및 시간 재계산
+      const totalCalories = updatedExerciseData.reduce((acc: number, exer: any) => acc + exer.calories, 0);
+      const totalTime = updatedExerciseData.reduce((acc: number, exer: any) => acc + exer.duration, 0);
+
+      // 상태 업데이트
+      setTodayCalorie(totalCalories);
+      setTodayTime(totalTime);
+
+      return updatedExerciseData; // 업데이트된 운동 데이터 반환
+    });
   };
 
   // URL의 날짜를 Date 타입으로 변환
@@ -183,11 +188,11 @@ useEffect(() => {
 };
 
 const Container = styled.div`
-  width: 70%;
-  height: 100vh;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  background: transparent;
   font-family: 'Noto Sans KR', sans-serif;
 `;
 
@@ -195,7 +200,7 @@ const SummaryCard = styled.div`
   background: white;
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
@@ -226,16 +231,16 @@ const StatItem = styled.div`
   text-align: center;
   
   h3 {
-    font-size: 14px;
-    color: #868e96;
+    font-size: 18px;
+    color: #333C4D;
     margin: 0 0 5px 0;
   }
   
   p {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
     margin: 0;
-    color: #212529;
+    color: #333C4D;
   }
 `;
 
@@ -245,16 +250,16 @@ const SearchBar = styled.div`
 
   input {
     width: 100%;
-    padding: 15px 60px 15px 20px; /* 오른쪽에 버튼 공간 확보 */
-    border: none;
+    padding: 15px;
+    border: 1px solid #ced4da;
     border-radius: 10px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-size: 16px;
     
     &:focus {
       outline: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
   }
 
@@ -264,15 +269,16 @@ const SearchBar = styled.div`
     top: 50%;
     transform: translateY(-50%);
     padding: 8px 16px;
-    background-color: #bfc4c9;
+    background: #1D2636;
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
+    transition: background 0.3s;
     
     &:hover {
-      background-color: #45a049;
+      background: #333C4D;
     }
   }
 `;
@@ -284,7 +290,7 @@ const ExerciseList = styled.div`
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
-  background-color: #f5f5f5;
+  background-color: transparent;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;

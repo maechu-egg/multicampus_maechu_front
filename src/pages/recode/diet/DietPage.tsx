@@ -25,12 +25,11 @@ interface MealPlanData {
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
-  padding: 20px;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  background-color: #f9f9f9; // 배경색 추가
-  border-radius: 10px; // 모서리 둥글게
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); // 그림자 추가
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 1000px;
 `;
 
 const Header = styled.div`
@@ -59,11 +58,40 @@ const CurrentDate = styled.div`
 `;
 
 const GoalContainer = styled.div`
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-  padding: 15px;
-  background-color: #fff; // 목표 컨테이너 배경색
-  border-radius: 10px; // 모서리 둥글게
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // 그림자 추가
+  line-height: 1.6;
+  font-size: 16px;
+  color: #333;
+
+  h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #2c3e50;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+  }
+
+  li::before {
+    content: '•';
+    color: #27ae60;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+  }
 `;
 
 const Goal = styled.div`
@@ -1068,25 +1096,31 @@ function DietPage() {
   // ... existing code ...
 
 const handleAddMeal = async (mealType: keyof MealPlanData) => {
+  console.log("debug: mealType", mealType);
   if (memberId !== undefined && state.token) {
     try {
       const token = state.token;
+      console.log("debug: token", token);
+
       const mealTypeMap = {
         breakfast: 'BREAKFAST',
         lunch: 'LUNCH',
         dinner: 'DINNER',
         snack: 'SNACK',
       };
+      console.log("debug: mealTypeMap", mealTypeMap);
 
-      const response = await axios.get(`http://localhost:8001/insert/meal`, {
+      const response = await axios.get(`http://localhost:8001/record/diet/insert/meal`, {
         params: { meal_type: mealTypeMap[mealType] },
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
+      console.log("debug: response", response);
 
       if (meals) {
         const dietId = response.data; // 추가된 diet_id
+        console.log("debug: dietId", dietId);
         await addItemsToDiet(dietId, meals[mealType]);
         alert('식단이 추가되었습니다.');
       }
@@ -1099,11 +1133,16 @@ const handleAddMeal = async (mealType: keyof MealPlanData) => {
 
 const addItemsToDiet = async (dietId: number, mealData: MealData) => {
   const { foods, amounts, nutritionalInfo } = mealData;
+  console.log("debug: mealData", mealData);
 
   for (let i = 0; i < foods.length; i++) {
     const food = foods[i];
     const amount = parseInt(amounts[i], 10); // 양을 정수로 변환
     const nutrition = nutritionalInfo[i];
+
+    console.log("debug: food", food);
+    console.log("debug: amount", amount);
+    console.log("debug: nutrition", nutrition);
 
     const itemRequest = {
       item_name: food,
@@ -1114,9 +1153,10 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
       calories: nutrition.calories,
       diet_id: dietId,
     };
+    console.log("debug: itemRequest", itemRequest);
 
     try {
-      await axios.post('http://localhost:8001/insert/item', itemRequest);
+      await axios.post('http://localhost:8001/record/diet/insert/item', itemRequest);
     } catch (error) {
       console.error('식품 추가 중 오류 발생:', error);
     }
@@ -1159,7 +1199,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
           if (error.response?.status === 401) {
             // 토큰이 만료된 경우 로컬 스토리지의 토큰 제거
             localStorage.removeItem('token');
-            // 로그인 페이지로 리다이렉트
+            // 로그인 페���지로 리다이렉트
             navigate('/login', { replace: true });
           }
         }
@@ -1237,6 +1277,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
 
   // handleRecommend 함수 하나로 통합
   const handleRecommend = async () => {
+    setIsLoading(true); // 로딩 시작
     try {
       await fetchDietPlan(); // API 호출
       setIsModalOpen(false); // 첫 번째 모달 닫기
@@ -1244,6 +1285,8 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
     } catch (error) {
       console.error('추천 처리 중 오류 발생:', error);
       alert('식단 추천 처리 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 

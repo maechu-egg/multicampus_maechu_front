@@ -48,14 +48,14 @@ const MonthlyRecordChart = ({
   }
 
   const data = {
-    labels: ['😁', '😊', '😋', '❌'],
+    labels: ['✌🏻', '💪🏻', '🥗', '❌'],
     datasets: [
       {
         data: [bothRecords, onlyExercise, onlyDiet, noRecords],
         backgroundColor: [
-          '#36A2EB',  
-          '#FF6384',  
-          '#FFCE56',  
+          '#333C4D',  
+          '#ABC7FF',  
+          '#228be6',  
           '#E8E8E8',  
         ],
       },
@@ -101,15 +101,15 @@ const MonthlyRecordChart = ({
       </ChartWrapper>
       
       <CaloriesSection>
-        <CalorieItem color="rgba(255,99,132,0.1)">
+        <CalorieItem color="#4A5568">
           <CalorieLabel>운동 칼로리</CalorieLabel>
           <CalorieValue>{burnedCalories.toLocaleString()} kcal</CalorieValue>
         </CalorieItem>
-        <CalorieItem color="rgb(255,255,224)">
+          <CalorieItem color="#4A5568">
           <CalorieLabel>식단 칼로리</CalorieLabel>
           <CalorieValue>{consumedCalories.toLocaleString()} kcal</CalorieValue>
         </CalorieItem>
-        <CalorieItem color="#E5FFCC">
+        <CalorieItem color="#4A5568">
           <CalorieLabel>순 칼로리</CalorieLabel>
           <CalorieValue>
             {(consumedCalories - burnedCalories).toLocaleString()} kcal
@@ -194,43 +194,27 @@ const CaloriesSection = styled.div`
   border-top: 2px solid #f0f0f0;
 `;
 
-const CalorieItem = styled.div<{ color: string }>`
+const CalorieItem = styled.div`
+  background-color: #2D3748;
+  border-radius: 12px;
+  padding: 10px 20px;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 auto;
-  margin: 10px;
-  padding: 16px;
-  background: ${props => props.color || '#f8f9fa'};
-  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const CalorieLabel = styled.span`
-  font-size: 11.5px;
-  color: #495057;
-  font-weight: 550;
-
-  @media (max-width: 850px) {
-    font-size: 13px;
-  }  
-
-  @media (max-width: 710px) {
-    font-size: 12px;
-  }
+  color: #E2E8F0;
+  font-size: 0.8rem;
+  font-weight: bold;
 `;
 
 const CalorieValue = styled.span`
-  font-size: 12px;
-  font-weight: 550;
-  color: #212529;
-
-  @media (max-width: 850px) {
-    font-size: 13px;
-  }
-
-  @media (max-width: 710px) {
-    font-size: 12px;
-  }
+  color: #E2E8F0;
+  font-size: 0.7rem;
+  font-weight: bold;
 `;
 
 export default MonthlyRecordChart;

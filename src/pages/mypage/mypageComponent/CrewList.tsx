@@ -1,0 +1,141 @@
+import React from "react";
+import styled from "styled-components";
+
+interface CrewItem {
+  crew_id: number;
+  crew_name: string;
+  crew_goal: string | null;
+  crew_title: string | null;
+  crew_location: string | null;
+  crew_sport: string | null;
+  crew_gender: string | null;
+  crew_frequency: string | null;
+  crew_age: string | null;
+  crew_date: string | null;
+  crew_intro_post: string | null;
+  crew_intro_img: string | null;
+  crew_state: number;
+  member_id: number;
+}
+
+interface CrewListProps {
+  crewData?: CrewItem[]; // Optional property
+}
+
+const BASE_URL = "http://localhost:8001";
+
+function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
+  return (
+    <CrewContainer>
+      {crewData.length > 0 ? (
+        crewData.map((crew) => (
+          <CrewCard key={crew.crew_id}>
+            <ImageWrapper>
+              <CrewImage
+                src={
+                  crew.crew_intro_img && crew.crew_intro_img !== "CrewDefault"
+                    ? `${BASE_URL}/${crew.crew_intro_img}`
+                    : "/img/default/CrewDefault.png"
+                }
+                alt="Crew intro"
+              />
+            </ImageWrapper>
+            <CrewName>{crew.crew_name || "이름 없음"}</CrewName>
+            <CrewTitle>{crew.crew_title || "타이틀 없음"}</CrewTitle>
+            <CrewInfo>
+              <strong>목표:</strong> {crew.crew_goal || "목표 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>위치:</strong> {crew.crew_location || "위치 정보 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>운동 종류:</strong> {crew.crew_sport || "운동 종류 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>성별:</strong> {crew.crew_gender || "성별 정보 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>나이대:</strong> {crew.crew_age || "나이 정보 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>활동 빈도:</strong>{" "}
+              {crew.crew_frequency || "빈도 정보 없음"}
+            </CrewInfo>
+          </CrewCard>
+        ))
+      ) : (
+        <NoData>참여한 크루가 없습니다.</NoData>
+      )}
+    </CrewContainer>
+  );
+}
+
+// Styled Components
+const CrewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 20px;
+`;
+
+const CrewCard = styled.div`
+  width: 100%;
+  max-width: 400px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ImageWrapper = styled.div`
+  width: 100%;
+  max-width: 100px;
+  height: 100px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CrewImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const CrewName = styled.h3`
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+  text-align: center;
+`;
+
+const CrewTitle = styled.h4`
+  margin: 4px 0;
+  font-size: 1em;
+  color: #555;
+  font-weight: normal;
+  text-align: center;
+`;
+
+const CrewInfo = styled.p`
+  margin: 4px 0;
+  font-size: 0.9em;
+  color: #666;
+  text-align: center;
+`;
+
+const NoData = styled.p`
+  font-size: 1em;
+  color: #999;
+`;
+
+export default CrewList;

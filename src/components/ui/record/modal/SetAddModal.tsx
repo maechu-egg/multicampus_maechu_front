@@ -34,7 +34,7 @@ interface SetAddModalProps {
           <input type="number" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
         </Label>
         <Label>
-          거리 (m):
+          거리 (km):
           <input type="number" value={distance} onChange={(e) => setDistance(parseInt(e.target.value))} />
         </Label>
         <Label>
@@ -108,14 +108,14 @@ const SaveButton = styled.button`
   padding: 10px 20px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #4caf50;
+  background-color: #1D2636;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #333C4D;
   }
 `;
 
@@ -123,13 +123,13 @@ const CancelButton = styled.button`
   padding: 10px 20px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #f44336;
+  background-color: #4A5568;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #d32f2f;
+    background-color: #2D3748;
   }
 `;

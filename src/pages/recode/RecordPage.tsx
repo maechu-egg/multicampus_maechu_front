@@ -18,6 +18,8 @@ interface DietRecord {
   totalCalories: number;
 }
 
+
+
 function RecordPage(): JSX.Element {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
   const [dietDates, setDietDates] = useState<string[]>([]);
@@ -197,7 +199,7 @@ function RecordPage(): JSX.Element {
     <Wrapper>
     <div className="calendar-header">
       <TitleContainer>
-        <h1>운동 히스토리</h1>
+        <h1>𝑪𝒂𝒍𝒆𝒏𝒅𝒂𝒓</h1>
       </TitleContainer>
     </div>
       <Container>
@@ -211,22 +213,22 @@ function RecordPage(): JSX.Element {
         />
 
         {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h3>{selectedDate}</h3>
-              <div className="button-group">
-                <button onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
-                  🏋️‍♂️
-                </button>
-                <button onClick={() => navigate(`/record/diet/${selectedDate}`)}>
-                  🥗
-                </button>
-              </div>
-              <div className="close-button">
-                <button onClick={() => setShowModal(false)}><IoCloseOutline /></button>
-              </div>
-            </div>
-          </div>
+          <ModalOverlay>
+            <ModalContent>
+              <CloseButton onClick={() => setShowModal(false)}>
+                <IoCloseOutline />
+              </CloseButton>
+              <ModalHeader>{selectedDate}</ModalHeader>
+              <ButtonGroup>
+                <ModalButton onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
+                  💪🏻 운동
+                </ModalButton>
+                <ModalButton onClick={() => navigate(`/record/diet/${selectedDate}`)}>
+                  🥗 식단
+                </ModalButton>
+              </ButtonGroup>
+            </ModalContent>
+          </ModalOverlay>
         )}
 
         <MonthlyRecordChart 
@@ -241,15 +243,95 @@ function RecordPage(): JSX.Element {
   );
 };
 
+// 스타일 컴포넌트 추가
+const ModalOverlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+`;
+
+const ModalContent = styled.div`
+  background: linear-gradient(135deg, #f0f0f0, #ffffff);
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  animation: zoomIn 0.3s ease-in-out;
+
+  @keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+`;
+
+const ModalHeader = styled.h3`
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #444;
+  letter-spacing: 1px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+`;
+
+const ModalButton = styled.button`
+  background-color: #1D2636;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    background-color: #1D2636;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const CloseButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #bbb;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #888;
+  }
+`;
+
 const Wrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  margin-top : 0px;
-  background: #f3f4f6;  /* Soft, neutral background for the calendar container */
-  border-radius: 12px;
-  border: 1px solid #d1d5db; /* Light gray border to frame the calendar */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+  margin-top: 0px;
+  background: none;  // 배경색 제거
+  border-radius: 0;  // 모서리 둥글기 제거
+  border: none;      // 테두리 제거
+  box-shadow: none;  // 그림자 효과 제거
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -257,12 +339,12 @@ const Wrapper = styled.div`
 
   /* Calendar "Header" Feel for Title */
   .calendar-header {
-    background-color: #ffffff;
-    border-bottom: 1px solid #d1d5db;
+    background-color: transparent; // 배경색을 투명하게 변경
+    border-bottom: none;           // 하단 테두리 제거
     padding: 15px;
     width: 100%;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    border-top-left-radius: 0;     // 모서리 둥글기 제거
+    border-top-right-radius: 0;    // 모서리 둥글기 제거
     display: flex;
     align-items: center;
     justify-content: center;
@@ -527,20 +609,20 @@ const Container = styled.div`
 
         /* img 요소에 직접 스타일 적용 */
         img {
-          width: 55px; /* 원하는 크기로 설정 */
-          height: 55px; /* 원하는 크기로 설정 */
+          width: 120px; /* 원하는 크기로 설정 */
+          height: 120px; /* 원하는 크기로 설정 */
         }
 
         @media (max-width: 850px) {
           img {
-            width: 50px; /* 반응형 크기 조정 */
-            height: 50px;
+            width: 120px; /* 반응형 크기 조정 */
+            height: 120px;
           }
         }
         @media (max-width: 710px) {
           img {
-            width: 45px;
-            height: 45px;
+            width: 120px;
+            height: 120px;
           }
         }
       }
