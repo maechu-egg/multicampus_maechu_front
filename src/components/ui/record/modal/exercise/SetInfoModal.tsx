@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../../context/AuthContext";
+import { useAuth } from "../../../../../context/AuthContext";
 import styled from "styled-components";
-import api from "../../../../services/api/axios";
+import api from "../../../../../services/api/axios";
 
 interface SetInfo {
   set_id: number;

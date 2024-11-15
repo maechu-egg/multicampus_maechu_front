@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../../context/AuthContext";
+import { useAuth } from "../../../../../context/AuthContext";
 import styled from "styled-components";
-import api from "../../../../services/api/axios";
-import SetInfoModal from "../modal/SetInfoModal";
-import EditExerciseModal from "../modal/EditExerciseModal";
+import api from "../../../../../services/api/axios";
+import SetInfoModal from "../../modal/exercise/SetInfoModal";
+import EditExerciseModal from "../../modal/exercise/EditExerciseModal";
 interface ExerciseInfoProps {
   exercise: {
     exercise_id: number;

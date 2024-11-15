@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useParams } from 'react-router-dom';
 import styled from "styled-components";
-import api from "../../../../services/api/axios";
-import { useAuth } from "context/AuthContext";
+import api from "../../../../../services/api/axios";
+import { useAuth } from "../../../../../context/AuthContext";
 
-interface ItemAddModalProps {
-  dietId: number;
+interface QuantitySetModalProps {
   searchTerm: string;
   onClose: () => void;
-  successItemInsert: (successBoolean: boolean) => void;
+  onSave: (quantity:number) => void;
+
 }
 
-const ItemAddModal = ({ dietId ,searchTerm, onClose, successItemInsert }: ItemAddModalProps): JSX.Element => {
+const QuantitySetModal = ({ searchTerm, onClose, onSave }: QuantitySetModalProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
   // url path
@@ -20,29 +20,9 @@ const ItemAddModal = ({ dietId ,searchTerm, onClose, successItemInsert }: ItemAd
   const itemName = searchTerm;
   // 양
   const [quantity,setQuantity] = useState(0);
-  // 식단 없으면 생성해서 받는 식단 ID
-  const [getDietId,setGetDietId] = useState(0);
 
-
-  // 식단 추가 함수
-  const dietInsert = async () => {
-    try {
-      const response = await api.post("record/diet/insert/meal", {
-       params: { mealtype : food }, 
-       headers: { Authorization: `Bearer ${token}` }
-      });
-
-      console.log("debug >>> exercise Insert : ", response.data);
-      setGetDietId(response.data); // 운동 ID 설정
-
-    } catch (error) {
-      console.error("debug >>> error", error);
-    }
-  };
-
-  // 저장 버튼 클릭 시
-  const handleSave = async () => {
-    successItemInsert(true);
+  const handleSave = () => {
+    onSave(quantity); // 부모 컴포넌트에 값 전달
     onClose(); // 모달 닫기
   };
 
@@ -66,7 +46,7 @@ const ItemAddModal = ({ dietId ,searchTerm, onClose, successItemInsert }: ItemAd
   );
 };
 
-export default ItemAddModal;
+export default QuantitySetModal;
 
 // 스타일 정의
 const ModalOverlay = styled.div`

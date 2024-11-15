@@ -6,9 +6,8 @@ import { useAuth } from '../../../context/AuthContext';
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
-import ItemInfo from 'components/ui/record/list/ItemInfo';
-import ItemAddModal from 'components/ui/record/modal/ItemAddModal';
-import SelectItemModal from 'components/ui/record/modal/SelectItemModal';
+import ItemInfo from 'components/ui/record/list/diet/ItemInfo';
+import SelectItemModal from 'components/ui/record/modal/diet/SelectItemModal';
 
 interface ItemResponseDTO {
   item_id: number;
@@ -49,27 +48,19 @@ function DietDetailPage(): JSX.Element {
   // openApi를 통해 받아온 식품들
   const [apiList,setApiList] = useState<Nutrient[]>([]);
 
-  // 식품 추가 모달에 전달할 apiList에서 선택된 식품 정보
-  const [selectApiItem,setSelectApiItem] = useState("");
-
   // ItemInfo로 하나씩 나열할 식품 배열
   const [itemData,setItemData] = useState<ItemResponseDTO[]>([]);
-
+  const [dietId,setDietId] =useState(0);
   // meal 영양성분
   const totalCarbs = itemData.reduce((acc, item) => acc + item.carbs, 0);
   const totalProtein = itemData.reduce((acc, item) => acc + item.protein, 0);
   const totalFat = itemData.reduce((acc, item) => acc + item.fat, 0);
   const totalCalories = itemData.reduce((acc, item) => acc + item.calories, 0);
   
-  // 식단 번호
-  const dietId = itemData.length;  
 
   // openApi 식품 리스트 나열 모달 트리거
   const [isSelectApiBoolean,setIsSelectApiBoolean] = useState<boolean>(false);
 
-  // 식품 추가 모달 트리거
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 모달 오픈 상태
- 
   // 추가할 식품
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -99,9 +90,19 @@ function DietDetailPage(): JSX.Element {
         
         console.log("debug >>> dietGet response : ", response.data);
   
-        // 응답이 배열인지 확인 후 설정
-        setItemData(Array.isArray(response.data) ? response.data : []);
+        if (response.data) {
+          // diet_id 설정
+          setDietId(response.data.diet_id);
+          console.log("debug >>> dietId : " + response.data.diet_id);
         
+          // itemList가 배열인지 확인 후 설정
+          setItemData(Array.isArray(response.data.itemList) ? response.data.itemList : []);
+          console.log("debug >>> ItemData : ", response.data.itemList);
+
+        } else {
+          console.error("debug >>> diet 테이블이 존재하지 않습니다");
+        }
+
       } catch (err) {
         console.error('식단 데이터를 가져오는 중 오류 발생:', err);
         setItemData([]); // 오류 발생 시 빈 배열로 설정
@@ -125,25 +126,6 @@ function DietDetailPage(): JSX.Element {
     }
   };
   
-  // ItemAddModal을 통해 추가된 식품을 itemData에 반영
-  const addNewItem = (successBoolean: boolean) => {
-    if (successBoolean) {
-      dietGet(); 
-    } else {
-      console.log("debug >>> exerInsert 실패");
-    }
-  };
-
-  // ItemModal을 통해 업데이트 된 식품 정보 ItemData에 반영, 이를 통해 재렌더링하여 클라이언트에서 바로 확인 가능  
-  const itemSave = (updatedItem: ItemResponseDTO) => {
-    console.log("Updated Item:", updatedItem);
-    setItemData((prevItemData) =>
-      prevItemData.map((i) =>
-        i.item_id === updatedItem.item_id ? { ...i, ...updatedItem } : i
-      )
-    ); 
-  };
-
   // 삭제된 ItemInfo ItemPage에 넘겨줌
   const deleteItem = (deletedItemId: number) => {
     setItemData((prevItemData) =>
@@ -212,18 +194,13 @@ function DietDetailPage(): JSX.Element {
             receiveDeletedItem={deleteItem}
           />
         ))}
-        {isAddModalOpen && (
-        <ItemAddModal
-          dietId={dietId}
-          searchTerm={searchTerm}
-          onClose={() => setIsAddModalOpen(false)}
-          successItemInsert={addNewItem} // 새 운동 추가 후 연동
-      ></ItemAddModal>)}
       </ItemList>
         {isSelectApiBoolean && (
           <SelectItemModal
           apiList={apiList}
           onClose={() => setIsSelectApiBoolean(false)}
+          onSave={() => dietGet}
+          dietId={dietId}  
           />
         )}
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../../../context/AuthContext";
+import { useAuth } from "../../../../../context/AuthContext";
 import styled from "styled-components";
-import api from "../../../../services/api/axios";
-import EditItemModal from "../modal/EditItemModal"
+import api from "../../../../../services/api/axios";
+import EditItemModal from "../../modal/diet/EditItemModal"
 
 interface ItemInfoProps {
     item :{
