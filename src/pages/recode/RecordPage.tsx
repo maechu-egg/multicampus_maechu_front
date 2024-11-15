@@ -18,6 +18,8 @@ interface DietRecord {
   totalCalories: number;
 }
 
+
+
 function RecordPage(): JSX.Element {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
   const [dietDates, setDietDates] = useState<string[]>([]);
@@ -211,24 +213,22 @@ function RecordPage(): JSX.Element {
         />
 
         {showModal && (
-          <div className="modal-overlay" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div className="modal-content" style={{ backgroundColor: '#ffffff', borderRadius: '15px', padding: '40px', boxShadow: '0 15px 60px rgba(0, 0, 0, 0.3)', textAlign: 'center', maxWidth: '450px', width: '90%' }}>
-              <h3 style={{ marginBottom: '25px', fontSize: '28px', fontWeight: '700', color: '#333', letterSpacing: '1px' }}>{selectedDate}</h3>
-              <div className="button-group" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '25px' }}>
-                <button onClick={() => navigate(`/record/exercise/${selectedDate}`)} style={{ backgroundColor: '#4A5568', color: 'white', border: 'none', borderRadius: '25px', padding: '15px 25px', cursor: 'pointer', fontSize: '16px', fontWeight: '500', transition: 'background-color 0.3s, transform 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1D2636'; e.currentTarget.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#4A5568'; e.currentTarget.style.transform = 'scale(1)'; }}>
+          <ModalOverlay>
+            <ModalContent>
+              <CloseButton onClick={() => setShowModal(false)}>
+                <IoCloseOutline />
+              </CloseButton>
+              <ModalHeader>{selectedDate}</ModalHeader>
+              <ButtonGroup>
+                <ModalButton onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
                   💪🏻 운동
-                </button>
-                <button onClick={() => navigate(`/record/diet/${selectedDate}`)} style={{ backgroundColor: '#4A5568', color: 'white', border: 'none', borderRadius: '25px', padding: '15px 25px', cursor: 'pointer', fontSize: '16px', fontWeight: '500', transition: 'background-color 0.3s, transform 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#333C4D'; e.currentTarget.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#4A5568'; e.currentTarget.style.transform = 'scale(1)'; }}>
+                </ModalButton>
+                <ModalButton onClick={() => navigate(`/record/diet/${selectedDate}`)}>
                   🥗 식단
-                </button>
-              </div>
-              <div className="close-button">
-                <button onClick={() => setShowModal(false)} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', fontSize: '28px', color: '#888', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#555'} onMouseLeave={(e) => e.currentTarget.style.color = '#888'}>
-                  <IoCloseOutline />
-                </button>
-              </div>
-            </div>
-          </div>
+                </ModalButton>
+              </ButtonGroup>
+            </ModalContent>
+          </ModalOverlay>
         )}
 
         <MonthlyRecordChart 
@@ -242,6 +242,86 @@ function RecordPage(): JSX.Element {
     </Wrapper>
   );
 };
+
+// 스타일 컴포넌트 추가
+const ModalOverlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+`;
+
+const ModalContent = styled.div`
+  background: linear-gradient(135deg, #f0f0f0, #ffffff);
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  animation: zoomIn 0.3s ease-in-out;
+
+  @keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+`;
+
+const ModalHeader = styled.h3`
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #444;
+  letter-spacing: 1px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+`;
+
+const ModalButton = styled.button`
+  background-color: #1D2636;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    background-color: #1D2636;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const CloseButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #bbb;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #888;
+  }
+`;
 
 const Wrapper = styled.div`
   max-width: 1200px;

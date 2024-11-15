@@ -40,7 +40,11 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: Exerc
         headers: { Authorization: `Bearer ${token}` },
         params: { exercise_id: exercise.exercise_id },
       });
-      setSetInfo(response.data);
+      
+      if (JSON.stringify(response.data) !== JSON.stringify(setInfo)) {
+        setSetInfo(response.data);
+      }
+      
       setIsSetModalOpen(true);
     } catch (error) {
       console.error("Failed to fetch set info:", error);
@@ -59,12 +63,16 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: Exerc
     setIsEditModalOpen(true);
   }
 
-  const setSave = (setInfo:SetInfo) => {
-    setSetInfo((prevSetInfo) =>
-      prevSetInfo.map((set) =>
-        set.set_id === setInfo.set_id ? setInfo : set
-      )
-    );
+  const setSave = (updatedSet: SetInfo) => {
+    if (updatedSet.weight === 0) {
+      setSetInfo((prevSetInfo) => prevSetInfo.filter(set => set.set_id !== updatedSet.set_id));
+    } else {
+      setSetInfo((prevSetInfo) =>
+        prevSetInfo.map((set) =>
+          set.set_id === updatedSet.set_id ? updatedSet : set
+        )
+      );
+    }
   };
 
   const updateExerInfo = async (duration: number, intensity: string) => {
