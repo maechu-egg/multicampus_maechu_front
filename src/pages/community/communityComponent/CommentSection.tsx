@@ -7,8 +7,6 @@ interface CommentSectionProps {
   postId: number;
   onAddComment: (content: string) => void;
   onCommentDelete: (commentId: number, postId: number) => void;
-  onCommentLike: (commentId: number, postId: number) => void;
-  onCommentDislike: (commentId: number, postId: number) => void;
   commentInput: string;
   setCommentInput: (value: string) => void;
 }
@@ -18,8 +16,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   postId,
   onAddComment,
   onCommentDelete,
-  onCommentLike,
-  onCommentDislike,
   commentInput,
   setCommentInput
 }) => {
@@ -39,8 +35,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             key={comment.id}
             comment={comment}
             onCommentDelete={onCommentDelete}
-            onCommentLike={onCommentLike}
-            onCommentDislike={onCommentDislike}
             post_id={postId}
           />
         ))}

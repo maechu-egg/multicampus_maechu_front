@@ -186,14 +186,10 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
       formData.append("post_sports_keyword", post_sports_keyword);
       formData.append("post_hashtag", post_hashtag);
   
-      // 이미지 파일 처리 - 백엔드의 @RequestParam 이름과 일치시킴
-      if (imageFiles && imageFiles.length > 0) {
-        imageFiles.forEach((file, index) => {
-          if (index < 2) {
-            formData.append("images", file);  // "post_img1", "post_img2" 대신 "images"로 변경
-            console.log(`이미지 ${index + 1} 추가:`, file.name);
-          }
-        });
+      if (imageFiles) {
+        for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
+          formData.append("images", imageFiles[i]);
+        }
       }
   
       console.log("=== 전송 데이터 ===");

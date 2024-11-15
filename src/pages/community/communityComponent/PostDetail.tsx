@@ -46,8 +46,6 @@ interface PostDetailProps {
   commets_count: number;
   member_id: number;
   author: boolean;
-  onCommentLike: (commentId: number, postId: number) => void;
-  onCommentDislike: (commentId: number, postId: number) => void;
   getComments: (postId: number) => Promise<void>;
 }
 
@@ -72,9 +70,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   post_img1,
   post_img2,
   author,
-  onCommentLike,
-  onCommentDislike,
-  getComments
+  getComments  
 }) => {
   const {
     liked,
@@ -269,8 +265,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
           postId={post_id}
           onAddComment={onAddComment}
           onCommentDelete={onCommentDelete}
-          onCommentLike={onCommentLike}
-          onCommentDislike={onCommentDislike}
           commentInput={commentInput}
           setCommentInput={setCommentInput}
         />

@@ -133,8 +133,6 @@ function CommunityPage(): JSX.Element {
     getComments,
     handleCommentSubmit,
     handleCommentDelete,
-    handleCommentLike,
-    handleCommentDislike,
   } = useComment();
 
   
@@ -238,8 +236,6 @@ useEffect(() => {
         onAddComment={(content) => handleCommentSubmit(selectedPost.post_id, content)}
         onCommentDelete={handleCommentDelete}
         currentUserNickname={""}
-        onCommentLike={handleCommentLike}
-        onCommentDislike={handleCommentDislike}
         getComments={getComments} 
       />
     );
