@@ -193,8 +193,8 @@ const ControlButtonContainer = styled.div`
 `;
 
 const ControlButton = styled.button`
-  background-color: #e9ecef;
-  color: #6c757d;
+  background-color: #1D2636;
+  color: #ffffff;
   border: none;
   padding: 4px 6px;
   border-radius: 4px;
@@ -203,20 +203,20 @@ const ControlButton = styled.button`
   transition: background-color 0.2s ease, transform 0.2s ease;
 
   &:hover {
-    background-color: #ced4da;
+    background-color: #333C4D;
     transform: scale(1.1);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.4);
+    box-shadow: 0 0 0 2px rgba(29, 38, 54, 0.4);
   }
 `;
 
 const SaveButton = styled.button`
   margin-top: 8px;
   padding: 6px 12px;
-  background: #28a745;
+  background: #1D2636;
   color: white;
   border: none;
   border-radius: 4px;
@@ -224,14 +224,14 @@ const SaveButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background: #218838;
+    background: #333C4D;
   }
 `;
 
 const CloseButton = styled.button`
   margin-top: 20px;
   padding: 10px 16px;
-  background: #007bff;
+  background: #1D2636;
   color: white;
   border: none;
   border-radius: 8px;
@@ -241,6 +241,6 @@ const CloseButton = styled.button`
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #333C4D;
   }
 `;

@@ -62,28 +62,31 @@ const PostItem: React.FC<PostItemProps> = ({
         <span className="subcategory">[{post_sport || '자유'}]</span>
         <span className="post-title">{post_title}</span>
         {hashtagArray.length > 0 && (
-        <div className="post-tags">
-          {hashtagArray.map((tag, index) => (
-            <span key={index} className="tag-item">
-              {tag}
+          <div className="post-tags">
+            {hashtagArray.map((tag, index) => (
+              <span key={index} className="tag-item">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        
+        <div className="post-info-wrapper">
+          <div className="author">
+            <span>{post_nickname}</span>
+          </div>
+          <div className="post-stats">
+            <span className="date">{formatDate(post_date)}</span>
+            <span className="likes">
+              <FaThumbsUp /> {post_like_counts}
             </span>
-          ))}
-        </div>
-      )}
-
-        <span className="author">{post_nickname}</span>
-        <span className="date">{formatDate(post_date)}</span>
-        <div className="post-stats">
-          <span className="likes">
-            <FaThumbsUp /> {post_like_counts}
-          </span>
-          <span className="comments">
-            {/* <FaComment /> {comments} */}
-            <FaComment /> {comments_count}
-          </span>
-          <span className="views">
-            <FaEye /> {post_views}
-          </span>
+            <span className="comments">
+              <FaComment /> {comments_count}
+            </span>
+            <span className="views">
+              <FaEye /> {post_views}
+            </span>
+          </div>
         </div>
       </div>
     </div>

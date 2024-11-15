@@ -76,17 +76,26 @@ function ExercisePage(): JSX.Element {
   }
 // 마운트 시 exericseGet 실행
 useEffect(() => {
-    // 토큰 값이 없을 시 로그인 페이지로 리턴
-    if (!token) {
-      console.log("debug >>> token is null");
-      navigate("/loginpage");
-    }
-    // 토큰, 멤버 번호 확인
-    console.log("debug >>> token : " + token);
-    console.log("debug >>> memberId : " + memberId);
-    // 운동 조회
-    exerciseGet(selectedDate);
-  }, []);
+  // exerciseData가 배열인지 확인하고, 배열이 아닐 경우 빈 배열로 초기화
+  const validExerciseData = Array.isArray(exerciseData) ? exerciseData : [];
+
+  const totalCalories = validExerciseData.reduce((acc: number, exer: any) => acc + exer.calories, 0);
+  setTodayCalorie(totalCalories);
+
+  const totalTime = validExerciseData.reduce((acc: number, exer: any) => acc + exer.duration, 0);
+  setTodayTime(totalTime);
+
+  // 토큰 값이 없을 시 로그인 페이지로 리턴
+  if (!token) {
+    console.log("debug >>> token is null");
+    navigate("/loginpage");
+  }
+  // 토큰, 멤버 번호 확인
+  console.log("debug >>> token : " + token);
+  console.log("debug >>> memberId : " + memberId);
+  // 운동 조회
+  exerciseGet(selectedDate);
+}, [exerciseData]);
 
   // ExerciseAddModal을 통해 추가된 운동을 exerciseData에 반영
   const addNewExercise = (successBoolean: boolean) => {
@@ -183,11 +192,11 @@ useEffect(() => {
 };
 
 const Container = styled.div`
-  width: 70%;
-  height: 100vh;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  background: transparent;
   font-family: 'Noto Sans KR', sans-serif;
 `;
 
@@ -195,7 +204,7 @@ const SummaryCard = styled.div`
   background: white;
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
@@ -226,16 +235,16 @@ const StatItem = styled.div`
   text-align: center;
   
   h3 {
-    font-size: 14px;
-    color: #868e96;
+    font-size: 18px;
+    color: #333C4D;
     margin: 0 0 5px 0;
   }
   
   p {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
     margin: 0;
-    color: #212529;
+    color: #333C4D;
   }
 `;
 
@@ -245,16 +254,16 @@ const SearchBar = styled.div`
 
   input {
     width: 100%;
-    padding: 15px 60px 15px 20px; /* 오른쪽에 버튼 공간 확보 */
-    border: none;
+    padding: 15px;
+    border: 1px solid #ced4da;
     border-radius: 10px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-size: 16px;
     
     &:focus {
       outline: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
   }
 
@@ -264,15 +273,16 @@ const SearchBar = styled.div`
     top: 50%;
     transform: translateY(-50%);
     padding: 8px 16px;
-    background-color: #bfc4c9;
+    background: #1D2636;
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
+    transition: background 0.3s;
     
     &:hover {
-      background-color: #45a049;
+      background: #333C4D;
     }
   }
 `;
@@ -284,7 +294,7 @@ const ExerciseList = styled.div`
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
-  background-color: #f5f5f5;
+  background-color: transparent;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;

@@ -141,24 +141,27 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: Exerc
 
 export default ExerciseInfo;
 
+
+
+
 const ExercisePoint = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 32px 16px 16px;
   margin: 16px 0;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   background-color: #fafafa;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  position: relative; /* 자식 요소의 절대 위치를 위한 설정 */
+  position: relative;
 
   &:hover {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   }
 
   @media (max-width: 768px) {
-    padding: 12px;
+    padding: 28px 12px 12px;
     margin: 8px 0;
   }
 `;
@@ -184,7 +187,7 @@ const ControlButtonContainer = styled.div`
 const ControlButton = styled.button`
   padding: 4px 8px;
   background-color: #fafafa;
-  color: #9799a1;
+  color: #4A5568;
   border: none;
   cursor: pointer;
   font-size: 1.4rem;
@@ -197,14 +200,14 @@ const ControlButton = styled.button`
   }
 
   &:focus { 
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 0 0 3px #4A5568;
   }
 `;
 
 const ActionButton = styled.button`
   margin-top: 12px;
   padding: 5px 16px;
-  background-color: #007bff;
+  background-color: #1D2636;
   color: white;
   border: none;
   border-radius: 10px;
@@ -215,7 +218,7 @@ const ActionButton = styled.button`
   transition: background 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #333C4D;
   }
 
   &:focus {

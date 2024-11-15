@@ -197,7 +197,7 @@ function RecordPage(): JSX.Element {
     <Wrapper>
     <div className="calendar-header">
       <TitleContainer>
-        <h1>운동 히스토리</h1>
+        <h1>𝑪𝒂𝒍𝒆𝒏𝒅𝒂𝒓</h1>
       </TitleContainer>
     </div>
       <Container>
@@ -211,19 +211,21 @@ function RecordPage(): JSX.Element {
         />
 
         {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h3>{selectedDate}</h3>
-              <div className="button-group">
-                <button onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
-                  🏋️‍♂️
+          <div className="modal-overlay" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="modal-content" style={{ backgroundColor: '#ffffff', borderRadius: '15px', padding: '40px', boxShadow: '0 15px 60px rgba(0, 0, 0, 0.3)', textAlign: 'center', maxWidth: '450px', width: '90%' }}>
+              <h3 style={{ marginBottom: '25px', fontSize: '28px', fontWeight: '700', color: '#333', letterSpacing: '1px' }}>{selectedDate}</h3>
+              <div className="button-group" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '25px' }}>
+                <button onClick={() => navigate(`/record/exercise/${selectedDate}`)} style={{ backgroundColor: '#4A5568', color: 'white', border: 'none', borderRadius: '25px', padding: '15px 25px', cursor: 'pointer', fontSize: '16px', fontWeight: '500', transition: 'background-color 0.3s, transform 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1D2636'; e.currentTarget.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#4A5568'; e.currentTarget.style.transform = 'scale(1)'; }}>
+                  💪🏻 운동
                 </button>
-                <button onClick={() => navigate(`/record/diet/${selectedDate}`)}>
-                  🥗
+                <button onClick={() => navigate(`/record/diet/${selectedDate}`)} style={{ backgroundColor: '#4A5568', color: 'white', border: 'none', borderRadius: '25px', padding: '15px 25px', cursor: 'pointer', fontSize: '16px', fontWeight: '500', transition: 'background-color 0.3s, transform 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#333C4D'; e.currentTarget.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#4A5568'; e.currentTarget.style.transform = 'scale(1)'; }}>
+                  🥗 식단
                 </button>
               </div>
               <div className="close-button">
-                <button onClick={() => setShowModal(false)}><IoCloseOutline /></button>
+                <button onClick={() => setShowModal(false)} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', fontSize: '28px', color: '#888', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#555'} onMouseLeave={(e) => e.currentTarget.style.color = '#888'}>
+                  <IoCloseOutline />
+                </button>
               </div>
             </div>
           </div>
@@ -245,11 +247,11 @@ const Wrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  margin-top : 0px;
-  background: #f3f4f6;  /* Soft, neutral background for the calendar container */
-  border-radius: 12px;
-  border: 1px solid #d1d5db; /* Light gray border to frame the calendar */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for 3D effect */
+  margin-top: 0px;
+  background: none;  // 배경색 제거
+  border-radius: 0;  // 모서리 둥글기 제거
+  border: none;      // 테두리 제거
+  box-shadow: none;  // 그림자 효과 제거
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -257,12 +259,12 @@ const Wrapper = styled.div`
 
   /* Calendar "Header" Feel for Title */
   .calendar-header {
-    background-color: #ffffff;
-    border-bottom: 1px solid #d1d5db;
+    background-color: transparent; // 배경색을 투명하게 변경
+    border-bottom: none;           // 하단 테두리 제거
     padding: 15px;
     width: 100%;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    border-top-left-radius: 0;     // 모서리 둥글기 제거
+    border-top-right-radius: 0;    // 모서리 둥글기 제거
     display: flex;
     align-items: center;
     justify-content: center;
@@ -527,20 +529,20 @@ const Container = styled.div`
 
         /* img 요소에 직접 스타일 적용 */
         img {
-          width: 55px; /* 원하는 크기로 설정 */
-          height: 55px; /* 원하는 크기로 설정 */
+          width: 120px; /* 원하는 크기로 설정 */
+          height: 120px; /* 원하는 크기로 설정 */
         }
 
         @media (max-width: 850px) {
           img {
-            width: 50px; /* 반응형 크기 조정 */
-            height: 50px;
+            width: 120px; /* 반응형 크기 조정 */
+            height: 120px;
           }
         }
         @media (max-width: 710px) {
           img {
-            width: 45px;
-            height: 45px;
+            width: 120px;
+            height: 120px;
           }
         }
       }
