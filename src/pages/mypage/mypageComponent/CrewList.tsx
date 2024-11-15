@@ -22,14 +22,26 @@ interface CrewListProps {
   crewData?: CrewItem[]; // Optional property
 }
 
+const BASE_URL = "http://localhost:8001";
+
 function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
-  // crewData will default to an empty array if undefined
   return (
     <CrewContainer>
       {crewData.length > 0 ? (
         crewData.map((crew) => (
           <CrewCard key={crew.crew_id}>
+            <ImageWrapper>
+              <CrewImage
+                src={
+                  crew.crew_intro_img && crew.crew_intro_img !== "CrewDefault"
+                    ? `${BASE_URL}/${crew.crew_intro_img}`
+                    : "/img/default/CrewDefault.png"
+                }
+                alt="Crew intro"
+              />
+            </ImageWrapper>
             <CrewName>{crew.crew_name || "이름 없음"}</CrewName>
+            <CrewTitle>{crew.crew_title || "타이틀 없음"}</CrewTitle>
             <CrewInfo>
               <strong>목표:</strong> {crew.crew_goal || "목표 없음"}
             </CrewInfo>
@@ -38,6 +50,16 @@ function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
             </CrewInfo>
             <CrewInfo>
               <strong>운동 종류:</strong> {crew.crew_sport || "운동 종류 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>성별:</strong> {crew.crew_gender || "성별 정보 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>나이대:</strong> {crew.crew_age || "나이 정보 없음"}
+            </CrewInfo>
+            <CrewInfo>
+              <strong>활동 빈도:</strong>{" "}
+              {crew.crew_frequency || "빈도 정보 없음"}
             </CrewInfo>
           </CrewCard>
         ))
@@ -48,6 +70,7 @@ function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
   );
 }
 
+// Styled Components
 const CrewContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -65,18 +88,49 @@ const CrewCard = styled.div`
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ImageWrapper = styled.div`
+  width: 100%;
+  max-width: 100px;
+  height: 100px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CrewImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
 const CrewName = styled.h3`
   margin: 0;
   font-size: 1.2em;
   color: #333;
+  text-align: center;
+`;
+
+const CrewTitle = styled.h4`
+  margin: 4px 0;
+  font-size: 1em;
+  color: #555;
+  font-weight: normal;
+  text-align: center;
 `;
 
 const CrewInfo = styled.p`
-  margin: 8px 0 0;
+  margin: 4px 0;
   font-size: 0.9em;
   color: #666;
+  text-align: center;
 `;
 
 const NoData = styled.p`

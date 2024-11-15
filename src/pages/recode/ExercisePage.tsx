@@ -46,61 +46,47 @@ function ExercisePage(): JSX.Element {
   console.log("debug >>> selectedDate:", selectedDate);
   
   // 운동 리스트 가져오기
-  const exerciseGet = async (record_date: any) => {
+  const exerciseGet = async (record_date: string) => {
     try {
-      // url로 가져온 날짜 파라미터 확인
-      console.log("debug >>> data", record_date);
-      // axios get을 통해 운동 리스트 가져오기
       const response = await api.get("record/exercise/get/exerday", {
         headers: { Authorization: `Bearer ${token}` },
         params: { record_date }
       });
-      // 결과 확인
-      console.log("debug >>> exer Info : ", response.data);
-      
-      // 운동 정보 저장
-      setExerciseData(response.data);
-      
-      // 일일 소모 칼로리 계산
-      const totalCalories = response.data.reduce((acc:number, exer:any) => acc + exer.calories, 0);
-      setTodayCalorie(totalCalories);
 
-      // 일일 운동 시간 계산
-      const totalTime = response.data.reduce((acc:number, exer:any) => acc + exer.duration, 0);
+      // 운동 데이터 업데이트
+      setExerciseData(response.data);
+
+      // 일일 소모 칼로리 및 운동 시간 계산
+      const totalCalories = response.data.reduce((acc: number, exer: any) => acc + exer.calories, 0);
+      const totalTime = response.data.reduce((acc: number, exer: any) => acc + exer.duration, 0);
+
+      // 상태 업데이트
+      setTodayCalorie(totalCalories);
       setTodayTime(totalTime);
     
     } catch (error) {
-      // axios 중 에러 발생 시 debug 확인
       console.error("debug >>> error", error);
     }
-  }
-// 마운트 시 exericseGet 실행
-useEffect(() => {
-  // exerciseData가 배열인지 확인하고, 배열이 아닐 경우 빈 배열로 초기화
-  const validExerciseData = Array.isArray(exerciseData) ? exerciseData : [];
+  };
 
-  const totalCalories = validExerciseData.reduce((acc: number, exer: any) => acc + exer.calories, 0);
-  setTodayCalorie(totalCalories);
+  // 마운트 시 exericseGet 실행
+  useEffect(() => {
+    if (!token) {
+      console.log("debug >>> token is null");
+      navigate("/loginpage");
+      return;
+    }
 
-  const totalTime = validExerciseData.reduce((acc: number, exer: any) => acc + exer.duration, 0);
-  setTodayTime(totalTime);
-
-  // 토큰 값이 없을 시 로그인 페이지로 리턴
-  if (!token) {
-    console.log("debug >>> token is null");
-    navigate("/loginpage");
-  }
-  // 토큰, 멤버 번호 확인
-  console.log("debug >>> token : " + token);
-  console.log("debug >>> memberId : " + memberId);
-  // 운동 조회
-  exerciseGet(selectedDate);
-}, [exerciseData]);
+    // selectedDate가 정의된 경우에만 exerciseGet 호출
+    if (selectedDate) {
+      exerciseGet(selectedDate);
+    }
+  }, [selectedDate, token]);
 
   // ExerciseAddModal을 통해 추가된 운동을 exerciseData에 반영
   const addNewExercise = (successBoolean: boolean) => {
-    if (successBoolean) {
-      exerciseGet(selectedDate); // 운동 데이터 새로 불러오기
+    if (successBoolean && selectedDate) { // selectedDate가 정의된 경우에만 호출
+      exerciseGet(selectedDate);
     } else {
       console.log("debug >>> exerInsert 실패");
     }
@@ -122,9 +108,19 @@ useEffect(() => {
   };
   // 삭제된 ExerciseInfo ExercisePage에 넘겨줌
   const deleteExercise = (deletedExerciseId: number) => {
-    setExerciseData((prevExerciseData) =>
-      prevExerciseData.filter((exercise) => exercise.exercise_id !== deletedExerciseId)
-    );
+    setExerciseData((prevExerciseData) => {
+      const updatedExerciseData = prevExerciseData.filter((exercise) => exercise.exercise_id !== deletedExerciseId);
+      
+      // 칼로리 및 시간 재계산
+      const totalCalories = updatedExerciseData.reduce((acc: number, exer: any) => acc + exer.calories, 0);
+      const totalTime = updatedExerciseData.reduce((acc: number, exer: any) => acc + exer.duration, 0);
+
+      // 상태 업데이트
+      setTodayCalorie(totalCalories);
+      setTodayTime(totalTime);
+
+      return updatedExerciseData; // 업데이트된 운동 데이터 반환
+    });
   };
 
   // URL의 날짜를 Date 타입으로 변환

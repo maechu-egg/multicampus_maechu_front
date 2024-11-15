@@ -157,18 +157,20 @@ export default ExerciseAddModal;
 // 스타일 정의
 
 const AddSetButton = styled.button`
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: bold;
-  background-color: #1D2636; // 통일된 버튼 색상
+  background-color: #1D2636;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
   margin-bottom: 20px;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #333C4D; // 버튼 호버 시 색상
+    background-color: #ffffff;
+    color: #1D2636;
   }
 `;
 
@@ -186,12 +188,13 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 400px;
+  width: 450px;
   background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  color: #1D2636;
 `;
 
 const Label = styled.label`
@@ -220,31 +223,35 @@ const ButtonContainer = styled.div`
 `;
 
 const SaveButton = styled.button`
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: bold;
-  background-color: #1D2636; // 통일된 버튼 색상
+  background-color: #1D2636;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #333C4D; // 버튼 호버 시 색상
+    background-color: #ffffff;
+    color: #1D2636;
   }
 `;
 
 const CancelButton = styled.button`
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: bold;
-  background-color: #4A5568; // 통일된 버튼 색상
+  background-color: #1D2636;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #2D3748; // 버튼 호버 시 색상
+    background-color: #ffffff;
+    color: #1D2636;
   }
 `;

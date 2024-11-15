@@ -19,7 +19,6 @@ interface PostFormProps {
     post_sport: string,
     post_hashtag: string,
     post_sports_keyword: string,
-    // imageFiles: FileList | null
     imageFiles: File[] | null
   ) => void;
   onCancel: () => void;
@@ -42,12 +41,12 @@ const PostForm: React.FC<PostFormProps> = ({
   const [post_up_sport, setPost_up_sport] = useState(initialData?.post_up_sport || "");
   const [post_sport, setPost_sport] = useState(initialData?.post_sport || "");
   const [post_sports_keyword, setPost_sports_keyword] = useState(initialData?.post_sports_keyword || "");
-  // const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const [imageFiles, setImageFiles] = useState<File[] | null>(null);
   const [tagInput, setTagInput] = useState("");
   const [tagList, setTagList] = useState<string[]>(
     initialData?.post_hashtag ? initialData.post_hashtag.split(", ") : []
   );
+  const [error, setError] = useState<string>("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -60,11 +59,13 @@ const PostForm: React.FC<PostFormProps> = ({
       }
   
       setImageFiles(totalFiles);
+      setError(""); // 이미지가 업로드되면 에러 메시지 초기화
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // 제출 시 에러 메시지 초기화
 
     if (post_title.trim() === "") {
       alert("제목을 입력해주세요!");
@@ -86,7 +87,21 @@ const PostForm: React.FC<PostFormProps> = ({
       return;
     }
 
-    onSave(post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, tagList.join(", "), imageFiles);
+    // 오운완 키워드 선택 시 이미지 필수 체크
+    if (post_sports_keyword === "오운완" && (!imageFiles || imageFiles.length === 0)) {
+      setError("오운완 게시물은 이미지를 필수로 첨부해야 합니다.");
+      return;
+    }
+
+    onSave(
+      post_title,
+      post_contents,
+      post_up_sport,
+      post_sport,
+      post_sports_keyword,
+      tagList.join(", "),
+      imageFiles
+    );
   };
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -149,7 +164,10 @@ const PostForm: React.FC<PostFormProps> = ({
           <select 
             className="form-select" 
             value={post_sports_keyword} 
-            onChange={(e) => setPost_sports_keyword(e.target.value)}
+            onChange={(e) => {
+              setPost_sports_keyword(e.target.value);
+              setError(""); // 키워드 변경 시 에러 메시지 초기화
+            }}
           >
             <option value="">선택하세요</option>
             {recommendedKeywords?.map((keyword) => (
@@ -158,6 +176,11 @@ const PostForm: React.FC<PostFormProps> = ({
               </option>
             ))}
           </select>
+          {post_sports_keyword === "오운완" && (
+            <small className="text-muted">
+              * 오운완 게시물은 이미지 첨부가 필수입니다.
+            </small>
+          )}
         </div>
 
         <div className="mb-3">
@@ -182,7 +205,12 @@ const PostForm: React.FC<PostFormProps> = ({
         </div>
 
         <div className="mb-3">
-          <label className="form-label">이미지 업로드:</label>
+          <label className="form-label">
+            이미지 업로드:
+            {post_sports_keyword === "오운완" && (
+              <span className="text-danger ms-1">*필수</span>
+            )}
+          </label>
           <input 
             type="file" 
             className="form-control" 
@@ -201,6 +229,12 @@ const PostForm: React.FC<PostFormProps> = ({
             </div>
           )}
         </div>
+
+        {error && (
+          <div className="alert alert-danger mb-3" role="alert">
+            {error}
+          </div>
+        )}
 
         <div className="mb-3">
           <label className="form-label">태그:</label>

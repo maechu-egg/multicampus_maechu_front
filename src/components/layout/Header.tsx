@@ -156,7 +156,7 @@ const Container = styled.div`
   height: var(--header-height);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 5;
   background-color: white;
   padding: 15px 10px;
   display: flex;
@@ -176,6 +176,7 @@ const Container = styled.div`
 
   @media (max-width: 500px) {
     padding: 10px 0;
+    z-index: 5;
   }
 `;
 

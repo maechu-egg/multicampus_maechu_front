@@ -9,9 +9,25 @@ import PostList from "./mypageComponent/PostList";
 import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
+import ProfileModal from "./mypageComponent/ProfileModal";
 const BASE_URL = "http://localhost:8001";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
+interface ProfileData {
+  member_id: number;
+  profile_age: number;
+  profile_allergy: string;
+  profile_gender: string;
+  profile_goal: string;
+  profile_height: number;
+  profile_id: number;
+  profile_region: string;
+  profile_sport1: string;
+  profile_sport2: string;
+  profile_sport3: string;
+  profile_weight: number;
+  profile_workout_frequency: number;
+}
 
 interface todayRecord {
   burnedCalories: number;
@@ -47,6 +63,7 @@ function MyPage(): JSX.Element {
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
   const [isCrewModalOpen, setCrewModalOpen] = useState(false);
   const [isAccountModalOpen, setAccountModalOpen] = useState(false);
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
   const [personalPoints, setPersonalPoints] = useState(0);
   const [crewPoints, setCrewPoints] = useState(0);
   const [personalLevel, setPersonalLevel] = useState("기본");
@@ -54,13 +71,17 @@ function MyPage(): JSX.Element {
   const [postData, setPostData] = useState<any[]>([]);
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [imgPath, setImgPath] = useState("");
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
   const openCrewModal = () => setCrewModalOpen(true);
   const closeCrewModal = () => setCrewModalOpen(false);
-  const openaccountModal = () => setAccountModalOpen(true);
+  const openAccountModal = () => setAccountModalOpen(true);
   const closeAccountModal = () => setAccountModalOpen(false);
+  const openProfileModal = () => setProfileModalOpen(true);
+  const closeProfileModal = () => setProfileModalOpen(false);
 
   const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
@@ -82,7 +103,7 @@ function MyPage(): JSX.Element {
         });
         if (category === "참여한 크루") {
           console.log("내 크루 응답 : ", response.data);
-          setCrewData(response.data.list); // CrewList에 사용할 데이터
+          setCrewData(response.data); // CrewList에 사용할 데이터
         } else if (category === "배틀 중") {
           console.log("내 배틀 응답 : ", response.data);
           setBattleData(response.data); // BattleList에 사용할 데이터
@@ -142,6 +163,21 @@ function MyPage(): JSX.Element {
     userPoint();
   }, [token, state]);
 
+  useEffect(() => {
+    const userProfile = async () => {
+      try {
+        const response = await api.get("/profile/info", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("사용자 프로필 내역 조회 : ", response.data);
+        setProfileData(response.data);
+      } catch (error) {
+        console.log("사용자별 프로필 조회 오류:", error);
+      }
+    };
+    userProfile();
+  }, [token, state]);
+
   const getLevelLabel = (points: number) => {
     if (points >= 100) return "다이아몬드";
     if (points >= 70) return "플래티넘";
@@ -155,17 +191,33 @@ function MyPage(): JSX.Element {
     <Container>
       <Header>
         {userInfo ? (
-          <IconWrapper onClick={openaccountModal}>
-            <ProfileImage
-              src={
-                userInfo.memberImg === "/static/null"
-                  ? "/img/default/UserDefault.png"
-                  : `${BASE_URL}${userInfo.memberImg}`
-              }
-              alt="Profile"
-            />
-            <NickName>{userInfo.nickname}</NickName>
-          </IconWrapper>
+          <>
+            <FlexRowContainer>
+              <IconWrapper onClick={openAccountModal}>
+                <AccountIcon
+                  src="/img/default/Account.png"
+                  alt="Account Icon"
+                />
+                <ProfileImage
+                  src={
+                    userInfo.memberImg === "/static/null"
+                      ? "/img/default/UserDefault.png"
+                      : `${BASE_URL}${userInfo.memberImg}`
+                  }
+                  alt="Profile"
+                />
+                <NickName>{userInfo.nickname}</NickName>
+              </IconWrapper>
+              <ProfileButton onClick={openProfileModal}>Profile</ProfileButton>
+            </FlexRowContainer>
+            {isProfileModalOpen && profileData && (
+              <ProfileModal
+                isOpen={isProfileModalOpen}
+                onClose={closeProfileModal}
+                profileData={profileData}
+              />
+            )}
+          </>
         ) : (
           <p>사용자 정보를 불러오는 중...</p>
         )}
@@ -288,14 +340,30 @@ const Header = styled.div`
     width: 30%;
     height: 100%;
     position: fixed;
-    top: 10%;
+    top: 0;
     left: 0;
     background-color: #f4f4f4;
     border-right: 1px solid #ddd;
-    padding: 40px 25px 80px 25px;
+
+    padding: 150px 25px 80px 25px;
     align-items: flex-start;
     overflow-y: auto;
   }
+`;
+const FlexRowContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+`;
+
+const AccountIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  margin-left: -20px;
+  margin-top: -30px;
 `;
 
 const Content = styled.div`
@@ -309,8 +377,7 @@ const Content = styled.div`
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 0;
+  gap: 8px;
   font-size: 1.5em;
   cursor: pointer;
 
@@ -324,6 +391,19 @@ const ProfileImage = styled.img`
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+`;
+
+const ProfileButton = styled.button`
+  font-size: 0.8em;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 20px;
+
+  &: hover {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const NickName = styled.h2`

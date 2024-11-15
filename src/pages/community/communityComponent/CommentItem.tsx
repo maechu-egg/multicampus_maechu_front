@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import { formatDate } from '../../../utils/dateFormat';
-import axios from 'axios';
+import { commentApi } from 'services/api/community/commentApi';
+import type { Comment } from '../../../hooks/community/useComment';
 
-interface CommentProps {
-  comment: {
-    id: number;
-    postId: number;
-    author: string;
-    content: string;
-    date: string;
-    comment_like_counts: number;
-    comment_dislike_counts: number;
-    comment_like_status: boolean;
-    comment_dislike_status: boolean;
-    commentAuthor: boolean;
-  };
+
+
+interface CommentItemProps {
+  comment: Comment;
   onCommentDelete: (commentId: number, postId: number) => void;
   post_id: number;
-  
 }
 
-const Comment: React.FC<CommentProps> = ({
+const CommentItem: React.FC<CommentItemProps> = ({
   comment,
   onCommentDelete,
-  post_id, 
-
+  post_id
 }) => {
-  
+
   const [commentLiked, setCommentLiked] = useState( comment.comment_like_status );
   const [commentDisliked, setCommentDisliked] = useState(comment.comment_dislike_status);
   const [CommentLikeCount, setCommentLikeCount] = useState(comment.comment_like_counts);
@@ -40,27 +30,21 @@ const Comment: React.FC<CommentProps> = ({
     setCommentDislikeCount(comment.comment_dislike_counts);
   }, [ comment.comment_like_status , comment.comment_dislike_status, comment.comment_like_counts, comment.comment_dislike_counts]);
 
-  // 댓글 like
+  
   const handleCommentLike = async (commentId: number, post_id: number) => {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      console.error("로그인 토큰이 없습니다.");
+      alert("로그인이 필요합니다.");
       return;
     }
+
     if (!commentLiked) {
      
       try {
 
         console.log("token" , token);
-        const response = await axios.post(`http://localhost:8001/community/comment/${commentId}/commentlikeinsert`,
-          {}, 
-          {
-            params: { post_id: post_id },  
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await commentApi.commentLike(commentId, post_id, token);
+
         console.log(response.data);
         if (response.status === 200) {
           const { result, Extable, comment_like_counts } = response.data;
@@ -72,157 +56,99 @@ const Comment: React.FC<CommentProps> = ({
               if (commentDisliked) {
                
                 setCommentDislikeCount(prev => prev - 1);
-               await axios.delete(
-                    `http://localhost:8001/community/comment/${commentId}/commentdislikedelete`,
-                    {
-                      params: { post_id: post_id },
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                      },
-                    }
-                  );
-                  setCommentDisliked(false);
-             }
-
+                await commentApi.commentDislikeDelete(commentId, post_id, token);
+                setCommentDisliked(false);
+           }
           } else if (Extable) {
-            alert("테이블에 이미 있습니다.");
+            alert("이미 좋아요를 누른 상태입니다.");
           } else {
             alert("좋아요 추가 실패");
           }
-        } else if (response.status === 400) {
-          alert(response.data.message);
         }
       } catch (error) {
         console.error("좋아요 요청 중 오류 발생:", error);
-        alert("서버 오류로 좋아요 요청이 실패했습니다.");
       }
-    } else if (commentLiked) {
+
+
+     } else if (commentLiked) {
       // 좋아요 삭제 요청
       try {
-        const response = await axios.delete(
-          `http://localhost:8001/community/comment/${commentId}/commentlikedelete`,
-          {
-            params: { post_id: post_id },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log(response.data);
+        const response = await commentApi.commentLikeDelete(commentId, post_id, token);
+
         if (response.status === 200) {
           const { result, Extable, comment_like_counts } = response.data;
   
           if (result) {
             setCommentLikeCount(comment_like_counts);
             setCommentLiked(false);
-           
           } else if (Extable) {
-            alert("좋아요가 이미 취소된 상태입니다.");
+            alert("이미 좋아요가 취소된 상태입니다.");
           } else {
             alert("좋아요 취소 실패");
           }
-        } else if (response.status === 400) {
-          alert(response.data.message);
         }
       } catch (error) {
         console.error("좋아요 삭제 요청 중 오류 발생:", error);
-        alert("서버 오류로 좋아요 삭제 요청이 실패했습니다.");
       }
-    } else {
-      alert("이미 좋아요를 누른 댓글입니다.");
     }
   };
-  
-  
-  // 댓글 dislike
-  const handleCommentDisLike = async (commentId: number, post_id: number) => {
+
+  const handleCommentDislike = async (commentId: number, post_id: number) => {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      console.error("로그인 토큰이 없습니다.");
+      alert("로그인이 필요합니다.");
       return;
     }
+
 
     if (!commentDisliked) {
       // dislike 추가 요청
       try {
-        const response = await axios.post(
-          `http://localhost:8001/community/comment/${commentId}/commentdislikeinsert`,null,
-          {
-            params: { post_id: post_id },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await commentApi.commentDislike(commentId, post_id, token);
         console.log(response.data);
         if (response.status === 200) {
           const { result, Extable, comment_dislike_counts } = response.data;
-  
+
           if (result) {
             setCommentDislikeCount(comment_dislike_counts);
             setCommentDisliked(true);
             
             if(commentLiked){
               setCommentLikeCount(prev => prev - 1);
-               await axios.delete(  `http://localhost:8001/community/comment/${commentId}/commentlikedelete`,
-                {
-                  params: { post_id: post_id },
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
+              await commentApi.commentLikeDelete(commentId, post_id, token);
               setCommentLiked(false);
             }
           } else if (Extable) {
-            alert("테이블에 이미 있습니다.");
+            alert("이미 싫어요를 누른 상태입니다.");
           } else {
-            alert("dislike 추가 실패");
+            alert("싫어요 추가 실패");
           }
-        } else if (response.status === 400) {
-          alert(response.data.message);
         }
       } catch (error) {
-        console.error("dislike 요청 중 오류 발생:", error);
-        alert("서버 오류로 dislike 요청이 실패했습니다.");
+        console.error("싫어요 요청 중 오류 발생:", error);
       }
-    } else if (commentDisliked) {
+    }  else if (commentDisliked) {
       // dislike 삭제 요청
       try {
-        const response = await axios.delete(
-          `http://localhost:8001/community/comment/${commentId}/commentdislikedelete`,
-          {
-            params: { post_id: post_id },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log(response.data);
+        const response = await commentApi.commentDislikeDelete(commentId, post_id, token);
+
         if (response.status === 200) {
           const { result, Extable, comment_dislike_counts } = response.data;
-  
+
           if (result) {
             setCommentDisliked(false);
             setCommentDislikeCount(comment_dislike_counts);
           } else if (Extable) {
-            alert("dislike가 이미 취소된 상태입니다.");
+            alert("이미 싫어요가 취소된 상태입니다.");
           } else {
-            alert("dislike 취소 실패");
+            alert("싫어요 취소 실패");
           }
-        } else if (response.status === 400) {
-          alert(response.data.message);
         }
       } catch (error) {
-        console.error("dislike 삭제 요청 중 오류 발생:", error);
-        alert("서버 오류로 dislike 삭제 요청이 실패했습니다.");
+        console.error("싫어요 삭제 요청 중 오류 발생:", error);
       }
-    } else {
-      alert("이미 dislike를 누른 댓글입니다.");
     }
   };
-
-
   return (
     <div className="comment">
       <div className="comment-header">
@@ -241,20 +167,19 @@ const Comment: React.FC<CommentProps> = ({
         )}
         <button
           className={`btn ${commentLiked ? 'btn-primary' : 'btn-outline-primary'} me-2`}
-          onClick={() => handleCommentLike(comment.id, post_id)}
+          onClick={() =>  handleCommentLike(comment.id, post_id)}
         >
           <FaThumbsUp /> {CommentLikeCount}
         </button>
         <button
           className={`btn ${commentDisliked ? 'btn-danger' : 'btn-outline-danger'}`}
-          onClick={() => handleCommentDisLike(comment.id, post_id)}
+          onClick={() =>  handleCommentDislike(comment.id, post_id)}
         >
-          <FaThumbsDown /> {CommentDislikeCount}
+          <FaThumbsDown />  {CommentDislikeCount}
         </button>
-
       </div>
     </div>
   );
 };
 
-export default Comment;
+export default CommentItem;
