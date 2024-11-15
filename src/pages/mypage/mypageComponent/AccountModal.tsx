@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 import api from "services/api/axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
-const BASE_URL = "http://localhost:8001";
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -28,19 +27,10 @@ function AccountModal({
   const { token, memberId } = authState;
 
   const [member_img, setMemberImg] = useState<File | null>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [phone, setPhone] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-  const [checkButtonDisabled, setCheckButtonDisabled] = useState(true);
   const [nicknameCheckError, setNicknameCheckError] = useState("");
-  const [isCertificationCodeValid, setIsCertificationCodeValid] =
-    useState(false);
   const [isNicknameValid, setIsNicknameValid] = useState(false);
-  const navigate = useNavigate();
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

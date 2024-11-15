@@ -9,6 +9,7 @@ import PostList from "./mypageComponent/PostList";
 import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
+import ProfileModal from "./mypageComponent/ProfileModal";
 const BASE_URL = "http://localhost:8001";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
@@ -47,6 +48,7 @@ function MyPage(): JSX.Element {
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
   const [isCrewModalOpen, setCrewModalOpen] = useState(false);
   const [isAccountModalOpen, setAccountModalOpen] = useState(false);
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
   const [personalPoints, setPersonalPoints] = useState(0);
   const [crewPoints, setCrewPoints] = useState(0);
   const [personalLevel, setPersonalLevel] = useState("기본");
@@ -59,8 +61,10 @@ function MyPage(): JSX.Element {
   const closePersonalModal = () => setPersonalModalOpen(false);
   const openCrewModal = () => setCrewModalOpen(true);
   const closeCrewModal = () => setCrewModalOpen(false);
-  const openaccountModal = () => setAccountModalOpen(true);
+  const openAccountModal = () => setAccountModalOpen(true);
   const closeAccountModal = () => setAccountModalOpen(false);
+  const openProfileModal = () => setProfileModalOpen(true);
+  const closeProfileModal = () => setProfileModalOpen(false);
 
   const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
@@ -82,7 +86,7 @@ function MyPage(): JSX.Element {
         });
         if (category === "참여한 크루") {
           console.log("내 크루 응답 : ", response.data);
-          setCrewData(response.data.list); // CrewList에 사용할 데이터
+          setCrewData(response.data); // CrewList에 사용할 데이터
         } else if (category === "배틀 중") {
           console.log("내 배틀 응답 : ", response.data);
           setBattleData(response.data); // BattleList에 사용할 데이터
@@ -155,17 +159,32 @@ function MyPage(): JSX.Element {
     <Container>
       <Header>
         {userInfo ? (
-          <IconWrapper onClick={openaccountModal}>
-            <ProfileImage
-              src={
-                userInfo.memberImg === "/static/null"
-                  ? "/img/default/UserDefault.png"
-                  : `${BASE_URL}${userInfo.memberImg}`
-              }
-              alt="Profile"
-            />
-            <NickName>{userInfo.nickname}</NickName>
-          </IconWrapper>
+          <>
+            <FlexRowContainer>
+              <IconWrapper onClick={openAccountModal}>
+                <AccountIcon
+                  src="/img/default/Account.png"
+                  alt="Account Icon"
+                />
+                <ProfileImage
+                  src={
+                    userInfo.memberImg === "/static/null"
+                      ? "/img/default/UserDefault.png"
+                      : `${BASE_URL}${userInfo.memberImg}`
+                  }
+                  alt="Profile"
+                />
+                <NickName>{userInfo.nickname}</NickName>
+              </IconWrapper>
+              <ProfileButton onClick={openProfileModal}>Profile</ProfileButton>
+            </FlexRowContainer>
+            {isProfileModalOpen && (
+              <ProfileModal
+                isOpen={isProfileModalOpen}
+                onClose={closeProfileModal}
+              />
+            )}
+          </>
         ) : (
           <p>사용자 정보를 불러오는 중...</p>
         )}
@@ -297,6 +316,21 @@ const Header = styled.div`
     overflow-y: auto;
   }
 `;
+const FlexRowContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+`;
+
+const AccountIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  margin-left: -20px;
+  margin-top: -30px;
+`;
 
 const Content = styled.div`
   width: 80%;
@@ -309,8 +343,7 @@ const Content = styled.div`
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 0;
+  gap: 8px;
   font-size: 1.5em;
   cursor: pointer;
 
@@ -324,6 +357,12 @@ const ProfileImage = styled.img`
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+`;
+
+const ProfileButton = styled.button`
+  font-size: 0.9em;
+  padding: 6px 12px;
+  cursor: pointer;
 `;
 
 const NickName = styled.h2`
