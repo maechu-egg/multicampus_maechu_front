@@ -4,8 +4,6 @@ import PostForm from "./communityComponent/PostForm";
 import PostDetail from "./communityComponent/PostDetail";
 import SearchBar from "./communityComponent/SearchBar";
 import Pagination from "./communityComponent/Pagination";
-import CategoryTabs from "./communityComponent/CategoryTabs";
-import SubcategoryTabs from "./communityComponent/SubcategoryTabs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./CommunityPage.css";
 import RecommendedKeywords from "./communityComponent/RecommendedKeywords";
@@ -14,51 +12,12 @@ import dataJson from "../../assets/data/data.json";
 import axios from "axios";
 import CategoryDropdown from './communityComponent/CategoryDropdown';
 import {  useLocation, useNavigate, useParams } from "react-router-dom";
-import { param } from "jquery";
+import { useComment } from '../../hooks/community/useComment';
+import { usePost } from '../../hooks/community/usePost';
+import { useSearch } from '../../hooks/community/useSearch';
+import { useCategory } from "hooks/community/useCategory";
+import { usePagination } from "hooks/community/usePagination";
 
-
-
-// 댓글 타입 정의
-interface Comment {
-  id: number;
-  postId: number;
-  author: string;
-  content: string;
-  date: string;
-  comment_like_counts: number;
-  comment_dislike_counts: number;
-  comment_like_status:boolean;
-  comment_dislike_status:boolean;
-  commentAuthor:boolean;
-}
-
-// 게시물 타입 정의
-interface Post {
-  post_id: number;
-  post_title: string;
-  post_contents: string;
-  post_nickname: string;
-  post_date: string;
-  post_views: number;
-  comments: Comment[];
-  comments_count:number;      
-  post_up_sport: string;
-  post_sport: string;
-  post_sports_keyword:string,
-  post_hashtag: string;
-  post_like_counts: number;
-  isRecommended?: boolean; 
-  likeStatus:boolean;
-  unlikeStatus:boolean;
-  post_img1:string;
-  post_img2:string;
-  post_unlike_counts : number;
- 
-  member_id: number; 
-  author:boolean;
-}
-
-// categories.json 파일의 타입 정의
 interface CategoryData {
   categories: string[];
   subcategories: {
@@ -66,20 +25,6 @@ interface CategoryData {
   };
 }
 
-// 서버로부터 받은 댓글 타입 정의
-interface ServerComment  {
-  comments_id: number;
-  c_nickname: string;
-  comments_date: string;
-  comments_contents: string;
-  comment_like_counts: number;
-  comment_dislike_counts: number;
-  commentAuthor:boolean;
-  comment_like_status:boolean,
-  comment_dislike_status:boolean,
-};
-
-// community 데이터
 export interface CommunityData {
   recommendedKeywords: string[];
   post_up_sports: string[];
@@ -87,777 +32,161 @@ export interface CommunityData {
     [key: string]: string[];
   };
 }
-  // community 적용
-  const data: CommunityData = dataJson;
-  // 값 설정
-  const recommendedKeywords = data.recommendedKeywords;
-  const post_up_sports = data.post_up_sports;
-  const post_sports = data.post_sports;
+
+const data: CommunityData = dataJson;
+const recommendedKeywords = data.recommendedKeywords;
+const post_up_sports = data.post_up_sports;
+const post_sports = data.post_sports;
 
 function CommunityPage(): JSX.Element {
   const [showPostForm, setShowPostForm] = useState(false);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [searchResults, setSearchResults] = useState<Post[] | null>(null);
-  const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [activeTab, setActiveTab] = useState("헬스 및 피트니스");
-  const [activePost_sport, setActivePost_sport] = useState<string>("");
-  const [comments, setComments] = useState<Comment[]>([]);
-  
-  const [commentInput, setCommentInput] = useState<string>(""); // 댓글 입력 상태
   const [isEditing, setIsEditing] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [activePost_sport, setActivePost_sport] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);  // currentPage 상태 추가
   const postsPerPage = 10;
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
-  const { postId } = useParams<{ postId: string }>(); 
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string>(""); 
+  const { postId } = useParams<{ postId: string }>();
   const location = useLocation();
-  const [isAuthor, setIsAuthor] = useState(false);
-  const [keyword, setKeyword] = useState<string>("");
+
+ 
+   // 2. usePost 훅을 먼저 사용
+   const {
+     posts,
+     setPosts,
+     recommendedPosts,
+     setRecommendedPosts,
+     selectedPost,
+     setSelectedPost,
+     loading,
+     isAuthor,
+     fetchPosts,
+     fetchRecommendedPosts,
+     handlePostClick,
+     handleSavePost,
+     handleUpdatePost,
+     handleDelete,
+   } = usePost();
+ 
+   // 3. useSearch 훅
+   const {
+     isSearchActive,
+     setIsSearchActive,
+     searchTerm,
+     searchKeyword,
+     handleSearch,
+     handleKeywordClick,
+   } = useSearch(postsPerPage, setPosts, setCurrentPage, setTotalPages);
+ 
+   // 4. useCategory 훅
+   const {
+    activeTab,
+    setActiveTab,
+    loading: categoryLoading,
+    handleCategoryChange,
+    handleSubcategoryChange,
+  } = useCategory({
+    setIsSearchActive,
+    setShowPostForm,
+    setCurrentPage,
+    setPosts,
+    postsPerPage,
+    setActivePost_sport,
+    setTotalPages,
+     fetchPosts
+  });
+ 
+   // 5. usePagination 훅
+   const {
+    loading: paginationLoading,
+    handlePageChange
+  } = usePagination({
+    postsPerPage,
+    isSearchActive,
+    searchKeyword,
+    searchTerm,
+    activeTab,
+    activePost_sport,
+    setPosts,
+    currentPage,
+    setCurrentPage,
+    setTotalPages
+  });
   
 
-  // 페이지 상태 초기화 함수
+    // 페이지 상태 초기화 함수
   const resetPageState = () => {
     setShowPostForm(false);
     setSelectedPost(null);
     setIsEditing(false);
     setCurrentPage(1);
-    setSearchResults(null);
-    setIsSearchActive(false);  
-    setActiveTab("헬스 및 피트니스");  // 기본 카테고리로 초기화
-    setActivePost_sport("");  // 서브카테고리 초기화
+    setIsSearchActive(false);
+    setActiveTab("헬스 및 피트니스");
+    setActivePost_sport("");
   };
+
+  const {
+    comments,  // 여기에 comments 추가
+    setComments,
+    commentInput,
+    setCommentInput,
+    getComments,
+    handleCommentSubmit,
+    handleCommentDelete,
+    handleCommentLike,
+    handleCommentDislike,
+  } = useComment();
+
   
-  // location이 변경될 때마다 상태 초기화
-  useEffect(() => {
-    resetPageState();
-    fetchPosts();
-  }, [location.key]);
+// location이 변경될 때마다 상태 초기화
+useEffect(() => {
+  resetPageState();
+  fetchPosts("헬스 및 피트니스", "", 1, postsPerPage);  // 순서 수정
+}, [location.key]);
+
+// 카테고리나 페이지 변경시
+useEffect(() => {
+  if (!isSearchActive && !loading) {
+    fetchPosts(
+      activeTab,  // 카테고리
+      activePost_sport,  // 서브카테고리
+      currentPage,  // 페이지 번호
+      postsPerPage  // 페이지 크기
+    );
+  }
+}, [activeTab, activePost_sport, currentPage]);
 
 
-  // 게시글 목록 로드
-  useEffect(() => {
-    if (!isSearchActive) {
-      fetchPosts();
-    }
-  }, [activeTab, activePost_sport, currentPage]);
 
-  // 추천 게시글
+
   useEffect(() => {
     if (!isSearchActive && activePost_sport === "") {
-      setRecommendedPosts([]);
-      fetchRecommendedPosts(activeTab, activePost_sport);
+      fetchRecommendedPosts(activeTab);
     }
-  }, [activeTab, activePost_sport, currentPage]);
+  }, [activeTab]);
 
 
-  // 소분류가 선택되었을 때 추천 게시글을 숨기도록 상태 변경
   useEffect(() => {
     if (activePost_sport !== "") {
       setRecommendedPosts([]);
     }
   }, [activePost_sport]);
 
-  // postlist 상태
-  useEffect(() => {  
- 
-  }, [posts]);
-  
-  useEffect(() => {
-    if (comments.length > 0) {
-     
-    }
-  }, [comments]);
-
-  useEffect(() => {
-    if (selectedPost) {
-      getComments(selectedPost.post_id);
-    }
-  }, [selectedPost]);
-
-
-
-
-  // 게시글 조회
-  const fetchPosts = async (selectedCategory = activeTab, selectedSubcategory = activePost_sport, page = currentPage) => {
-    console.log("selectedCategory", selectedCategory);
-    console.log("selectedSubcategory", selectedSubcategory);
-
-    console.log("Fetching posts..."); // 요청 시작 시 로그 출력
-    setLoading(true); 
-    try {
-      const token = localStorage.getItem("authToken"); 
-      if (!token) {
-        console.error("로그인 토큰이 없습니다.");
-        return;
-      }
-      
-      const categoryParam = selectedCategory !== "" ? selectedCategory  : undefined;
-      const subcategoryParam = selectedSubcategory !== "" ? selectedSubcategory : undefined;
-   
-      const response = await axios.get("http://localhost:8001/community/posts", {
-        params:{
-          page:page,
-          size:postsPerPage,
-          post_up_sport: categoryParam,
-          post_sport: subcategoryParam,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });    
-
-      const fetchedPosts = response.data.posts || response.data;
-
-      setTotalPages(response.data.totalPages);
-      
-      const mappedPosts = fetchedPosts.map((post: Post) => ({
-        post_id: post.post_id,
-        post_title: post.post_title,
-        post_contents: post.post_contents || '',
-        post_nickname: post.post_nickname,
-        post_date: post.post_date,
-        post_views: post.post_views,
-        comments_count: post.comments_count || 0,
-        post_up_sport: post.post_up_sport || '',
-        post_sport: post.post_sport,
-        post_hashtag: post.post_hashtag || '',
-        post_like_counts: post.post_like_counts,
-        isRecommended: post.isRecommended || false,
-      }));
-      setPosts(mappedPosts);
-      
-     
-    } catch (error) {
-      console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-      setLoading(false);
-    }
-  };
-
-
-  const fetchRecommendedPosts = async (selectedCategory = activeTab, selectedSubcategory = activePost_sport) => {
-    console.log("RecommendedPosts ");
-    console.log("대분류  : " , activeTab);
-    console.log("소분류  : " , activePost_sport);
-
-    setLoading(true); 
-    setRecommendedPosts([]);
-      const token = localStorage.getItem("authToken"); 
-      if (!token) {
-        console.error("로그인 토큰이 없습니다.");
-        return;
-      }
-
-      if (selectedCategory && (!selectedSubcategory || selectedSubcategory === "")){
-      
-        try {
-          const response = await axios.get('http://localhost:8001/community/posts/userRC', {
-            params:{
-              post_up_sport: selectedCategory,
-              post_sport: undefined,
-            },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }); 
-        
-          setRecommendedPosts(response.data);
-          console.log(response.data, "+++++++++++++++++++++++++");
-        } catch (error) {
-          console.error('추천 게시글 불러오기 오류:', error);
-        }
-    }
-  };
-
-  /*게시물 작성 폼 표시 핸들러 */
   const handleCreatePost = () => {
     setShowPostForm(true);
   };
 
-
-
-
-  /* 게시물 저장 핸들러 */
-  const handleSavePost = async (post_title: string, post_contents: string,
-                          post_up_sport: string, post_sport: string,
-                          post_sports_keyword:string,
-                          post_hashtag: string,
-                          imageFiles: File[] | null 
-                        ) => {
-    
-    const formData = new FormData();
-    formData.append("post_title", post_title);
-    formData.append("post_contents", post_contents);
-    formData.append("post_up_sport", post_up_sport);
-    formData.append("post_sport", post_sport);
-    formData.append("post_hashtag", post_hashtag); 
-    formData.append("post_sports_keyword", post_sports_keyword); 
-
-    if (imageFiles) {
-      for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
-        formData.append("images", imageFiles[i]);
-      }
-    }   
-
-    try{
-      const token = localStorage.getItem("authToken");
-
-      if(!token){
-
-        alert("로그인이 필요합니다.");
-        return; 
-      }
-
-                                        
-      const response = await axios.post("http://localhost:8001/community/posts/effortpost",formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-
-      });
-      
-      if(response.status >= 200 && response.status < 300) {
-        const savedPost = response.data;
-        setPosts((posts) => [savedPost, ...posts]);
-        setShowPostForm(false);
-        alert("게시글이 성공적으로 저장되었습니다.");
-
-
-        await fetchPosts();
-
-        setShowPostForm(false);
-      }else{
-        alert("게시글 저장에 실패했습니다.");
-        navigate('/communitypage'); 
-      }
-
-    }catch(error){
-      console.error("Error", error);
-      alert("서버와의 통신 중 오류가 발생했습니다.");
-    }
-    
-  };
-
-
-
-
-
-
-  /*게시물 수정 폼 핸들러 */
   const handleEdit = () => {
     setIsEditing(true);
   };
 
 
 
-  /*게시물 수정시 업데이트 처리리 핸들러 */
-  const handleUpdatePost = async (post_title: string, post_contents: string,
-                            post_up_sport: string, post_sport: string, 
-                            post_sports_keyword:string,
-                            post_hashtag: string,
-                            imageFiles: File[] | null
-                          ) => {
-    if (selectedPost) {
-
-      const formData = new FormData();
-      formData.append("post_title", post_title);
-      formData.append("post_contents", post_contents);
-      formData.append("post_up_sport", post_up_sport);
-      formData.append("post_sport", post_sport);
-      formData.append("post_hashtag", post_hashtag);
-      formData.append("post_sports_keyword", post_sports_keyword);
-
-      if (imageFiles) {
-        for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
-          formData.append("images", imageFiles[i]);
-        }
-      }
-    
-
-      try{
-            const token = localStorage.getItem("authToken");
-
-            if(!token){
-      
-              alert("로그인이 필요합니다.");
-              return; 
-            }
-            const response = await axios.put(`http://localhost:8001/community/posts/${selectedPost.post_id}/update`, formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                  Authorization: `Bearer ${token}`,
-                },
-        
-            });
-
-            console.log("respons  ", response.data);
-            
-        if(response.status >= 200 && response.status < 300){
-            const updatedPost = response.data;
-           
-            setPosts((posts) =>
-              posts.map( (post) => 
-              post.post_id === selectedPost.post_id ? updatedPost : post
-            ));
-            setSelectedPost(updatedPost);
-            setIsEditing(false);
-            alert("게시글이 수정되었습니다.");
-            navigate('/communitypage');
-        }else{
-          console.error('게시글을 수정 할 수 없습니다. : ' + response);
-          navigate('/communitypage');
-        }
-      }catch(error){
-        console.error('서버와의 통신 중 오류가 발생했습니다.: ' + error);
-        navigate('/communitypage');
-      
-      }
-    }
-  };
-
-
-  /*게시물 삭제 핸들러 */
-  const handleDelete = async() => {
-    if (selectedPost && window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      setPosts(posts.filter(post => post.post_id !== selectedPost.post_id))
-      try{
-        const token = localStorage.getItem('authToken');
-        const response = await axios.delete(`http://localhost:8001/community/posts/${selectedPost.post_id}/delete`, {
-          headers:{
-            Authorization : `Bearer ${token}`
-          }
-        });
-
-        if(response.status=== 200){
-          alert(response.data);
-          setSelectedPost(null);
-          navigate('/communitypage'); 
-        }else{
-          alert(response.data);
-          navigate('/communitypage'); 
-        }
-
-      }catch(error){
-        console.error('서버와의 통신 중 오류가 발생했습니다.: ' + error);
-      }
-    }
-  };
-
- 
-
-  /* 게시물 상세보기 및 클릭 핸들러, 클릭 시 조회수 증가 */
-  const handlePostClick = async  (post: Post, isRecommended :boolean) => {
-    try{
-
-      const token = localStorage.getItem("authToken");
-
-      if(!token){
-
-        alert("로그인이 필요합니다.");
-        return; 
-      }
-      console.log("token" , token);
-
-
-      const response = await axios.get(`http://localhost:8001/community/posts/${post.post_id}/detail`,{
-        headers: {
-            
-          Authorization: `Bearer ${token}`,
-        },
-        params:{
-          isRecommended:isRecommended,
-        }
-      });
-
-      console.log("게시글 상세 정보 : ", response.data);
-      console.log("commnet list : " , response.data.comments);
-      setSelectedPost(response.data);
-      setIsAuthor(response.data.Author);
-
-      if (Array.isArray(response.data.comments)) {
-        console.log("배열 맞음");
-        setComments(response.data.comments);
-      } else {
-        console.error("댓글 데이터가 배열 형태가 아닙니다:", response.data.comments);
-      }
-
-      if (response.data.comments != null) {  
-        const serverComment = response.data.comments;
-        console.log("Post click serverComment", serverComment);
-        const mappedComments: Comment[] = response.data.comments.map((serverComment:ServerComment) => ({
-          id: serverComment.comments_id,
-          author: serverComment.c_nickname,
-          date: serverComment.comments_date,
-          content: serverComment.comments_contents,
-          comment_like_counts: serverComment.comment_like_counts,
-          comment_dislike_counts: serverComment.comment_dislike_counts,
-          commentAuthor: serverComment.commentAuthor,
-          comment_like_status: serverComment.comment_like_status,
-          comment_dislike_status: serverComment.comment_dislike_status,
-        }));
-        setComments(mappedComments);
-        console.log("set commnet list : " , comments);
-    }
-   
-  
-
-    } catch (error) {
-    console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-  }
-    
-  };
-
-  /* 게시물 상세보기에서 뒤로가기 핸들러 */
   const handleBack = () => {
     setSelectedPost(null);
     setIsEditing(false);
   };
- 
-  
 
-
-  // 댓글 등록
-  const handleCommentSubmit = async (postId: number, content: string) => {
-    if (!content.trim()) {
-      alert("댓글을 입력하세요.");
-      return;
-    }
-  
-    try {
-      const token = localStorage.getItem("authToken");
-      if(!token){
-
-        alert("로그인이 필요합니다.");
-        return; 
-      }
-      console.log("token" , token);
-      const commentData = {
-        comments_contents: content,
-        post_id: postId,
-      };
-  
-      const response = await axios.post( "http://localhost:8001/community/comment/saveComment",
-        commentData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
-      if (response.status === 201) {
-    
-        setCommentInput(""); 
-        alert(response.data.message);
-        getComments(postId);
-      }else{
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-    }
-
-  }
-
-
-
-
-
-  // 댓글 list
-  const getComments = async (postId: number) => {
-    console.log("getComment ! " )
-  
-    try {
-      const token = localStorage.getItem("authToken");
-      if(!token){
-
-        alert("로그인이 필요합니다.");
-        return; 
-      }
-       
-       const currentUserId = parseInt(localStorage.getItem("memberId") || "0"); 
-       if (!currentUserId) {
-           alert("사용자 정보를 가져올 수 없습니다.");
-           return;
-       }
-  
-      const response = await axios.get( `http://localhost:8001/community/comment/getComment/${postId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
-
-
-        console.log("response data", response.data);
-        const serverComment = response.data; // 서버에서 반환된 새 댓글 데이터
-        console.log("serverComment", serverComment);
-        
-
-        const newComment: Comment[] = serverComment.map((serverComment: any) => {
-          return {
-            id: serverComment.comments_id,
-            postId: serverComment.post_id,
-            author: serverComment.c_nickname ?? "Unknown", 
-            content: serverComment.comments_contents,
-            date: serverComment.comments_date,
-            comment_like_counts: serverComment.comment_like_counts ?? 0,
-            comment_dislike_counts: serverComment.comment_dislike_counts ?? 0,
-            commentAuthor: serverComment.member_id === currentUserId,
-            comment_like_status: serverComment.comment_like_status,
-            comment_dislike_status: serverComment.comment_dislike_status,
-          };
-        });
-        console.log("newComment", newComment);
-      
-        setComments(newComment);
-        
-
-    } catch (error) {
-      console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-    }
-
-  }
-
-
-
-   /*댓글 삭제 핸들러 */
-   const handleCommentDelete = async(commentId: number, postId : number) => {
-    if (selectedPost && window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-      
-          console.log("commentId", commentId);
-          const updatedComments = selectedPost.comments.filter(comment => comment.id !== commentId);
-          setSelectedPost({ ...selectedPost, comments: updatedComments });
-    
-          try{
-            const token = localStorage.getItem('authToken');
-            const response = await axios.delete(`http://localhost:8001/community/comment/delete/${commentId}`, {
-              headers:{
-                Authorization : `Bearer ${token}`
-              }
-            });
-
-            if(response.status=== 200){
-                  getComments(postId);
-            }else{
-              alert(response.data);
-            
-            }
-
-          }catch(error){
-            console.error('서버와의 통신 중 오류가 발생했습니다.: ' + error);
-          }
-      }
-    };
-
-
-
-
-  /* 카테고리 변경 핸들러 */
-const handleCategoryChange = (post_up_sport: string) => {
-  console.log("카테고리 변경됨:", post_up_sport);
-  setActiveTab(post_up_sport);
-  setActivePost_sport("");
-  setIsSearchActive(false);
-  fetchPosts(post_up_sport, "",1);
-  setShowPostForm(false);
-  setCurrentPage(1);
-};
-
-/* 카테고리 소분류 변경 핸들러 */
-const handleSubcategoryChange = async (post_sport: string) => {
-  console.log("서브카테고리 변경됨:", post_sport);
-  setActivePost_sport(post_sport);
-  setIsSearchActive(false);
-  fetchPosts(activeTab, post_sport);
-  setShowPostForm(false);
-};
-
-
-  /* 페이지 번호 변경 핸들러 */
-  const handlePageChange = (pageNumber: number) => {
-    console.log("pageNum ", pageNumber);
-    setCurrentPage(pageNumber);
-    if(isSearchActive){
-      if(searchKeyword){
-        handleKeywordClick(searchKeyword, activeTab);
-      }else if(searchTerm){
-        handleSearch(searchTerm, pageNumber);
-      }
-    }else{
-      fetchPosts(undefined, undefined, pageNumber);
-    }
-  };
-
-     // 페이지네이션 관련 계산
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const filteredPosts =  searchResults && searchResults.length > 0  
-              ? searchResults.sort((a, b) => b.post_id - a.post_id) 
-              : posts.sort((a, b) => b.post_id - a.post_id);
-
-    const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
-    const calculatedTotalPages = Math.ceil(filteredPosts.length / postsPerPage);
-
-
-    //  검색  
-    const handleSearch = async (searchTerm: string, page:number = 1) => {
-      console.log("Searching for:", searchTerm);
-      if (searchTerm.trim() === "") {
-        setIsSearchActive(false);
-        return;
-      }
-    
-      try {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          console.error("로그인 토큰이 없습니다.");
-          return;
-        }
-        setIsSearchActive(true);
-        setSearchTerm(searchTerm);
-        setSearchKeyword("");
-        setCurrentPage(page);
-        setPosts([]);
-        setLoading(true);
-    
-        const response = await axios.get("http://localhost:8001/community/posts/search", {
-          params: {
-            keyword: searchTerm,
-            page: page,
-            size: postsPerPage,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-  	   validateStatus: (status) => {
-          return status >= 200 && status < 500; 
-        },
-        });
-    
-        console.log("response type", typeof response.data);
-        console.log("response data ", response.data);
-        console.log("검색용 totalpage : " + response.data.totalPages);
-        if (response.status === 200) {
-          const fetchedPosts = response.data.posts;
-          if (!fetchedPosts || fetchedPosts.length === 0) {
-            setPosts([]);
-            alert("검색 결과가 없습니다.");
-          } else {
-            //오류 방지
-             const mappedPosts = fetchedPosts.map((post: Post) => ({
-               post_id: post.post_id,
-               post_title: post.post_title,
-               post_contents: post.post_contents || '',
-               post_nickname: post.post_nickname,
-               post_date: post.post_date,
-               post_views: post.post_views,
-               comments_count: post.comments_count || 0,
-               post_up_sport: post.post_up_sport || '',
-               post_sport: post.post_sport,
-               post_hashtag: post.post_hashtag || '',
-               post_like_counts: post.post_like_counts,
-               isRecommended: post.isRecommended || false,
-             }));
-            setPosts(mappedPosts);
-          
-           
-            setTotalPages( response.data.totalPages);
-          }
-        }else if (response.status === 404) {
-            console.error("검색 결과가 없습니다: ", response.statusText);
-            alert("검색 결과가 없습니다.");
-            setPosts([]);
-            setCurrentPage(1);
-            setTotalPages(1);
-        } else if (response.status >= 400) {
-            console.error("검색 결과를 가져오는 중 오류 발생: ", response.statusText);
-            alert("검색 결과를 가져오던 중 오류가 발생했습니다.");
-            setPosts([]);
-        }
-      } catch (error) {
-        console.error("서버와의 통신 중 오류 발생:", error);
-        alert("서버와의 통신에서 오류가 발생했습니다.");
-      } finally {
-          setLoading(false);
-      }
-    };
-
-   
-    // 키워드 
-    const handleKeywordClick = async (keyword: string, selectedCategory = activeTab) => {
-      console.log("키워드  : ", keyword);
-      console.log("대분류  : ", selectedCategory);
-      try {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          console.error("로그인 토큰이 없습니다.");
-          return;
-        }
-        setSearchKeyword(keyword);
-        setSearchTerm("");
-        setIsSearchActive(true);
-
-        setPosts([]);
-      
-        setLoading(true);
-       
-    
-        const response = await axios.get(`http://localhost:8001/community/posts/sport/${keyword}`, {
-          params: {
-            page: 1,
-            size: postsPerPage,
-            post_up_sport : selectedCategory,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCurrentPage(1);
-        console.log("response", response.status);
-    
-        if (response.status === 200) {
-          const fetchedPosts = response.data.searchList;
-          console.log("keyword ------------ response.data" , response.data );
-          if (!fetchedPosts || fetchedPosts.length === 0) {
-            setPosts([]);
-            alert("검색 결과가 없습니다.");
-            setCurrentPage(1);
-            setTotalPages(1);
-          } else {
-            setPosts(fetchedPosts);
-            setIsSearchActive(true);
-            console.log("keyword ------------ response.data" , response.data.totalPages );
-            setTotalPages(response.data.totalPages);
-          }
-        } else {
-          console.error("키워드 검색 결과를 가져오는 중 오류 발생:", response.statusText);
-          alert("키워드 검색 결과를 가져오던 중 오류가 발생했습니다.");
-          
-        }
-      } catch (error) {
-        console.error("서버와의 통신 중 오류 발생:", error);
-        alert("서버와의 통신에서 오류가 발생했습니다.");
-      
-      } finally {
-        setLoading(false);
-      }
-    };
-
-
-
-  /**
-   * 게시물 수정 모드일 때의 렌더링
-   * 선택된 게시물이 있고 수정 폼 작성 상태일 때 PostForm 컴포넌트를 표시
-   */
   if (isEditing && selectedPost) {
     return (
       <PostForm
@@ -868,9 +197,10 @@ const handleSubcategoryChange = async (post_sport: string) => {
           post_up_sport: selectedPost.post_up_sport,
           post_sport: selectedPost.post_sport,
           post_hashtag: selectedPost.post_hashtag,
-          post_sports_keyword : selectedPost.post_sports_keyword,
+          post_sports_keyword: selectedPost.post_sports_keyword,
         }}
-        onSave={handleUpdatePost}
+        onSave={(post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, post_hashtag, imageFiles) => 
+          handleUpdatePost(selectedPost.post_id, post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, post_hashtag, imageFiles)}
         onCancel={() => setIsEditing(false)}
         post_up_sports={post_up_sports}
         post_sports={post_sports}
@@ -879,40 +209,37 @@ const handleSubcategoryChange = async (post_sport: string) => {
     );
   }
 
-  /**
-   * 게시물 상세보기 모드일 때의 렌더링
-   * 선택된 게시물이 있을 때 PostDetail 컴포넌트를 표시
-   */
   if (selectedPost) {
-    
     return (
       <PostDetail
-      post_id = {selectedPost.post_id}
-      post_title={selectedPost.post_title}
-      post_contents={selectedPost.post_contents}
-      post_nickname={selectedPost.post_nickname}
-      post_date={selectedPost.post_date}
-      post_views={selectedPost.post_views}
-      post_up_sport={selectedPost.post_up_sport}
-      post_sport={selectedPost.post_sport}
-      post_sports_keyword = {selectedPost.post_sports_keyword}
-      post_hashtag={selectedPost.post_hashtag}
-      likeStatus={selectedPost.likeStatus}
-      post_img1 ={selectedPost.post_img1}
-      post_img2 = {selectedPost.post_img2}
-      post_unlike_counts = {selectedPost.post_unlike_counts}
-      post_like_counts = {selectedPost.post_like_counts}
-      commets_count = {selectedPost.comments_count}
-      unlikeStatus = {selectedPost.unlikeStatus}
-      member_id = {selectedPost.member_id}
-      author = {selectedPost.author}
+        post_id={selectedPost.post_id}
+        post_title={selectedPost.post_title}
+        post_contents={selectedPost.post_contents}
+        post_nickname={selectedPost.post_nickname}
+        post_date={selectedPost.post_date}
+        post_views={selectedPost.post_views}
+        post_up_sport={selectedPost.post_up_sport}
+        post_sport={selectedPost.post_sport}
+        post_sports_keyword={selectedPost.post_sports_keyword}
+        post_hashtag={selectedPost.post_hashtag}
+        likeStatus={selectedPost.likeStatus}
+        post_img1={selectedPost.post_img1}
+        post_img2={selectedPost.post_img2}
+        post_unlike_counts={selectedPost.post_unlike_counts}
+        post_like_counts={selectedPost.post_like_counts}
+        commets_count={selectedPost.comments_count}
+        unlikeStatus={selectedPost.unlikeStatus}
+        member_id={selectedPost.member_id}
+        author={selectedPost.author}
         onBack={handleBack}
         onEdit={handleEdit}
-        onDelete={handleDelete}
-        onCommentDelete={handleCommentDelete}
-        currentUserNickname={""}
+        onDelete={() => handleDelete(selectedPost.post_id)}
         comments={comments}  
         onAddComment={(content) => handleCommentSubmit(selectedPost.post_id, content)}
+        onCommentDelete={handleCommentDelete}
+        onCommentLike={handleCommentLike}
+        onCommentDislike={handleCommentDislike}
+        currentUserNickname={""}
       />
     );
   }
@@ -920,20 +247,18 @@ const handleSubcategoryChange = async (post_sport: string) => {
   /* 메인 화면 렌더링 */
   return (
     <div className="community-container">
-    {/* 카테고리(대,소분류) 드롭다운으로 교체 */}
-    {!showPostForm && (
-       <CategoryDropdown
-       post_up_sports={post_up_sports}
-       activeTab={activeTab}
-       activePost_sport={activePost_sport}
-       onTabChange={handleCategoryChange}
-       onSubcategoryChange={handleSubcategoryChange}
-       recommendedKeywords={recommendedKeywords}  // 추가
-       onKeywordClick={handleKeywordClick}  // 추가
-     />
-    )}
+      {!showPostForm && (
+        <CategoryDropdown
+          post_up_sports={post_up_sports}
+          activeTab={activeTab}
+          activePost_sport={activePost_sport}
+          onTabChange={handleCategoryChange}
+          onSubcategoryChange={handleSubcategoryChange}
+          recommendedKeywords={recommendedKeywords}
+          onKeywordClick={(keyword) => handleKeywordClick(keyword, activeTab)}  
+        />
+      )}
 
-      {/* 게시물 작성 폼 또는 게시물 목록 표시 */}
       {showPostForm ? (
         <PostForm
           mode="create"
@@ -943,7 +268,7 @@ const handleSubcategoryChange = async (post_sport: string) => {
             post_up_sport: activeTab,
             post_sport: activePost_sport,
             post_hashtag: "",
-            post_sports_keyword:"",
+            post_sports_keyword: "",
           }}
           onSave={handleSavePost}
           onCancel={() => setShowPostForm(false)}
@@ -953,14 +278,6 @@ const handleSubcategoryChange = async (post_sport: string) => {
         />
       ) : (
         <>
-        
-       {/*  <RecommendedKeywords 
-                        keywords={recommendedKeywords} 
-                        onKeywordClick={handleKeywordClick}
-           /> 
-       */}
-
-          {/* 검색바와 게시물 작성 버튼 */}
           <div className="search-and-write">
             <SearchBar onSearch={handleSearch} />
             <button
@@ -971,18 +288,23 @@ const handleSubcategoryChange = async (post_sport: string) => {
             </button>
           </div>
 
-          {/* 게시물 목록 */}
-          <PostList posts={posts} recommendedPosts={recommendedPosts}  onPostClick={handlePostClick} />
-
-          {/* 페이지네이션 */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
+        
+          <PostList 
+            posts={posts}  
+            recommendedPosts={recommendedPosts} 
+            onPostClick={handlePostClick} 
           />
+
+<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={handlePageChange}
+/>
+{console.log("totalPages:", totalPages)} 
         </>
       )}
     </div>
   );
 }
+
 export default CommunityPage;
