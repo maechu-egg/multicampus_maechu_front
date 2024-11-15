@@ -227,7 +227,7 @@ function HomePage(): JSX.Element {
             <div className="card" key={index}>
               <img
                 src={
-                  crew.crew_intro_img === "/static/CrewDefault"
+                  crew.crew_intro_img === "CrewDefault"
                     ? "/img/Home/homeEx1.png"
                     : crew.crew_intro_img
                 }
