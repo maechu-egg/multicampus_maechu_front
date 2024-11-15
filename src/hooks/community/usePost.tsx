@@ -176,13 +176,10 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
       formData.append("post_hashtag", post_hashtag);
       formData.append("post_sports_keyword", post_sports_keyword);
   
-      // 이미지 파일 처리
-      if (imageFiles && imageFiles.length > 0) {
-        imageFiles.forEach((file, index) => {
-          if (index < 2) {
-            formData.append(`post_img${index + 1}`, file);
-          }
-        });
+      if (imageFiles) {
+        for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
+          formData.append("images", imageFiles[i]);
+        }
       }
   
       const response = await postApi.createPost(formData, token);

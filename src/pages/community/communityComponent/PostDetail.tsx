@@ -4,7 +4,7 @@ import "./PostDetail.css";
 import axios from "axios";
 import { formatDate } from '../../../utils/dateFormat';  
 import CommentSection from "./CommentSection";
-import { commentApi } from '../../../services/api/community/commentApi';
+
 
 interface Comment {
   id: number;
@@ -46,8 +46,6 @@ interface PostDetailProps {
   commets_count: number;
   member_id: number;
   author: boolean;
-  onCommentLike: (commentId: number, postId: number) => void;
-  onCommentDislike: (commentId: number, postId: number) => void;
   getComments: (postId: number) => Promise<void>;
 }
 
@@ -75,8 +73,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
   post_unlike_counts,
   post_like_counts,
   author,
-  onCommentLike,
-  onCommentDislike,
   getComments  
 }) => {
   const [liked, setLiked] = useState(likeStatus);
@@ -362,8 +358,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
           postId={post_id}
           onAddComment={onAddComment}
           onCommentDelete={onCommentDelete}
-          onCommentLike={onCommentLike}
-          onCommentDislike={onCommentDislike}
           commentInput={commentInput}
           setCommentInput={setCommentInput}
         />
