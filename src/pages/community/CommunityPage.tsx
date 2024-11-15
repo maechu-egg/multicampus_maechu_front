@@ -237,8 +237,6 @@ useEffect(() => {
         comments={comments}  
         onAddComment={(content) => handleCommentSubmit(selectedPost.post_id, content)}
         onCommentDelete={handleCommentDelete}
-        onCommentLike={handleCommentLike}
-        onCommentDislike={handleCommentDislike}
         currentUserNickname={""}
       />
     );
