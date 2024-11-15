@@ -43,10 +43,11 @@
 
 .filter-container {
   display: flex;
-  padding: 20px;
   gap: 20px;
   max-height: 300px;
   transition: max-height 0.3s ease;
+  overflow: hidden;
+  padding: 0;
 }
 
 .category-section {

@@ -46,7 +46,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    setMaxHeight(isOpen ? '0px' : '300px');
+    setMaxHeight(!isOpen ? '300px' : '0px');
   };
 
   const currentSubCategories = selectedMain ? 
