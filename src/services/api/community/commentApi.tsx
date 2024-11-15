@@ -19,8 +19,10 @@ export const commentApi = {
 
   // 댓글 삭제
   deleteComment: async (commentId: number, token: string) => {
-    return await axios.delete(`${BASE_URL}/${commentId}`, {
-      headers: { Authorization: `Bearer ${token}` }
+    return await axios.delete(`${BASE_URL}/delete/${commentId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
   },
 
