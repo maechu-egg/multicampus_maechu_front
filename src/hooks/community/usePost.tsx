@@ -161,43 +161,44 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
     post_hashtag: string,
     imageFiles: File[] | null
   ) => {
-    const formData = new FormData();
-    formData.append("post_title", post_title);
-    formData.append("post_contents", post_contents);
-    formData.append("post_up_sport", post_up_sport);
-    formData.append("post_sport", post_sport);
-    formData.append("post_hashtag", post_hashtag);
-    formData.append("post_sports_keyword", post_sports_keyword);
-
-    if (imageFiles) {
-      for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
-        formData.append("images", imageFiles[i]);
-      }
-    }
-
     try {
       const token = localStorage.getItem("authToken");
       if (!token) {
         alert("로그인이 필요합니다.");
-        return;
-      }
-
-      const response = await postApi.createPost(formData, token);
-
-      if (response.status >= 200 && response.status < 300) {
-        const savedPost = response.data;
-        setPosts((posts) => [savedPost, ...posts]);
-        alert("게시글이 성공적으로 저장되었습니다.");
-        await fetchPosts();
-        return true;
-      } else {
-        alert("게시글 저장에 실패했습니다.");
-        navigate('/communitypage');
         return false;
       }
-    } catch (error) {
-      console.error("Error", error);
-      alert("서버와의 통신 중 오류가 발생했습니다.");
+  
+      const formData = new FormData();
+      formData.append("post_title", post_title);
+      formData.append("post_contents", post_contents);
+      formData.append("post_up_sport", post_up_sport);
+      formData.append("post_sport", post_sport);
+      formData.append("post_hashtag", post_hashtag);
+      formData.append("post_sports_keyword", post_sports_keyword);
+  
+      // 이미지 파일 처리
+      if (imageFiles && imageFiles.length > 0) {
+        imageFiles.forEach((file, index) => {
+          if (index < 2) {
+            formData.append(`post_img${index + 1}`, file);
+          }
+        });
+      }
+  
+      const response = await postApi.createPost(formData, token);
+  
+      if (response.status === 201 || response.status === 200) {
+        alert("게시글이 성공적으로 저장되었습니다.");
+        await fetchPosts();
+        navigate('/communitypage');
+        return true;
+      }
+  
+      alert(response.data.message || "게시글 저장에 실패했습니다.");
+      return false;
+    } catch (error: any) {
+      console.error("게시글 저장 중 오류:", error);
+      alert(error.message || "서버와의 통신 중 오류가 발생했습니다.");
       return false;
     }
   };

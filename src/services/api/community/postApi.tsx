@@ -46,30 +46,56 @@ export const postApi = {
   },
 
   // 게시글 작성
-  createPost: async (formData: FormData, token: string) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8001/community/posts/effortpost",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return response;
-    } catch (error) {
-      console.error('Error creating post:', error);
-      throw error;
+ // 게시글 작성
+createPost: async (formData: FormData, token: string) => {
+  try {
+    // FormData 내용 디버깅
+    console.log("Creating post with token:", token);
+    for (let [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}:`, {
+          name: value.name,
+          type: value.type,
+          size: value.size
+        });
+      } else {
+        console.log(`${key}:`, value);
+      }
     }
-  },
+
+    const response = await axios.post(
+      "http://localhost:8001/community/posts/effortpost",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        validateStatus: (status) => {
+          return status < 500; // 500 미만의 상태 코드는 에러로 처리하지 않음
+        }
+      }
+    );
+
+    if (response.status >= 400) {
+      throw new Error(response.data.message || "게시글 생성에 실패했습니다.");
+    }
+
+    return response;
+  } catch (error: any) {
+    console.error('게시글 생성 중 상세 에러:', error.response?.data || error.message);
+    if (error.response?.status === 403) {
+      throw new Error("게시글을 작성할 권한이 없습니다.");
+    }
+    throw new Error(error.response?.data?.message || "게시글 생성 중 오류가 발생했습니다.");
+  }
+},
 
   // 게시글 수정
   updatePost: async (postId: number, formData: FormData, token: string) => {
     try {
       const response = await axios.put(
-        `http://localhost:8001/community/posts/${postId}`,
+        `http://localhost:8001/community/posts/${postId}/update`,
         formData,
         {
           headers: {
@@ -89,7 +115,7 @@ export const postApi = {
   deletePost: async (postId: number, token: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8001/community/posts/${postId}`,
+        `http://localhost:8001/community/posts/${postId}/delete`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
