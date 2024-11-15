@@ -8,7 +8,7 @@ import { ko } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
 import ItemInfo from 'components/ui/record/list/ItemInfo';
 import ItemAddModal from 'components/ui/record/modal/ItemAddModal';
-
+import SelectItemModal from 'components/ui/record/modal/SelectItemModal';
 
 interface ItemResponseDTO {
   item_id: number;
@@ -25,16 +25,16 @@ interface Nutrient {
 
   foodClass: string;
   foodNm: string;
-  energy: string;
-  quantity: string;
-  carbs: string;
-  protein: string;
-  fat: string;
-  sugar: string;
-  nat: string;
-  chole: string;
-  fatsat: string;
-  fatrn: string;
+  energy: number;
+  carbs: number;
+  protein: number;
+  fat: number;
+  sugar: number;
+  nat: number;
+  chole: number;
+  fatsat: number;
+  fatrn: number;
+  cal: number
 
 }
 
@@ -46,11 +46,16 @@ function DietDetailPage(): JSX.Element {
   const memberId = state.memberId;
   const navigate = useNavigate();
 
+  // openApi를 통해 받아온 식품들
   const [apiList,setApiList] = useState<Nutrient[]>([]);
 
-  // 식품 배열
+  // 식품 추가 모달에 전달할 apiList에서 선택된 식품 정보
+  const [selectApiItem,setSelectApiItem] = useState("");
+
+  // ItemInfo로 하나씩 나열할 식품 배열
   const [itemData,setItemData] = useState<ItemResponseDTO[]>([]);
 
+  // meal 영양성분
   const totalCarbs = itemData.reduce((acc, item) => acc + item.carbs, 0);
   const totalProtein = itemData.reduce((acc, item) => acc + item.protein, 0);
   const totalFat = itemData.reduce((acc, item) => acc + item.fat, 0);
@@ -59,8 +64,12 @@ function DietDetailPage(): JSX.Element {
   // 식단 번호
   const dietId = itemData.length;  
 
-  // 모달 트리거
+  // openApi 식품 리스트 나열 모달 트리거
+  const [isSelectApiBoolean,setIsSelectApiBoolean] = useState<boolean>(false);
+
+  // 식품 추가 모달 트리거
   const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 모달 오픈 상태
+ 
   // 추가할 식품
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -108,55 +117,13 @@ function DietDetailPage(): JSX.Element {
        headers: { Authorization: `Bearer ${token}` }
       });
 
-      console.log("debug >>> item api get : ", response.data);
-      setApiList(response.data); // 운동 ID 설정
-
+      console.log("debug >>> item api get : ", response);
+      setApiList(response.data);
+      setIsSelectApiBoolean(true);
     } catch (error) {
       console.error("debug >>> error", error);
     }
   };
-
-//   // 식단 리스트 가져오기
-//   const dietGet = async () => {
-//     if (memberId !== undefined && state.token) {
-//       try {
-//         const token = state.token;
-//         const response = await api.post('record/diet/get/diet', {
-//           meal_type: food,
-//           record_date: selectedDate,
-//         }, {
-//           headers: { 'Authorization': `Bearer ${token}` },
-//         });
-        
-//         console.log("debug >>> dietGet response : " + response.data);
-
-//         return response.data.diet_id;
-
-//       } catch (err) {
-//           console.error('식단 데이터를 가져오는 중 오류 발생:', err);
-//       }
-//     }
-//   };
-
-//   // 식품 리스트 가져오기
-// const itemGet = async (diet_id: number) => {
-//   try {
-//     console.log("debug >>> data", diet_id);
-
-//     const response = await api.get("record/diet/get/items", {
-//       headers: { Authorization: `Bearer ${state.token}` },
-//       params: { diet_id },
-//     });
-
-//     console.log("debug >>> item Info : ", response.data);
-    
-//     // 식품 정보 리턴
-//     return response.data
-
-//   } catch (error) {
-//     console.error("debug >>> error", error);
-//   }
-// }
   
   // ItemAddModal을 통해 추가된 식품을 itemData에 반영
   const addNewItem = (successBoolean: boolean) => {
@@ -253,6 +220,13 @@ function DietDetailPage(): JSX.Element {
           successItemInsert={addNewItem} // 새 운동 추가 후 연동
       ></ItemAddModal>)}
       </ItemList>
+        {isSelectApiBoolean && (
+          <SelectItemModal
+          apiList={apiList}
+          onClose={() => setIsSelectApiBoolean(false)}
+          />
+        )}
+
     </Container>
   );
 };
@@ -368,3 +342,47 @@ const ItemList = styled.div`
     padding: 12px;
   }
 `;
+
+
+
+//   // 식단 리스트 가져오기
+//   const dietGet = async () => {
+//     if (memberId !== undefined && state.token) {
+//       try {
+//         const token = state.token;
+//         const response = await api.post('record/diet/get/diet', {
+//           meal_type: food,
+//           record_date: selectedDate,
+//         }, {
+//           headers: { 'Authorization': `Bearer ${token}` },
+//         });
+        
+//         console.log("debug >>> dietGet response : " + response.data);
+
+//         return response.data.diet_id;
+
+//       } catch (err) {
+//           console.error('식단 데이터를 가져오는 중 오류 발생:', err);
+//       }
+//     }
+//   };
+
+//   // 식품 리스트 가져오기
+// const itemGet = async (diet_id: number) => {
+//   try {
+//     console.log("debug >>> data", diet_id);
+
+//     const response = await api.get("record/diet/get/items", {
+//       headers: { Authorization: `Bearer ${state.token}` },
+//       params: { diet_id },
+//     });
+
+//     console.log("debug >>> item Info : ", response.data);
+    
+//     // 식품 정보 리턴
+//     return response.data
+
+//   } catch (error) {
+//     console.error("debug >>> error", error);
+//   }
+// }
