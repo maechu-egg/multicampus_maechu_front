@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { postApi } from '../../services/api/community/postApi';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext'; // AuthContext import 추가
 import axios from 'axios';
 
 export interface Comment {
@@ -40,21 +41,22 @@ export interface Post {
 }
 
 export const usePost = () => {
+  const { state: { token } } = useAuth(); // AuthContext 사용
   const [posts, setPosts] = useState<Post[]>([]);
   const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isAuthor, setIsAuthor] = useState(false);
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const navigate = useNavigate();
 
-  // 게시글 목록 조회
-const fetchPosts = async (
+
+ // 게시글 목록 조회
+ const fetchPosts = async (
   selectedCategory?: string,
   selectedSubcategory?: string,
   page: number = 1,
@@ -63,9 +65,8 @@ const fetchPosts = async (
   console.log("Fetching posts...");
   setLoading(true);
   try {
-    const token = localStorage.getItem("authToken");
     if (!token) {
-      console.error("로그인 토큰이 없습니다.");
+      console.error("로그인이 필요합니다.");
       return;
     }
 
@@ -76,11 +77,11 @@ const fetchPosts = async (
       post_sport: selectedSubcategory,
     }, token);
 
-    console.log("Server response:", response.data); // 서버 응답 로깅
+    console.log("Server response:", response.data);
 
     const fetchedPosts = response.data.posts || response.data;
     setTotalPages(response.data.totalPages);
-    console.log("Total pages:", response.data.totalPages); // totalPages 값 로깅
+    console.log("Total pages:", response.data.totalPages);
 
     const mappedPosts = fetchedPosts.map((post: Post) => ({
       post_id: post.post_id,
@@ -120,7 +121,7 @@ const fetchPosts = async (
   ) => {
     setLoading(true);
     setRecommendedPosts([]);
-    const token = localStorage.getItem("authToken");
+
     if (!token) {
       console.error("로그인 토큰이 없습니다.");
       return;
@@ -140,26 +141,21 @@ const fetchPosts = async (
     }
   };
 
-// 게시글 상세 조회
-const handlePostClick = async (post: Post, isRecommended: boolean) => {
-  try {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
+  // 게시글 상세 조회
+  const handlePostClick = async (post: Post, isRecommended: boolean) => {
+    try {
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
 
-    const response = await postApi.getPostDetail(post.post_id, isRecommended, token);
-    setSelectedPost(response.data);
-    setIsAuthor(response.data.Author);
-    setLiked(response.data.likeStatus);
-    setDisliked(response.data.unlikeStatus);
-    setLikeCount(response.data.post_like_counts);
-    setDislikeCount(response.data.post_unlike_counts);
-  } catch (error) {
-    console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-  }
-};
+      const response = await postApi.getPostDetail(post.post_id, isRecommended, token);
+      setSelectedPost(response.data);
+      setIsAuthor(response.data.Author);
+    } catch (error) {
+      console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
 
   // 게시글 작성
   const handleSavePost = async (
@@ -171,63 +167,45 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
     post_hashtag: string,
     imageFiles: File[] | null
   ) => {
+    const formData = new FormData();
+    formData.append("post_title", post_title);
+    formData.append("post_contents", post_contents);
+    formData.append("post_up_sport", post_up_sport);
+    formData.append("post_sport", post_sport);
+    formData.append("post_hashtag", post_hashtag);
+    formData.append("post_sports_keyword", post_sports_keyword);
+
+    if (imageFiles) {
+      for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
+        formData.append("images", imageFiles[i]);
+      }
+    }
+
     try {
-      const token = localStorage.getItem("authToken");
       if (!token) {
         alert("로그인이 필요합니다.");
         return false;
       }
-  
-      const formData = new FormData();
-      formData.append("post_title", post_title);
-      formData.append("post_contents", post_contents);
-      formData.append("post_up_sport", post_up_sport);
-      formData.append("post_sport", post_sport);
-      formData.append("post_sports_keyword", post_sports_keyword);
-      formData.append("post_hashtag", post_hashtag);
-  
-      if (imageFiles) {
-        for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {
-          formData.append("images", imageFiles[i]);
-        }
-      }
-  
-      console.log("=== 전송 데이터 ===");
-      for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}:`, {
-            name: value.name,
-            type: value.type,
-            size: value.size
-          });
-        } else {
-          console.log(`${key}:`, value);
-        }
-      }
-  
+
       const response = await postApi.createPost(formData, token);
-  
-      if (response.status === 200) {
-        alert("게시글이 성공적으로 저장되었습니다.");
-        await fetchPosts();
+
+      if (response.status >= 200 && response.status < 300) {
+        alert("게시글이 작성되었습니다.");
         navigate('/communitypage');
         return true;
+      } else {
+        console.error('게시글을 작성할 수 없습니다.');
+        return false;
       }
-  
-      return false;
-    } catch (error: any) {
-      console.error("게시글 저장 중 오류:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      alert(error.message || "게시글 저장에 실패했습니다.");
+    } catch (error) {
+      console.error('Error:', error);
       return false;
     }
   };
 
-  // 게시글 수정
-  const handleUpdatePost = async (
+
+   // 게시글 수정
+   const handleUpdatePost = async (
     postId: number,
     post_title: string,
     post_contents: string,
@@ -252,7 +230,6 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
     }
 
     try {
-      const token = localStorage.getItem("authToken");
       if (!token) {
         alert("로그인이 필요합니다.");
         return false;
@@ -283,53 +260,52 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
     }
   };
 
-  // 게시글 삭제
-  const handleDelete = async (postId: number) => {
-    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) return false;
+ // 게시글 삭제
+// 게시글 삭제
+const handleDelete = async (postId: number) => {
+  try {
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return false;
+    }
 
-        const response = await postApi.deletePost(postId, token);
+    console.log('Current token:', token); // 토큰 확인용 로그
 
-        if (response.status === 200) {
-          setPosts(posts.filter(post => post.post_id !== postId));
-          alert(response.data);
-          setSelectedPost(null);
-          navigate('/communitypage');
-          return true;
-        } else {
-          alert(response.data);
-          navigate('/communitypage');
-          return false;
-        }
-      } catch (error) {
-        console.error('서버와의 통신 중 오류가 발생했습니다.:', error);
-        return false;
-      }
+    if (!window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+      return false;
+    }
+
+    const response = await postApi.deletePost(postId, token);
+    
+    if (response.status === 200) {
+      alert('게시글이 삭제되었습니다.');
+      navigate('/communitypage');
+      return true;
+    } else {
+      alert('게시글 삭제에 실패했습니다.');
+      return false;
+    }
+  } catch (error) {
+    console.error('게시글 삭제 중 오류 발생:', error);
+    if (axios.isAxiosError(error) && error.response?.status === 403) {
+      alert("게시글 삭제 권한이 없습니다.");
+    } else {
+      alert("게시글 삭제 중 오류가 발생했습니다.");
     }
     return false;
-  };
-  const handleLike = async (postId: number) => {
+  }
+};
+
+   // 좋아요 처리
+   const handleLike = async (postId: number) => {
     try {
-      const token = localStorage.getItem("authToken");
       if (!token) {
         alert("로그인이 필요합니다.");
         return;
       }
 
-      let response;
       if (!liked) {
-        response = await axios.post(
-          `http://localhost:8001/useractivity/${postId}/likeinsert`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await postApi.addLike(postId, token);
         if (response.status === 200) {
           if (response.data.Extable) {
             alert("이미 좋아요를 눌렀습니다.");
@@ -338,61 +314,33 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
             setLiked(true);
             if (disliked) {
               setDislikeCount((prev) => prev - 1);
-              await axios.delete(
-                `http://localhost:8001/useractivity/${postId}/unlikedelete`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
+              await postApi.deleteDislike(postId, token);
               setDisliked(false);
             }
           }
         }
       } else {
-        response = await axios.delete(
-          `http://localhost:8001/useractivity/${postId}/likedelete`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          if (response.data.result) {
-            setLikeCount(response.data.likeCount);
-            setLiked(false);
-          }
+        const response = await postApi.deleteLike(postId, token);
+        if (response.status === 200 && response.data.result) {
+          setLikeCount(response.data.likeCount);
+          setLiked(false);
         }
       }
     } catch (error) {
-      console.error("좋아요 처리 중 오류:", error);
+      console.error("좋아요 처리 중 오류 발생:", error);
     }
   };
 
   // 싫어요 처리
   const handleDislike = async (postId: number) => {
     try {
-      const token = localStorage.getItem("authToken");
       if (!token) {
         alert("로그인이 필요합니다.");
         return;
       }
 
-      let response;
       if (!disliked) {
-        response = await axios.post(
-          `http://localhost:8001/useractivity/${postId}/unlikeinsert`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await postApi.addDislike(postId, token);
         if (response.status === 200) {
           if (response.data.Extable) {
             alert("이미 싫어요를 눌렀습니다.");
@@ -401,43 +349,24 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
             setDisliked(true);
             if (liked) {
               setLikeCount((prev) => prev - 1);
-              await axios.delete(
-                `http://localhost:8001/useractivity/${postId}/likedelete`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
+              await postApi.deleteLike(postId, token);
               setLiked(false);
             }
           }
         }
       } else {
-        response = await axios.delete(
-          `http://localhost:8001/useractivity/${postId}/unlikedelete`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          if (response.data.result) {
-            setDislikeCount(response.data.unLikeCount);
-            setDisliked(false);
-          }
+        const response = await postApi.deleteDislike(postId, token);
+        if (response.status === 200 && response.data.result) {
+          setDislikeCount(response.data.unLikeCount);
+          setDisliked(false);
         }
       }
     } catch (error) {
-      console.error("싫어요 처리 중 오류:", error);
+      console.error("싫어요 처리 중 오류 발생:", error);
     }
   };
-  // 정렬 순서 변경
-  const handleSortOrderChange = (order: "asc" | "desc") => {
-    setSortOrder(order);
-  };
+
+
   return {
     posts,
     setPosts,
@@ -448,19 +377,21 @@ const handlePostClick = async (post: Post, isRecommended: boolean) => {
     loading,
     totalPages,
     isAuthor,
-    liked,
-    disliked,
-    likeCount,
-    dislikeCount,
-    sortOrder,
     fetchPosts,
     fetchRecommendedPosts,
     handlePostClick,
     handleSavePost,
     handleUpdatePost,
     handleDelete,
+    liked,
+    setLiked,
+    disliked,
+    setDisliked,
+    likeCount,
+    setLikeCount,
+    dislikeCount,
+    setDislikeCount,
     handleLike,
     handleDislike,
-    handleSortOrderChange,
   };
 };

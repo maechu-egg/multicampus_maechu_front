@@ -7,8 +7,10 @@ interface CommentSectionProps {
   postId: number;
   onAddComment: (content: string) => void;
   onCommentDelete: (commentId: number, postId: number) => void;
+  onCommentLike: (commentId: number, postId: number) => void;
+  onCommentDislike: (commentId: number, postId: number) => void;
   commentInput: string;
-  setCommentInput: (value: string) => void;
+  setCommentInput: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
@@ -16,6 +18,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   postId,
   onAddComment,
   onCommentDelete,
+  onCommentLike,
+  onCommentDislike,
   commentInput,
   setCommentInput
 }) => {
