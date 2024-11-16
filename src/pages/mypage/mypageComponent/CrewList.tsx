@@ -33,9 +33,9 @@ function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
             <ImageWrapper>
               <CrewImage
                 src={
-                  crew.crew_intro_img && crew.crew_intro_img !== "CrewDefault"
-                    ? `${BASE_URL}/${crew.crew_intro_img}`
-                    : "/img/default/CrewDefault.png"
+                  crew.crew_intro_img === "/static/CrewDefault"
+                    ? "/img/default/CrewDefault.png"
+                    : `${BASE_URL}${crew.crew_intro_img}`
                 }
                 alt="Crew intro"
               />

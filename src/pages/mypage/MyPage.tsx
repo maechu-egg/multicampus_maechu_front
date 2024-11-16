@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
@@ -10,7 +9,8 @@ import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
 import ProfileModal from "./mypageComponent/ProfileModal";
-const BASE_URL = "http://localhost:8001";
+import { Link, useNavigate } from "react-router-dom";
+const BASE_URL = "http://localhost:8001/static";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
@@ -53,6 +53,17 @@ interface todayRecord {
   };
 }
 
+interface Post {
+  post_id: number;
+  post_title: string;
+  post_nickname: string;
+  post_sport: string;
+  post_views: number;
+  post_like_counts: number;
+  post_date: string;
+  post_contents: string | null;
+}
+
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
   const { state } = useAuth();
@@ -72,7 +83,7 @@ function MyPage(): JSX.Element {
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [imgPath, setImgPath] = useState("");
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -108,6 +119,7 @@ function MyPage(): JSX.Element {
           console.log("내 배틀 응답 : ", response.data);
           setBattleData(response.data); // BattleList에 사용할 데이터
         } else {
+          console.log("커뮤니티 정보 : ", response.data.list);
           setPostData(response.data.list);
         }
       } catch (error) {
@@ -186,6 +198,9 @@ function MyPage(): JSX.Element {
     if (points >= 10) return "브론즈";
     return "기본";
   };
+  const handleKcal = () => {
+    navigate("/recordpage");
+  };
 
   return (
     <Container>
@@ -200,7 +215,7 @@ function MyPage(): JSX.Element {
                 />
                 <ProfileImage
                   src={
-                    userInfo.memberImg === "/static/null"
+                    userInfo.memberImg === "/null"
                       ? "/img/default/UserDefault.png"
                       : `${BASE_URL}${userInfo.memberImg}`
                   }
@@ -231,7 +246,7 @@ function MyPage(): JSX.Element {
 
         <Divider />
         {kcalInfo ? (
-          <InfoBars>
+          <InfoBars onClick={handleKcal}>
             <Info>
               <h3>오늘 칼로리 (탄/단/지)</h3>
               <h1>
@@ -369,6 +384,7 @@ const AccountIcon = styled.img`
 const Content = styled.div`
   width: 80%;
   height: 1000px;
+
   @media (min-width: 900px) {
     margin-left: 30%;
   }
@@ -462,6 +478,7 @@ const Info = styled.div`
   @media (min-width: 900px) {
     align-items: center;
     text-align: center;
+    padding-top: 10px;
   }
 `;
 
@@ -473,7 +490,8 @@ const ProgressBarWrapper = styled.div`
   align-items: center;
 
   @media (min-width: 900px) {
-    align-items: flex-start;
+    align-items: flex-center;
+    width: 100%;
   }
 `;
 
@@ -529,7 +547,7 @@ const CategoryItem = styled.div<{ isSelected: boolean }>`
   font-size: 1em;
   color: #333;
   cursor: pointer;
-  padding: 10px 0;
+  padding-bottom: 25px;
   border-bottom: ${(props) => (props.isSelected ? "2px solid #333" : "none")};
 
   &:hover {
