@@ -26,7 +26,7 @@ interface SetInfo {
   exercise_id: number;
 }
 
-const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: ExerciseInfoProps): JSX.Element => {
+const ExerciseInfo = ({ exercise, receiveUpdatedExer, receiveDeletedExer }: ExerciseInfoProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
 
@@ -63,16 +63,18 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: Exerc
     setIsEditModalOpen(true);
   }
 
-  const setSave = (updatedSet: SetInfo) => {
-    if (updatedSet.weight === 0) {
-      setSetInfo((prevSetInfo) => prevSetInfo.filter(set => set.set_id !== updatedSet.set_id));
-    } else {
+  const setSave = (updatedSet: SetInfo) => {   
       setSetInfo((prevSetInfo) =>
         prevSetInfo.map((set) =>
           set.set_id === updatedSet.set_id ? updatedSet : set
         )
       );
-    }
+  };
+
+  const setDelete = (deletedId: number) => {   
+    setSetInfo((prevSetInfo) =>
+      prevSetInfo.filter((set) => set.set_id !== deletedId)
+    );
   };
 
   const updateExerInfo = async (duration: number, intensity: string) => {
@@ -133,6 +135,7 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer,receiveDeletedExer }: Exerc
           onClose={closeSetModal}
           modalInfo={setInfo.length > 0}
           receiveUpdatedSet={setSave}
+          receiveDeletedSet={setDelete}
         />
       )}
       {isEditModalOpen && (

@@ -100,7 +100,7 @@ function DietDetailPage(): JSX.Element {
           console.log("debug >>> ItemData : ", response.data.itemList);
 
         } else {
-          console.error("debug >>> diet 테이블이 존재하지 않습니다");
+          console.log("debug >>> diet 테이블이 존재하지 않습니다");
         }
 
       } catch (err) {
@@ -125,7 +125,12 @@ function DietDetailPage(): JSX.Element {
       console.error("debug >>> error", error);
     }
   };
-  
+
+  const getSelectItem = () => {
+    dietGet();
+    setIsSelectApiBoolean(false);
+  }
+
   // 삭제된 ItemInfo ItemPage에 넘겨줌
   const deleteItem = (deletedItemId: number) => {
     setItemData((prevItemData) =>
@@ -199,7 +204,7 @@ function DietDetailPage(): JSX.Element {
           <SelectItemModal
           apiList={apiList}
           onClose={() => setIsSelectApiBoolean(false)}
-          onSave={() => dietGet}
+          onSave={getSelectItem}
           dietId={dietId}  
           />
         )}
