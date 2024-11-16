@@ -62,6 +62,7 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet }: SetInf
   };
 
   const deleteSetInfo = async (setId: number) => {
+    console.log("debug >>> delete setId : ", setId);
     try {
       const response = await api.delete('record/exercise/delete/set', {
         headers: { Authorization: `Bearer ${token}` },
