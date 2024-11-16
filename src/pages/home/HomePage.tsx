@@ -6,6 +6,7 @@ import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Crew {
   crew_id: number;
@@ -63,6 +64,7 @@ function HomePage(): JSX.Element {
   const [swapData, setSwapData] = useState<Swap[]>([]);
   const [isSwapDataLoading, setIsSwapDataLoading] = useState<boolean>(true);
   const [todayWorkout, setTodayWorkout] = useState<TodayWorkout[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getSwapData = async () => {
@@ -219,7 +221,10 @@ function HomePage(): JSX.Element {
             )}
           </TextContainer>
           <IconWrapper>
-            <FontAwesomeIcon icon={faArrowRight} />
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              onClick={() => navigate("/crewpage")}
+            />
           </IconWrapper>
         </Title>
         <Cards isBlurred={!isDataFetched}>
@@ -227,7 +232,7 @@ function HomePage(): JSX.Element {
             <div className="card" key={index}>
               <img
                 src={
-                  crew.crew_intro_img === "CrewDefault"
+                  crew.crew_intro_img === "/static/CrewDefault"
                     ? "/img/Home/homeEx1.png"
                     : crew.crew_intro_img
                 }
@@ -301,15 +306,11 @@ function HomePage(): JSX.Element {
         </Title>
         <CardContainer>
           <CardSlider>
-            {[...todayWorkout, ...todayWorkout].map((workout, index) => (
+            {todayWorkout.map((workout, index) => (
               <Card
                 key={index}
                 backgroundImage={
                   workout.post_img1 ?? "/img/default/workDefault1.png"
-                }
-                isCenter={
-                  index % todayWorkout.length ===
-                  Math.floor(todayWorkout.length / 2)
                 }
               >
                 <CardContent>
@@ -445,7 +446,7 @@ const CardSlider = styled.div`
   animation: ${slideAnimation} 30s linear infinite;
 `;
 
-const Card = styled.div<{ backgroundImage: string; isCenter: boolean }>`
+const Card = styled.div<{ backgroundImage: string }>`
   min-width: 280px;
   height: 330px;
   margin-right: 20px;
@@ -463,8 +464,6 @@ const Card = styled.div<{ backgroundImage: string; isCenter: boolean }>`
     transform 0.3s ease,
     box-shadow 0.3s ease,
     filter 0.3s ease;
-  transform: ${(props) => (props.isCenter ? "scale(1.1)" : "scale(1)")};
-  filter: ${(props) => (props.isCenter ? "brightness(1)" : "brightness(0.7)")};
 
   &:hover {
     transform: scale(1.05);
