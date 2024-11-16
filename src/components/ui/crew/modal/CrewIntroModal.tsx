@@ -52,10 +52,6 @@ function CrewIntroModal({
     }
     data.append("crew_id", crew_id.toString());
 
-    for (let [key, value] of data.entries()) {
-      console.log(`${key}:`, value);
-    }
-
     // 크루 소개글 관리 업데이트 API
     const updateCrewIntro = async () => {
       try {

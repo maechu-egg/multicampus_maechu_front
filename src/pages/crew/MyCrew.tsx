@@ -12,7 +12,7 @@ function MyCrew({myCrew}: { myCrew: any }) {
 
     return(
         <div>
-            <ul className="nav" id="myTab" role="tablist">
+            <ul className="nav form-control" id="myTab" role="tablist">
                 {myCrew.map((crew: { crew_id: string; crew_name: string }, index: number) => (
                     <li className="nav-item" role="presentation" key={crew.crew_id}>
                         <button

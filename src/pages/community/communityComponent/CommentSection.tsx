@@ -1,14 +1,12 @@
-import React from 'react';
-import CommentItem from './CommentItem';
-import type { Comment } from '../../../hooks/community/useComment';  // type-only import 사용
+import React from "react";
+import CommentItem from "./CommentItem";
+import type { Comment } from "../../../hooks/community/useComment"; // type-only import 사용
 
 interface CommentSectionProps {
   comments: Comment[];
   postId: number;
   onAddComment: (content: string) => void;
   onCommentDelete: (commentId: number, postId: number) => void;
-  onCommentLike: (commentId: number, postId: number) => void;
-  onCommentDislike: (commentId: number, postId: number) => void;
   commentInput: string;
   setCommentInput: (value: string) => void;
 }
@@ -18,16 +16,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   postId,
   onAddComment,
   onCommentDelete,
-  onCommentLike,
-  onCommentDislike,
   commentInput,
-  setCommentInput
+  setCommentInput,
 }) => {
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (commentInput.trim() !== '') {
+    if (commentInput.trim() !== "") {
       onAddComment(commentInput);
-      setCommentInput('');
+      setCommentInput("");
     }
   };
 
@@ -35,12 +31,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     <div className="comments-section">
       <div className="comments-list">
         {comments.map((comment) => (
-            <CommentItem  
+          <CommentItem
             key={comment.id}
             comment={comment}
             onCommentDelete={onCommentDelete}
-            onCommentLike={onCommentLike}
-            onCommentDislike={onCommentDislike}
             post_id={postId}
           />
         ))}
