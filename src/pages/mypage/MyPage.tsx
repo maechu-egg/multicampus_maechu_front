@@ -56,12 +56,26 @@ interface todayRecord {
 interface Post {
   post_id: number;
   post_title: string;
+  post_contents: string;
   post_nickname: string;
-  post_sport: string;
-  post_views: number;
-  post_like_counts: number;
   post_date: string;
-  post_contents: string | null;
+  post_views: number;
+  comments_count: number;
+  comments: Comment[];
+  post_up_sport: string;
+  post_sport: string;
+  post_sports_keyword: string;
+  post_hashtag: string;
+  post_like_counts: number;
+  isRecommended?: boolean;
+  likeStatus: boolean;
+  unlikeStatus: boolean;
+  post_img1: string;
+  post_img2: string;
+  post_unlike_counts: number;
+  member_id: number;
+
+  author: boolean;
 }
 
 function MyPage(): JSX.Element {
@@ -83,7 +97,6 @@ function MyPage(): JSX.Element {
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -332,7 +345,7 @@ const Container = styled.div`
   align-items: center;
 
   height: 100%;
-  background-color: #b6c0d3;
+  background-color: #1d2636;
 
   @media (min-width: 900px) {
     flex-direction: row;
@@ -347,8 +360,8 @@ const Header = styled.div`
   align-items: center;
   width: 100%;
   border-bottom: 0.8px solid #666;
-  background-color: #f4f4f4;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #edf1f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 1.5);
   padding-top: 20px;
 
   @media (min-width: 900px) {
@@ -357,7 +370,7 @@ const Header = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #f4f4f4;
+    background-color: #edf1f9;
     border-right: 1px solid #ddd;
 
     padding: 150px 25px 80px 25px;
@@ -410,15 +423,21 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileButton = styled.button`
-  font-size: 0.8em;
-  padding: 6px 12px;
+  background-color: #1d2636;
+  color: #fff;
+  border: none;
+  width: fit-content;
+  padding: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  border-radius: 20px;
+  margin-left: 5px;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 
-  &: hover {
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  &:hover {
+    background-color: #414d60;
+    color: #e0e0e0;
   }
 `;
 
@@ -548,7 +567,7 @@ const CategoryItem = styled.div<{ isSelected: boolean }>`
   color: #333;
   cursor: pointer;
   padding-bottom: 25px;
-  border-bottom: ${(props) => (props.isSelected ? "2px solid #333" : "none")};
+  border-bottom: ${(props) => (props.isSelected ? "3px solid #333" : "none")};
 
   &:hover {
     border-bottom: 2px solid #333;
