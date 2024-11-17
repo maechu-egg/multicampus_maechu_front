@@ -305,7 +305,7 @@ useEffect(() => {
               className="btn btn-primary write-button"
               onClick={handleCreatePost}
             >
-              게시물 작성
+              글쓰기
             </button>
           </div>
 

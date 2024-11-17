@@ -263,10 +263,10 @@ const PostForm: React.FC<PostFormProps> = ({
         </div>
 
         <div className="d-flex justify-content-end gap-2">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" id="postform-submit-btn" className="btn btn-primary">
             {mode === "create" ? "작성하기" : "수정하기"}
           </button>
-          <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          <button type="button" id="postform-cancel-btn" className="btn btn-secondary" onClick={onCancel}>
             {mode === "create" ? "작성취소" : "수정취소"}
           </button>
         </div>

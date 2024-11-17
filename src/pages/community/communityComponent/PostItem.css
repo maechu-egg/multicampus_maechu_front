@@ -23,11 +23,23 @@
   flex-direction: column;
   gap: 4px;
 }
+.category-date-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
+}
 .subcategory {
   font-size: 13px;
   color: #666d75;
   margin: 0;
+}
+
+.title-author-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
 }
 
 .post-title {
@@ -35,6 +47,7 @@
   font-weight: 500;
   color: #333;
   margin: 0;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -50,12 +63,19 @@
   line-height: 1.4;
 }
 
+.author {
+  font-size: 13px;
+  color: #666d75;
+  flex-shrink: 0;
+}
+
 .post-content-wrapper .post-tags {
   display: flex !important;
   gap: 4px !important;
   flex-wrap: wrap !important;
   margin: 0 !important;
   padding: 0 !important;
+  flex: 1;
 }
 
 .post-content-wrapper .tag-item {
@@ -69,7 +89,6 @@
   border: none !important;
 }
 
-/* 하단 정보 영역 수정 */
 .post-info-wrapper {
   display: flex;
   justify-content: space-between;
@@ -79,17 +98,13 @@
   margin-top: 8px;
 }
 
-.author {
-  font-size: 13px;
-  color: #666d75;
-}
-
 .post-stats {
   display: flex;
   gap: 12px;
   color: #98a8b9;
   font-size: 13px;
   align-items: center;
+  margin-left: auto;
 }
 
 .post-stats span {
@@ -99,6 +114,7 @@
 }
 
 .date {
+  font-size: 13px;
   color: #98a8b9;
 }
 
@@ -118,8 +134,8 @@
 @media screen and (max-width: 768px) {
   .post-item {
     padding: 12px;
-    margin: 0 auto 8px;  /* 좌우 margin을 auto로 변경 */
-    width: 95%;          /* 모바일에서도 95% 유지 */
+    margin: 0 auto 8px;
+    width: 95%;
   }
 
   .post-title {
@@ -143,7 +159,7 @@
 
 @media screen and (min-width: 769px) and (max-width: 1024px) {
   .post-item {
-    max-width: 1200px;  /* 태블릿에서도 최대 너비 유지 */
+    max-width: 1200px;
     width: 95%;
     margin: 0 auto 8px;
   }
@@ -151,7 +167,7 @@
 
 @media screen and (min-width: 1025px) {
   .post-item {
-    max-width: 1200px;  /* 데스크톱에서도 최대 너비 유지 */
+    max-width: 1200px;
     width: 95%;
     margin: 0 auto 8px;
   }
