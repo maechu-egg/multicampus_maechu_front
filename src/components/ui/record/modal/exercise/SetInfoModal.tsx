@@ -16,9 +16,10 @@ interface SetInfoModalProps {
   onClose: () => void;
   modalInfo: boolean;
   receiveUpdatedSet: (updatedSet: SetInfo) => void;
+  receiveDeletedSet: (deletedSet: number) => void;
 }
 
-const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet }: SetInfoModalProps): JSX.Element => {
+const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveDeletedSet }: SetInfoModalProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
 
@@ -37,7 +38,6 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet }: SetInf
   const handleSave = async () => {
     if (editingSetId !== null) {
       await updateSetInfo(editData);
-      receiveUpdatedSet(editData); // 수정된 세트 데이터 전달
       setEditingSetId(null); // 저장 후 수정 모드 해제
     }
   };
@@ -56,6 +56,7 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet }: SetInf
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log("debug >>> update Set :", response.data);
+      receiveUpdatedSet(editData); // 수정된 세트 데이터 전달
     } catch (error) {
       console.log("debug >>> error:", error);
     }
@@ -69,6 +70,7 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet }: SetInf
         params: { set_id: setId }
       });
       console.log("debug >>> delete Set : ", response.data);
+      receiveDeletedSet(setId);
     } catch (error) {
         console.log("Error deleting set:", error);
     }
