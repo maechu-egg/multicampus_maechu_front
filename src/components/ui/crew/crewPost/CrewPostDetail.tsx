@@ -120,7 +120,7 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
         <div className="post-detail">
             <hr className="border border-secondary border-1 opacity-50" />
             <div className="post-header">
-                <h2>{crew_post_title}</h2>
+                <h2>{crew_post_title} <span className="badge text-bg-secondary">{crew_post_state === 0 ? "공지" : crew_post_state === 1 ? "인기" : "일반"}</span></h2>
                 <div className="post-info">
                     <span className="author">{nickname}</span>
                     <div className="info-right">

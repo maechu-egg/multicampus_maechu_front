@@ -286,33 +286,6 @@ function CrewJoinModal({ crew_id }: { crew_id: number}) {
                     />
                 </div>
                 <br/>
-                {/* 게시글 여부 */}
-                <div className="form-control" style={{ width: '100%' }}>
-                    <label>게시글 여부</label>
-                    <div className="container d-flex justify-content-between w-100">
-                        <div className="d-flex tabs w-100" style={{paddingLeft : 0, paddingRight : 0}}>
-                            <input
-                                type="radio"
-                                id="yes"
-                                name="postOption"
-                                value={1}
-                                checked={crew_state === 1}
-                            />
-                            <label className="tab w-100 text-center" htmlFor="yes">게시글 게시</label>
-
-                            <input
-                                type="radio"
-                                id="no"
-                                name="postOption"
-                                value={0}
-                                checked={crew_state === 0}
-                            />
-                            <label className="tab w-100 text-center" htmlFor="no">게시글 게시 안함</label>
-                            <span className='glider2'></span>
-                        </div>
-                    </div>
-                </div>
-                <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">
 
