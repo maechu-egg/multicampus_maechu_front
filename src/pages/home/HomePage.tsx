@@ -6,6 +6,8 @@ import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
+import { Link, useNavigate } from "react-router-dom";
+import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
 
 interface Crew {
   crew_id: number;
@@ -63,6 +65,9 @@ function HomePage(): JSX.Element {
   const [swapData, setSwapData] = useState<Swap[]>([]);
   const [isSwapDataLoading, setIsSwapDataLoading] = useState<boolean>(true);
   const [todayWorkout, setTodayWorkout] = useState<TodayWorkout[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedCrewId, setSelectedCrewId] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getSwapData = async () => {
@@ -99,6 +104,16 @@ function HomePage(): JSX.Element {
     };
     getTodayData();
   }, [token]);
+
+  const handleCrewDetailClick = (crewId: number) => {
+    setSelectedCrewId(crewId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedCrewId(null);
+  };
 
   useEffect(() => {
     const fetchCrewData = async () => {
@@ -219,7 +234,10 @@ function HomePage(): JSX.Element {
             )}
           </TextContainer>
           <IconWrapper>
-            <FontAwesomeIcon icon={faArrowRight} />
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              onClick={() => navigate("/crewpage")}
+            />
           </IconWrapper>
         </Title>
         <Cards isBlurred={!isDataFetched}>
@@ -227,7 +245,7 @@ function HomePage(): JSX.Element {
             <div className="card" key={index}>
               <img
                 src={
-                  crew.crew_intro_img === "CrewDefault"
+                  crew.crew_intro_img === "/static/CrewDefault"
                     ? "/img/Home/homeEx1.png"
                     : crew.crew_intro_img
                 }
@@ -238,14 +256,32 @@ function HomePage(): JSX.Element {
                 <h5 className="card-title">{crew.crew_name}</h5>
                 <p className="card-text">{crew.crew_title}</p>
                 <p className="card-goal">목표: {crew.crew_goal}</p>
-                <a href="#" className="btn btn-outline-dark">
-                  자세히 보기
-                </a>
+
+                <CrewDetailBtnWrapper>
+                  <CrewDetailBtn
+                    onClick={() => handleCrewDetailClick(crew.crew_id)}
+                  >
+                    자세히 보기
+                  </CrewDetailBtn>
+                </CrewDetailBtnWrapper>
               </div>
             </div>
           ))}
         </Cards>
       </LocalCrew>
+      {isModalOpen && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalBody>
+              {selectedCrewId !== null && (
+                <CrewJoinModal crew_id={selectedCrewId} />
+              )}
+            </ModalBody>
+            <CloseButton onClick={closeModal}>×</CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
       <SwapSpot>
         <Title>
           <TextContainer>
@@ -301,15 +337,11 @@ function HomePage(): JSX.Element {
         </Title>
         <CardContainer>
           <CardSlider>
-            {[...todayWorkout, ...todayWorkout].map((workout, index) => (
+            {todayWorkout.map((workout, index) => (
               <Card
                 key={index}
                 backgroundImage={
                   workout.post_img1 ?? "/img/default/workDefault1.png"
-                }
-                isCenter={
-                  index % todayWorkout.length ===
-                  Math.floor(todayWorkout.length / 2)
                 }
               >
                 <CardContent>
@@ -445,7 +477,7 @@ const CardSlider = styled.div`
   animation: ${slideAnimation} 30s linear infinite;
 `;
 
-const Card = styled.div<{ backgroundImage: string; isCenter: boolean }>`
+const Card = styled.div<{ backgroundImage: string }>`
   min-width: 280px;
   height: 330px;
   margin-right: 20px;
@@ -463,8 +495,6 @@ const Card = styled.div<{ backgroundImage: string; isCenter: boolean }>`
     transform 0.3s ease,
     box-shadow 0.3s ease,
     filter 0.3s ease;
-  transform: ${(props) => (props.isCenter ? "scale(1.1)" : "scale(1)")};
-  filter: ${(props) => (props.isCenter ? "brightness(1)" : "brightness(0.7)")};
 
   &:hover {
     transform: scale(1.05);
@@ -538,15 +568,18 @@ const Cards = styled.div<{ isBlurred: boolean }>`
     max-width: 100%;
     overflow: hidden;
     margin: 5px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
     transition:
       transform 0.3s ease,
       box-shadow 0.3s ease;
+    cursor: pointer;
 
     &:hover {
-      transform: translateY(-5px); /* 살짝 위로 이동 */
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+      transform: translateY(-5px);
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
     }
   }
 
@@ -569,21 +602,6 @@ const Cards = styled.div<{ isBlurred: boolean }>`
   .card-body {
     padding: 15px;
     text-align: center;
-
-    .btn {
-      background-color: #1d2636;
-      color: #fff;
-      border: none;
-
-      transition:
-        background-color 0.3s ease,
-        color 0.3s ease;
-
-      &:hover {
-        background-color: #414d60;
-        color: #e0e0e0;
-      }
-    }
   }
 
   /* 반응형 */
@@ -598,6 +616,77 @@ const Cards = styled.div<{ isBlurred: boolean }>`
       flex: 1 1 100%;
     }
   }
+`;
+
+const CrewDetailBtnWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+`;
+
+const CrewDetailBtn = styled.div`
+  background-color: #1d2636;
+  color: #fff;
+  border: none;
+  width: fit-content;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  &:hover {
+    background-color: #414d60;
+    color: #e0e0e0;
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  width: 70%;
+  max-width: 500px;
+  max-height: 80vh;
+  margin-top: 50px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalBody = styled.div`
+  overflow-y: auto;
+  max-height: 70vh;
+  padding-right: 10px;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 `;
 
 export default HomePage;

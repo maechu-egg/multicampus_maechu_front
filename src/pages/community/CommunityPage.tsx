@@ -208,6 +208,10 @@ useEffect(() => {
   }
 
   if (selectedPost) {
+    console.log("Selected Post Data:", {
+      post_img1: selectedPost.post_img1,
+      post_img2: selectedPost.post_img2
+    });
     return (
       <PostDetail
         post_id={selectedPost.post_id}
@@ -232,15 +236,22 @@ useEffect(() => {
         onBack={handleBack}
         onEdit={handleEdit}
         onDelete={() => handleDelete(selectedPost.post_id)}
-        comments={comments}  
+        comments={comments}
         onAddComment={(content) => handleCommentSubmit(selectedPost.post_id, content)}
         onCommentDelete={handleCommentDelete}
         currentUserNickname={""}
-        getComments={getComments} 
+        getComments={getComments}
+        onCommentLike={(commentId, postId) => {
+          // 댓글 좋아요 처리 로직
+          console.log('Comment like:', commentId, postId);
+        }}
+        onCommentDislike={(commentId, postId) => {
+          // 댓글 싫어요 처리 로직
+          console.log('Comment dislike:', commentId, postId);
+        }}
       />
     );
   }
-
   /* 메인 화면 렌더링 */
   return (
     <div className="community-container">

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
@@ -10,7 +9,8 @@ import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
 import ProfileModal from "./mypageComponent/ProfileModal";
-const BASE_URL = "http://localhost:8001";
+import { Link, useNavigate } from "react-router-dom";
+const BASE_URL = "http://localhost:8001/static";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
@@ -53,6 +53,31 @@ interface todayRecord {
   };
 }
 
+interface Post {
+  post_id: number;
+  post_title: string;
+  post_contents: string;
+  post_nickname: string;
+  post_date: string;
+  post_views: number;
+  comments_count: number;
+  comments: Comment[];
+  post_up_sport: string;
+  post_sport: string;
+  post_sports_keyword: string;
+  post_hashtag: string;
+  post_like_counts: number;
+  isRecommended?: boolean;
+  likeStatus: boolean;
+  unlikeStatus: boolean;
+  post_img1: string;
+  post_img2: string;
+  post_unlike_counts: number;
+  member_id: number;
+
+  author: boolean;
+}
+
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
   const { state } = useAuth();
@@ -72,7 +97,6 @@ function MyPage(): JSX.Element {
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [imgPath, setImgPath] = useState("");
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -108,6 +132,7 @@ function MyPage(): JSX.Element {
           console.log("내 배틀 응답 : ", response.data);
           setBattleData(response.data); // BattleList에 사용할 데이터
         } else {
+          console.log("커뮤니티 정보 : ", response.data.list);
           setPostData(response.data.list);
         }
       } catch (error) {
@@ -186,6 +211,9 @@ function MyPage(): JSX.Element {
     if (points >= 10) return "브론즈";
     return "기본";
   };
+  const handleKcal = () => {
+    navigate("/recordpage");
+  };
 
   return (
     <Container>
@@ -200,7 +228,7 @@ function MyPage(): JSX.Element {
                 />
                 <ProfileImage
                   src={
-                    userInfo.memberImg === "/static/null"
+                    userInfo.memberImg === "/null"
                       ? "/img/default/UserDefault.png"
                       : `${BASE_URL}${userInfo.memberImg}`
                   }
@@ -231,7 +259,7 @@ function MyPage(): JSX.Element {
 
         <Divider />
         {kcalInfo ? (
-          <InfoBars>
+          <InfoBars onClick={handleKcal}>
             <Info>
               <h3>오늘 칼로리 (탄/단/지)</h3>
               <h1>
@@ -317,7 +345,7 @@ const Container = styled.div`
   align-items: center;
 
   height: 100%;
-  background-color: #b6c0d3;
+  background-color: #1d2636;
 
   @media (min-width: 900px) {
     flex-direction: row;
@@ -332,8 +360,8 @@ const Header = styled.div`
   align-items: center;
   width: 100%;
   border-bottom: 0.8px solid #666;
-  background-color: #f4f4f4;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #edf1f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 1.5);
   padding-top: 20px;
 
   @media (min-width: 900px) {
@@ -342,7 +370,7 @@ const Header = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #f4f4f4;
+    background-color: #edf1f9;
     border-right: 1px solid #ddd;
 
     padding: 150px 25px 80px 25px;
@@ -369,6 +397,7 @@ const AccountIcon = styled.img`
 const Content = styled.div`
   width: 80%;
   height: 1000px;
+
   @media (min-width: 900px) {
     margin-left: 30%;
   }
@@ -394,15 +423,21 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileButton = styled.button`
-  font-size: 0.8em;
-  padding: 6px 12px;
+  background-color: #1d2636;
+  color: #fff;
+  border: none;
+  width: fit-content;
+  padding: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  border-radius: 20px;
+  margin-left: 5px;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 
-  &: hover {
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  &:hover {
+    background-color: #414d60;
+    color: #e0e0e0;
   }
 `;
 
@@ -462,6 +497,7 @@ const Info = styled.div`
   @media (min-width: 900px) {
     align-items: center;
     text-align: center;
+    padding-top: 10px;
   }
 `;
 
@@ -473,7 +509,8 @@ const ProgressBarWrapper = styled.div`
   align-items: center;
 
   @media (min-width: 900px) {
-    align-items: flex-start;
+    align-items: flex-center;
+    width: 100%;
   }
 `;
 
@@ -529,8 +566,8 @@ const CategoryItem = styled.div<{ isSelected: boolean }>`
   font-size: 1em;
   color: #333;
   cursor: pointer;
-  padding: 10px 0;
-  border-bottom: ${(props) => (props.isSelected ? "2px solid #333" : "none")};
+  padding-bottom: 25px;
+  border-bottom: ${(props) => (props.isSelected ? "3px solid #333" : "none")};
 
   &:hover {
     border-bottom: 2px solid #333;
