@@ -13,7 +13,7 @@ import axios from "axios";
 import CategoryDropdown from './communityComponent/CategoryDropdown';
 import {  useLocation, useNavigate, useParams } from "react-router-dom";
 import { useComment } from '../../hooks/community/useComment';
-import { usePost } from '../../hooks/community/usePost';
+import { Post,usePost } from '../../hooks/community/usePost';
 import { useSearch } from '../../hooks/community/useSearch';
 import { useCategory } from "hooks/community/useCategory";
 import { usePagination } from "hooks/community/usePagination";
@@ -126,7 +126,7 @@ function CommunityPage(): JSX.Element {
   };
 
   const {
-    comments,  // 여기에 comments 추가
+    comments, 
     setComments,
     commentInput,
     setCommentInput,
@@ -138,9 +138,22 @@ function CommunityPage(): JSX.Element {
   
 // location이 변경될 때마다 상태 초기화
 useEffect(() => {
-  resetPageState();
-  fetchPosts("헬스 및 피트니스", "", 1, postsPerPage);  // 순서 수정
-}, [location.key]);
+  const locationState = location.state as { 
+    fromMyPage?: boolean;
+    selectedPostId?: number;
+    selectedPost?: any;
+  };
+
+  if (locationState?.fromMyPage && locationState?.selectedPost) {
+    // MyPage에서 넘어온 경우, handlePostClick 함수를 직접 호출
+    handlePostClick(locationState.selectedPost, false);
+    getComments(locationState.selectedPost.post_id);
+  } else {
+    resetPageState();
+    fetchPosts("헬스 및 피트니스", "", 1, postsPerPage);
+  }
+}, [location]);
+
 
 // 카테고리나 페이지 변경시
 useEffect(() => {
