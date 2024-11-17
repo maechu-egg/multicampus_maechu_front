@@ -7,14 +7,13 @@ import CrewCommentSection from "./CrewCommentSection";
 import CrewCreatePostModal from "../modal/CrewUpdatePostModal";
 
 
-function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, onBack: () => void}) {
+function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewId:number, onBack: () => void}) {
     const { state } = useAuth();
     const token = state.token;
     const memberId = state.memberId;
 
     // 좋아요 눌렀는지 확인
     const [isLiked, setIsLiked] = useState(false);
-    const [comments, setComments] = useState([])
 
     const [crew_post_title, setCrew_post_title] = useState("");
     const [crew_post_content, setCrew_post_content] = useState("");
@@ -29,7 +28,7 @@ function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, on
     const getPostDetail = async() => {
         const params = {
             crew_id: crewId,
-            crew_post_id: post,
+            crew_post_id: crewPostId,
         };
         try{
             const response = await api.get("crew/post/detail", {
@@ -55,7 +54,7 @@ function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, on
     // 좋아요 체크 API
     const getIsLike = async() => {
         const params = {
-            crew_post_id: post,
+            crew_post_id: crewPostId,
             member_id: memberId,
             crew_id: crewId
         }
@@ -66,40 +65,34 @@ function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, on
                 },
                 params,
             });
-            console.log("좋아요 체크 response : ", response.data);
-            setIsLiked(response.data.isLiked);
+            console.log("좋아요 체크 response :",response.data);
+            setIsLiked(response.data);
         } catch ( err ) {
             console.log("좋아요 체크 에러 ", err);
         }
     }
 
     useEffect(() => {
-        getPostDetail();
         getIsLike();
-    }, []);
+        getPostDetail();
+    },[])
 
     // 게시글 좋아요
     const handleLike = async () => {
+        const data = {
+            crew_post_id: crewPostId,
+            member_id: memberId,
+            crew_id: crewId
+        }
         try {
-            if (!token) {
-                alert("로그인이 필요합니다.");
-                return;
-            }
-            if (isLiked === false) {
-                // 좋아요 추가 요청
-                try {
-                    // POST 매핑 추가
-                } catch (err) {
-                    console.log("좋아요 추가 에러 ", err);
-                }
-            } else if (isLiked === true) {
-                // 좋아요 삭제 요청
-                try{
-                    // DELETE 매핑 추가
-                } catch (err) {
-                    console.log("좋아요 삭제 에러 ", err);
-                }
-            }
+            const response = await api.patch("crew/post/like/click", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log("좋아요 response", response.data);
+            getIsLike();
+            getPostDetail();
         } catch (error) {
             console.error('좋아요 요청 중 오류 발생 : ', error);
         }
@@ -109,17 +102,11 @@ function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, on
         const confirmDelete = window.confirm("정말로 게시물을 삭제하시겠습니까?"); // 삭제 확인 대화상자 추가
         if (!confirmDelete) return; // 사용자가 취소하면 함수 종료
 
-        const params = {
-            crew_id: crewId,
-            member_id: memberId,
-            crew_post_id :post,
-        }
         try{
-            const response = await api.delete("crew/post/delete", {
+            const response = await api.delete(`crew/post/delete/${crewId}/${crewPostId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                params,
             })
             console.log("게시물 삭제 response: ", response.data);
             alert("게시물이 삭제되었습니다.");
@@ -127,10 +114,6 @@ function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, on
         } catch (err) {
             console.log("게시물 삭제 에러 ", err);
         }
-    }
-
-    const onAddComment = () => {
-
     }
     
     return (
@@ -188,8 +171,7 @@ function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, on
             <div className="comments-section">
                 {/* CommentSection 컴포넌트 추가 */}
                 <CrewCommentSection
-                    postId={post}
-                    onAddComment={onAddComment}
+                    postId={crewPostId}
                     crewId={crewId}
                 />
             </div>
@@ -203,7 +185,7 @@ function CrewPostDetail({post, crewId, onBack} : {post:number, crewId:number, on
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <CrewCreatePostModal crewId={crewId} crewPostId={post} onClick={getPostDetail}/>
+                            <CrewCreatePostModal crewId={crewId} crewPostId={crewPostId} onClick={getPostDetail}/>
                         </div>
                     </div>
                 </div>

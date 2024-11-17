@@ -3,7 +3,7 @@ import CrewComment from './CrewComment';
 import { useAuth } from "context/AuthContext";
 import api from 'services/api/axios';
 
-function CrewCommentSection({ postId, crewId, onAddComment}: {postId:number, crewId:number, onAddComment: () => void}) {
+function CrewCommentSection({ postId, crewId}: {postId:number, crewId:number}) {
   
     const { state } = useAuth();
     const token = state.token;
