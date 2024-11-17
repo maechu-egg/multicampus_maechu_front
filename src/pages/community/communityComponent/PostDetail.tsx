@@ -135,6 +135,17 @@ const PostDetail: React.FC<PostDetailProps> = ({
 
       <hr className="border border-secondary border-1 opacity-50" />
 
+      {author && (
+        <div id="edit-delete-buttons">
+          <button id="edit-button" className="btn btn-primary" onClick={onEdit}>
+            수정
+          </button>
+          <button id="delete-button" className="btn btn-danger" onClick={onDelete}>
+            삭제
+          </button>
+        </div>
+      )}
+
       <div className="post-content">{post_contents}</div>
 
       <div className="post-images">
@@ -169,16 +180,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
       )}
 
       <div className="reaction-buttons">
-        {author && (
-          <div className="edit-delete-buttons">
-            <button className="btn btn-primary me-2" onClick={onEdit}>
-              수정
-            </button>
-            <button className="btn btn-danger me-2" onClick={onDelete}>
-              삭제
-            </button>
-          </div>
-        )}
         <div className="like-dislike-buttons">
           <button
             className={`btn ${liked ? "btn-primary" : "btn-outline-primary"} me-2`}
@@ -193,7 +194,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
             <FaThumbsDown /> {dislikeCount}
           </button>
         </div>
-        <button className="btn btn-secondary" onClick={onBack}>
+        <button id="back-button" className="btn btn-secondary" onClick={onBack}>
           뒤로가기
         </button>
       </div>

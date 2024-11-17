@@ -1,6 +1,7 @@
 import React from "react";
 import CommentItem from "./CommentItem";
-import type { Comment } from "../../../hooks/community/useComment"; // type-only import 사용
+import type { Comment } from "../../../hooks/community/useComment"; 
+import "./Comment.css"; 
 
 interface CommentSectionProps {
   comments: Comment[];
@@ -52,7 +53,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             onChange={(e) => setCommentInput(e.target.value)}
             placeholder="댓글을 입력하세요"
           />
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" id="comment-submit-btn" className="btn btn-primary">
             작성
           </button>
         </div>

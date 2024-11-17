@@ -32,7 +32,8 @@ interface PostItemProps {
   post_hashtag: string;
   post_like_counts: number;
   likeStatus :boolean;
- 
+  personal_badge?: string;  // 개인 뱃지 레벨
+  crew_badge?: string;   
   isRecommended?: boolean; 
   onClick: () => void;
 }
@@ -49,6 +50,8 @@ const PostItem: React.FC<PostItemProps> = ({
   post_hashtag,
   likeStatus,
   isRecommended, 
+  personal_badge,
+  crew_badge,
   onClick
 }) => {
 
@@ -59,24 +62,27 @@ const PostItem: React.FC<PostItemProps> = ({
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`} onClick={onClick}>
       <div className="post-content-wrapper">
-        <span className="subcategory">[{post_sport || '자유'}]</span>
-        <span className="post-title">{post_title}</span>
-        {hashtagArray.length > 0 && (
-          <div className="post-tags">
-            {hashtagArray.map((tag, index) => (
-              <span key={index} className="tag-item">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+        <div className="category-date-line">
+          <span className="subcategory">[{post_sport || '자유'}]</span>
+          <span className="date">{formatDate(post_date)}</span>
+        </div>
         
+        <div className="title-author-line">
+          <span className="post-title">{post_title}</span>
+          <span className="author">{post_nickname}</span>
+        </div>
+  
         <div className="post-info-wrapper">
-          <div className="author">
-            <span>{post_nickname}</span>
-          </div>
+          {hashtagArray.length > 0 && (
+            <div className="post-tags">
+              {hashtagArray.map((tag, index) => (
+                <span key={index} className="tag-item">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="post-stats">
-            <span className="date">{formatDate(post_date)}</span>
             <span className="likes">
               <FaThumbsUp /> {post_like_counts}
             </span>
