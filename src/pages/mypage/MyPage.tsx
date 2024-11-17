@@ -4,13 +4,18 @@ import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
 import api from "../../services/api/axios";
-import PostList from "./mypageComponent/PostList";
+// import PostList from "./mypageComponent/PostList";
+import PostList from "pages/community/communityComponent/PostList";
 import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
 import ProfileModal from "./mypageComponent/ProfileModal";
 import { Link, useNavigate } from "react-router-dom";
+
+import { usePost } from "hooks/community/usePost";
+
 const BASE_URL = "http://localhost:8001/static";
+
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
@@ -53,6 +58,19 @@ interface todayRecord {
   };
 }
 
+interface Comment {
+  id: number;
+  postId: number;
+  author: string;
+  content: string;
+  date: string;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status:boolean;
+  comment_dislike_status:boolean;
+  commentAuthor:boolean;
+}
+
 interface Post {
   post_id: number;
   post_title: string;
@@ -60,23 +78,24 @@ interface Post {
   post_nickname: string;
   post_date: string;
   post_views: number;
-  comments_count: number;
-  comments: Comment[];
+  comments_count :number;
+  comments:  Comment[];
   post_up_sport: string;
   post_sport: string;
-  post_sports_keyword: string;
+  post_sports_keyword:string;
   post_hashtag: string;
   post_like_counts: number;
   isRecommended?: boolean;
-  likeStatus: boolean;
-  unlikeStatus: boolean;
-  post_img1: string;
-  post_img2: string;
-  post_unlike_counts: number;
-  member_id: number;
+  likeStatus :boolean;
+  unlikeStatus:boolean;
+  post_img1:string;
+  post_img2:string;
+  post_unlike_counts : number;
+  member_id: number; 
 
-  author: boolean;
+  author:boolean;
 }
+
 
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
@@ -97,6 +116,11 @@ function MyPage(): JSX.Element {
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
+
+
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -106,6 +130,24 @@ function MyPage(): JSX.Element {
   const closeAccountModal = () => setAccountModalOpen(false);
   const openProfileModal = () => setProfileModalOpen(true);
   const closeProfileModal = () => setProfileModalOpen(false);
+
+
+  const {
+    posts,
+    setPosts,
+    recommendedPosts,
+    setRecommendedPosts,
+    selectedPost,
+    setSelectedPost,
+    loading,
+    isAuthor,
+    fetchPosts,
+    fetchRecommendedPosts,
+    handlePostClick,
+    handleSavePost,
+    handleUpdatePost,
+    handleDelete,
+  } = usePost();
 
   const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
@@ -133,7 +175,7 @@ function MyPage(): JSX.Element {
           setBattleData(response.data); // BattleList에 사용할 데이터
         } else {
           console.log("커뮤니티 정보 : ", response.data.list);
-          setPostData(response.data.list);
+          setPosts(response.data.list);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -326,15 +368,33 @@ function MyPage(): JSX.Element {
         </Category>
       </Header>
       <Content>
-        {selectedCategory === "내가 쓴 글" ||
-        selectedCategory === "좋아요 한 글" ? (
-          <PostList postData={postData} />
-        ) : selectedCategory === "참여한 크루" ? (
-          <CrewList crewData={crewData} />
-        ) : selectedCategory === "배틀 중" ? (
-          <BattleList battleData={battleData} /> // battleData가 제대로 전달되었는지 확인
-        ) : null}
-      </Content>
+          {selectedCategory === "내가 쓴 글" ||
+          selectedCategory === "좋아요 한 글" ? (
+            <PostList 
+              posts={posts}
+              recommendedPosts={[]}
+              onPostClick={async (post) => {
+                try {
+                  await handlePostClick(post, false);
+                  // 상태 전달과 함께 communitypage로 이동
+                  navigate('/communitypage', { 
+                    state: { 
+                      fromMyPage: true,
+                      selectedPostId: post.post_id,
+                      selectedPost: post  // 전체 post 객체 전달
+                    } 
+                  });
+                } catch (error) {
+                  console.error("게시글 상세 조회 실패:", error);
+                }
+              }}
+            />
+          ) : selectedCategory === "참여한 크루" ? (
+            <CrewList crewData={crewData} />
+          ) : selectedCategory === "배틀 중" ? (
+            <BattleList battleData={battleData} />
+          ) : null}
+        </Content>
     </Container>
   );
 }
@@ -345,7 +405,7 @@ const Container = styled.div`
   align-items: center;
 
   height: 100%;
-  background-color: #1d2636;
+  background-color: #b6c0d3;
 
   @media (min-width: 900px) {
     flex-direction: row;
@@ -360,8 +420,8 @@ const Header = styled.div`
   align-items: center;
   width: 100%;
   border-bottom: 0.8px solid #666;
-  background-color: #edf1f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 1.5);
+  background-color: #f4f4f4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   padding-top: 20px;
 
   @media (min-width: 900px) {
@@ -370,7 +430,7 @@ const Header = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #edf1f9;
+    background-color: #f4f4f4;
     border-right: 1px solid #ddd;
 
     padding: 150px 25px 80px 25px;
@@ -423,21 +483,15 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileButton = styled.button`
-  background-color: #1d2636;
-  color: #fff;
-  border: none;
-  width: fit-content;
-  padding: 8px;
-  border-radius: 10px;
+  font-size: 0.8em;
+  padding: 6px 12px;
   cursor: pointer;
-  margin-left: 5px;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  border-radius: 20px;
 
-  &:hover {
-    background-color: #414d60;
-    color: #e0e0e0;
+  &: hover {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -567,7 +621,7 @@ const CategoryItem = styled.div<{ isSelected: boolean }>`
   color: #333;
   cursor: pointer;
   padding-bottom: 25px;
-  border-bottom: ${(props) => (props.isSelected ? "3px solid #333" : "none")};
+  border-bottom: ${(props) => (props.isSelected ? "2px solid #333" : "none")};
 
   &:hover {
     border-bottom: 2px solid #333;
