@@ -199,7 +199,7 @@ function RecordPage(): JSX.Element {
     <Wrapper>
     <div className="calendar-header">
       <TitleContainer>
-        <h1>𝑪𝒂𝒍𝒆𝒏𝒅𝒂𝒓</h1>
+        <h1>𝗖𝗮𝗹𝗲𝗻𝗱𝗮𝗿</h1>
       </TitleContainer>
     </div>
       <Container>
@@ -365,7 +365,7 @@ const TitleContainer = styled.div`
 
   h1 {
     margin: 0;
-    font-size: 21px;
+    font-size: 32px;
     font-weight: 550;
     font-family: 'Pretendard', sans-serif;
     color: #333333; /* Darker color for contrast */

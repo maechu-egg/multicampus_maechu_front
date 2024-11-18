@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import { commentApi } from '../../services/api/community/commentApi';
 
 export interface Comment {
@@ -126,101 +126,7 @@ export const useComment = () => {
     }
   };
 
-  const handleCommentLike = async (commentId: number, post_id: number) => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
 
-    const targetComment = comments.find(comment => comment.id === commentId);
-
-    if (targetComment && !targetComment.comment_like_status) {
-      try {
-        const response = await commentApi.commentLike(commentId, post_id, token);
-
-        if (response.status === 200) {
-          const { result, Extable } = response.data;
-
-          if (result) {
-            await getComments(post_id);  // 댓글 목록 새로고침
-          } else if (Extable) {
-            alert("이미 좋아요를 누른 상태입니다.");
-          } else {
-            alert("좋아요 추가 실패");
-          }
-        }
-      } catch (error) {
-        console.error("좋아요 요청 중 오류 발생:", error);
-      }
-    } else if (targetComment && targetComment.comment_like_status) {
-      try {
-        const response = await commentApi.commentLikeDelete(commentId, post_id, token);
-
-        if (response.status === 200) {
-          const { result, Extable } = response.data;
-
-          if (result) {
-            await getComments(post_id);  // 댓글 목록 새로고침
-          } else if (Extable) {
-            alert("이미 좋아요가 취소된 상태입니다.");
-          } else {
-            alert("좋아요 취소 실패");
-          }
-        }
-      } catch (error) {
-        console.error("좋아요 삭제 요청 중 오류 발생:", error);
-      }
-    }
-  };
-
-  const handleCommentDislike = async (commentId: number, post_id: number) => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
-    const targetComment = comments.find(comment => comment.id === commentId);
-
-    if (targetComment && !targetComment.comment_dislike_status) {
-      try {
-        const response = await commentApi.commentDislike(commentId, post_id, token);
-
-        if (response.status === 200) {
-          const { result, Extable } = response.data;
-
-          if (result) {
-            await getComments(post_id);  // 댓글 목록 새로고침
-          } else if (Extable) {
-            alert("이미 싫어요를 누른 상태입니다.");
-          } else {
-            alert("싫어요 추가 실패");
-          }
-        }
-      } catch (error) {
-        console.error("싫어요 요청 중 오류 발생:", error);
-      }
-    } else if (targetComment && targetComment.comment_dislike_status) {
-      try {
-        const response = await commentApi.commentDislikeDelete(commentId, post_id, token);
-
-        if (response.status === 200) {
-          const { result, Extable } = response.data;
-
-          if (result) {
-            await getComments(post_id);  // 댓글 목록 새로고침
-          } else if (Extable) {
-            alert("이미 싫어요가 취소된 상태입니다.");
-          } else {
-            alert("싫어요 취소 실패");
-          }
-        }
-      } catch (error) {
-        console.error("싫어요 삭제 요청 중 오류 발생:", error);
-      }
-    }
-  };
 
   return {
     comments,
@@ -230,7 +136,5 @@ export const useComment = () => {
     getComments,
     handleCommentSubmit,
     handleCommentDelete,
-    handleCommentLike,
-    handleCommentDislike,
   };
 };

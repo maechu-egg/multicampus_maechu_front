@@ -1,0 +1,156 @@
+/* 컨테이너 최대 너비 제한 */
+.post-item {
+  border: 1px solid #e7e7e7;
+  border-radius: 4px;
+  margin: 0 auto 8px;
+  padding: 16px;
+  background: #fff;
+  cursor: pointer;
+  max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.post-item:hover {
+  background-color: #fafafa;
+}
+
+.post-item.recommended {
+  border: 1px solid #ff3a48;
+}
+
+.post-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subcategory {
+  font-size: 13px;
+  color: #666d75;
+  margin: 0;
+}
+
+.post-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  -webkit-line-clamp: 2;
+  -moz-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  box-orient: vertical;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.post-content-wrapper .post-tags {
+  display: flex !important;
+  gap: 4px !important;
+  flex-wrap: wrap !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.post-content-wrapper .tag-item {
+  color: #2B96ED !important;
+  font-size: 11px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: normal !important;
+  text-decoration: none !important;
+  background: none !important;
+  border: none !important;
+}
+
+/* 하단 정보 영역 수정 */
+.post-info-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #f1f3f5;
+  margin-top: 8px;
+}
+
+.author {
+  font-size: 13px;
+  color: #666d75;
+}
+
+.post-stats {
+  display: flex;
+  gap: 12px;
+  color: #98a8b9;
+  font-size: 13px;
+  align-items: center;
+}
+
+.post-stats span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.date {
+  color: #98a8b9;
+}
+
+.likes svg {
+  color: #ff3a48;
+}
+
+.comments svg {
+  color: #2B96ED;
+}
+
+.views svg {
+  color: #98a8b9;
+}
+
+/* 반응형 스타일 */
+@media screen and (max-width: 768px) {
+  .post-item {
+    padding: 12px;
+    margin: 0 8px 8px;
+  }
+
+  .post-title {
+    font-size: 14px;
+  }
+
+  .post-stats {
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .author, .date, .tag-item {
+    font-size: 11px;
+  }
+
+  .post-info-wrapper {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .post-item {
+    max-width: 700px;
+    margin: 0 auto 8px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .post-item {
+    max-width: 800px;
+    margin: 0 auto 8px;
+  }
+}

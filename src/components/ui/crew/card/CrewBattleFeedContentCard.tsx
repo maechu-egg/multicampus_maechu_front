@@ -1,6 +1,5 @@
 import React from "react";
 
-
 interface Feed {
     feed_exTime: number;
     feed_img: string;

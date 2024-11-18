@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import "./PostDetail.css";
-import axios from "axios";
 import { formatDate } from '../../../utils/dateFormat';  
 import CommentSection from "./CommentSection";
-import { commentApi } from '../../../services/api/community/commentApi';
+import { usePost } from "hooks/community/usePost";
 
 interface Comment {
   id: number;
@@ -77,191 +76,59 @@ const PostDetail: React.FC<PostDetailProps> = ({
   author,
   onCommentLike,
   onCommentDislike,
-  getComments  
+  getComments
 }) => {
-  const [liked, setLiked] = useState(likeStatus);
-  const [disliked, setDisliked] = useState(unlikeStatus);
-  const [likeCount, setLikeCount] = useState(post_like_counts);
-  const [dislikeCount, setDislikeCount] = useState(post_unlike_counts);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [commentInput, setCommentInput] = useState("");
-  const hashtagArray = post_hashtag ? post_hashtag.split(", ") : [];
+  const hashtagArray = post_hashtag ? post_hashtag.split(',') : [];
 
- // 댓글 조회를 위한 useEffect 추가
- useEffect(() => {
-  const fetchComments = async () => {
-    try {
-      const token = localStorage.getItem("authToken");
-      if (!token) return;
-      
-      await getComments(post_id);  // getComments 함수 호출
-    } catch (error) {
-      console.error("댓글 조회 중 오류 발생:", error);
-    }
-  };
+  const { 
+    liked, 
+    setLiked,
+    disliked, 
+    setDisliked,
+    likeCount, 
+    setLikeCount,
+    dislikeCount, 
+    setDislikeCount,
+    handleLike, 
+    handleDislike 
+  } = usePost();
 
-  fetchComments();
-}, [post_id]); // post_id가 변경될 때마다 댓글을 다시 불러옴
+  useEffect(() => {
+    setLikeCount(post_like_counts);
+    setDislikeCount(post_unlike_counts);
+    setLiked(likeStatus);
+    setDisliked(unlikeStatus);
+  }, [post_like_counts, post_unlike_counts, likeStatus, unlikeStatus, setLikeCount, setDislikeCount, setLiked, setDisliked]);
 
-
-  // 댓글 정렬
-  const sortedComments = [...comments].sort((a, b) => {
-    if (sortOrder === "asc") {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    } else {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    }
-  });
+  useEffect(() => {
+    const fetchComments = async () => {
+      await getComments(post_id);
+    };
+    fetchComments();
+  }, [post_id]);
 
   const handleSortOrderChange = (order: "asc" | "desc") => {
     setSortOrder(order);
   };
 
-  // 게시글 좋아요
-  const handleLike = async () => {
-    try {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        alert("로그인이 필요합니다.");
-        return;
-      }
-
-      let response;
-      if (!liked) {
-        response = await axios.post(
-          `http://localhost:8001/useractivity/${post_id}/likeinsert`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          if (response.data.Extable) {
-            alert("이미 좋아요를 눌렀습니다.");
-          } else if (response.data.result) {
-            setLikeCount(response.data.likeCount);
-            setLiked(true);
-            if (disliked) {
-              setDislikeCount((prev) => prev - 1);
-              await axios.delete(
-                `http://localhost:8001/useractivity/${post_id}/unlikedelete`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-              setDisliked(false);
-            }
-          } else {
-            alert(response.data.message || "좋아요 처리에 실패했습니다.");
-          }
-        }
-      } else if (liked) {
-        response = await axios.delete(
-          `http://localhost:8001/useractivity/${post_id}/likedelete`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          if (response.data.Extable === false) {
-            alert("이미 좋아요를 취소한 상태입니다.");
-          } else if (response.data.result) {
-            setLikeCount(response.data.likeCount);
-            setLiked(false);
-          } else {
-            alert(response.data.message || "좋아요 취소에 실패했습니다.");
-          }
-        }
-      }
-    } catch (error) {
-      console.error("좋아요 요청 중 오류 발생:", error);
-    }
-  };
-
-  // 싫어요 처리
-  const handleDislike = async () => {
-    try {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        alert("로그인이 필요합니다.");
-        return;
-      }
-
-      let response;
-      if (!disliked) {
-        response = await axios.post(
-          `http://localhost:8001/useractivity/${post_id}/unlikeinsert`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          if (response.data.Extable) {
-            alert("이미 싫어요를 눌렀습니다.");
-          } else if (response.data.result) {
-            setDislikeCount(response.data.unLikeCount);
-            setDisliked(true);
-            if (liked) {
-              setLikeCount((prev) => prev - 1);
-              await axios.delete(
-                `http://localhost:8001/useractivity/${post_id}/likedelete`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-              setLiked(false);
-            }
-          } else {
-            alert(response.data.message || "싫어요 처리에 실패했습니다.");
-          }
-        }
-      } else if (disliked) {
-        response = await axios.delete(
-          `http://localhost:8001/useractivity/${post_id}/unlikedelete`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          if (response.data.Extable === false) {
-            alert("이미 싫어요를 취소한 상태입니다.");
-          } else if (response.data.result) {
-            setDislikeCount(response.data.unLikeCount);
-            setDisliked(false);
-          } else {
-            alert(response.data.message || "싫어요 취소에 실패했습니다.");
-          }
-        }
-      }
-    } catch (error) {
-      console.error("싫어요 요청 중 오류 발생:", error);
-    }
-  };
+  const sortedComments = [...comments].sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+  });
 
   return (
     <div className="post-detail">
       <input type="hidden" value={post_id} />
+      
       <div className="post-category">
         {post_up_sport} 게시판 - {post_sport} - {post_sports_keyword}
       </div>
+
       <hr className="border border-secondary border-1 opacity-50" />
+
       <div className="post-header">
         <h2>{post_title}</h2>
         <div className="post-info">
@@ -272,14 +139,27 @@ const PostDetail: React.FC<PostDetailProps> = ({
           </div>
         </div>
       </div>
+
       <hr className="border border-secondary border-1 opacity-50" />
+
+      {author && (
+        <div id="edit-delete-buttons">
+          <button id="edit-button" className="btn btn-primary" onClick={onEdit}>
+            수정
+          </button>
+          <button id="delete-button" className="btn btn-danger" onClick={onDelete}>
+            삭제
+          </button>
+        </div>
+      )}
+
       <div className="post-content">{post_contents}</div>
 
       <div className="post-images">
         {post_img1 && (
           <div className="post-image">
             <img
-              src={`http://localhost:8001/static/${post_img1}`}
+              src={post_img1}
               alt="게시글 이미지 1"
               style={{ maxWidth: "100%", height: "auto" }}
             />
@@ -288,7 +168,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
         {post_img2 && (
           <div className="post-image">
             <img
-              src={`http://localhost:8001/static/${post_img2}`}
+              src={post_img2}
               alt="게시글 이미지 2"
               style={{ maxWidth: "100%", height: "auto" }}
             />
@@ -307,31 +187,21 @@ const PostDetail: React.FC<PostDetailProps> = ({
       )}
 
       <div className="reaction-buttons">
-        {author && (
-          <div className="edit-delete-buttons">
-            <button className="btn btn-primary me-2" onClick={onEdit}>
-              수정
-            </button>
-            <button className="btn btn-danger me-2" onClick={onDelete}>
-              삭제
-            </button>
-          </div>
-        )}
         <div className="like-dislike-buttons">
           <button
             className={`btn ${liked ? "btn-primary" : "btn-outline-primary"} me-2`}
-            onClick={handleLike}
+            onClick={() => handleLike(post_id)}
           >
             <FaThumbsUp /> {likeCount}
           </button>
           <button
             className={`btn ${disliked ? "btn-danger" : "btn-outline-danger"}`}
-            onClick={handleDislike}
+            onClick={() => handleDislike(post_id)}
           >
             <FaThumbsDown /> {dislikeCount}
           </button>
         </div>
-        <button className="btn btn-secondary" onClick={onBack}>
+        <button id="back-button" className="btn btn-secondary" onClick={onBack}>
           뒤로가기
         </button>
       </div>
