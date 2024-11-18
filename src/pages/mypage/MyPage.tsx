@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
 import api from "../../services/api/axios";
-import PostList from "./mypageComponent/PostList";
+// import PostList from "./mypageComponent/PostList";
+import PostList from "pages/community/communityComponent/PostList";
 import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
 import ProfileModal from "./mypageComponent/ProfileModal";
-const BASE_URL = "http://localhost:8001";
+import { Link, useNavigate } from "react-router-dom";
+
+import { usePost } from "hooks/community/usePost";
+
+const BASE_URL = "http://localhost:8001/static";
+
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
@@ -53,6 +58,45 @@ interface todayRecord {
   };
 }
 
+interface Comment {
+  id: number;
+  postId: number;
+  author: string;
+  content: string;
+  date: string;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status:boolean;
+  comment_dislike_status:boolean;
+  commentAuthor:boolean;
+}
+
+interface Post {
+  post_id: number;
+  post_title: string;
+  post_contents: string;
+  post_nickname: string;
+  post_date: string;
+  post_views: number;
+  comments_count :number;
+  comments:  Comment[];
+  post_up_sport: string;
+  post_sport: string;
+  post_sports_keyword:string;
+  post_hashtag: string;
+  post_like_counts: number;
+  isRecommended?: boolean;
+  likeStatus :boolean;
+  unlikeStatus:boolean;
+  post_img1:string;
+  post_img2:string;
+  post_unlike_counts : number;
+  member_id: number; 
+
+  author:boolean;
+}
+
+
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
   const { state } = useAuth();
@@ -72,7 +116,11 @@ function MyPage(): JSX.Element {
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [imgPath, setImgPath] = useState("");
+  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
+
+
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -82,6 +130,24 @@ function MyPage(): JSX.Element {
   const closeAccountModal = () => setAccountModalOpen(false);
   const openProfileModal = () => setProfileModalOpen(true);
   const closeProfileModal = () => setProfileModalOpen(false);
+
+
+  const {
+    posts,
+    setPosts,
+    recommendedPosts,
+    setRecommendedPosts,
+    selectedPost,
+    setSelectedPost,
+    loading,
+    isAuthor,
+    fetchPosts,
+    fetchRecommendedPosts,
+    handlePostClick,
+    handleSavePost,
+    handleUpdatePost,
+    handleDelete,
+  } = usePost();
 
   const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
@@ -108,7 +174,8 @@ function MyPage(): JSX.Element {
           console.log("내 배틀 응답 : ", response.data);
           setBattleData(response.data); // BattleList에 사용할 데이터
         } else {
-          setPostData(response.data.list);
+          console.log("커뮤니티 정보 : ", response.data.list);
+          setPosts(response.data.list);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -186,6 +253,9 @@ function MyPage(): JSX.Element {
     if (points >= 10) return "브론즈";
     return "기본";
   };
+  const handleKcal = () => {
+    navigate("/recordpage");
+  };
 
   return (
     <Container>
@@ -200,7 +270,7 @@ function MyPage(): JSX.Element {
                 />
                 <ProfileImage
                   src={
-                    userInfo.memberImg === "/static/null"
+                    userInfo.memberImg === "/null"
                       ? "/img/default/UserDefault.png"
                       : `${BASE_URL}${userInfo.memberImg}`
                   }
@@ -231,7 +301,7 @@ function MyPage(): JSX.Element {
 
         <Divider />
         {kcalInfo ? (
-          <InfoBars>
+          <InfoBars onClick={handleKcal}>
             <Info>
               <h3>오늘 칼로리 (탄/단/지)</h3>
               <h1>
@@ -298,15 +368,33 @@ function MyPage(): JSX.Element {
         </Category>
       </Header>
       <Content>
-        {selectedCategory === "내가 쓴 글" ||
-        selectedCategory === "좋아요 한 글" ? (
-          <PostList postData={postData} />
-        ) : selectedCategory === "참여한 크루" ? (
-          <CrewList crewData={crewData} />
-        ) : selectedCategory === "배틀 중" ? (
-          <BattleList battleData={battleData} /> // battleData가 제대로 전달되었는지 확인
-        ) : null}
-      </Content>
+          {selectedCategory === "내가 쓴 글" ||
+          selectedCategory === "좋아요 한 글" ? (
+            <PostList 
+              posts={posts}
+              recommendedPosts={[]}
+              onPostClick={async (post) => {
+                try {
+                  await handlePostClick(post, false);
+                  // 상태 전달과 함께 communitypage로 이동
+                  navigate('/communitypage', { 
+                    state: { 
+                      fromMyPage: true,
+                      selectedPostId: post.post_id,
+                      selectedPost: post  // 전체 post 객체 전달
+                    } 
+                  });
+                } catch (error) {
+                  console.error("게시글 상세 조회 실패:", error);
+                }
+              }}
+            />
+          ) : selectedCategory === "참여한 크루" ? (
+            <CrewList crewData={crewData} />
+          ) : selectedCategory === "배틀 중" ? (
+            <BattleList battleData={battleData} />
+          ) : null}
+        </Content>
     </Container>
   );
 }
@@ -369,6 +457,7 @@ const AccountIcon = styled.img`
 const Content = styled.div`
   width: 80%;
   height: 1000px;
+
   @media (min-width: 900px) {
     margin-left: 30%;
   }
@@ -462,6 +551,7 @@ const Info = styled.div`
   @media (min-width: 900px) {
     align-items: center;
     text-align: center;
+    padding-top: 10px;
   }
 `;
 
@@ -473,7 +563,8 @@ const ProgressBarWrapper = styled.div`
   align-items: center;
 
   @media (min-width: 900px) {
-    align-items: flex-start;
+    align-items: flex-center;
+    width: 100%;
   }
 `;
 
@@ -529,7 +620,7 @@ const CategoryItem = styled.div<{ isSelected: boolean }>`
   font-size: 1em;
   color: #333;
   cursor: pointer;
-  padding: 10px 0;
+  padding-bottom: 25px;
   border-bottom: ${(props) => (props.isSelected ? "2px solid #333" : "none")};
 
   &:hover {

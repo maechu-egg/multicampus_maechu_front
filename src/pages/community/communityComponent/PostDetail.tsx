@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";  // useState 추가
+import React, { useEffect, useState } from "react";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import "./PostDetail.css";
-import { formatDate } from '../../../utils/dateFormat';
+import { formatDate } from '../../../utils/dateFormat';  
 import CommentSection from "./CommentSection";
-import { usePost } from '../../../hooks/community/usePost';
-
+import { usePost } from "hooks/community/usePost";
 
 interface Comment {
   id: number;
@@ -46,9 +45,10 @@ interface PostDetailProps {
   commets_count: number;
   member_id: number;
   author: boolean;
+  onCommentLike: (commentId: number, postId: number) => void;
+  onCommentDislike: (commentId: number, postId: number) => void;
   getComments: (postId: number) => Promise<void>;
 }
-
 
 const PostDetail: React.FC<PostDetailProps> = ({
   post_id,
@@ -61,6 +61,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
   post_sport,
   post_sports_keyword,
   post_hashtag,
+  likeStatus,
+  unlikeStatus,
   onBack,
   onEdit,
   onDelete,
@@ -69,53 +71,57 @@ const PostDetail: React.FC<PostDetailProps> = ({
   onAddComment,
   post_img1,
   post_img2,
+  post_unlike_counts,
+  post_like_counts,
   author,
-  getComments  
+  onCommentLike,
+  onCommentDislike,
+  getComments
 }) => {
-  const {
-    liked,
-    disliked,
-    likeCount,
-    dislikeCount,
-    sortOrder,
-    handleLike,
-    handleDislike,
-    handleSortOrderChange
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [commentInput, setCommentInput] = useState("");
+  const hashtagArray = post_hashtag ? post_hashtag.split(',') : [];
+
+  const { 
+    liked, 
+    setLiked,
+    disliked, 
+    setDisliked,
+    likeCount, 
+    setLikeCount,
+    dislikeCount, 
+    setDislikeCount,
+    handleLike, 
+    handleDislike 
   } = usePost();
 
-  const [commentInput, setCommentInput] = useState("");
-  const [imgLoading, setImgLoading] = useState(true);
-  const hashtagArray = post_hashtag ? post_hashtag.split(", ") : [];
-
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        await getComments(post_id);
-      } catch (error) {
-        console.error("댓글 조회 중 오류 발생:", error);
-      }
-    };
+    setLikeCount(post_like_counts);
+    setDislikeCount(post_unlike_counts);
+    setLiked(likeStatus);
+    setDisliked(unlikeStatus);
+  }, [post_like_counts, post_unlike_counts, likeStatus, unlikeStatus, setLikeCount, setDislikeCount, setLiked, setDisliked]);
 
-    if (post_id) {
-      fetchComments();
-    }
-  }, [post_id]);
+  const handleSortOrderChange = (order: "asc" | "desc") => {
+    setSortOrder(order);
+  };
 
   const sortedComments = [...comments].sort((a, b) => {
-    if (sortOrder === "asc") {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    } else {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    }
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
   });
 
   return (
     <div className="post-detail">
+      <input type="hidden" value={post_id} />
+      
       <div className="post-category">
         {post_up_sport} 게시판 - {post_sport} - {post_sports_keyword}
       </div>
+
       <hr className="border border-secondary border-1 opacity-50" />
-      
+
       <div className="post-header">
         <h2>{post_title}</h2>
         <div className="post-info">
@@ -126,78 +132,42 @@ const PostDetail: React.FC<PostDetailProps> = ({
           </div>
         </div>
       </div>
-      
+
       <hr className="border border-secondary border-1 opacity-50" />
+
+      {author && (
+        <div id="edit-delete-buttons">
+          <button id="edit-button" className="btn btn-primary" onClick={onEdit}>
+            수정
+          </button>
+          <button id="delete-button" className="btn btn-danger" onClick={onDelete}>
+            삭제
+          </button>
+        </div>
+      )}
+
       <div className="post-content">{post_contents}</div>
 
       <div className="post-images">
-  {post_img1 && (
-    <div className="image-container">
-      {imgLoading && <div>이미지 로딩중...</div>}
-      <img
-        src={`http://localhost:8001/static/${post_img1}`}
-        alt="게시글 이미지 1"
-        className="post-image"
-        onLoad={() => {
-          setImgLoading(false);
-        }}
-        onError={async (e) => {
-          const target = e.currentTarget;
-          if (target.getAttribute('data-failed')) {
-            return;
-          }
-          
-          try {
-            // 이미지 URL로 직접 요청을 보내서 응답 확인
-            const response = await fetch(`http://localhost:8001/static/${post_img1}`);
-            console.log('이미지1 서버 응답:', {
-              status: response.status,
-              statusText: response.statusText,
-              headers: Object.fromEntries(response.headers.entries()),
-              url: response.url
-            });
-          } catch (error) {
-            console.error('이미지1 요청 실패:', error);
-          }
-
-          setImgLoading(false);
-          target.setAttribute('data-failed', 'true');
-          target.onerror = null;
-        }}
-      />
-    </div>
-  )}
-  {post_img2 && (
-    <div className="image-container">
-      <img
-        src={`http://localhost:8001/static/${post_img2}`}
-        alt="게시글 이미지 2"
-        className="post-image"
-        onError={async (e) => {
-          const target = e.currentTarget;
-          if (target.getAttribute('data-failed')) {
-            return;
-          }
-
-          try {
-            const response = await fetch(`http://localhost:8001/static/${post_img2}`);
-            console.log('이미지2 서버 응답:', {
-              status: response.status,
-              statusText: response.statusText,
-              headers: Object.fromEntries(response.headers.entries()),
-              url: response.url
-            });
-          } catch (error) {
-            console.error('이미지2 요청 실패:', error);
-          }
-
-          target.setAttribute('data-failed', 'true');
-          target.onerror = null;
-        }}
-      />
-    </div>
-  )}
-</div>
+        {post_img1 && (
+          <div className="post-image">
+            <img
+              src={post_img1}
+              alt="게시글 이미지 1"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          </div>
+        )}
+        {post_img2 && (
+          <div className="post-image">
+            <img
+              src={post_img2}
+              alt="게시글 이미지 2"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          </div>
+        )}
+      </div>
 
       {hashtagArray.length > 0 && (
         <div className="post-tags">
@@ -210,16 +180,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
       )}
 
       <div className="reaction-buttons">
-        {author && (
-          <div className="edit-delete-buttons">
-            <button className="btn btn-primary me-2" onClick={onEdit}>
-              수정
-            </button>
-            <button className="btn btn-danger me-2" onClick={onDelete}>
-              삭제
-            </button>
-          </div>
-        )}
         <div className="like-dislike-buttons">
           <button
             className={`btn ${liked ? "btn-primary" : "btn-outline-primary"} me-2`}
@@ -234,7 +194,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
             <FaThumbsDown /> {dislikeCount}
           </button>
         </div>
-        <button className="btn btn-secondary" onClick={onBack}>
+        <button id="back-button" className="btn btn-secondary" onClick={onBack}>
           뒤로가기
         </button>
       </div>
@@ -265,6 +225,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
           postId={post_id}
           onAddComment={onAddComment}
           onCommentDelete={onCommentDelete}
+          onCommentLike={onCommentLike}
+          onCommentDislike={onCommentDislike}
           commentInput={commentInput}
           setCommentInput={setCommentInput}
         />

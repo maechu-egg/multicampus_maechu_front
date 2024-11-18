@@ -3,7 +3,7 @@ import CrewComment from './CrewComment';
 import { useAuth } from "context/AuthContext";
 import api from 'services/api/axios';
 
-function CrewCommentSection({ postId, crewId, onAddComment}: {postId:number, crewId:number, onAddComment: () => void}) {
+function CrewCommentSection({ postId, crewId}: {postId:number, crewId:number}) {
   
     const { state } = useAuth();
     const token = state.token;
@@ -65,17 +65,11 @@ function CrewCommentSection({ postId, crewId, onAddComment}: {postId:number, cre
 
     // 댓글 삭제
     const onCommentDelete = async(comment:{crew_comments_id: number}) => {
-        const params= {
-            crew_post_id : postId,
-            member_id: memberId,
-            crew_comments_id:comment.crew_comments_id,
-        }
         try{
-            const response = await api.delete("crew/comment/delete", {
+            const response = await api.delete(`crew/comment/delete/${postId}/${comment.crew_comments_id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                params,
             });
             console.log("댓글 삭제 response : ", response.data);
             alert("댓글이 삭제되었습니다.");

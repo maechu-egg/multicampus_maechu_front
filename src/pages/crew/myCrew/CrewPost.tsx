@@ -4,6 +4,7 @@ import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
 import CrewCreatePostModal from "components/ui/crew/modal/CrewCreatePostModal";
 import CrewPostDetail from "components/ui/crew/crewPost/CrewPostDetail";
+import CrewPagination from "components/ui/crew/crewPost/CrewPagination";
 
 interface CrewPostProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
@@ -30,15 +31,27 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
     const [posts, setPosts] = useState<Post[]>([]);
     const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
+    const postsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const indexOfLastPost = currentPage * postsPerPage; // 마지막 게시물 인덱스
+    const indexOfFirstPost = indexOfLastPost - postsPerPage; // 첫 번째 게시물 인덱스
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost); // 현재 페이지에 맞는 게시물 목록
+
     const getCrewPost = async() => {
+        const params = {
+            currentPage: currentPage - 1,
+        }
         try {
             const response = await api.get(`crew/post/list/${crewId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
-                }
+                },
             })
             console.log("크루포스트 가져오기 response : ", response.data);
             setPosts(response.data.content);
+            setTotalPages(response.data.totalPages); // 전체 페이지 수 설정
         } catch (err) {
             console.log("크루포스트 가져오기 에러 : ", err);
         }
@@ -46,7 +59,7 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
     // 크루포스트 조회 API
     useEffect(() => {
         getCrewPost();
-    },[])
+    },[currentPage])
 
     const handlePostClick = async (post: Post) => {
         setSelectedPost(post.crew_post_id);
@@ -55,6 +68,12 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
 
     const onBack = () => {
         setSelectedPost(null);
+        getCrewPost();
+    }
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        console.log("현재 페이지 변경됨 ", currentPage);
     }
 
     return (
@@ -82,12 +101,13 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                         </button>
                     </div>
                     <br />
-                    <CrewPostList posts={posts.filter(post => post.crew_post_title.includes(searchTerm))} onPostClick={handlePostClick}/>
+                    <CrewPostList posts={currentPosts.filter(post => post.crew_post_title.includes(searchTerm))} onPostClick={handlePostClick}/>
+                    <CrewPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
                 </>
             ) : (
                 <>
                     <br/>
-                    <CrewPostDetail  post={selectedPost} crewId={crewId} onBack={onBack}/>
+                    <CrewPostDetail  crewPostId={selectedPost} crewId={crewId} onBack={onBack}/>
                 </>
             )}
 

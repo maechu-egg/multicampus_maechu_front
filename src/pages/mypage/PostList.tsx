@@ -1,55 +1,26 @@
 // PostList.tsx
 import React from "react";
 import styled from "styled-components";
-import { useAuth } from "context/AuthContext";
-import PostDetail from "pages/community/communityComponent/PostDetail";
-import { useNavigate } from "react-router-dom";
 
-interface Post {
-  post_id: number;
-  post_title: string;
-  post_contents: string;
-  post_nickname: string;
-  post_date: string;
-  post_views: number;
-  comments_count: number;
-  comments: Comment[];
-  post_up_sport: string;
-  post_sport: string;
-  post_sports_keyword: string;
-  post_hashtag: string;
-  post_like_counts: number;
-  isRecommended?: boolean;
-  likeStatus: boolean;
-  unlikeStatus: boolean;
-  post_img1: string;
-  post_img2: string;
-  post_unlike_counts: number;
-  member_id: number;
-  author: boolean;
+interface PostListProps {
+  postData: {
+    post_id: number;
+    post_title: string;
+    post_nickname: string;
+    post_sport: string;
+    post_views: number;
+    post_like_counts: number;
+    post_date: string;
+    post_contents: string | null;
+  }[];
 }
 
-interface PostData {
-  postData: Post[];
-}
-
-function PostList({ postData }: PostData): JSX.Element {
-  const { state } = useAuth();
-  const { token } = state;
-  const navigate = useNavigate();
-
-  const handlePostClick = async (post: Post, isRecommended: boolean) => {
-    navigate(`/community/${post.post_id}`, { state: { post, isRecommended } });
-  };
-
+function PostList({ postData }: PostListProps): JSX.Element {
   return (
     <Container>
       {postData.length > 0 ? (
         postData.map((post) => (
-          <PostItem
-            key={post.post_id}
-            onClick={() => handlePostClick(post, post.isRecommended || false)}
-          >
+          <PostItem key={post.post_id}>
             <Title>{post.post_title}</Title>
             <Details>
               <span>👤 {post.post_nickname}</span> |{" "}
@@ -84,18 +55,7 @@ const PostItem = styled.div`
   border: 1px solid grey;
   border-radius: 8px;
   padding: 16px;
-  margin: 0 20px;
   background: white;
-  overflow: hidden;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-  cursor: pointer;
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
-  }
 `;
 
 const Title = styled.h3`

@@ -1,41 +1,70 @@
 import React, { useState } from "react";
-import { useParams } from 'react-router-dom';
 import styled from "styled-components";
-import api from "../../../../../services/api/axios";
-import { useAuth } from "../../../../../context/AuthContext";
 
 interface QuantitySetModalProps {
   searchTerm: string;
+  nutrient: Nutrient;
   onClose: () => void;
-  onSave: (quantity:number) => void;
-
+  onSave: (foodCalculateDTO: FoodCalculateDTO) => void;
 }
 
-const QuantitySetModal = ({ searchTerm, onClose, onSave }: QuantitySetModalProps): JSX.Element => {
-  const { state } = useAuth();
-  const token = state.token;
-  // url path
-  const { selectedDate, food } = useParams<{ selectedDate: string; food: string }>();
-  // 식품명
-  const itemName = searchTerm;
+interface Nutrient {
+  foodClass: string;
+  foodNm: string;
+  energy: number;
+  carbs: number;
+  protein: number;
+  fat: number;
+  sugar: number;
+  nat: number;
+  chole: number;
+  fatsat: number;
+  fatrn: number;
+  cal: number;
+}
+
+
+interface FoodCalculateDTO {
+  foodNm: string;
+  inputQuantity: number; // 사용자가 입력한 quantity
+  energy: number;
+  carbs: number;
+  protein: number;
+  fat: number;
+  diet_id: number;  
+}
+
+const QuantitySetModal = ({ searchTerm, nutrient, onClose, onSave }: QuantitySetModalProps): JSX.Element => {
   // 양
-  const [quantity,setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(0);
 
   const handleSave = () => {
-    onSave(quantity); // 부모 컴포넌트에 값 전달
-    onClose(); // 모달 닫기
+    // Nutrient -> FoodCalculateDTO 변환
+    const foodCalculateDTO: FoodCalculateDTO = {
+      foodNm: nutrient.foodNm,
+      inputQuantity: quantity,
+      energy: (nutrient.energy * quantity) / 100,
+      carbs: (nutrient.carbs * quantity) / 100,
+      protein: (nutrient.protein * quantity) / 100,
+      fat: (nutrient.fat * quantity) / 100,
+      diet_id: 0, // `diet_id`는 SelectItemModal에서 추가 설정
+    };
+
+    onSave(foodCalculateDTO); // 부모 컴포넌트에 변환된 데이터 전달
   };
 
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <h3>식품 추가</h3>
-        <Label>
-          식품명 : {itemName}
-        </Label>
+        <Label>식품명 : {searchTerm}</Label>
         <Label>
           양(g) :
-          <input type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))} />
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value))}
+          />
         </Label>
         <ButtonContainer>
           <SaveButton onClick={handleSave}>저장</SaveButton>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../../services/api/axios';
@@ -6,9 +6,10 @@ import { useAuth } from '../../../context/AuthContext';
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
+import { FaCog } from 'react-icons/fa';
 import ItemInfo from 'components/ui/record/list/diet/ItemInfo';
 import SelectItemModal from 'components/ui/record/modal/diet/SelectItemModal';
-
+import MealUpdateModal from 'components/ui/record/modal/diet/MealUpdateModal';
 interface ItemResponseDTO {
   item_id: number;
   item_name: string;
@@ -57,12 +58,15 @@ function DietDetailPage(): JSX.Element {
   const totalFat = itemData.reduce((acc, item) => acc + item.fat, 0);
   const totalCalories = itemData.reduce((acc, item) => acc + item.calories, 0);
   
-
   // openApi 식품 리스트 나열 모달 트리거
   const [isSelectApiBoolean,setIsSelectApiBoolean] = useState<boolean>(false);
-
   // 추가할 식품
   const [searchTerm, setSearchTerm] = useState("");
+  // 드롭다운 상태 관리
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isUpdateDropdownOpen, setIsUpdateDropdownOpen] = useState<boolean>(false); 
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
       if (!state.token) {
@@ -76,6 +80,23 @@ function DietDetailPage(): JSX.Element {
 
       dietGet();
   }, []);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   // 식품 리스트 가져오기
   const dietGet = async () => {
@@ -100,7 +121,7 @@ function DietDetailPage(): JSX.Element {
           console.log("debug >>> ItemData : ", response.data.itemList);
 
         } else {
-          console.error("debug >>> diet 테이블이 존재하지 않습니다");
+          console.log("debug >>> diet 테이블이 존재하지 않습니다");
         }
 
       } catch (err) {
@@ -125,12 +146,58 @@ function DietDetailPage(): JSX.Element {
       console.error("debug >>> error", error);
     }
   };
-  
+
+  const getSelectItem = () => {
+    dietGet();
+    setIsSelectApiBoolean(false);
+  }
+
   // 삭제된 ItemInfo ItemPage에 넘겨줌
   const deleteItem = (deletedItemId: number) => {
     setItemData((prevItemData) =>
       prevItemData.filter((item) => item.item_id !== deletedItemId)
     );
+  };
+
+
+  const navigateDietPage = () => {
+    navigate(`/record/diet/${selectedDate}`);
+  };
+
+  const deleteDiet = async () => {  
+    try{
+      const response = await api.delete('record/diet/delete/meal',{
+        params: { diet_id : dietId },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      
+      response.data === 1 ? console.log("debug >>> delete success !!")
+                          : console.log("debug >>> delete fail !!")
+      navigateDietPage();
+    } catch(error) {
+      console.log("debug >>> error: " + error );
+    }  
+  };
+
+  const editDiet = async (meal:string) => {  
+
+    console.log("debug >>> editDiet 시작");
+    
+    try{
+      const response = await api.put('record/diet/update/meal',
+        { diet_id : dietId,
+          meal_type : meal.toUpperCase()
+        },
+        { headers : { Authorization: `Bearer ${token}` }}
+      );
+
+      response.data === null ? console.log("debug >>> update fail !!")
+                          : navigate(`/record/diet/${selectedDate}/${meal}`);
+      setIsUpdateDropdownOpen(false);                          
+    } catch(error) {
+      console.log("debug >>> error: " + error );
+    }  
   };
 
   // 날짜 포맷
@@ -168,11 +235,10 @@ function DietDetailPage(): JSX.Element {
           </StatItem>
           <StatItem>
             <h3>지방</h3>
-            <p>{totalFat}</p>
+            <p>{totalFat} g</p>
           </StatItem>
         </StatsSection>
       </SummaryCard>
-
       <SearchBar>
         <input
           type="text"
@@ -186,6 +252,19 @@ function DietDetailPage(): JSX.Element {
           검색
         </button>
       </SearchBar>
+      <CogWrapper ref={dropdownRef}>
+        <FaCog onClick={() => setIsDropdownOpen((prev) => !prev)} />
+        {isDropdownOpen && dietId !== 0 && (
+          <DropdownMenu>
+            <button onClick={() => setIsUpdateDropdownOpen(true)}>
+              식단 수정
+            </button>
+            <button onClick={() => deleteDiet()}>
+                식단 삭제
+              </button>
+          </DropdownMenu>
+        )}
+      </CogWrapper>
       <ItemList>
         {Array.isArray(itemData) && itemData.map((item, index) => (
           <ItemInfo
@@ -199,11 +278,17 @@ function DietDetailPage(): JSX.Element {
           <SelectItemModal
           apiList={apiList}
           onClose={() => setIsSelectApiBoolean(false)}
-          onSave={() => dietGet}
+          onSave={getSelectItem}
           dietId={dietId}  
           />
         )}
-
+      {isUpdateDropdownOpen && (
+          <MealUpdateModal
+            onClose = {() => setIsUpdateDropdownOpen(false)}
+            onSave ={(meal:string) => editDiet(meal)}
+          />
+        )
+      }
     </Container>
   );
 };
@@ -305,6 +390,41 @@ const SearchBar = styled.div`
   }
 `;
 
+const CogWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end; /* 우측 정렬 */
+  margin: 10px 0; /* 위아래 여백 추가 */
+  
+  svg {
+    cursor: pointer;
+    font-size: 24px;
+  }
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  margin-top: 5px; /* 톱니바퀴 아래로 약간 떨어지게 설정 */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+`;
+
 const ItemList = styled.div`
   display: grid;
   gap: 16px;
@@ -319,47 +439,3 @@ const ItemList = styled.div`
     padding: 12px;
   }
 `;
-
-
-
-//   // 식단 리스트 가져오기
-//   const dietGet = async () => {
-//     if (memberId !== undefined && state.token) {
-//       try {
-//         const token = state.token;
-//         const response = await api.post('record/diet/get/diet', {
-//           meal_type: food,
-//           record_date: selectedDate,
-//         }, {
-//           headers: { 'Authorization': `Bearer ${token}` },
-//         });
-        
-//         console.log("debug >>> dietGet response : " + response.data);
-
-//         return response.data.diet_id;
-
-//       } catch (err) {
-//           console.error('식단 데이터를 가져오는 중 오류 발생:', err);
-//       }
-//     }
-//   };
-
-//   // 식품 리스트 가져오기
-// const itemGet = async (diet_id: number) => {
-//   try {
-//     console.log("debug >>> data", diet_id);
-
-//     const response = await api.get("record/diet/get/items", {
-//       headers: { Authorization: `Bearer ${state.token}` },
-//       params: { diet_id },
-//     });
-
-//     console.log("debug >>> item Info : ", response.data);
-    
-//     // 식품 정보 리턴
-//     return response.data
-
-//   } catch (error) {
-//     console.error("debug >>> error", error);
-//   }
-// }

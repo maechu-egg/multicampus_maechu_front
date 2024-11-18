@@ -30,6 +30,8 @@
 .post-content {
   min-height: 200px;
   resize: vertical;
+  font-size: 14px !important;  /* !important 추가 */
+  line-height: 1.5 !important;
 }
 
 
@@ -40,26 +42,27 @@
   transition: all 0.2s ease;
 }
 
-.btn-primary {
-  background-color: #228be6;
-  border-color: #228be6;
+#postform-submit-btn {
+  background-color: #1D2636 !important;
+  border-color: #1D2636 !important;
+  color: white !important;
 }
 
-.btn-primary:hover {
-  background-color: #1c7ed6;
-  border-color: #1c7ed6;
+#postform-submit-btn:hover {
+  background-color: #333C4D !important;
+  border-color: #1c7ed6 !important;
 }
 
-.btn-secondary {
-  background-color: #868e96;
-  border-color: #868e96;
+#postform-cancel-btn {
+  background-color: #ABC7FF !important;
+  border-color: #ABC7FF !important;
+  color: white !important;
 }
 
-.btn-secondary:hover {
-  background-color: #737980;
-  border-color: #737980;
+#postform-cancel-btn:hover {
+  background-color: #959eb1 !important;
+  border-color: #ABC7FF !important;
 }
-
 
 .tags-input-container {
   background-color: #fff;
@@ -148,5 +151,6 @@
   }
   .post-content {
     min-height: 150px;
+    font-size: 13px !important;
   }
 }

@@ -27,10 +27,21 @@
   margin-top: 50px;
   margin-bottom: 50px;
   padding: 0 20px;
+  gap: 20px;
 }
 
 .write-button {
-  position: absolute;
-  right: 20px;
-  min-width: 100px;
+  min-width: 70px;
+  background-color: #1d2636;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.write-button:hover {
+  background-color: #414d60;
+  color: #e0e0e0;
 }

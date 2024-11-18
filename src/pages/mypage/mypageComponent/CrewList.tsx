@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
 
 interface CrewItem {
   crew_id: number;
@@ -25,17 +26,32 @@ interface CrewListProps {
 const BASE_URL = "http://localhost:8001";
 
 function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedCrewId, setSelectedCrewId] = useState<number | null>(null);
+
+  const handleCrewDetailClick = (crewId: number) => {
+    setSelectedCrewId(crewId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedCrewId(null);
+  };
   return (
     <CrewContainer>
       {crewData.length > 0 ? (
         crewData.map((crew) => (
-          <CrewCard key={crew.crew_id}>
+          <CrewCard
+            key={crew.crew_id}
+            onClick={() => handleCrewDetailClick(crew.crew_id)}
+          >
             <ImageWrapper>
               <CrewImage
                 src={
-                  crew.crew_intro_img && crew.crew_intro_img !== "CrewDefault"
-                    ? `${BASE_URL}/${crew.crew_intro_img}`
-                    : "/img/default/CrewDefault.png"
+                  crew.crew_intro_img === "/static/CrewDefault"
+                    ? "/img/default/CrewDefault.png"
+                    : `${BASE_URL}${crew.crew_intro_img}`
                 }
                 alt="Crew intro"
               />
@@ -65,6 +81,18 @@ function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
         ))
       ) : (
         <NoData>참여한 크루가 없습니다.</NoData>
+      )}
+      {isModalOpen && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalBody>
+              {selectedCrewId !== null && (
+                <CrewJoinModal crew_id={selectedCrewId} />
+              )}
+            </ModalBody>
+            <CloseButton onClick={closeModal}>×</CloseButton>
+          </ModalContent>
+        </ModalOverlay>
       )}
     </CrewContainer>
   );
@@ -136,6 +164,49 @@ const CrewInfo = styled.p`
 const NoData = styled.p`
   font-size: 1em;
   color: #999;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  width: 70%;
+  max-width: 500px;
+  max-height: 80vh;
+  margin-top: 50px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalBody = styled.div`
+  overflow-y: auto;
+  max-height: 70vh;
+  padding-right: 10px;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 `;
 
 export default CrewList;

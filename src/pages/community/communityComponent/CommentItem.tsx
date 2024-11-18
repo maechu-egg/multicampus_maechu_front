@@ -159,8 +159,9 @@ const CommentItem: React.FC<CommentItemProps> = ({
       <div className="comment-reactions">
         {comment.commentAuthor && (
           <button
-            className="btn btn-danger me-2"
-            onClick={() => onCommentDelete(comment.id, post_id)}
+          id="comment-delete-btn"
+          className="btn btn-danger me-2"
+          onClick={() => onCommentDelete(comment.id, post_id)}
           >
             삭제
           </button>

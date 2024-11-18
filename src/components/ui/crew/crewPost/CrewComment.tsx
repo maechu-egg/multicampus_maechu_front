@@ -6,6 +6,7 @@ interface CrewComment {
     crew_comments_date: string;
     crew_comments_id: number;
     crew_post_id: number;
+    nickname: string;
     member_id: number;
 }
 
@@ -18,7 +19,7 @@ function CrewComment ({ comment, onCommentDelete, post_id } : {comment:CrewComme
     return (
         <div className="comment">
             <div className="comment-header">
-                {/*<span className="comment-author">{comment.nickname}</span> */}
+                <span className="comment-author">{comment.nickname}</span>
                 <span className="comment-date">{comment.crew_comments_date}</span>
             </div>
             <div className="comment-content">{comment.crew_comments_content}</div>
