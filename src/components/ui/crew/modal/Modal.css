@@ -77,6 +77,13 @@
   input[id=no]:checked ~ .glider2 {
     transform: translateX(100%);
   }
+
+  input[id=notification]:checked ~ .glider2 {
+    transform: translateX(0);
+  }
+  input[id=common]:checked ~ .glider2 {
+    transform: translateX(100%);
+  }
   
   input[id=poster]:checked ~ .glider2 {
     transform: translateX(0);

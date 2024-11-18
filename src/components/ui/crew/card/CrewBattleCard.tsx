@@ -31,20 +31,19 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
 
 
     useEffect(() => {
-        //변경 가능한 변수로 투표수 선언
-        let firstScoreMemberVote = firstScoreMember?.vote_count || 0;
-        let secondScoreMemberVote = secondScoreMember?.vote_count || 0;
-
-        // 평균을 내기위한 투표수 총합
+        // 투표수 설정
+        const firstScoreMemberVote = firstScoreMember?.vote_count || 0;
+        const secondScoreMemberVote = secondScoreMember?.vote_count || 0;
+    
+        // 총 투표수 계산
         const totalVote = firstScoreMemberVote + secondScoreMemberVote;
-
-        // 받은 투표수를 백분율로 변경
-        const firstPercentValue = Math.round((firstScoreMemberVote / totalVote) * 100);
-        const secondPercentValue = Math.round((secondScoreMemberVote / totalVote) * 100);
-
+    
+        // 백분율 계산, NaN이면 0으로 설정
+        const firstPercentValue = totalVote ? Math.round((firstScoreMemberVote / totalVote) * 100) : 0;
+        const secondPercentValue = totalVote ? Math.round((secondScoreMemberVote / totalVote) * 100) : 0;
+    
         setFirstPercent(firstPercentValue);
         setSecondPercent(secondPercentValue);
-
     }, [firstScoreMember, secondScoreMember]);
     
     // 배틀 참가 멤버 조회 API를 사용하여 가장 투표를 많이 받은 TOP2명의 정보 불러오기 & 내가 배틀에 속해있는지 확인하기 위함
