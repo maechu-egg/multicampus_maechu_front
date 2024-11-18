@@ -5,6 +5,7 @@ import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
 import CrewCommentSection from "./CrewCommentSection";
 import CrewCreatePostModal from "../modal/CrewUpdatePostModal";
+const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
 
 
 function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewId:number, onBack: () => void}) {
@@ -14,6 +15,8 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
 
     // 좋아요 눌렀는지 확인
     const [isLiked, setIsLiked] = useState(false);
+
+    const [imgPath, setImgPath] = useState<string>("");
 
     const [crew_post_title, setCrew_post_title] = useState("");
     const [crew_post_content, setCrew_post_content] = useState("");
@@ -50,6 +53,15 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
             console.log("게시물 상세 조회 실패 ", err);
         }
     }
+
+    useEffect(() => {
+        if (crew_post_img.includes("CrewDefault")) {
+            setImgPath('img/default/CrewDefault.png');
+        } else if(crew_post_img != "CrewDefault") {
+            setImgPath(`${BASE_URL}${crew_post_img}`);
+        }
+        console.log("이미지 경로", imgPath);
+    },[crew_post_img]);
 
     // 좋아요 체크 API
     const getIsLike = async() => {
@@ -120,7 +132,7 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
         <div className="post-detail">
             <hr className="border border-secondary border-1 opacity-50" />
             <div className="post-header">
-                <h2>{crew_post_title} <span className="badge text-bg-secondary">{crew_post_state === 0 ? "공지" : crew_post_state === 1 ? "인기" : "일반"}</span></h2>
+                <h2>{crew_post_title} <span className="badge text-bg-secondary">{crew_post_state === 0 ? "공지" : crew_post_state === 1 ? "인기" : ""}</span></h2>
                 <div className="post-info">
                     <span className="author">{nickname}</span>
                     <div className="info-right">
@@ -134,7 +146,12 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
             <div className="post-images">
                 <div className="post-image">
                     {crew_post_img != null && (
-                        <img src={`http://localhost:8001/static/${crew_post_img}`} alt="image" style={{ maxWidth: "100%", height: "auto" }} />
+                        <img
+                        src={imgPath}
+                        alt="크루 이미지"
+                        className="img-fluid"
+                        style={{marginRight: "0px", width: '100%'}}
+                        />
                     )}
                 </div>
             </div>

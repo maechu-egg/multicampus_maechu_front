@@ -81,7 +81,7 @@ function CrewBattleModal({ crewId, onClick }: CrewBattleProps) {
                 <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>모집 마감 날짜</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         className="form-control"
                         value={battle_end_recruitment}
                         onChange={(e) => setBattleRecruitment(e.target.value)}
@@ -93,7 +93,7 @@ function CrewBattleModal({ crewId, onClick }: CrewBattleProps) {
                 <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>종료 날짜</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         className="form-control"
                         value={battle_end_date}
                         onChange={(e) => setBattleEndDate(e.target.value)}

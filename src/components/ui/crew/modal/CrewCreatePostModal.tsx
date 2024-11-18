@@ -6,12 +6,32 @@ import api from 'services/api/axios';
 function CrewCreatePostModal({ crewId, onClick, }: { crewId: number, onClick:() => void }) {
     const { state } = useAuth();
     const token = state.token;
-    const member_id = state.memberId;
+    const memberId = state.memberId;
 
     // 입력 필드 상태 관리
     const [crew_post_title, setCrew_post_title] = useState('');
     const [crew_post_content, setCrew_post_content] = useState('');
     const [crew_post_img, setCrew_post_img] = useState<File | null>(null);
+    const [crew_post_state, setCrew_post_state] = useState(2);
+
+    // 크루장
+    const [crewLeader, setCrewLeader] = useState(0);
+
+    useEffect(() => {
+        const getCrewLeader = async() => {
+            try {
+                const response = await api.get(`crew/info/${crewId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setCrewLeader(response.data.member_id);
+            } catch (err) {
+                console.log("크루장 정보 조회 err", err);
+            }
+        }
+        getCrewLeader();
+    },[])
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -26,11 +46,13 @@ function CrewCreatePostModal({ crewId, onClick, }: { crewId: number, onClick:() 
         data.append("crew_post_title", crew_post_title);
         data.append("crew_post_content", crew_post_content);
         if (crew_post_img) {
-            data.append("imgFile", crew_post_img);
+            data.append("ImgFile", crew_post_img);
         }
         data.append("crew_id", crewId.toString());
-        data.append("member_id", member_id ? member_id.toString() : '');
+        data.append("member_id", memberId ? memberId.toString() : '');
+        data.append("crew_post_state", crew_post_state.toString());
 
+        // 크루 게시물 등록 API 
         const createCrewPost = async () => {
             try {
                 const response = await api.post(`crew/post/create`, data, {
@@ -88,6 +110,37 @@ function CrewCreatePostModal({ crewId, onClick, }: { crewId: number, onClick:() 
                         style={{ width: "100%" }}
                     />
                 </div>
+                <br />
+                {/* 공지글 여부 */}
+                { crewLeader === memberId && (
+                    <div className="form-control" style={{ width: '100%' }}>
+                        <label>공지글 여부</label>
+                        <div className="container d-flex justify-content-between w-100">
+                            <div className="d-flex tabs w-100 " style={{paddingLeft : 0, paddingRight : 0}}>
+                                <input
+                                    type="radio"
+                                    id="notification"
+                                    name="postOption"
+                                    value={1}
+                                    checked={crew_post_state === 0}
+                                    onChange={(e) => setCrew_post_state(0)}
+                                />
+                                <label className="tab w-100 text-center" htmlFor="notification">공지글</label>
+
+                                <input
+                                    type="radio"
+                                    id="common"
+                                    name="postOption"
+                                    value={0}
+                                    checked={crew_post_state === 2}
+                                    onChange={(e) => setCrew_post_state(2)}
+                                />
+                                <label className="tab w-100 text-center" htmlFor="common">일반글</label>
+                                <span className='glider2'></span>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">

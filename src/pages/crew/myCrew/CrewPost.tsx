@@ -42,7 +42,6 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
     const getCrewPost = async() => {
         const params = {
             currentPage: currentPage ,
-            crewId: crewId,
             size:10,
         }
         try {

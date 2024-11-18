@@ -52,22 +52,23 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = {
-            feed_img: feed_img ? feed_img : "이미지 없음",
-            feed_post,
-            feed_kcal,
-            feed_exTime,
-            crew_sport,
-            battle_id,
-            participant_id: participantId
-        };
-        console.log('Form Data:', data);
+        const data = new FormData();
+        data.append("feed_post", feed_post);
+        data.append("feed_kcal", feed_kcal.toString());
+        if (feed_img) {
+            data.append("ImgFile", feed_img);
+        }
+        data.append("feed_exTime", feed_exTime.toString());
+        data.append("crew_sport", crew_sport);
+        data.append("battle_id", battle_id.toString());
+        data.append("participant_id", participantId.toString());
         // 피드 생성 API
         const createFeed = async() => {
             try{
                 const response = await api.post(`crew/battle/feed/create`, data, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
                     }
                 });
                 console.log("debug >>> createFeed response", response.data);

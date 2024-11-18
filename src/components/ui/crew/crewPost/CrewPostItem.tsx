@@ -31,7 +31,7 @@ const CrewPostItem: React.FC<PostItemProps> = ({
     return (
         <div className="post-item"  onClick={onClick}>
             <div className="post-content-wrapper">
-                <span className="post-title">{crew_post_title} <span className="badge text-bg-secondary">{crew_post_state === 0 ? "공지" : crew_post_state === 1 ? "인기" : "일반"}</span></span>        
+                <span className="post-title">{crew_post_title} <span className="badge text-bg-secondary">{crew_post_state === 0 ? "공지" : crew_post_state === 1 ? "인기" : ""}</span></span>        
                 <div className="post-info-wrapper">
                     <div className="author">
                         <span>{nickname}</span>
