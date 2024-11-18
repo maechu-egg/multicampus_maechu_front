@@ -102,6 +102,13 @@ const PostDetail: React.FC<PostDetailProps> = ({
     setDisliked(unlikeStatus);
   }, [post_like_counts, post_unlike_counts, likeStatus, unlikeStatus, setLikeCount, setDislikeCount, setLiked, setDisliked]);
 
+  useEffect(() => {
+    const fetchComments = async () => {
+      await getComments(post_id);
+    };
+    fetchComments();
+  }, [post_id]);
+
   const handleSortOrderChange = (order: "asc" | "desc") => {
     setSortOrder(order);
   };

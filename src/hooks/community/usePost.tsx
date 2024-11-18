@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { postApi } from '../../services/api/community/postApi';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // AuthContext import 추가
+import { useComment } from './useComment';
 import axios from 'axios';
 
 export interface Comment {
@@ -53,7 +54,7 @@ export const usePost = () => {
   const [disliked, setDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
-
+  const { getComments } = useComment();
 
  // 게시글 목록 조회
  const fetchPosts = async (
@@ -158,10 +159,11 @@ export const usePost = () => {
         alert("로그인이 필요합니다.");
         return;
       }
-
+  
       const response = await postApi.getPostDetail(post.post_id, isRecommended, token);
       setSelectedPost(response.data);
       setIsAuthor(response.data.Author);
+      getComments(post.post_id);  // 댓글 가져오기 추가
     } catch (error) {
       console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
     }
@@ -401,5 +403,6 @@ const handleDelete = async (postId: number) => {
     setDislikeCount,
     handleLike,
     handleDislike,
+    getComments,
   };
 };

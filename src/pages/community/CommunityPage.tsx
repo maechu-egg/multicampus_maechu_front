@@ -221,7 +221,9 @@ useEffect(() => {
           post_sport: selectedPost.post_sport,
           post_hashtag: selectedPost.post_hashtag,
           post_sports_keyword: selectedPost.post_sports_keyword,
-        }}
+          post_img1: selectedPost.post_img1?.split('/').pop()?.split('?')[0], // URL에서 파일명만 추출
+        post_img2: selectedPost.post_img2?.split('/').pop()?.split('?')[0], // URL에서 파일명만 추출
+      }}
         onSave={(post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, post_hashtag, imageFiles) => 
           handleUpdatePost(selectedPost.post_id, post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, post_hashtag, imageFiles)}
         onCancel={() => setIsEditing(false)}
