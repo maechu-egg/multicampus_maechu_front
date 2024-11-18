@@ -1,10 +1,11 @@
 
 .filter-section {
   border: 1px solid #e0e0e0;
-  max-width: 800px;  
+  max-width: 1200px;  /* PostItem과 동일하게 수정 */
   margin: 0 auto;    
-  width: 95%;   
+  width: 95%;        /* PostItem과 동일하게 유지 */
 }
+
 
 .section-headers {
   display: flex;
