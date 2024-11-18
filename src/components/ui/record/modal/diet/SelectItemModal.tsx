@@ -5,7 +5,7 @@ import styled from "styled-components";
 import QuantitySetModal from "./QuantitySetModal";
 import api from "../../../../../services/api/axios"
 import { useAuth } from "../../../../../context/AuthContext";
-
+import CustomItemModal from "./CustomItemModal";
 
 interface Nutrient {
   foodClass: string;
@@ -42,13 +42,14 @@ interface ItemRequestDTO {
 }
 
 interface SelectItemModalProps {
+  searchTerm: string;
   apiList: Nutrient[];
   onClose: () => void;
   onSave: () => void;
   dietId: number;
 }
 
-const SelectItemModal = ({ apiList, onClose, onSave, dietId }: SelectItemModalProps): JSX.Element => {
+const SelectItemModal = ({ searchTerm ,apiList, onClose, onSave, dietId }: SelectItemModalProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
 
@@ -56,8 +57,7 @@ const SelectItemModal = ({ apiList, onClose, onSave, dietId }: SelectItemModalPr
 
   const [selectedItem, setSelectedItem] = useState<Nutrient | null>(null);
   const [foodCalculateDTO, setFoodCalculateDTO] = useState<FoodCalculateDTO | null>(null); // 변환된 데이터 저장
-  const [isSaved, setIsSaved] = useState(false); // 저장 후 ItemList 숨기기
-
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   // 식단 추가 함수
   const dietInsert = async (): Promise<number | null> => {
     try {
@@ -114,8 +114,8 @@ const SelectItemModal = ({ apiList, onClose, onSave, dietId }: SelectItemModalPr
     }
 
     setFoodCalculateDTO(dto); // FoodCalculateDTO 저장하여 출력용으로 사용
-    setIsSaved(true); // 저장 완료 상태로 전환
     setSelectedItem(null); // 선택 초기화
+    setIsCustomModalOpen(false);
   };
 
   // 아이템 클릭 핸들러
@@ -123,18 +123,16 @@ const SelectItemModal = ({ apiList, onClose, onSave, dietId }: SelectItemModalPr
     setSelectedItem(item);
   };
 
-  const handleClose = () => {
-    isSaved ? onSave() : onClose();
-  };
-
   return (
     <ModalOverlay>
       <ModalContent>
         <Header>
           <h3>검색 결과</h3>
-          <CloseButton onClick={handleClose}>닫기</CloseButton>
+          <CloseButton onClick={ () => {foodCalculateDTO ? onSave() : onClose()} }>
+            {foodCalculateDTO ? "완료" : "닫기"}
+          </CloseButton>
         </Header>
-        {!isSaved && (
+        {!foodCalculateDTO && (
           <ItemList>
             {apiList.length > 0 ? (
               apiList.map((item, index) => (
@@ -160,8 +158,7 @@ const SelectItemModal = ({ apiList, onClose, onSave, dietId }: SelectItemModalPr
             onSave={handleSave}
           />
         )}
-
-        {isSaved && foodCalculateDTO && (
+        {foodCalculateDTO && (
           <FoodInfo>
             <h4>추가된 식품 정보</h4>
             <p>식품명: {foodCalculateDTO.foodNm}</p>
@@ -171,6 +168,22 @@ const SelectItemModal = ({ apiList, onClose, onSave, dietId }: SelectItemModalPr
             <p>단백질: {foodCalculateDTO.protein.toFixed(2)} g</p>
             <p>지방: {foodCalculateDTO.fat.toFixed(2)} g</p>
           </FoodInfo>
+        )}
+        <Footer>
+          {(
+            !foodCalculateDTO &&
+            <ManualEntryButton onClick={() => setIsCustomModalOpen(true)}>
+              직접 입력
+            </ManualEntryButton>
+          )}
+        </Footer>
+
+        {isCustomModalOpen && (
+          <CustomItemModal
+            searchTerm={searchTerm}
+            onClose={() => setIsCustomModalOpen(false)}
+            onSave={handleSave}
+          />
         )}
       </ModalContent>
     </ModalOverlay>
@@ -307,6 +320,27 @@ const CancelButton = styled.button`
 
   &:hover {
     background: #e53935;
+  }
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  border-top: 1px solid #ccc;
+`;
+
+const ManualEntryButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
   }
 `;
 
