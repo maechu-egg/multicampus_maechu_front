@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useParams } from 'react-router-dom';
 import styled from "styled-components";
@@ -47,7 +46,7 @@ const MealUpdateModal = ({onClose,onSave}:MealUpdateModalProps): JSX.Element => 
                 ))}
             </MealSelect>         
             <ButtonContainer>
-              <SaveButton onClick={async() => onSave(selectedMeal)}>저장</SaveButton>
+              <SaveButton primary onClick={async() => onSave(selectedMeal)}>저장</SaveButton>
               <CancelButton onClick={onClose}>취소</CancelButton>
             </ButtonContainer>
           </ModalContent>
@@ -140,19 +139,21 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
-const SaveButton = styled.button`
+const SaveButton = styled.button<{ primary?: boolean }>`
   padding: 12px 20px;
-  background-color: #007bff;
+  background: ${({ primary }) => (primary ? 'linear-gradient(135deg, #1D2636, #333C4D)' : '#dc3545')};
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background-color: #0056b3;
+    background: ${({ primary }) => (primary ? 'linear-gradient(135deg, #333C4D, #1D2636)' : '#c82333')};
+    transform: translateY(-2px);
   }
 
   &:focus {
@@ -161,24 +162,25 @@ const SaveButton = styled.button`
   }
 `;
 
-const CancelButton = styled.button`
+const CancelButton = styled.button<{ primary?: boolean }>`
   padding: 12px 20px;
-  background-color: #dc3545;
+  background-color: #1D2636;
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background-color: #c82333;
+    background: #333C4D;
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 4px rgba(220, 53, 69, 0.6);
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.6);
   }
 `;
 
