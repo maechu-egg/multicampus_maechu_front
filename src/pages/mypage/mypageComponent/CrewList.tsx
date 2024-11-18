@@ -105,7 +105,6 @@ const CrewContainer = styled.div`
   align-items: center;
   gap: 16px;
   width: 100%;
-  padding: 20px;
 `;
 
 const CrewCard = styled.div`

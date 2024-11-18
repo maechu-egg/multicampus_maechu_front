@@ -60,12 +60,11 @@ const BattleContainer = styled.div`
   align-items: center;
   gap: 16px;
   width: 100%;
-  padding: 20px;
 `;
 
 const BattleCard = styled.div`
   width: 100%;
-
+  max-width: 80%;
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;

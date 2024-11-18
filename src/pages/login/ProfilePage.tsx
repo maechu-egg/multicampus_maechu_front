@@ -320,10 +320,11 @@ function ProfilePage(): JSX.Element {
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #b6c0d3;
 `;
 
 const ProfileForm = styled.div`
@@ -338,7 +339,8 @@ const ProfileForm = styled.div`
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin-top: 20%;
+  margin-top: 10%;
+  margin-bottom: 100%;
 `;
 
 const Title = styled.h1`
@@ -411,7 +413,6 @@ const FormRow = styled.div`
   margin-bottom: 15px;
   label {
     width: 30%;
-    font-weight: bold;
   }
   > *:not(label) {
     width: 70%;

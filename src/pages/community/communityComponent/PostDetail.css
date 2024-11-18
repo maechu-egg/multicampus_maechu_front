@@ -112,28 +112,27 @@
   padding: 8px 16px;
   border-radius: 8px;
   transition: all 0.2s;
-  background-color: #1D2636 
+  background-color: #1d2636;
 }
 
 #delete-button {
   padding: 8px 16px;
   border-radius: 8px;
   transition: all 0.2s;
-  background-color: #ABC7FF;
-  border-color: #ABC7FF;
+  background-color: #abc7ff;
+  border-color: #abc7ff;
 }
 
-#edit-button:hover{
+#edit-button:hover {
   transform: translateY(-2px);
-  background-color: #333C4D !important;
+  background-color: #333c4d !important;
   border-color: #1c7ed6 !important;
 }
 #delete-button:hover {
   transform: translateY(-2px);
   background-color: #959eb1 !important;
-  border-color: #ABC7FF !important;
+  border-color: #abc7ff !important;
 }
-
 
 .reaction-buttons {
   display: flex;
@@ -168,14 +167,13 @@
 #back-button {
   position: absolute;
   right: 0;
-  background-color: #1D2636;
+  background-color: #1d2636;
 }
 
-#back-button:hover{
-  background-color: #333C4D !important;
+#back-button:hover {
+  background-color: #333c4d !important;
   border-color: #1c7ed6 !important;
 }
-
 
 .comments-section {
   margin-top: 40px;
@@ -199,20 +197,20 @@
 
 /* 활성화된 버튼 스타일 */
 .comment-sort-buttons .btn-primary {
-  background-color: #1D2636;
-  border-color: #1D2636;
+  background-color: #1d2636;
+  border-color: #1d2636;
 }
 
 /* 호버 효과 */
 .comment-sort-buttons .btn-primary:hover {
-  background-color: #333C4D;
-  border-color: #1D2636;
+  background-color: #333c4d;
+  border-color: #1d2636;
 }
 
 /* 비활성화된 버튼 호버 */
 .comment-sort-buttons .btn-outline-primary:hover {
-  background-color: #1D2636;
-  border-color: #1D2636;
+  background-color: #1d2636;
+  border-color: #1d2636;
 }
 
 .comment {

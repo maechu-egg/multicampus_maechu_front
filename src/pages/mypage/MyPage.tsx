@@ -4,7 +4,6 @@ import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
 import api from "../../services/api/axios";
-// import PostList from "./mypageComponent/PostList";
 import PostList from "pages/community/communityComponent/PostList";
 import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
@@ -14,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { usePost } from "hooks/community/usePost";
 
-const BASE_URL = "http://localhost:8001/static";
+const BASE_URL = "http://localhost:8001";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
@@ -110,13 +109,9 @@ function MyPage(): JSX.Element {
   const [crewPoints, setCrewPoints] = useState(0);
   const [personalLevel, setPersonalLevel] = useState("기본");
   const [crewLevel, setCrewLevel] = useState("기본");
-  const [postData, setPostData] = useState<any[]>([]);
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  // const [posts, setPosts] = useState<Post[]>([]);
-  // const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -416,7 +411,7 @@ const Header = styled.div`
   width: 100%;
   border-bottom: 0.8px solid #666;
   background-color: #f4f4f4;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   padding-top: 20px;
 
   @media (min-width: 900px) {
@@ -428,7 +423,7 @@ const Header = styled.div`
     background-color: #f4f4f4;
     border-right: 1px solid #ddd;
 
-    padding: 150px 25px 80px 25px;
+    padding: 130px 25px 80px 25px;
     align-items: flex-start;
     overflow-y: auto;
   }
@@ -450,7 +445,8 @@ const AccountIcon = styled.img`
 `;
 
 const Content = styled.div`
-  width: 80%;
+  margin-top: 30px;
+  width: 75%;
   height: 1000px;
 
   @media (min-width: 900px) {
@@ -478,15 +474,21 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileButton = styled.button`
-  font-size: 0.8em;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 20px;
+  background-color: #1d2636;
+  color: #fff;
+  border: none;
 
-  &: hover {
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  margin-left: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  &:hover {
+    background-color: #414d60;
+    color: #e0e0e0;
   }
 `;
 
