@@ -16,7 +16,7 @@
 
 .post-item.recommended:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 15px 5px #b6c0d3;
 }
 
 .post-item.recommended .post-content-wrapper {
@@ -27,7 +27,7 @@
   height: 100%;
 }
 
-.post-item.recommended .subcategory {
+.post-item.recommended .re_subcategory {
   font-size: 14px;
   color: #ABC7FF;
   font-weight: 600;
@@ -91,6 +91,7 @@
 }
 
 .post-item.recommended .date {
+  font-size: 13px;
   color: #888;
 }
 
@@ -108,6 +109,13 @@
   box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
 }
 
+.list_title{  
+  width: 1150px;
+  height:50px;
+  margin: 80px auto 30px;
+  font-weight: bold; 
+}
+
 /* 기존 코드는 유지하고 반응형 부분만 수정 */
 
 /* 반응형 */
@@ -117,6 +125,7 @@
     width: 200px;
     margin: 0 8px;  /* 좌우 여백만 조정 */
     flex-shrink: 0; /* 가로 스크롤시 크기 유지 */
+    flex-direction: column;
   }
   
   .post-item.recommended .post-content-wrapper {
@@ -131,6 +140,12 @@
   .post-item.recommended .post-stats {
     gap: 12px;
     font-size: 11px;
+  }
+
+  .list_title{   
+    width: 95%;
+    height:50px;
+    margin: 80px auto 30px; 
   }
 }
 

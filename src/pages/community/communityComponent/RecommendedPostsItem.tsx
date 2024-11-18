@@ -59,7 +59,7 @@ const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`} onClick={onClick}>
       <div className="post-content-wrapper">
-        <span className="subcategory">[{post_sport || '자유'}]</span>
+        <span className="re_subcategory">[{post_sport || '자유'}]</span>
         <span className="post-title">{post_title}</span>
         
         {/* {hashtagArray.length > 0 && (

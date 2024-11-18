@@ -2,7 +2,7 @@ import React from "react";
 import PostItem from "./PostItem";
 import RecommendedPostsItem from "./RecommendedPostsItem";
 import styled from "styled-components";
-
+import "./RecommendedPostsItem.css"; 
 
 /* 게시물 목록을 표시하는 컴포넌트 */
 interface Comment {
@@ -57,7 +57,7 @@ const PostList: React.FC<PostListProps> = ({
   return (
     <div>
       {recommendedPosts && recommendedPosts.length > 0 && (
-        <RecommendedSection>
+        <RecommendedSection>         
           <ScrollContainer>
             {recommendedPosts.map((post) => (
               <RecommendedPostsItem
@@ -71,6 +71,7 @@ const PostList: React.FC<PostListProps> = ({
         </RecommendedSection>
       )}
 
+      <h3 className="list_title">전체 게시글</h3>
       {posts.length === 0 ? (
         <p>게시글이 없습니다.</p>
       ) : (

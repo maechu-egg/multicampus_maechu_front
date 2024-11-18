@@ -55,6 +55,34 @@
   max-width: 1200px;  /* PostItem과 동일한 최대 너비 */
 }
 
+.top{
+  position:relative;
+  width: 100%;
+  height: 100px;
+
+}
+
+.topbackground{
+  position:absolute;
+  top: -20px;
+  width: 100%;
+  height: 200px;
+  background-color: #b6c0d3;
+  z-index: -5;
+
+
+}
+
+.top_title{
+  margin:0 auto;
+  padding-top: 30px;
+  width: 1200px;
+  height: 20px;
+  font-weight: bold;
+
+}
+
+
 /* 반응형 대응 */
 @media screen and (max-width: 768px) {
   .recommended-title {
