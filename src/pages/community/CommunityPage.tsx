@@ -41,7 +41,8 @@ const post_sports = data.post_sports;
 function CommunityPage(): JSX.Element {
   const [showPostForm, setShowPostForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalpage, setTotalPage] = useState(0);
   const [activePost_sport, setActivePost_sport] = useState("");
   const [currentPage, setCurrentPage] = useState(1);  // currentPage 상태 추가
   const postsPerPage = 10;
@@ -101,6 +102,8 @@ function CommunityPage(): JSX.Element {
     loading: paginationLoading,
     handlePageChange
   } = usePagination({
+    totalpage,
+    totalPages,
     postsPerPage,
     isSearchActive,
     searchKeyword,
@@ -110,7 +113,8 @@ function CommunityPage(): JSX.Element {
     setPosts,
     currentPage,
     setCurrentPage,
-    setTotalPages
+    setTotalPages,
+    setTotalPage,
   });
   
 
@@ -167,8 +171,18 @@ useEffect(() => {
   }
 }, [activeTab, activePost_sport, currentPage]);
 
+useEffect(() => {
+    
+  console.log("Updated posts:", posts);
+  console.log("Updated posts:", posts);
+}, [posts]);
 
 
+useEffect(() => {
+  if (currentPage === 1) {
+    handlePageChange(1); // 첫 페이지로 자동 이동
+  }
+}, [activeTab, activePost_sport]);
 
   useEffect(() => {
     if (!isSearchActive && activePost_sport === "") {
@@ -190,8 +204,6 @@ useEffect(() => {
   const handleEdit = () => {
     setIsEditing(true);
   };
-
-
 
   const handleBack = () => {
     setSelectedPost(null);
@@ -316,11 +328,11 @@ useEffect(() => {
             onPostClick={handlePostClick} 
           />
 
-<Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPageChange={handlePageChange}
-/>
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    onPageChange={handlePageChange}
+  />
 {console.log("totalPages:", totalPages)} 
         </>
       )}

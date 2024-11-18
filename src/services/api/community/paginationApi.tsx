@@ -23,8 +23,11 @@ export const paginationApi = {
     page: number;
     size: number;
   }, token: string) => {
-    return await axios.get(`${BASE_URL}/search`, {
-      params,
+    return await axios.get(`${BASE_URL}/search/${params.searchTerm}`, {
+      params : {
+        page: params.page,
+        size: params.size,
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },

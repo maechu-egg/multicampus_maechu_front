@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
     return pageNumbers;
   };
 
-  if (totalPages <= 1) return null;
+  if (totalPages < 1) return null;
 
   return (
     <nav aria-label="Page navigation" className="mt-4">

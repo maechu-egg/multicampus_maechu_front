@@ -84,7 +84,8 @@ export const usePost = () => {
 
     const fetchedPosts = response.data.posts || response.data;
     setTotalPages(response.data.totalPages);
-    console.log("Total pages:", response.data.totalPages);
+    console.log(" fetchPosts  Total page:", response.data.totalpage);
+    console.log(" fetchPosts  Total pages:", response.data.totalPages);
 
       const mappedPosts = fetchedPosts.map((post: Post) => ({
         post_id: post.post_id,
