@@ -32,6 +32,7 @@ export const useSearch = (
       setIsSearchActive(true);
       setPosts([]);
       setLoading(true);
+      setCurrentPage(1);
 
       const response = await searchApi.searchPosts(searchTerm, page, postsPerPage, token);
 
@@ -102,7 +103,9 @@ export const useSearch = (
       setIsSearchActive(true);
       setPosts([]);
       setLoading(true);
-     
+      setCurrentPage(1);
+
+      
       const response = await searchApi.searchByKeyword(
         keyword, 
         1, 

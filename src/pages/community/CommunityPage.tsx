@@ -49,7 +49,7 @@ function CommunityPage(): JSX.Element {
   const navigate = useNavigate();
   const { postId } = useParams<{ postId: string }>();
   const location = useLocation();
-
+  const [currentKeywords, setCurrentKeywords] = useState(recommendedKeywords);
  
    // 2. usePost 훅을 먼저 사용
    const {
@@ -182,7 +182,7 @@ useEffect(() => {
   if (currentPage === 1) {
     handlePageChange(1); // 첫 페이지로 자동 이동
   }
-}, [activeTab, activePost_sport]);
+}, [activeTab, activePost_sport, currentKeywords]);
 
   useEffect(() => {
     if (!isSearchActive && activePost_sport === "") {
@@ -190,6 +190,11 @@ useEffect(() => {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    if (currentPage >= 1) { 
+      handlePageChange(1); 
+    }
+  }, [activePost_sport]);
 
   useEffect(() => {
     if (activePost_sport !== "") {
@@ -208,6 +213,12 @@ useEffect(() => {
   const handleBack = () => {
     setSelectedPost(null);
     setIsEditing(false);
+  };
+  
+  const handlereKeywordClick = (keyword: string, activeTab: string) => { 
+    // 클릭 시 선택된 키워드를 상태로 업데이트
+    setCurrentKeywords([keyword]);  
+    console.log("Keyword clicked:", keyword); 
   };
 
   if (isEditing && selectedPost) {
@@ -240,6 +251,11 @@ useEffect(() => {
       post_img2: selectedPost.post_img2
     });
     return (
+        <div className="community-container">
+        <div className="top">
+          <div className="topbackground"></div> 
+          <h2 className="top_title">커뮤니티</h2> 
+        </div>
       <PostDetail
         post_id={selectedPost.post_id}
         post_title={selectedPost.post_title}
@@ -277,11 +293,16 @@ useEffect(() => {
           console.log('Comment dislike:', commentId, postId);
         }}
       />
+      </div>
     );
   }
   /* 메인 화면 렌더링 */
   return (
     <div className="community-container">
+       <div className="top">
+        <div className="topbackground"></div> 
+        <h2 className="top_title">커뮤니티</h2> 
+      </div>
       {!showPostForm && (
         <CategoryDropdown
           post_up_sports={post_up_sports}
@@ -290,7 +311,10 @@ useEffect(() => {
           onTabChange={handleCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           recommendedKeywords={recommendedKeywords}
-          onKeywordClick={(keyword) => handleKeywordClick(keyword, activeTab)}  
+          onKeywordClick={(keyword) =>{ handleKeywordClick(keyword, activeTab); 
+            handlereKeywordClick(keyword, activeTab); 
+            setCurrentKeywords([keyword]); 
+          }}
         />
       )}
 
@@ -322,9 +346,7 @@ useEffect(() => {
               글쓰기
             </button>
           </div>
-          
-          <h1 className="recommended-title">Recommended</h1>
-        
+          <h3 className="list_title">추천 게시글</h3>
           <PostList 
             posts={posts}  
             recommendedPosts={recommendedPosts} 
