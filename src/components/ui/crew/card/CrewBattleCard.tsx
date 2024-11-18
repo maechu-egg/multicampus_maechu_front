@@ -83,6 +83,10 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
         day: 'numeric'
     });
 
+    const onClickNo = () => {
+        alert("배틀이 시작될 때까지 기다려주세요");
+    }
+
     return (
         <div className="card text-center mb-3" style={{ width: "20em", height: "100%", marginRight: "20px" }}>
             {/* props 받아서 온 데이터들 정리해서 보여주기 */}
@@ -138,10 +142,7 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
                     {isMember == true && battle.battle_state == 0 && (
                         <button 
                             className="btn btn-secondary" 
-                            data-bs-toggle="modal"
-                            data-bs-target="#battleFeedDetailModal"
-                            onClick={onDetailClick}
-                            disabled={true}
+                            onClick={onClickNo}
                         >
                             상세보기
                         </button>
