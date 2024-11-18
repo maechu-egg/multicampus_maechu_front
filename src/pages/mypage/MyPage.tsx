@@ -16,7 +16,6 @@ import { usePost } from "hooks/community/usePost";
 
 const BASE_URL = "http://localhost:8001/static";
 
-
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
   member_id: number;
@@ -66,9 +65,9 @@ interface Comment {
   date: string;
   comment_like_counts: number;
   comment_dislike_counts: number;
-  comment_like_status:boolean;
-  comment_dislike_status:boolean;
-  commentAuthor:boolean;
+  comment_like_status: boolean;
+  comment_dislike_status: boolean;
+  commentAuthor: boolean;
 }
 
 interface Post {
@@ -78,24 +77,23 @@ interface Post {
   post_nickname: string;
   post_date: string;
   post_views: number;
-  comments_count :number;
-  comments:  Comment[];
+  comments_count: number;
+  comments: Comment[];
   post_up_sport: string;
   post_sport: string;
-  post_sports_keyword:string;
+  post_sports_keyword: string;
   post_hashtag: string;
   post_like_counts: number;
   isRecommended?: boolean;
-  likeStatus :boolean;
-  unlikeStatus:boolean;
-  post_img1:string;
-  post_img2:string;
-  post_unlike_counts : number;
-  member_id: number; 
+  likeStatus: boolean;
+  unlikeStatus: boolean;
+  post_img1: string;
+  post_img2: string;
+  post_unlike_counts: number;
+  member_id: number;
 
-  author:boolean;
+  author: boolean;
 }
-
 
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
@@ -120,8 +118,6 @@ function MyPage(): JSX.Element {
   // const [posts, setPosts] = useState<Post[]>([]);
   // const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
 
-
-
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
   const openCrewModal = () => setCrewModalOpen(true);
@@ -130,7 +126,6 @@ function MyPage(): JSX.Element {
   const closeAccountModal = () => setAccountModalOpen(false);
   const openProfileModal = () => setProfileModalOpen(true);
   const closeProfileModal = () => setProfileModalOpen(false);
-
 
   const {
     posts,
@@ -368,33 +363,33 @@ function MyPage(): JSX.Element {
         </Category>
       </Header>
       <Content>
-          {selectedCategory === "내가 쓴 글" ||
-          selectedCategory === "좋아요 한 글" ? (
-            <PostList 
-              posts={posts}
-              recommendedPosts={[]}
-              onPostClick={async (post) => {
-                try {
-                  await handlePostClick(post, false);
-                  // 상태 전달과 함께 communitypage로 이동
-                  navigate('/communitypage', { 
-                    state: { 
-                      fromMyPage: true,
-                      selectedPostId: post.post_id,
-                      selectedPost: post  // 전체 post 객체 전달
-                    } 
-                  });
-                } catch (error) {
-                  console.error("게시글 상세 조회 실패:", error);
-                }
-              }}
-            />
-          ) : selectedCategory === "참여한 크루" ? (
-            <CrewList crewData={crewData} />
-          ) : selectedCategory === "배틀 중" ? (
-            <BattleList battleData={battleData} />
-          ) : null}
-        </Content>
+        {selectedCategory === "내가 쓴 글" ||
+        selectedCategory === "좋아요 한 글" ? (
+          <PostList
+            posts={posts}
+            recommendedPosts={[]}
+            onPostClick={async (post) => {
+              try {
+                await handlePostClick(post, false);
+                // 상태 전달과 함께 communitypage로 이동
+                navigate("/communitypage", {
+                  state: {
+                    fromMyPage: true,
+                    selectedPostId: post.post_id,
+                    selectedPost: post, // 전체 post 객체 전달
+                  },
+                });
+              } catch (error) {
+                console.error("게시글 상세 조회 실패:", error);
+              }
+            }}
+          />
+        ) : selectedCategory === "참여한 크루" ? (
+          <CrewList crewData={crewData} />
+        ) : selectedCategory === "배틀 중" ? (
+          <BattleList battleData={battleData} />
+        ) : null}
+      </Content>
     </Container>
   );
 }

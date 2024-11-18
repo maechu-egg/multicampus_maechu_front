@@ -109,7 +109,7 @@ createPost: async (formData: FormData, token: string) => {
   updatePost: async (postId: number, formData: FormData, token: string) => {
     try {
       const response = await axios.put(
-        `${BASE_URL}/community/posts/${postId}`,
+        `${BASE_URL}/community/posts/${postId}/update`,
         formData,
         {
           headers: {

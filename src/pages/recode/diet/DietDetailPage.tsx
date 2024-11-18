@@ -10,6 +10,7 @@ import { FaCog } from 'react-icons/fa';
 import ItemInfo from 'components/ui/record/list/diet/ItemInfo';
 import SelectItemModal from 'components/ui/record/modal/diet/SelectItemModal';
 import MealUpdateModal from 'components/ui/record/modal/diet/MealUpdateModal';
+
 interface ItemResponseDTO {
   item_id: number;
   item_name: string;
@@ -276,6 +277,7 @@ function DietDetailPage(): JSX.Element {
       </ItemList>
         {isSelectApiBoolean && (
           <SelectItemModal
+          searchTerm={searchTerm}
           apiList={apiList}
           onClose={() => setIsSelectApiBoolean(false)}
           onSave={getSelectItem}

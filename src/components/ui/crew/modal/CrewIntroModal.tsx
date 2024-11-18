@@ -48,7 +48,7 @@ function CrewIntroModal({
     data.append("crew_name", crew_name);
     data.append("crew_intro_post", crew_intro_post);
     if (crew_intro_img) {
-      data.append("crew_intro_img", crew_intro_img);
+      data.append("ImgFile", crew_intro_img);
     }
     data.append("crew_id", crew_id.toString());
 
