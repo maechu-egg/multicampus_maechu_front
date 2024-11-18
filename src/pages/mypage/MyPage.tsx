@@ -10,7 +10,8 @@ import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
 import ProfileModal from "./mypageComponent/ProfileModal";
 import { Link, useNavigate } from "react-router-dom";
-const BASE_URL = "http://localhost:8001/static";
+import { usePost } from "hooks/community/usePost";
+const BASE_URL = "http://localhost:8001";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
@@ -53,31 +54,6 @@ interface todayRecord {
   };
 }
 
-interface Post {
-  post_id: number;
-  post_title: string;
-  post_contents: string;
-  post_nickname: string;
-  post_date: string;
-  post_views: number;
-  comments_count: number;
-  comments: Comment[];
-  post_up_sport: string;
-  post_sport: string;
-  post_sports_keyword: string;
-  post_hashtag: string;
-  post_like_counts: number;
-  isRecommended?: boolean;
-  likeStatus: boolean;
-  unlikeStatus: boolean;
-  post_img1: string;
-  post_img2: string;
-  post_unlike_counts: number;
-  member_id: number;
-
-  author: boolean;
-}
-
 function MyPage(): JSX.Element {
   const navigate = useNavigate();
   const { state } = useAuth();
@@ -97,6 +73,7 @@ function MyPage(): JSX.Element {
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const { posts, setPosts, recommendedPosts, setRecommendedPosts } = usePost();
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
