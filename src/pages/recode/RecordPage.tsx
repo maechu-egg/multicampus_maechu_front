@@ -199,7 +199,7 @@ function RecordPage(): JSX.Element {
     <Wrapper>
     <div className="calendar-header">
       <TitleContainer>
-        <h1>𝗖𝗮𝗹𝗲𝗻𝗱𝗮𝗿</h1>
+        <h1></h1>
       </TitleContainer>
     </div>
       <Container>
@@ -328,7 +328,7 @@ const Wrapper = styled.div`
   margin: 0 auto;
   padding: 20px;
   margin-top: 0px;
-  background: none;  // 배경색 제거
+  background: no;  // 배경색 제거
   border-radius: 0;  // 모서리 둥글기 제거
   border: none;      // 테두리 제거
   box-shadow: none;  // 그림자 효과 제거

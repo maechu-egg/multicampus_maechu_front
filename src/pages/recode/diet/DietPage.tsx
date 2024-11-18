@@ -163,8 +163,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
         <TimelineContainer>
           <MealTimelineGrid>
             {/* 아침 식사 */}
-            <TimelineMealCard $backgroundColor="#1d2636" onClick={onBreakfastClick}>
-              <TimelineMealHeader $backgroundColor="#1d2636">
+            <TimelineMealCard $backgroundColor="#42a5f5" onClick={onBreakfastClick}>
+              <TimelineMealHeader $backgroundColor="#2196f3">
                 <DietMealIcon>🌅</DietMealIcon>
                 <MealTitle>아침</MealTitle>
               </TimelineMealHeader>
@@ -184,8 +184,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
             </TimelineMealCard>
 
             {/* 점심 식사 */}
-            <TimelineMealCard $backgroundColor="#1a3d2a" onClick={onLunchClick}>
-              <TimelineMealHeader $backgroundColor="#1a3d2a">
+            <TimelineMealCard $backgroundColor="#1e88e5" onClick={onLunchClick}>
+              <TimelineMealHeader $backgroundColor="#1976d2">
                 <DietMealIcon>☀️</DietMealIcon>
                 <MealTitle>점심</MealTitle>
               </TimelineMealHeader>
@@ -205,8 +205,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
             </TimelineMealCard>
 
             {/* 저녁 식사 */}
-            <TimelineMealCard $backgroundColor="#1a4d4e" onClick={onDinnerClick}>
-              <TimelineMealHeader $backgroundColor="#1a4d4e">
+            <TimelineMealCard $backgroundColor="#1565c0" onClick={onDinnerClick}>
+              <TimelineMealHeader $backgroundColor="#0d47a1">
                 <DietMealIcon>🌙</DietMealIcon>
                 <MealTitle>저녁</MealTitle>
               </TimelineMealHeader>
@@ -227,8 +227,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
 
             {/* 간식 */}
             {meals.snack.foods.length > 0 && (
-              <TimelineMealCard $backgroundColor="#1a4d3e" onClick={onSnackClick}>
-                <TimelineMealHeader $backgroundColor="#1a4d3e">
+              <TimelineMealCard $backgroundColor="#0d47a1" onClick={onSnackClick}>
+                <TimelineMealHeader $backgroundColor="#0a3d7a">
                   <DietMealIcon>🍎</DietMealIcon>
                   <MealTitle>간식</MealTitle>
                 </TimelineMealHeader>
@@ -399,7 +399,7 @@ function DietPage() {
     recommendedFat: number;
   } | null>(null);
   
-  const [isModalOpen, setIsModalOpen] = useState(false); // 첫 번째 모달 상태
+  const [isModalOpen, setIsModalOpen] = useState(false); // 첫 째 모달 상태
   const [isResultModalOpen, setIsResultModalOpen] = useState(false); //  째 모달 상태 추가
   const [dietPlan, setDietPlan] = useState<string | null>(null);
 
@@ -675,7 +675,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <InfoContainer>
           {data ? (
             <>
-              <TotalCalories>Total : {data.tdee} kcal</TotalCalories>
+              <TotalCalories>Total : 0 kcal</TotalCalories>
               <CurrentDate>{new Date().toLocaleDateString('ko-KR')} {new Date().toLocaleString('ko-KR', { weekday: 'long' })}</CurrentDate>
             </>
           ) : (
@@ -827,7 +827,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>아침 식사 계획</h3>
                   <p>음식: {meals.breakfast.foods.join(', ')}</p>
                   <p>양: {meals.breakfast.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('breakfast')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('breakfast')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -849,7 +849,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>점심 식사 계획</h3>
                   <p>음식: {meals.lunch.foods.join(', ')}</p>
                   <p>양: {meals.lunch.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('lunch')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('lunch')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -871,7 +871,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>저녁 식사 계획</h3>
                   <p>음식: {meals.dinner.foods.join(', ')}</p>
                   <p>양: {meals.dinner.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('dinner')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('dinner')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -893,7 +893,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>간식 계획</h3>
                   <p>음식: {meals.snack.foods.join(', ')}</p>
                   <p>양: {meals.snack.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('snack')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('snack')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -1044,33 +1044,30 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: #ffffff;
+  background: #ffffff; // 모달 배경색
   padding: 30px;
   border-radius: 15px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  margin: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); // 그림자 추가
+  max-width: 500px; // 최대 너비 설정
+  width: 90%; // 반응형 너비
+  max-height: 80vh; // 최대 높이 설정
+  overflow-y: auto; // 세로 스크롤 가능
 `;
 
 const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e0e0e0; // 하단 경계선
+  padding-bottom: 15px;
   margin-bottom: 20px;
 
   h2 {
-    margin: 0;
     font-size: 24px;
-    color: #1D2636;
+    color: #1D2636; // 제목 색상
   }
 `;
+
 
 const CloseButton = styled.button`
   background: transparent;
@@ -1087,6 +1084,9 @@ const CloseButton = styled.button`
 `;
 
 const ModalBody = styled.div`
+  font-size: 16px;
+  color: #333; // 본문 텍스트 색상
+  line-height: 1.5; // 줄 간격
   overflow-y: auto;
   padding: 0 10px;
   margin-bottom: 60px;
@@ -1371,6 +1371,24 @@ const CautionText = styled.p`
   line-height: 1.5;
   font-size: 15px;
 `;
+
+const StyledButton = styled.button`
+  background-color: #1D2636; // 버튼 색상
+  color: white; // 텍스트 색상
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #333C4D; // hover 시 색상 변경
+    transform: translateY(-2px); // hover 시 약간 위로 이동
+  }
+`;
+
 
 export default DietPage;
 
