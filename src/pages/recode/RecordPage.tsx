@@ -301,7 +301,7 @@ const ModalButton = styled.button`
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
 
   &:hover {
-    background-color: #1D2636;
+    background-color: #414d60;
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }

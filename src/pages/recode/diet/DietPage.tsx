@@ -152,25 +152,6 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
     );
   }
 
-  // 식사 타입별 스타일 정의
-  const getMealStyle = (mealType: string) => {
-    switch (mealType.trim()) {
-      case '아침식사':
-      case '아침 식사':
-        return { icon: '🌅', color: '#FF9800', label: '아침', order: 1 };
-      case '점심식사':
-      case '점심 식사':
-        return { icon: '☀️', color: '#4CAF50', label: '점심', order: 2 };
-      case '저녁식사':
-      case '저녁 식사':
-        return { icon: '🌙', color: '#2196F3', label: '저녁', order: 3 };
-      case '간식':
-        return { icon: '🍎', color: '#9C27B0', label: '간식', order: 4 };
-      default:
-        return { icon: '🍽️', color: '#757575', label: '식사', order: 5 };
-    }
-  };
-
 
   return (
     <ResultSection>
@@ -182,8 +163,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
         <TimelineContainer>
           <MealTimelineGrid>
             {/* 아침 식사 */}
-            <TimelineMealCard $backgroundColor="#FF9800" onClick={onBreakfastClick}>
-              <TimelineMealHeader $backgroundColor="#FF9800">
+            <TimelineMealCard $backgroundColor="#1d2636" onClick={onBreakfastClick}>
+              <TimelineMealHeader $backgroundColor="#1d2636">
                 <DietMealIcon>🌅</DietMealIcon>
                 <MealTitle>아침</MealTitle>
               </TimelineMealHeader>
@@ -191,7 +172,7 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
                 <TimelineFoodList>
                   {meals.breakfast.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🍳</DietFoodIcon>
+                      <DietFoodIcon>🌅</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.breakfast.amounts[index]}</FoodAmount>
@@ -203,8 +184,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
             </TimelineMealCard>
 
             {/* 점심 식사 */}
-            <TimelineMealCard $backgroundColor="#4CAF50" onClick={onLunchClick}>
-              <TimelineMealHeader $backgroundColor="#4CAF50">
+            <TimelineMealCard $backgroundColor="#1a3d2a" onClick={onLunchClick}>
+              <TimelineMealHeader $backgroundColor="#1a3d2a">
                 <DietMealIcon>☀️</DietMealIcon>
                 <MealTitle>점심</MealTitle>
               </TimelineMealHeader>
@@ -212,7 +193,7 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
                 <TimelineFoodList>
                   {meals.lunch.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🍚</DietFoodIcon>
+                      <DietFoodIcon>☀️</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.lunch.amounts[index]}</FoodAmount>
@@ -224,8 +205,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
             </TimelineMealCard>
 
             {/* 저녁 식사 */}
-            <TimelineMealCard $backgroundColor="#2196F3" onClick={onDinnerClick}>
-              <TimelineMealHeader $backgroundColor="#2196F3">
+            <TimelineMealCard $backgroundColor="#1a4d4e" onClick={onDinnerClick}>
+              <TimelineMealHeader $backgroundColor="#1a4d4e">
                 <DietMealIcon>🌙</DietMealIcon>
                 <MealTitle>저녁</MealTitle>
               </TimelineMealHeader>
@@ -233,7 +214,7 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
                 <TimelineFoodList>
                   {meals.dinner.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🥗</DietFoodIcon>
+                      <DietFoodIcon>🌙</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.dinner.amounts[index]}</FoodAmount>
@@ -246,8 +227,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
 
             {/* 간식 */}
             {meals.snack.foods.length > 0 && (
-              <TimelineMealCard $backgroundColor="#9C27B0" onClick={onSnackClick}>
-                <TimelineMealHeader $backgroundColor="#9C27B0">
+              <TimelineMealCard $backgroundColor="#1a4d3e" onClick={onSnackClick}>
+                <TimelineMealHeader $backgroundColor="#1a4d3e">
                   <DietMealIcon>🍎</DietMealIcon>
                   <MealTitle>간식</MealTitle>
                 </TimelineMealHeader>
@@ -389,7 +370,7 @@ const parseDietPlan = (dietPlan: string) => {
           const amount = parts[2]; // 양
           const calories = parseInt(parts[3]); // 열량
           const protein = parseInt(parts[4]); // 단백질
-          const carbs = parseInt(parts[5]); // 탄수화물
+          const carbs = parseInt(parts[5]); // 탄수물
           const fat = parseInt(parts[6]); // 지방
 
           meals.foods.push(food);
@@ -554,7 +535,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
           }
         }
       } else {
-        // memberId나 token이 ���는 경우
+        // memberId나 token이 는 경우
         console.log('No memberId or token available');
         navigate('/login', { replace: true });
       }
@@ -630,7 +611,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
     setIsLoading(true); // 로딩 시작
     try {
       await fetchDietPlan(); // API 호출
-      setIsModalOpen(false); // 첫 번째 모�� 닫기
+      setIsModalOpen(false); // 첫 번째 모 닫기
       setIsResultModalOpen(true); // 결과 모달 열기
     } catch (error) {
       console.error('추천 처리 중 오류 발생:', error);
@@ -736,9 +717,9 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
             }
           }}>
             <FoodIcon>
-              {record.food === "breakfast" ? "🍳" : 
-               record.food === "lunch" ? "🍚" : 
-               record.food === "dinner" ? "🥗" : 
+              {record.food === "breakfast" ? "🌅" : 
+               record.food === "lunch" ? "☀️" : 
+               record.food === "dinner" ? "🌙" : 
                record.food === "snack" ? "🍰" : ""}
             </FoodIcon>
             <FoodName>{foodLabels[record.food as keyof typeof foodLabels]}</FoodName>
@@ -801,7 +782,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>맞춤 식단 계획</h2>
+              <h2>추천 받은 식단</h2>
               <CloseButton onClick={closeResultModal}>×</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -832,12 +813,12 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
 
 
 
-      {/* 아침 상세 달 */}
+      {/* 아침 상세 모달 */}
       {isBreakfastDetailModalOpen && (
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>아침 상세 정보</h2>
+              <h2>아침 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsBreakfastDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -859,7 +840,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>점심 상세 정보</h2>
+              <h2>점심 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsLunchDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -881,7 +862,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>저녁 상세 정보</h2>
+              <h2>저녁 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsDinnerDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -903,7 +884,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>간식 상세 정보</h2>
+              <h2>간식 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsSnackDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -928,9 +909,6 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
@@ -965,12 +943,31 @@ const CurrentDate = styled.div`
 
 const GoalContainer = styled.div`
   padding: 20px;
-  background-color: #1D2636;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  color: #ffffff;
+  background: linear-gradient(135deg, #f0f0f0, #ffffff); // 그라데이션 배경
+  border-radius: 20px; // 더 부드러운 테두리 반경
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); // 부드러운 그림자
+  color: #1D2636;
   margin-bottom: 20px;
   position: relative;
+  border: 1px solid #ddd; // 얇은 테두리
+  transition: transform 0.3s ease, box-shadow 0.3s ease; // 부드러운 애니메이션
+
+  &:hover {
+    transform: translateY(-8px); // 호버 시 더 부드럽게 이동
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); // 호버 시 그림자 강화
+  }
+
+  // 내부 텍스트 스타일
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
 `;
 
 const Goal = styled.div`
@@ -989,19 +986,17 @@ const RecordList = styled.div`
 `;
 
 const RecordItem = styled.div`
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #1D2636, #2C3E50); // 그라데이션 배경
+  border-radius: 15px; // 더 부드러운 테두리
   padding: 20px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; // 부드러운 애니메이션
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // 그림자 효과
 
   &:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px); // 호버 시 위로 이동
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); // 호버 시 그림자 강화
   }
 `;
 
@@ -1014,7 +1009,7 @@ const FoodIcon = styled.div`
 const FoodName = styled.div`
   font-size: 20px;
   font-weight: 500;
-  color: #333;
+  color: #fff; // 텍스트 색상 유지
 `;
 
 const RecommendationButton = styled.button`
@@ -1030,7 +1025,7 @@ const RecommendationButton = styled.button`
   margin-top: 10px;
 
   &:hover {
-    background-color: #333;
+    background-color: #414d60;
     transform: translateY(-2px);
   }
 `;
@@ -1087,7 +1082,7 @@ const CloseButton = styled.button`
   transition: color 0.2s;
 
   &:hover {
-    color: #333;
+    color: #333C4D;
   }
 `;
 
@@ -1133,17 +1128,6 @@ const Input = styled.input`
   }
 `;
 
-const Select = styled.select`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: border-color 0.2s;
-
-  &:focus {
-    border-color: #1D2636;
-  }
-`;
 
 const RecommendButton = styled.button`
   background-color: #1D2636;
@@ -1157,41 +1141,11 @@ const RecommendButton = styled.button`
   transition: background-color 0.3s, transform 0.2s;
 
   &:hover {
-    background-color: #333;
+    background-color: #333C4D;
     transform: translateY(-2px);
   }
 `;
 
-const ResultTable = styled.div`
-  margin: 20px 0;
-  overflow-x: auto;
-  
-  table {
-    width: 100%;
-    min-width: 600px;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    border: 1px solid #ccc;
-    padding: 12px;
-    text-align: center;
-  }
-
-  th {
-    background-color: #1D2636;
-    color: white;
-    font-weight: bold;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tr:hover {
-    background-color: #f5f5f5;
-  }
-`;
 
 const ResultSection = styled.div`
   margin: 30px 0;
@@ -1229,84 +1183,8 @@ const SectionContent = styled.div`
   overflow-x: auto;
 `;
 
-const MealPlanTable = styled.div`
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  background: white;
-  margin: 20px 0;
-  width: 100%;
 
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
 
-  th {
-    background: #1D2636;
-    color: white;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 500;
-    text-align: left;
-  }
-
-  td {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  tr:hover td {
-    background-color: #f5f5f5;
-  }
-`;
-
-const MealTypeCell = styled.td`
-  font-weight: 600;
-  color: #1D2636;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  white-space: nowrap;
-  min-width: 120px;
-`;
-
-const MealIcon = styled.span`
-  font-size: 24px;
-`;
-
-const FoodCell = styled.td`
-  color: #333;
-  font-size: 15px;
-  line-height: 1.6;
-  padding: 15px;
-  word-break: keep-all;
-  white-space: pre-wrap;
-  
-  div {
-    margin: 5px 0;
-  }
-`;
-
-const PortionCell = styled.td`
-  color: #666;
-  font-size: 14px;
-  white-space: nowrap;
-  min-width: 150px;
-`;
-
-const CaloriesCell = styled.td`
-  font-weight: 600;
-  color: #1D2636;
-  white-space: nowrap;
-  min-width: 100px;
-`;
 
 const TimelineContainer = styled.div`
   padding: 20px;
@@ -1381,11 +1259,6 @@ const TimelineMealHeader = styled.div<{ $backgroundColor: string }>`
   gap: 10px;
 `;
 
-const TimelineMealTime = styled.div`
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 5px;
-`;
 
 const TimelineMealContent = styled.div`
   padding: 20px;
@@ -1412,52 +1285,6 @@ const TimelineFoodItem = styled.div`
   }
 `;
 
-const MealGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin: 20px 0;
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-const MealCardsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 10px;
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-const MealCard = styled.div<{ $borderColor: string }>`
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  overflow: hidden;
-  transition: transform 0.2s ease;
-  border: 2px solid ${props => props.$borderColor};
-  height: 100%;
-  min-height: 200px;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
-`;
-
-const MealHeader = styled.div<{ $backgroundColor: string }>`
-  background: ${props => props.$backgroundColor};
-  color: white;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
 
 const DietMealIcon = styled.span`
   font-size: 24px;
@@ -1469,29 +1296,6 @@ const MealTitle = styled.h3`
   font-weight: 600;
 `;
 
-const MealContent = styled.div`
-  padding: 20px;
-`;
-
-const FoodList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
-
-const FoodItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background: #f0f0f0;
-  }
-`;
 
 const DietFoodIcon = styled.span`
   font-size: 20px;
@@ -1529,7 +1333,7 @@ const CloseModalButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    background: #333;
+    background: #333C4D;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   }

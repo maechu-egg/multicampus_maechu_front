@@ -377,7 +377,7 @@ const SearchBar = styled.div`
     top: 50%;
     transform: translateY(-50%);
     padding: 8px 16px;
-    background-color: #bfc4c9;
+    background-color: #414d60; /* 버튼 색상 변경 */
     color: white;
     border: none;
     border-radius: 5px;
@@ -385,7 +385,7 @@ const SearchBar = styled.div`
     cursor: pointer;
     
     &:hover {
-      background-color: #45a049;
+      background-color: #1d2636; /* hover 시 색상 변경 */
     }
   }
 `;
@@ -404,7 +404,7 @@ const CogWrapper = styled.div`
 const DropdownMenu = styled.div`
   position: absolute;
   margin-top: 5px; /* 톱니바퀴 아래로 약간 떨어지게 설정 */
-  background-color: white;
+  background-color: #414d60; /* 배경색 변경 */
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -418,9 +418,10 @@ const DropdownMenu = styled.div`
     border: none;
     text-align: left;
     cursor: pointer;
+    color: white; /* 글씨 색상 변경 */
 
     &:hover {
-      background-color: #f8f9fa;
+      background-color: #1d2636; /* hover 시 배경색 변경 */
     }
   }
 `;
