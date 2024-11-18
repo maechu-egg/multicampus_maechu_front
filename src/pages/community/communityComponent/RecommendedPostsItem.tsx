@@ -61,7 +61,8 @@ const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
       <div className="post-content-wrapper">
         <span className="subcategory">[{post_sport || '자유'}]</span>
         <span className="post-title">{post_title}</span>
-        {hashtagArray.length > 0 && (
+        
+        {/* {hashtagArray.length > 0 && (
           <div className="post-tags">
             {hashtagArray.map((tag, index) => (
               <span key={index} className="tag-item">
@@ -69,15 +70,12 @@ const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
               </span>
             ))}
           </div>
-        )}
+        )} */}
+                <span className="date">{formatDate(post_date)}</span>
         
-        {/* 하단 정보 영역 구조 수정 */}
         <div className="post-info-wrapper">
-          <div className="author">
-            <span>{post_nickname}</span>
-          </div>
+         
           <div className="post-stats">
-            <span className="date">{formatDate(post_date)}</span>
             <span className="likes">
               <FaThumbsUp /> {post_like_counts}
             </span>

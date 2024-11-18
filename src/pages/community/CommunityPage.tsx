@@ -322,7 +322,8 @@ useEffect(() => {
               글쓰기
             </button>
           </div>
-
+          
+          <h1 className="recommended-title">Recommended</h1>
         
           <PostList 
             posts={posts}  
