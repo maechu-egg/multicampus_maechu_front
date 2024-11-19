@@ -265,6 +265,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center; /* 수직 중앙 정렬 */
+  background-color: #b6c0d3;
 `;
 
 const LoginForm = styled.form`

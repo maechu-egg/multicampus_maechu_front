@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import './CrewPage.css';
+import './MyCrew.css';
 import MyCrewHeader from "./MyCrewHeader";
 
 
 function MyCrew({myCrew}: { myCrew: any }) {
-    const [activeCrewTab, setActiveCrewTab] = useState(0); // Active crew tab state
+    const [activeCrewTab, setActiveCrewTab] = useState(1); // Active crew tab state
 
     const handleCrewTabClick = (index: number) => {
         setActiveCrewTab(index); // Update active tab index
@@ -16,7 +17,7 @@ function MyCrew({myCrew}: { myCrew: any }) {
                 {myCrew.map((crew: { crew_id: string; crew_name: string }, index: number) => (
                     <li className="nav-item" role="presentation" key={crew.crew_id}>
                         <button
-                            className={`nav-link ${activeCrewTab === index + 1 ? 'active' : ''}`}
+                            className={`nav-link link ${activeCrewTab === index + 1 ? 'active link.active' : ''}`}
                             onClick={() => handleCrewTabClick(index + 1)}
                             id={`my-crew${index + 1}`}
                             data-bs-toggle="tab"

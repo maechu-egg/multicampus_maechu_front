@@ -1,0 +1,10 @@
+.nav-link {
+    font-size: 1rem; /* 기본 글씨 크기 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+    transition: all 0.3s ease; /* 부드러운 효과 */
+  }
+  
+  .nav-link.active {
+    font-size: 1.2rem; /* 활성화된 경우 글씨 크기 증가 */
+    font-weight: bold; /* 선택된 탭 강조 */
+  }

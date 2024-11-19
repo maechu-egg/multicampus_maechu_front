@@ -337,7 +337,7 @@ function HomePage(): JSX.Element {
         </Title>
         <CardContainer>
           <CardSlider>
-            {todayWorkout.map((workout, index) => (
+            {[...todayWorkout, ...todayWorkout].map((workout, index) => (
               <Card
                 key={index}
                 backgroundImage={
@@ -382,7 +382,7 @@ const Container = styled.div`
 
 const StyledSlider = styled.div`
   width: 90%;
-  height: 650px;
+  height: 600px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -467,13 +467,16 @@ const CardContainer = styled.div`
   width: 100%;
   height: 400px;
   margin-top: 50px;
-  background: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
   overflow: hidden;
   position: relative;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 `;
 
 const CardSlider = styled.div`
   display: flex;
+  width: calc(200%);
   animation: ${slideAnimation} 30s linear infinite;
 `;
 

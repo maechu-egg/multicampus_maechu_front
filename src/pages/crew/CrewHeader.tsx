@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import CrewSearch from "./CrewSearch";
 import './CrewPage.css';
+import './Crew.css';
 import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
 import MyCrew from "./MyCrew";
-import './Crew.css';
 
 function CrewHeader(): JSX.Element {
     const { state } = useAuth();
@@ -36,11 +36,12 @@ function CrewHeader(): JSX.Element {
     }, [memberId]);
 
     return (
+        <div style={{background: "#B6C0D3", height: "91vh"}}>
         <div className="container">
             <br />
             <br />
             <ul className="nav nav-tabs" id="myTab" role="tablist" style={{borderBottom:"0px"}}>
-                <li className="nav-item" role="presentation">
+                <li className="nav-item" role="presentation" style={{padding: 0}}>
                     <button
                         className={`nav-link ${activeCrewTab === 0 ? 'active' : ''}`}
                         onClick={() => handleCrewTabClick(0)}
@@ -57,7 +58,7 @@ function CrewHeader(): JSX.Element {
                     </button>
                 </li>
                 
-                <li className="nav-item" role="presentation">
+                <li className="nav-item" role="presentation" style={{padding: 0}}>
                     <button
                         className={`nav-link ${activeCrewTab === 1 ? 'active' : ''}`}
                         onClick={() => handleCrewTabClick(1)}
@@ -104,6 +105,7 @@ function CrewHeader(): JSX.Element {
                     </div>
                 )}
             </div>
+        </div>
         </div>
     );
 }

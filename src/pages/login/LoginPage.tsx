@@ -123,10 +123,11 @@ function LoginPage(): JSX.Element {
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh; /* 전체 화면 높이 설정 */
+  height: 100%; /* 전체 화면 높이 설정 */
   display: flex;
   justify-content: center;
   align-items: center; /* 수직 중앙 정렬 */
+  background-color: #b6c0d3;
 `;
 
 const LoginForm = styled.form`
@@ -143,7 +144,8 @@ const LoginForm = styled.form`
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px; /* 내부 여백 추가 */
-  margin-top: -10%;
+  margin-top: 10%;
+  margin-bottom: 100%;
 `;
 
 const Title = styled.h1`
