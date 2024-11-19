@@ -11,6 +11,8 @@ interface PostFormProps {
     post_sport: string;
     post_hashtag: string;
     post_sports_keyword: string;
+    post_img1?: string;  // 추가
+    post_img2?: string;  // 추가
   };
   onSave: (
     post_title: string,
@@ -47,6 +49,42 @@ const PostForm: React.FC<PostFormProps> = ({
     initialData?.post_hashtag ? initialData.post_hashtag.split(", ") : []
   );
   const [error, setError] = useState<string>("");
+  
+  // 초기 이미지 파일명들을 저장할 state 추가
+  const [existingImages, setExistingImages] = useState<string[]>(() => {
+    const images = [];
+    if (initialData?.post_img1) {
+      // URL이 아닌 파일명만 저장
+      images.push(initialData.post_img1);
+    }
+    if (initialData?.post_img2) {
+      // URL이 아닌 파일명만 저장
+      images.push(initialData.post_img2);
+    }
+    return images;
+  });
+  // 타임스탬프를 제거하고 원래 파일명만 추출하는 함수
+  const getOriginalFileName = (filename: string) => {
+    const parts = filename.split('_');
+    if (parts.length > 1) {
+      // 첫 번째 부분(타임스탬프)를 제외한 나머지를 합침
+      return parts.slice(1).join('_');
+    }
+    return filename;
+  };
+  // 새로운 이미지 파일 삭제 함수
+  const removeNewImage = (indexToRemove: number) => {
+    if (imageFiles) {
+      const newImageFiles = imageFiles.filter((_, index) => index !== indexToRemove);
+      setImageFiles(newImageFiles.length > 0 ? newImageFiles : null);
+    }
+  };
+
+  // 기존 이미지 파일 삭제 함수
+  const removeExistingImage = (indexToRemove: number) => {
+    setExistingImages(existingImages.filter((_, index) => index !== indexToRemove));
+  };
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -88,7 +126,7 @@ const PostForm: React.FC<PostFormProps> = ({
     }
 
     // 오운완 키워드 선택 시 이미지 필수 체크
-    if (post_sports_keyword === "오운완" && (!imageFiles || imageFiles.length === 0)) {
+    if (post_sports_keyword === "오운완" && (!imageFiles || imageFiles.length === 0) && existingImages.length === 0) {
       setError("오운완 게시물은 이미지를 필수로 첨부해야 합니다.");
       return;
     }
@@ -205,30 +243,53 @@ const PostForm: React.FC<PostFormProps> = ({
         </div>
 
         <div className="mb-3">
-          <label className="form-label">
-            이미지 업로드:
-            {post_sports_keyword === "오운완" && (
-              <span className="text-danger ms-1">*필수</span>
-            )}
-          </label>
-          <input 
-            type="file" 
-            className="form-control" 
-            multiple 
-            onChange={handleImageChange}
-            accept="image/*"
-          />
-          {imageFiles && (
-            <div className="mt-2">
-              업로드된 파일:
-              <ul className="list-unstyled">
-                {Array.from(imageFiles).map((file, index) => (
-                  <li key={index}>{file.name}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+  <label className="form-label">
+    이미지 업로드:
+    {post_sports_keyword === "오운완" && (
+      <span className="text-danger ms-1">*필수</span>
+    )}
+  </label>
+  <input 
+    type="file" 
+    className="form-control" 
+    multiple 
+    onChange={handleImageChange}
+    accept="image/*"
+  />
+  {(imageFiles || existingImages.length > 0) && (
+    <div className="mt-2">
+      업로드된 파일:
+      <ul className="list-unstyled">
+        {existingImages.map((filename, index) => (
+          <li key={`existing-${index}`} className="d-flex align-items-center mb-1">
+            <span>{getOriginalFileName(filename)}</span>
+            <button
+              type="button"
+              className="btn btn-sm text-danger ms-2"
+              onClick={() => removeExistingImage(index)}
+              style={{ padding: '0 5px', fontSize: '18px', border: 'none', background: 'none' }}
+            >
+              ×
+            </button>
+          </li>
+        ))}
+        {imageFiles?.map((file, index) => (
+          <li key={`new-${index}`} className="d-flex align-items-center mb-1">
+            <span>{file.name}</span>
+            <button
+              type="button"
+              className="btn btn-sm text-danger ms-2"
+              onClick={() => removeNewImage(index)}
+              style={{ padding: '0 5px', fontSize: '18px', border: 'none', background: 'none' }}
+            >
+              ×
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
 
         {error && (
           <div className="alert alert-danger mb-3" role="alert">
@@ -263,10 +324,10 @@ const PostForm: React.FC<PostFormProps> = ({
         </div>
 
         <div className="d-flex justify-content-end gap-2">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" id="postform-submit-btn" className="btn btn-primary">
             {mode === "create" ? "작성하기" : "수정하기"}
           </button>
-          <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          <button type="button" id="postform-cancel-btn" className="btn btn-secondary" onClick={onCancel}>
             {mode === "create" ? "작성취소" : "수정취소"}
           </button>
         </div>

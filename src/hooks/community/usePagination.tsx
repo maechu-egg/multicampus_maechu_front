@@ -3,6 +3,8 @@ import { Post } from './usePost';
 import { paginationApi } from '../../services/api/community/paginationApi';
 
 interface UsePaginationProps {
+  totalpage:number,
+  totalPages:number,
   postsPerPage: number;
   isSearchActive: boolean;
   searchKeyword: string;
@@ -13,9 +15,12 @@ interface UsePaginationProps {
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   setTotalPages: React.Dispatch<React.SetStateAction<number>>;
+  setTotalPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const usePagination = ({
+  totalPages,
+  totalpage,
   postsPerPage,
   isSearchActive,
   searchKeyword,
@@ -25,7 +30,8 @@ export const usePagination = ({
   setPosts,
   currentPage,
   setCurrentPage,
-  setTotalPages
+  setTotalPages,
+  setTotalPage,
 }: UsePaginationProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +56,9 @@ export const usePagination = ({
           }, token);
 
           if (response.data.searchList) {
+            console.log("search ---------- ", response.data);
             setPosts(response.data.searchList);
+            setTotalPage(response.data.totalpage);
             setTotalPages(response.data.totalPages);
           }
         } else if (searchTerm) {
@@ -85,7 +93,9 @@ export const usePagination = ({
               author: post.author
             }));
             setPosts(mappedPosts);
+            setTotalPage(response.data.totalpage);
             setTotalPages(response.data.totalPages);
+            console.log("search post ================================",)
           }
         }
       } else {
@@ -121,6 +131,7 @@ export const usePagination = ({
             author: post.author
           }));
           setPosts(mappedPosts);
+          setTotalPage(response.data.totalpage);
           setTotalPages(response.data.totalPages);
           console.log("Total pages set to:", response.data.totalPages); // 디버깅용 로그 추가
         }

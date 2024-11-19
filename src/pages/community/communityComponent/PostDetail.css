@@ -1,6 +1,6 @@
 .post-detail {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 auto 100px;
   padding: 30px;
   background: #fff;
   border-radius: 12px;
@@ -101,6 +101,40 @@
   transform: translateY(-1px);
 }
 
+#edit-delete-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#edit-button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  background-color: #1D2636 
+}
+
+#delete-button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  background-color: #ABC7FF;
+  border-color: #ABC7FF;
+}
+
+#edit-button:hover{
+  transform: translateY(-2px);
+  background-color: #333C4D !important;
+  border-color: #1c7ed6 !important;
+}
+#delete-button:hover {
+  transform: translateY(-2px);
+  background-color: #959eb1 !important;
+  border-color: #ABC7FF !important;
+}
+
+
 .reaction-buttons {
   display: flex;
   justify-content: space-between;
@@ -109,14 +143,11 @@
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   margin: 20px 0;
-}
-
-.edit-delete-buttons {
-  display: flex;
-  gap: 10px;
+  position: relative;
 }
 
 .like-dislike-buttons {
+  margin: 0 auto;
   display: flex;
   gap: 10px;
 }
@@ -133,6 +164,18 @@
 .like-dislike-buttons button:hover {
   transform: translateY(-2px);
 }
+
+#back-button {
+  position: absolute;
+  right: 0;
+  background-color: #1D2636;
+}
+
+#back-button:hover{
+  background-color: #333C4D !important;
+  border-color: #1c7ed6 !important;
+}
+
 
 .comments-section {
   margin-top: 40px;
@@ -151,6 +194,25 @@
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+/* 활성화된 버튼 스타일 */
+.comment-sort-buttons .btn-primary {
+  background-color: #1D2636;
+  border-color: #1D2636;
+}
+
+/* 호버 효과 */
+.comment-sort-buttons .btn-primary:hover {
+  background-color: #333C4D;
+  border-color: #1D2636;
+}
+
+/* 비활성화된 버튼 호버 */
+.comment-sort-buttons .btn-outline-primary:hover {
+  background-color: #1D2636;
+  border-color: #1D2636;
 }
 
 .comment {
@@ -254,17 +316,19 @@
   }
 
   .reaction-buttons {
-    flex-direction: column;
-    gap: 15px;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 15px 0;
+  }
+
+  #back-button {
+    position: static;
   }
 
   .like-dislike-buttons {
-    justify-content: center;
-  }
-
-  .edit-delete-buttons {
-    justify-content: center;
+    margin: 0;
   }
 
   .comment-reactions {

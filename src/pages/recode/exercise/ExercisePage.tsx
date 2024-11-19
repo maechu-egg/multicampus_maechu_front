@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../../services/api/axios";
-import { useAuth } from "../../context/AuthContext";
+import api from "../../../services/api/axios";
+import { useAuth } from "../../../context/AuthContext";
 import styled from "styled-components";
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import ExerciseInfo from "../../components/ui/record/list/ExerciseInfo";
-import ExerciseAddModal from "components/ui/record/modal/ExerciseAddModal";
+import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
+import ExerciseAddModal from "components/ui/record/modal/exercise/ExerciseAddModal";
 
 interface ExerciseInfo {
   exercise_id: number;
@@ -25,14 +25,9 @@ function ExercisePage(): JSX.Element {
   const { state } = useAuth();
   // 토근, 멤버번호
   const token = state.token;
-  const memberId = state.memberId;
   // 일일 칼로리, 일일 운동 시간
   const [todayCalorie,setTodayCalorie] = useState<number>(0);
   const [todayTime,setTodayTime] = useState<number>(0);
-  // Exer Insert 시 필요한 값
-  const [exerciseType, setExerciseType] = useState("");
-  const [intensity, setIntensity] = useState("");
-  const [duration, setDuration] = useState("");
   
   const navigate = useNavigate();
   // 운동 리스트
@@ -81,7 +76,7 @@ function ExercisePage(): JSX.Element {
     if (selectedDate) {
       exerciseGet(selectedDate);
     }
-  }, [selectedDate, token]);
+  }, []);
 
   // ExerciseAddModal을 통해 추가된 운동을 exerciseData에 반영
   const addNewExercise = (successBoolean: boolean) => {
@@ -118,6 +113,8 @@ function ExercisePage(): JSX.Element {
       // 상태 업데이트
       setTodayCalorie(totalCalories);
       setTodayTime(totalTime);
+      setExerciseData(updatedExerciseData);
+
 
       return updatedExerciseData; // 업데이트된 운동 데이터 반환
     });
@@ -180,7 +177,9 @@ function ExercisePage(): JSX.Element {
       {isAddModalOpen && (
         <ExerciseAddModal
           searchTerm={searchTerm}
-          onClose={() => setIsAddModalOpen(false)}
+          onClose={() => {setIsAddModalOpen(false)
+                          setSearchTerm(""); // 검색어 초기화
+          }}
           successExerInsert={addNewExercise} // 새 운동 추가 후 연동
       ></ExerciseAddModal>)}     
     </Container>

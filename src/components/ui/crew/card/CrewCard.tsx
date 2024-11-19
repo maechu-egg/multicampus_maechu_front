@@ -7,7 +7,7 @@ function CrewCard({crew, onCrewClick}: { crew: any; onCrewClick: () => void }) {
     const [imgPath, setImgPath] = useState('');
     
     useEffect(() => {
-        if(crew.crew_intro_img === "CrewDefault") {
+        if (crew.crew_intro_img.includes("CrewDefault")) {
             setImgPath('img/default/CrewDefault.png');
         } else if(crew.crew_intro_img != "CrewDefault") {
             setImgPath(`${BASE_URL}${crew.crew_intro_img}`);

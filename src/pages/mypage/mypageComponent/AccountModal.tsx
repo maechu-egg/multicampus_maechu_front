@@ -64,10 +64,13 @@ function AccountModal({
     try {
       const formData = new FormData();
       if (member_img) {
-        formData.append("memberImgFile", member_img);
+        formData.append("memberImgFile", member_img); //새로운 이미지 파일 저장
+      } else {
+        formData.append("member_img", userInfo.memberImg); //이미지 수정안했을 때
       }
-      formData.append("nickname", nickname);
-      formData.append("phone", phone);
+
+      formData.append("nickname", nickname || userInfo.nickname);
+      formData.append("phone", phone || userInfo.phone);
       for (let [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }

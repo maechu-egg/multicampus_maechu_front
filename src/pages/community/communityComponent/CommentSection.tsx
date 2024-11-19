@@ -1,6 +1,7 @@
-import React from 'react';
-import CommentItem from './CommentItem';
-import type { Comment } from '../../../hooks/community/useComment';  // type-only import 사용
+import React from "react";
+import CommentItem from "./CommentItem";
+import type { Comment } from "../../../hooks/community/useComment"; 
+import "./Comment.css"; 
 
 interface CommentSectionProps {
   comments: Comment[];
@@ -10,7 +11,7 @@ interface CommentSectionProps {
   onCommentLike: (commentId: number, postId: number) => void;
   onCommentDislike: (commentId: number, postId: number) => void;
   commentInput: string;
-  setCommentInput: (value: string) => void;
+  setCommentInput: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
@@ -21,13 +22,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   onCommentLike,
   onCommentDislike,
   commentInput,
-  setCommentInput
+  setCommentInput,
 }) => {
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (commentInput.trim() !== '') {
+    if (commentInput.trim() !== "") {
       onAddComment(commentInput);
-      setCommentInput('');
+      setCommentInput("");
     }
   };
 
@@ -35,12 +36,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     <div className="comments-section">
       <div className="comments-list">
         {comments.map((comment) => (
-            <CommentItem  
+          <CommentItem
             key={comment.id}
             comment={comment}
             onCommentDelete={onCommentDelete}
-            onCommentLike={onCommentLike}
-            onCommentDislike={onCommentDislike}
             post_id={postId}
           />
         ))}
@@ -54,7 +53,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             onChange={(e) => setCommentInput(e.target.value)}
             placeholder="댓글을 입력하세요"
           />
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" id="comment-submit-btn" className="btn btn-primary">
             작성
           </button>
         </div>

@@ -12,7 +12,7 @@ interface CrewInfoProps {
 function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
     const { state } = useAuth();
     const token = state.token;
-    const member_id = state.memberId;
+    const memberId = state.memberId;
     const [feed_img, setSelectedFile] = useState<File | null>(null);
     const [feed_post, setFeedContent] = useState('');
     const [kcalType, setKcalType] = useState('direct');
@@ -39,7 +39,7 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
                 });
                 console.log("debug >>> participantId", response.data);
                 response.data.map((member: any) => {
-                    if (member.member_id === member_id) {
+                    if (member.member_id === memberId) {
                         setParticipantId(member.participant_id);
                     }
                 });
@@ -52,28 +52,31 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const data = {
-            feed_img: feed_img ? feed_img : "이미지 없음",
-            feed_post,
-            feed_kcal,
-            feed_exTime,
-            crew_sport,
-            battle_id,
-            participant_id: participantId
-        };
-        console.log('Form Data:', data);
+        const data = new FormData();
+        data.append("feed_post", feed_post);
+        data.append("feed_kcal", feed_kcal.toString());
+        if (feed_img) {
+            data.append("ImgFile", feed_img);
+        }
+        data.append("feed_exTime", feed_exTime.toString());
+        data.append("feed_sport", crew_sport);
+        data.append("battle_id", battle_id.toString());
+        data.append("participant_id", participantId.toString());
+        data.append("member_id", memberId!.toString())
         // 피드 생성 API
         const createFeed = async() => {
             try{
                 const response = await api.post(`crew/battle/feed/create`, data, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
                     }
                 });
                 console.log("debug >>> createFeed response", response.data);
                 alert("피드 생성 완료");
             } catch (error) {
                 console.log("debug >>> createFeed error", error);
+                alert("피드 생성 실패");
             }
         }
         createFeed();
