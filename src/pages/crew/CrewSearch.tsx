@@ -6,6 +6,25 @@ import CrewCard from "components/ui/crew/card/CrewCard";
 import CrewCreateModal from "components/ui/crew/modal/CrewCreateModal";
 import CategoryDropdown from "pages/community/communityComponent/CategoryDropdown";
 import categoriesData from "assets/data/categories.json";
+import styled from "styled-components";
+
+const Button = styled.button`
+  background-color: #6C757D;
+  color: #fff;
+  border: none;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  &:hover {
+    background-color: #A0A5AB;
+    color: #e0e0e0;
+  }
+`;
 
 function CrewSearch(): JSX.Element {
     const { state } = useAuth();
@@ -69,16 +88,16 @@ function CrewSearch(): JSX.Element {
                         className="form-control mx-2"
                         placeholder="검색어를 입력하세요"
                         value={searchTerm}
-                        style={{ width: "50%" }}
+                        style={{ width: "50%"}}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <button
+                    <Button
                         className="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#crewCreateModal"
                     >
                         크루 생성
-                    </button>
+                    </Button>
                 </div>
             </div>
             <br />
