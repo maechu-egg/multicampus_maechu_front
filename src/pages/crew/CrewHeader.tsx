@@ -40,7 +40,7 @@ function CrewHeader(): JSX.Element {
             <br />
             <br />
             <ul className="nav nav-tabs" id="myTab" role="tablist" style={{borderBottom:"0px"}}>
-                <li className="nav-item" role="presentation">
+                <li className="nav-item" role="presentation" style={{padding: 0}}>
                     <button
                         className={`nav-link ${activeCrewTab === 0 ? 'active' : ''}`}
                         onClick={() => handleCrewTabClick(0)}
@@ -57,7 +57,7 @@ function CrewHeader(): JSX.Element {
                     </button>
                 </li>
                 
-                <li className="nav-item" role="presentation">
+                <li className="nav-item" role="presentation" style={{padding: 0}}>
                     <button
                         className={`nav-link ${activeCrewTab === 1 ? 'active' : ''}`}
                         onClick={() => handleCrewTabClick(1)}
