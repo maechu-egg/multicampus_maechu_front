@@ -358,7 +358,7 @@ const parseDietPlan = (dietPlan: string) => {
   };
 
   // 식사 섹션을 정규 표현식으로 추출
-  const mealSections = dietPlan.match(/(\*\*아침 식사\*\*|아침 식사|점심 식사|저녁 식사|간식)([\s\S]*?)(?=\*\*|$)/g);
+  const mealSections = dietPlan.match(/(\*\*아침 식사\*\*|아 식사|점심 식사|저녁 식사|간식)([\s\S]*?)(?=\*\*|$)/g);
 
   if (mealSections) {
     mealSections.forEach(section => {
@@ -453,7 +453,7 @@ const handleAddMeal = async (mealType: keyof MealPlanData) => {
         const dietId = response.data; // 추가된 diet_id
         console.log("debug: dietId", dietId);
         await addItemsToDiet(dietId, meals[mealType]);
-        alert('식단이 추가되었습니다.');
+        alert('식단이 추���되었습니다.');
       }
     } catch (error) {
       console.error('식단 추가 중 오류 발생:', error);
@@ -686,12 +686,14 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
       <GoalContainer>
         {data ? (
           <>
-            <Goal>{data.weight} kg</Goal>
-            <Goal>목표 : {data.goal}</Goal>
-            <Goal>추천 칼로리 : {data.recommendedCalories} kcal</Goal>
-            <Goal>추천 단백질 : {data.recommendedProtein} g</Goal>
-            <Goal>추천 탄수화물 : {data.recommendedCarb} g</Goal>
-            <Goal>추천 지방 : {data.recommendedFat} g</Goal>
+            <div className="nutrition-info">
+            <h2>{data.weight} kg</h2>
+            <p>목표: {data.goal}</p>
+            <p>추천 칼로리: {data.recommendedCalories} kcal</p>
+            <p>추천 단백질: {data.recommendedProtein} g</p>
+            <p>추천 탄수화물: {data.recommendedCarb} g</p>
+            <p>추천 지방: {data.recommendedFat} g</p>
+            </div>
           </>
         ) : (
           <Goal>표 정보를 로딩 중...</Goal>
@@ -943,30 +945,37 @@ const CurrentDate = styled.div`
 
 const GoalContainer = styled.div`
   padding: 20px;
-  background: linear-gradient(135deg, #f0f0f0, #ffffff); // 그라데이션 배경
-  border-radius: 20px; // 더 부드러운 테두리 반경
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); // 부드러운 그림자
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   color: #1D2636;
   margin-bottom: 20px;
-  position: relative;
-  border: 1px solid #ddd; // 얇은 테두리
-  transition: transform 0.3s ease, box-shadow 0.3s ease; // 부드러운 애니메이션
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 
-  &:hover {
-    transform: translateY(-8px); // 호버 시 더 부드럽게 이동
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); // 호버 시 그림자 강화
-  }
-
-  // 내부 텍스트 스타일
   h2 {
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin: 0;
   }
 
   p {
     font-size: 16px;
-    line-height: 1.5;
+    margin: 5px 0;
+  }
+
+  .nutrition-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 15px;
+
+    span {
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 `;
 
