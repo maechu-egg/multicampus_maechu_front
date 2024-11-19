@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
-import { useNavigate } from "react-router-dom";
 import 'react-calendar/dist/Calendar.css';
-import styled from "styled-components";
-import api from "../../services/api/axios";
-import { useAuth } from "../../context/AuthContext";
-import MonthlyRecordChart from "../../components/ui/record/calendar/MonthlyRecordChart";
 import { IoCloseOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
+import MonthlyRecordChart from "../../components/ui/record/calendar/MonthlyRecordChart";
+import { useAuth } from "../../context/AuthContext";
+import api from "../../services/api/axios";
 // 타입 정의 추가
 interface ExerciseRecord {
   record_date: string;
@@ -18,7 +18,11 @@ interface DietRecord {
   totalCalories: number;
 }
 
-
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: #b6c0d3;
+  }
+`;
 
 function RecordPage(): JSX.Element {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
@@ -196,50 +200,53 @@ function RecordPage(): JSX.Element {
   };
 
   return (
-    <Wrapper>
-    <div className="calendar-header">
-      <TitleContainer>
-        <h1></h1>
-      </TitleContainer>
-    </div>
-      <Container>
-        <Calendar
-          onChange={(value) => setValue(value as Date)}
-          value={value}
-          locale="en-US"
-          onClickDay={handleClick}
-          tileContent={tileContent}
-          onActiveStartDateChange={handleActiveStartDateChange}
-        />
+    <>
+      <GlobalStyle />
+      <Wrapper>
+        <div className="calendar-header">
+          <TitleContainer>
+            <h1></h1>
+          </TitleContainer>
+        </div>
+        <Container>
+          <Calendar
+            onChange={(value) => setValue(value as Date)}
+            value={value}
+            locale="en-US"
+            onClickDay={handleClick}
+            tileContent={tileContent}
+            onActiveStartDateChange={handleActiveStartDateChange}
+          />
 
-        {showModal && (
-          <ModalOverlay>
-            <ModalContent>
-              <CloseButton onClick={() => setShowModal(false)}>
-                <IoCloseOutline />
-              </CloseButton>
-              <ModalHeader>{selectedDate}</ModalHeader>
-              <ButtonGroup>
-                <ModalButton onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
-                  💪🏻 운동
-                </ModalButton>
-                <ModalButton onClick={() => navigate(`/record/diet/${selectedDate}`)}>
-                  🥗 식단
-                </ModalButton>
-              </ButtonGroup>
-            </ModalContent>
-          </ModalOverlay>
-        )}
+          {showModal && (
+            <ModalOverlay>
+              <ModalContent>
+                <CloseButton onClick={() => setShowModal(false)}>
+                  <IoCloseOutline />
+                </CloseButton>
+                <ModalHeader>{selectedDate}</ModalHeader>
+                <ButtonGroup>
+                  <ModalButton onClick={() => navigate(`/record/exercise/${selectedDate}`)}>
+                    💪🏻 운동
+                  </ModalButton>
+                  <ModalButton onClick={() => navigate(`/record/diet/${selectedDate}`)}>
+                    🥗 식단
+                  </ModalButton>
+                </ButtonGroup>
+              </ModalContent>
+            </ModalOverlay>
+          )}
 
-        <MonthlyRecordChart 
-          exerciseDates={exerciseDates}
-          dietDates={dietDates}
-          currentMonth={value}
-          burnedCalories={calculateMonthlyCalories().burned}
-          consumedCalories={calculateMonthlyCalories().consumed}
-        />
-      </Container>
-    </Wrapper>
+          <MonthlyRecordChart 
+            exerciseDates={exerciseDates}
+            dietDates={dietDates}
+            currentMonth={value}
+            burnedCalories={calculateMonthlyCalories().burned}
+            consumedCalories={calculateMonthlyCalories().consumed}
+          />
+        </Container>
+      </Wrapper>
+    </>
   );
 };
 
@@ -328,7 +335,7 @@ const Wrapper = styled.div`
   margin: 0 auto;
   padding: 20px;
   margin-top: 0px;
-  background: no;  // 배경색 제거
+  background: #b6c0d3;  // 바탕색 변경
   border-radius: 0;  // 모서리 둥글기 제거
   border: none;      // 테두리 제거
   box-shadow: none;  // 그림자 효과 제거
