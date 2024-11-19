@@ -55,7 +55,7 @@ const PostList: React.FC<PostListProps> = ({
   onPostClick,
 }) => {
   return (
-    <div>
+    <div className="postlist_wrap">
       {recommendedPosts && recommendedPosts.length > 0 && (
         <RecommendedSection>         
           <ScrollContainer>
@@ -73,7 +73,7 @@ const PostList: React.FC<PostListProps> = ({
 
       <h3 className="list_title">전체 게시글</h3>
       {posts.length === 0 ? (
-        <p>게시글이 없습니다.</p>
+        <p className="non_post">게시글이 없습니다.</p>
       ) : (
         posts.map((post) => (
           <PostItem

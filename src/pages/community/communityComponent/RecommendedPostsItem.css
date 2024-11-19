@@ -116,6 +116,14 @@
   font-weight: bold; 
 }
 
+.non_post{
+  margin:0 auto;
+  text-align: center;
+}
+
+.postlist_wrap{
+  margin-bottom: 150px;
+}
 /* 기존 코드는 유지하고 반응형 부분만 수정 */
 
 /* 반응형 */
