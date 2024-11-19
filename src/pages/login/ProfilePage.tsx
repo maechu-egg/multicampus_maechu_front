@@ -50,12 +50,26 @@ function ProfilePage(): JSX.Element {
   const { token } = state;
 
   const cities = selectedRegion ? regions[selectedRegion] : [];
-  const subOptions = selectedCategory
-    ? categoryData.subcategories[selectedCategory.value].map((exercise) => ({
-        label: exercise,
-        value: exercise,
-      }))
-    : [];
+
+  // 디버깅 코드 추가
+  console.log("Selected Category Value:", selectedCategory?.value);
+  console.log(
+    "Subcategories for Selected Category:",
+    selectedCategory?.value
+      ? categoryData.subcategories[selectedCategory.value.trim()]
+      : "없음"
+  );
+
+  const subOptions =
+    selectedCategory &&
+    categoryData.subcategories.hasOwnProperty(selectedCategory.value.trim())
+      ? categoryData.subcategories[selectedCategory.value.trim()].map(
+          (exercise) => ({
+            label: exercise,
+            value: exercise,
+          })
+        )
+      : [];
 
   const categoryOptions = categoryData.categories.map((category) => ({
     label: category,
@@ -320,10 +334,11 @@ function ProfilePage(): JSX.Element {
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #b6c0d3;
 `;
 
 const ProfileForm = styled.div`
@@ -338,7 +353,8 @@ const ProfileForm = styled.div`
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin-top: 20%;
+  margin-top: 10%;
+  margin-bottom: 100%;
 `;
 
 const Title = styled.h1`
@@ -411,7 +427,6 @@ const FormRow = styled.div`
   margin-bottom: 15px;
   label {
     width: 30%;
-    font-weight: bold;
   }
   > *:not(label) {
     width: 70%;

@@ -483,7 +483,6 @@ const FormRow = styled.div`
   margin-bottom: 15px;
   label {
     width: 30%;
-    font-weight: bold;
   }
   > *:not(label) {
     width: 70%;
