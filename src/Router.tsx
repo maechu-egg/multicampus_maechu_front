@@ -19,7 +19,7 @@ import UserInfoPage from "./pages/login/UserInfoPage";
 import ProfilePage from "./pages/login/ProfilePage";
 
 import BadgeStatusPage from "pages/badge/BadgeStatusPage";
-import DietPage from "pages/recode/diet/DietPage";
+import DietPage from "pages/recode/diet/ai/DietPage";
 import DietDetailPage from "pages/recode/diet/DietDetailPage";
 import ExercisePage from "pages/recode/exercise/ExercisePage";
 function AppRouter() {
