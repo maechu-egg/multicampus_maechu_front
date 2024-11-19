@@ -21,6 +21,7 @@ interface Post {
     crew_id: number;
     nickname: string;
     member_id: number;
+    comment_count: number;
 }
 
 function CrewPost({ crewId }:CrewPostProps): JSX.Element {
@@ -31,6 +32,9 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
     const [posts, setPosts] = useState<Post[]>([]);
     const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
+    const [popular, setPopular] = useState<Post[]>([]);
+    const [notification, setNotification] = useState<Post[]>([]);
+
     const postsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -39,6 +43,7 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
     const indexOfFirstPost = indexOfLastPost - postsPerPage; // 첫 번째 게시물 인덱스
     const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost); // 현재 페이지에 맞는 게시물 목록
 
+    // 크루포스트 조회 API
     const getCrewPost = async() => {
         const params = {
             currentPage: currentPage ,
@@ -58,8 +63,49 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
             console.log("크루포스트 가져오기 에러 : ", err);
         }
     }
-    // 크루포스트 조회 API
+
+    // 인기 게시물 조회 API
+    const getPopulacPost = async() => {
+        const params = {
+            crew_id: crewId,
+            crew_post_state: 1,
+        }
+        try{
+            const response = await api.get("crew/post/top", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params, 
+            });
+            console.log("인기게시물 조회 response ", response.data);
+            setPopular(response.data);
+        } catch (err) {
+            console.log("인기게시물 조회 err", err);
+        }
+    }
+
+    // 공지 게시물 조회 API
+    const getnotificationPost = async() => {
+        const params = {
+            crew_id: crewId,
+            crew_post_state: 0,
+        }
+        try{
+            const response = await api.get("crew/post/top", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params, 
+            });
+            console.log("공지게시물 조회 response ", response.data);
+            setNotification(response.data);
+        } catch (err) {
+            console.log("공지게시물 조회 err", err);
+        }
+    }
     useEffect(() => {
+        getPopulacPost();
+        getnotificationPost();
         getCrewPost();
     },[currentPage])
 
@@ -92,25 +138,28 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                 <>
                     <br />
                     {/* 토글 & 검색바와 게시물 작성 버튼 */}
-                    <div className="d-flex justify-content-center align-items-center">
-                        <div className="flex-grow-1 text-center">
+                    <div className="row">
+                        <div className="col-12 d-flex justify-content-center align-items-center mb-3">
                             <input
                                 type="text"
-                                className="form-control"
+                                className="form-control mx-2"
                                 placeholder="검색어를 입력하세요"
                                 value={searchTerm}
-                                style={{ width: '70%', display: 'inline-block' }}
+                                style={{ width: "50%"}}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
+                            <button
+                                className="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#crewCreateModal"
+                            >
+                                크루 생성
+                            </button>
                         </div>
-                        <button className="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#crewCreatePostModal"
-                        >
-                            게시물 작성
-                        </button>
                     </div>
                     <br />
+                    <CrewPostList posts={notification} onPostClick={handlePostClick} />
+                    <CrewPostList posts={popular} onPostClick={handlePostClick} />
                     <CrewPostList posts={posts.filter(post => post.crew_post_title.includes(searchTerm))} onPostClick={handlePostClick}/>
                     <CrewPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
                 </>

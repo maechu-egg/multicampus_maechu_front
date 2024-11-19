@@ -1,12 +1,10 @@
-
-
 .nav-tabs .nav-link.active {
     background-color: #1D2636 !important;
     border-left: 2px solid #251316;
     border-top: 2px solid #251316;
     border-right: 2px solid #251316;
     border-bottom: none;
-    color: #fff; /* 텍스트 색상 변경 */
+    color: #fff !important; /* 텍스트 색상 변경 */
 }
 
 .nav-tabs .nav-link{

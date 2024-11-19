@@ -4,6 +4,7 @@ import CrewMemberInfo from "./myCrew/CrewMemberInfo";
 import CrewPost from "./myCrew/CrewPost";
 import CrewBattle from "./myCrew/CrewBattle";
 import './CrewPage.css';
+import styled from "styled-components";
 
 interface MyCrewHeaderProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
@@ -17,7 +18,7 @@ function MyCrewHeader({ crewId }: MyCrewHeaderProps): JSX.Element {
     };
 
     return (
-        <div className="container back">
+        <div className="container">
             <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li className="nav-item" role="presentation">
                     <button 

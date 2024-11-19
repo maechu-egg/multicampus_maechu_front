@@ -12,6 +12,7 @@ interface Post {
     crew_id: number;
     nickname: string;
     member_id: number;
+    comment_count: number;
 }
 
 interface PostListProps {
@@ -23,9 +24,7 @@ function CrewPostList({ posts, onPostClick }: PostListProps) {
     return (
         <div>
             {/* 전체 게시글 */}
-            {posts.length === 0 ? (
-                <p>게시글이 없습니다.</p>
-            ) : (
+            {posts.length !== 0 && (
                 posts.map((post) => (
                     <CrewPostItem key={post.crew_post_id} {...post} onClick={() => onPostClick(post)} />
                 ))

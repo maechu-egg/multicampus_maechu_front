@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import CrewSearch from "./CrewSearch";
 import './CrewPage.css';
+import './Crew.css';
 import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
 import MyCrew from "./MyCrew";
-import './Crew.css';
 
 function CrewHeader(): JSX.Element {
     const { state } = useAuth();
@@ -36,6 +36,7 @@ function CrewHeader(): JSX.Element {
     }, [memberId]);
 
     return (
+        <div style={{background: "#B6C0D3", height: "91vh"}}>
         <div className="container">
             <br />
             <br />
@@ -104,6 +105,7 @@ function CrewHeader(): JSX.Element {
                     </div>
                 )}
             </div>
+        </div>
         </div>
     );
 }

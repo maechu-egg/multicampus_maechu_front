@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaThumbsUp } from "react-icons/fa";
+import { FaComment, FaThumbsUp } from "react-icons/fa";
 import "./CrewPostItem.css";
 
 interface PostItemProps {
@@ -13,6 +13,7 @@ interface PostItemProps {
     crew_id: number;
     member_id: number;
     nickname: string;
+    comment_count: number;
     onClick: () => void;
 }
 
@@ -25,6 +26,7 @@ const CrewPostItem: React.FC<PostItemProps> = ({
     crew_post_state,
     crew_post_date,
     nickname,
+    comment_count,
     onClick
 }) => {
 
@@ -40,6 +42,9 @@ const CrewPostItem: React.FC<PostItemProps> = ({
                         <span className="date">{crew_post_date}</span>
                         <span className="likes">
                             <FaThumbsUp /> {crew_post_like}
+                        </span>
+                        <span className="comments">
+                            <FaComment /> {comment_count}
                         </span>
                     </div>
                 </div>
