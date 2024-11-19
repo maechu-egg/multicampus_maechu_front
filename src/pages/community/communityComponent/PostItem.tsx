@@ -62,7 +62,7 @@ const PostItem: React.FC<PostItemProps> = ({
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`} onClick={onClick}>
       <div className="post-content-wrapper">
-        <div className="category-date-line">
+        {/* <div className="category-date-line">
           <span className="subcategory">[{post_sport || '자유'}]</span>
           <span className="date">{formatDate(post_date)}</span>
         </div>
@@ -83,6 +83,38 @@ const PostItem: React.FC<PostItemProps> = ({
             </div>
           )}
           <div className="post-stats">
+            <span className="likes">
+              <FaThumbsUp /> {post_like_counts}
+            </span>
+            <span className="comments">
+              <FaComment /> {comments_count}
+            </span>
+            <span className="views">
+              <FaEye /> {post_views}
+            </span>
+          </div>
+        </div> */}
+
+        <ul className="category-date-line">
+          <li className="subcategory">[{post_sport || '자유'}]</li>
+          <li className="post-titles">{post_title}</li>
+          <li className="post_author">{post_nickname}</li>
+          <li className="post-date">{formatDate(post_date)}</li>
+        </ul>
+  
+        <div className="post-info-wrapper">
+          <div className="tags_wrap">
+          {hashtagArray.length > 0 && (
+            <div className="post-tags">
+              {hashtagArray.map((tag, index) => (
+                <span key={index} className="tag-item">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          </div>
+          <div className="post-status">
             <span className="likes">
               <FaThumbsUp /> {post_like_counts}
             </span>

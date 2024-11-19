@@ -171,7 +171,7 @@ const ControlButtonContainer = styled.div`
 const ControlButton = styled.button`
   padding: 4px 8px;
   background-color: #fafafa;
-  color: #9799a1;
+  color: #1d2636;
   border: none;
   cursor: pointer;
   font-size: 1.4rem;
@@ -184,7 +184,7 @@ const ControlButton = styled.button`
   }
 
   &:focus { 
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 0 0 3px #1d2636;
   }
 `;
 

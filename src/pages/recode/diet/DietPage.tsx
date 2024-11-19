@@ -23,314 +23,6 @@ interface MealPlanData {
   snack: MealData;
 }
 
-// 스타일 컴포넌트 정의
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 1000px;
-`;
-
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  color: #333; // 제목 색상
-`;
-
-const InfoContainer = styled.div`
-  margin-bottom: 20px;
-`;
-
-const TotalCalories = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  color: #4caf50; // 칼로리 색상
-`;
-
-const CurrentDate = styled.div`
-  font-size: 16px;
-  color: #666; // 날짜 색상
-`;
-
-const GoalContainer = styled.div`
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  line-height: 1.6;
-  font-size: 16px;
-  color: #333;
-
-  h3 {
-    margin-bottom: 10px;
-    font-size: 18px;
-    color: #2c3e50;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-  }
-
-  li::before {
-    content: '•';
-    color: #27ae60;
-    font-weight: bold;
-    display: inline-block;
-    width: 1em;
-    margin-left: -1em;
-  }
-`;
-
-const Goal = styled.div`
-  font-size: 16px;
-  color: #333; // 목표 색상
-`;
-
-const RecordList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 20px;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-`;
-
-const RecordItem = styled.div`
-  background: #ffffff; // 배경색을 흰색으로 설정
-  border: 1px solid #e0e0e0; // 테두리 추가
-  border-radius: 10px; // 모서리 둥글게
-  padding: 20px; // 패딩
-  text-align: center; // 중앙 정렬
-  cursor: pointer; // 커서 포인터
-  transition: all 0.3s ease; // 부드러운 전환 효과
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // 그림자 효과
-
-  &:hover {
-    background-color: #f5f5f5; // 호버 시 배경색 변경
-    transform: translateY(-3px); // 위로 이동 효과
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); // 호버 시 그림자 효과 증가
-  }
-`;
-
-const FoodIcon = styled.div`
-  font-size: 40px;
-  margin-bottom: 10px;
-`;
-
-const FoodName = styled.div`
-  font-size: 20px;
-  font-weight: 500;
-  color: #333;
-`;
-
-// 추천받기 버튼 스타일 추가
-const RecommendationButton = styled.button`
-  background-color: #4caf50; // 버튼 색상
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #45a049; // 호버 색상
-  }
-`;
-
-// 모달 스타일
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  width: 90%;
-  max-width: 700px; // Container와 동일한 max-width
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  margin: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 20px;
-
-  h2 {
-    margin: 0;
-    font-size: 24px;
-    color: #333;
-  }
-`;
-
-const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #666;
-  padding: 5px;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #333;
-  }
-`;
-
-const ModalBody = styled.div`
-  overflow-y: auto;
-  padding: 0 10px;
-  margin-bottom: 60px; // CloseModalButton을 위한 여백
-
-  // 스크롤바 스타일링
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-`;
-
-const Input = styled.input`
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`;
-
-// 추천받기 버튼 스타일 추가
-const RecommendButton = styled.button`
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  margin-top: 20px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-  }
-`;
-
-// 결과 테이블을 위한 새로운 스타일 컴넌트 추가
-const ResultTable = styled.div`
-  margin: 20px 0;
-  overflow-x: auto; // 가로 스크롤 추가
-  
-  table {
-    width: 100%;
-    min-width: 600px; // 최소 테이블 너비 설정
-    border-collapse: collapse;
-  }
-
-  th, td {
-    border: 1px solid #ccc;
-    padding: 12px;
-    text-align: center;
-  }
-
-  th {
-    background-color: #e0f7fa; // 헤더 배경색
-    font-weight: bold;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tr:hover {
-    background-color: #f5f5f5;
-  }
-`;
-
-// 새로운 스타일 컴포넌트 추가
-const ResultSection = styled.div`
-  margin: 30px 0;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
-`;
-
-// SectionTitle 컴포넌트 수정
-const SectionIcon = styled.span`
-  font-size: 24px;
-  margin-right: 10px;
-`;
-
-const SectionTitle = styled.h3`
-  padding: 20px;
-  margin: 0;
-  background: linear-gradient(135deg, #4CAF50, #45a049);
-  color: white;
-  border-radius: 15px 15px 0 0;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-`;
-
-const SectionContent = styled.div`
-  padding: 25px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 0 0 15px 15px;
-  overflow-x: auto; // 가로 스크롤 추가
-`;
 
 // DietPlanSection 컴포넌트 내부의 parseMealPlan 함수 수정
 const parseMealPlan = (dietPlan: string): MealPlanData => {
@@ -382,85 +74,6 @@ const parseMealPlan = (dietPlan: string): MealPlanData => {
   }
 };
 
-// MealPlanTable 스타일 수정
-const MealPlanTable = styled.div`
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  background: white;
-  margin: 20px 0;
-  width: 100%;
-
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-  }
-
-  th {
-    background: linear-gradient(135deg, #4CAF50, #45a049);
-    color: white;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 500;
-    text-align: left;
-  }
-
-  td {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  tr:hover td {
-    background-color: #f5f5f5;
-  }
-`;
-
-const MealTypeCell = styled.td`
-  font-weight: 600;
-  color: #2E7D32;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  white-space: nowrap;
-  min-width: 120px;
-`;
-
-const MealIcon = styled.span`
-  font-size: 24px;
-`;
-
-const FoodCell = styled.td`
-  color: #333;
-  font-size: 15px;
-  line-height: 1.6;
-  padding: 15px;
-  word-break: keep-all; // 단어 단위로 줄바꿈
-  white-space: pre-wrap; // 백과 줄바꿈 유지
-  
-  div {
-    margin: 5px 0;
-  }
-`;
-
-const PortionCell = styled.td`
-  color: #666;
-  font-size: 14px;
-  white-space: nowrap;
-  min-width: 150px;
-`;
-
-const CaloriesCell = styled.td`
-  font-weight: 600;
-  color: #1976D2;
-  white-space: nowrap;
-  min-width: 100px;
-`;
 
 // DietPlanSection 컴포넌트 수정
 const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; onLunchClick: () => void; onDinnerClick: () => void; onSnackClick: () => void }> = ({ dietPlan, onBreakfastClick, onLunchClick, onDinnerClick, onSnackClick }) => {
@@ -539,129 +152,6 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
     );
   }
 
-  // 식사 타입별 스타일 정의
-  const getMealStyle = (mealType: string) => {
-    switch (mealType.trim()) {
-      case '아침식사':
-      case '아침 식사':
-        return { icon: '🌅', color: '#FF9800', label: '아침', order: 1 };
-      case '점심식사':
-      case '점심 식사':
-        return { icon: '☀️', color: '#4CAF50', label: '점심', order: 2 };
-      case '저녁식사':
-      case '저녁 식사':
-        return { icon: '🌙', color: '#2196F3', label: '저녁', order: 3 };
-      case '간식':
-        return { icon: '🍎', color: '#9C27B0', label: '간식', order: 4 };
-      default:
-        return { icon: '🍽️', color: '#757575', label: '식사', order: 5 };
-    }
-  };
-
-  // 새로운 스타일 컴포넌트 추가
-  const TimelineContainer = styled.div`
-    padding: 20px;
-    position: relative;
-    width: 100%;
-    overflow-x: hidden;
-  `;
-
-  const MealTimelineGrid = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    position: relative;
-    overflow-x: auto;
-    padding: 20px 0;
-
-    &::-webkit-scrollbar {
-      height: 8px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
-
-    &::after {
-      display: none;
-    }
-  `;
-
-  const TimelineMealCard = styled.div<{ $backgroundColor: string }>`
-    flex: 0 0 300px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s ease;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: ${props => props.$backgroundColor};
-    }
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-  `;
-
-  const TimelineMealHeader = styled.div<{ $backgroundColor: string }>`
-    background: ${props => props.$backgroundColor};
-    padding: 15px;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  `;
-
-  const TimelineMealTime = styled.div`
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 5px;
-  `;
-
-  const TimelineMealContent = styled.div`
-    padding: 20px;
-  `;
-
-  const TimelineFoodList = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  `;
-
-  const TimelineFoodItem = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: #f0f0f0;
-      transform: translateX(5px);
-    }
-  `;
 
   return (
     <ResultSection>
@@ -673,8 +163,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
         <TimelineContainer>
           <MealTimelineGrid>
             {/* 아침 식사 */}
-            <TimelineMealCard $backgroundColor="#FF9800" onClick={onBreakfastClick}>
-              <TimelineMealHeader $backgroundColor="#FF9800">
+            <TimelineMealCard $backgroundColor="#42a5f5" onClick={onBreakfastClick}>
+              <TimelineMealHeader $backgroundColor="#2196f3">
                 <DietMealIcon>🌅</DietMealIcon>
                 <MealTitle>아침</MealTitle>
               </TimelineMealHeader>
@@ -682,7 +172,7 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
                 <TimelineFoodList>
                   {meals.breakfast.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🍳</DietFoodIcon>
+                      <DietFoodIcon>🌅</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.breakfast.amounts[index]}</FoodAmount>
@@ -694,8 +184,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
             </TimelineMealCard>
 
             {/* 점심 식사 */}
-            <TimelineMealCard $backgroundColor="#4CAF50" onClick={onLunchClick}>
-              <TimelineMealHeader $backgroundColor="#4CAF50">
+            <TimelineMealCard $backgroundColor="#1e88e5" onClick={onLunchClick}>
+              <TimelineMealHeader $backgroundColor="#1976d2">
                 <DietMealIcon>☀️</DietMealIcon>
                 <MealTitle>점심</MealTitle>
               </TimelineMealHeader>
@@ -703,7 +193,7 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
                 <TimelineFoodList>
                   {meals.lunch.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🍚</DietFoodIcon>
+                      <DietFoodIcon>☀️</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.lunch.amounts[index]}</FoodAmount>
@@ -715,8 +205,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
             </TimelineMealCard>
 
             {/* 저녁 식사 */}
-            <TimelineMealCard $backgroundColor="#2196F3" onClick={onDinnerClick}>
-              <TimelineMealHeader $backgroundColor="#2196F3">
+            <TimelineMealCard $backgroundColor="#1565c0" onClick={onDinnerClick}>
+              <TimelineMealHeader $backgroundColor="#0d47a1">
                 <DietMealIcon>🌙</DietMealIcon>
                 <MealTitle>저녁</MealTitle>
               </TimelineMealHeader>
@@ -724,7 +214,7 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
                 <TimelineFoodList>
                   {meals.dinner.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🥗</DietFoodIcon>
+                      <DietFoodIcon>🌙</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.dinner.amounts[index]}</FoodAmount>
@@ -737,8 +227,8 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
 
             {/* 간식 */}
             {meals.snack.foods.length > 0 && (
-              <TimelineMealCard $backgroundColor="#9C27B0" onClick={onSnackClick}>
-                <TimelineMealHeader $backgroundColor="#9C27B0">
+              <TimelineMealCard $backgroundColor="#0d47a1" onClick={onSnackClick}>
+                <TimelineMealHeader $backgroundColor="#0a3d7a">
                   <DietMealIcon>🍎</DietMealIcon>
                   <MealTitle>간식</MealTitle>
                 </TimelineMealHeader>
@@ -764,132 +254,6 @@ const DietPlanSection: React.FC<{ dietPlan: any; onBreakfastClick: () => void; o
   );
 };
 
-// 새로운 스타일 컴포넌트 추가
-const MealGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin: 20px 0;
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-// MealCardsContainer 스타일 수정
-const MealCardsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 10px;
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-// MealCard 스타일 수정
-const MealCard = styled.div<{ $borderColor: string }>`
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  overflow: hidden;
-  transition: transform 0.2s ease;
-  border: 2px solid ${props => props.$borderColor};
-  height: 100%;
-  min-height: 200px;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
-`;
-
-const MealHeader = styled.div<{ $backgroundColor: string }>`
-  background: ${props => props.$backgroundColor};
-  color: white;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-const DietMealIcon = styled.span`
-  font-size: 24px;
-`;
-
-const MealTitle = styled.h3`
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-`;
-
-const MealContent = styled.div`
-  padding: 20px;
-`;
-
-const FoodList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
-
-const FoodItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background: #f0f0f0;
-  }
-`;
-
-const DietFoodIcon = styled.span`
-  font-size: 20px;
-  color: #666;
-`;
-
-const FoodDetails = styled.div`
-  flex: 1;
-`;
-
-const DietFoodName = styled.div`
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 5px;
-`;
-
-const FoodAmount = styled.div`
-  font-size: 14px;
-  color: #666;
-`;
-
-// 닫기 버튼 스타일 추가
-const CloseModalButton = styled.button`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  background: #4CAF50;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
-`;
 
 // CautionSection 컴포넌트 추가
 const CautionSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
@@ -937,39 +301,6 @@ const CautionSection: React.FC<{ dietPlan: any }> = ({ dietPlan }) => {
   );
 };
 
-// 주의사항 관련 스타일 컴포넌트 추가
-const CautionList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
-
-const CautionItem = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 15px;
-  background: #fff4e5;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-`;
-
-const CautionIcon = styled.span`
-  font-size: 20px;
-  color: #ff9800;
-`;
-
-const CautionText = styled.p`
-  margin: 0;
-  color: #333;
-  line-height: 1.5;
-  font-size: 15px;
-`;
 
 // getMealData 함수 정의를 DietPage 컴포넌트 외부로 이동
 const getMealData = (plan: any): MealPlanData => {
@@ -1039,7 +370,7 @@ const parseDietPlan = (dietPlan: string) => {
           const amount = parts[2]; // 양
           const calories = parseInt(parts[3]); // 열량
           const protein = parseInt(parts[4]); // 단백질
-          const carbs = parseInt(parts[5]); // 탄수화물
+          const carbs = parseInt(parts[5]); // 탄수물
           const fat = parseInt(parts[6]); // 지방
 
           meals.foods.push(food);
@@ -1068,7 +399,7 @@ function DietPage() {
     recommendedFat: number;
   } | null>(null);
   
-  const [isModalOpen, setIsModalOpen] = useState(false); // 첫 번째 모달 상태
+  const [isModalOpen, setIsModalOpen] = useState(false); // 첫 째 모달 상태
   const [isResultModalOpen, setIsResultModalOpen] = useState(false); //  째 모달 상태 추가
   const [dietPlan, setDietPlan] = useState<string | null>(null);
 
@@ -1197,14 +528,14 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         } catch (error: any) {
           console.error('데이터를 가져오는 중 오류 발생:', error);
           if (error.response?.status === 401) {
-            // 토큰이 만료된 경우 로컬 스토리지의 토큰 제거
+            // 토큰이 만료된 경우 로컬 스토리지의 토 제거
             localStorage.removeItem('token');
-            // 로그인 페���지로 리다이렉트
+            // 로그인 페이지로 리다이렉트
             navigate('/login', { replace: true });
           }
         }
       } else {
-        // memberId나 token이 없는 경우
+        // memberId나 token이 는 경우
         console.log('No memberId or token available');
         navigate('/login', { replace: true });
       }
@@ -1271,7 +602,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         alert('식단 추천 중 오류가 발생했습니다. 다시 시도해주세요.');
       }
     } else {
-      alert('필요한 정보가 부족합니다. 다시 시도해주세요.');
+      alert('요 정보가 부족합니다. 다시 시도해주세요.');
     }
   };
 
@@ -1280,7 +611,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
     setIsLoading(true); // 로딩 시작
     try {
       await fetchDietPlan(); // API 호출
-      setIsModalOpen(false); // 첫 번째 모달 닫기
+      setIsModalOpen(false); // 첫 번째 모 닫기
       setIsResultModalOpen(true); // 결과 모달 열기
     } catch (error) {
       console.error('추천 처리 중 오류 발생:', error);
@@ -1344,7 +675,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <InfoContainer>
           {data ? (
             <>
-              <TotalCalories>Total : {data.tdee} kcal</TotalCalories>
+              <TotalCalories>Total : 0 kcal</TotalCalories>
               <CurrentDate>{new Date().toLocaleDateString('ko-KR')} {new Date().toLocaleString('ko-KR', { weekday: 'long' })}</CurrentDate>
             </>
           ) : (
@@ -1386,9 +717,9 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
             }
           }}>
             <FoodIcon>
-              {record.food === "breakfast" ? "🍳" : 
-               record.food === "lunch" ? "🍚" : 
-               record.food === "dinner" ? "🥗" : 
+              {record.food === "breakfast" ? "🌅" : 
+               record.food === "lunch" ? "☀️" : 
+               record.food === "dinner" ? "🌙" : 
                record.food === "snack" ? "🍰" : ""}
             </FoodIcon>
             <FoodName>{foodLabels[record.food as keyof typeof foodLabels]}</FoodName>
@@ -1415,10 +746,10 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                 <label>재료 (쉼표로 구분 예: 쌀, 계란, 닭가슴살):</label>
                 <Input type="text" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
                 
-                <label>식 제한 (쉼표로 구분 예: 고단백질, 저탄수화물):</label>
+                <label>식 제한 (쉼표로 구분 예: 고단백질, 저탄화물):</label>
                 <Input type="text" value={dietaryRestrictions} onChange={(e) => setDietaryRestrictions(e.target.value)} />
                 
-                <label>알레르기 (쉼표로 구분 예: 우유, 땅콩):</label>
+                <label>알레르기 (쉼표 구 예: 우유, 땅콩):</label>
                 <Input type="text" value={allergies} onChange={(e) => setAllergies(e.target.value)} />
                 
                 <label>의료 조건 (쉼표로 구분 예: 당뇨, 고혈압):</label>
@@ -1451,7 +782,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>맞춤 식단 계획</h2>
+              <h2>추천 받은 식단</h2>
               <CloseButton onClick={closeResultModal}>×</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -1482,12 +813,12 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
 
 
 
-      {/* 아침 상세 달 */}
+      {/* 아침 상세 모달 */}
       {isBreakfastDetailModalOpen && (
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>아침 상세 정보</h2>
+              <h2>아침 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsBreakfastDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -1496,7 +827,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>아침 식사 계획</h3>
                   <p>음식: {meals.breakfast.foods.join(', ')}</p>
                   <p>양: {meals.breakfast.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('breakfast')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('breakfast')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -1509,7 +840,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>점심 상세 정보</h2>
+              <h2>점심 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsLunchDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -1518,7 +849,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>점심 식사 계획</h3>
                   <p>음식: {meals.lunch.foods.join(', ')}</p>
                   <p>양: {meals.lunch.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('lunch')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('lunch')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -1531,7 +862,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>저녁 상세 정보</h2>
+              <h2>저녁 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsDinnerDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -1540,7 +871,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>저녁 식사 계획</h3>
                   <p>음식: {meals.dinner.foods.join(', ')}</p>
                   <p>양: {meals.dinner.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('dinner')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('dinner')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -1553,7 +884,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
         <ModalOverlay>
           <ModalContent>
             <ModalHeader>
-              <h2>간식 상세 정보</h2>
+              <h2>간식 식단 추천 정보</h2>
               <CloseButton onClick={() => setIsSnackDetailModalOpen(false)}>X</CloseButton>
             </ModalHeader>
             <ModalBody>
@@ -1562,7 +893,7 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
                   <h3>간식 계획</h3>
                   <p>음식: {meals.snack.foods.join(', ')}</p>
                   <p>양: {meals.snack.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('snack')}>식단 추가</button>
+                  <StyledButton onClick={() => handleAddMeal('snack')}>식단 추가</StyledButton>
                 </div>
               )}
             </ModalBody>
@@ -1573,6 +904,490 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
   );
 }
 
+// 스타일 컴포넌트 정의
+const Container = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
+const Header = styled.div`
+  text-align: center;
+  margin-bottom: 30px;
+`;
+
+const Title = styled.h1`
+  font-size: 28px;
+  color: #1D2636;
+  font-weight: 700;
+  letter-spacing: 1px;
+`;
+
+const InfoContainer = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const TotalCalories = styled.div`
+  font-size: 22px;
+  font-weight: bold;
+  color: #1D2636;
+`;
+
+const CurrentDate = styled.div`
+  font-size: 16px;
+  color: #666;
+`;
+
+const GoalContainer = styled.div`
+  padding: 20px;
+  background: linear-gradient(135deg, #f0f0f0, #ffffff); // 그라데이션 배경
+  border-radius: 20px; // 더 부드러운 테두리 반경
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); // 부드러운 그림자
+  color: #1D2636;
+  margin-bottom: 20px;
+  position: relative;
+  border: 1px solid #ddd; // 얇은 테두리
+  transition: transform 0.3s ease, box-shadow 0.3s ease; // 부드러운 애니메이션
+
+  &:hover {
+    transform: translateY(-8px); // 호버 시 더 부드럽게 이동
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); // 호버 시 그림자 강화
+  }
+
+  // 내부 텍스트 스타일
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+`;
+
+const Goal = styled.div`
+  font-size: 18px;
+`;
+
+const RecordList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+`;
+
+const RecordItem = styled.div`
+  background: linear-gradient(135deg, #1D2636, #2C3E50); // 그라데이션 배경
+  border-radius: 15px; // 더 부드러운 테두리
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; // 부드러운 애니메이션
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // 그림자 효과
+
+  &:hover {
+    transform: translateY(-5px); // 호버 시 위로 이동
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); // 호버 시 그림자 강화
+  }
+`;
+
+const FoodIcon = styled.div`
+  font-size: 40px;
+  margin-bottom: 10px;
+  color: #1D2636;
+`;
+
+const FoodName = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff; // 텍스트 색상 유지
+`;
+
+const RecommendationButton = styled.button`
+  background-color: #1D2636;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #414d60;
+    transform: translateY(-2px);
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: #ffffff; // 모달 배경색
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); // 그림자 추가
+  max-width: 500px; // 최대 너비 설정
+  width: 90%; // 반응형 너비
+  max-height: 80vh; // 최대 높이 설정
+  overflow-y: auto; // 세로 스크롤 가능
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0; // 하단 경계선
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+
+  h2 {
+    font-size: 24px;
+    color: #1D2636; // 제목 색상
+  }
+`;
+
+
+const CloseButton = styled.button`
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 5px;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #333C4D;
+  }
+`;
+
+const ModalBody = styled.div`
+  font-size: 16px;
+  color: #333; // 본문 텍스트 색상
+  line-height: 1.5; // 줄 간격
+  overflow-y: auto;
+  padding: 0 10px;
+  margin-bottom: 60px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+`;
+
+const Input = styled.input`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #1D2636;
+  }
+`;
+
+
+const RecommendButton = styled.button`
+  background-color: #1D2636;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+
+  &:hover {
+    background-color: #333C4D;
+    transform: translateY(-2px);
+  }
+`;
+
+
+const ResultSection = styled.div`
+  margin: 30px 0;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+`;
+
+const SectionIcon = styled.span`
+  font-size: 24px;
+  margin-right: 10px;
+`;
+
+const SectionTitle = styled.h3`
+  padding: 20px;
+  margin: 0;
+  background: #1D2636;
+  color: white;
+  border-radius: 15px 15px 0 0;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+`;
+
+const SectionContent = styled.div`
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 0 0 15px 15px;
+  overflow-x: auto;
+`;
+
+
+
+
+const TimelineContainer = styled.div`
+  padding: 20px;
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+`;
+
+const MealTimelineGrid = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  position: relative;
+  overflow-x: auto;
+  padding: 20px 0;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  &::after {
+    display: none;
+  }
+`;
+
+const TimelineMealCard = styled.div<{ $backgroundColor: string }>`
+  flex: 0 0 300px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: ${props => props.$backgroundColor};
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+`;
+
+const TimelineMealHeader = styled.div<{ $backgroundColor: string }>`
+  background: ${props => props.$backgroundColor};
+  padding: 15px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+
+const TimelineMealContent = styled.div`
+  padding: 20px;
+`;
+
+const TimelineFoodList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const TimelineFoodItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f0f0f0;
+    transform: translateX(5px);
+  }
+`;
+
+
+const DietMealIcon = styled.span`
+  font-size: 24px;
+`;
+
+const MealTitle = styled.h3`
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+`;
+
+
+const DietFoodIcon = styled.span`
+  font-size: 20px;
+  color: #666;
+`;
+
+const FoodDetails = styled.div`
+  flex: 1;
+`;
+
+const DietFoodName = styled.div`
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 5px;
+`;
+
+const FoodAmount = styled.div`
+  font-size: 14px;
+  color: #666;
+`;
+
+const CloseModalButton = styled.button`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: #1D2636;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #333C4D;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+`;
+
+const CautionList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const CautionItem = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background: #fff4e5;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+`;
+
+const CautionIcon = styled.span`
+  font-size: 20px;
+  color: #ff9800;
+`;
+
+const CautionText = styled.p`
+  margin: 0;
+  color: #333;
+  line-height: 1.5;
+  font-size: 15px;
+`;
+
+const StyledButton = styled.button`
+  background-color: #1D2636; // 버튼 색상
+  color: white; // 텍스트 색상
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #333C4D; // hover 시 색상 변경
+    transform: translateY(-2px); // hover 시 약간 위로 이동
+  }
+`;
 
 
 export default DietPage;

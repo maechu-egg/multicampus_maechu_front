@@ -302,7 +302,7 @@ const Container = styled.div`
   height: 100vh;
   margin: 0 auto;
   padding: 20px;
-  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  background: none;
   font-family: 'Noto Sans KR', sans-serif;
 `;
 
@@ -315,6 +315,7 @@ const SummaryCard = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border: 1px solid #ccc;
 `;
 
 const DateSection = styled.div`
@@ -360,16 +361,16 @@ const SearchBar = styled.div`
 
   input {
     width: 100%;
-    padding: 15px 60px 15px 20px; /* 오른쪽에 버튼 공간 확보 */
-    border: none;
+    padding: 15px;
+    border: 1px solid #ced4da;
     border-radius: 10px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-size: 16px;
     
     &:focus {
       outline: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
   }
 
@@ -379,7 +380,7 @@ const SearchBar = styled.div`
     top: 50%;
     transform: translateY(-50%);
     padding: 8px 16px;
-    background-color: #bfc4c9;
+    background-color: #414d60;
     color: white;
     border: none;
     border-radius: 5px;
@@ -387,7 +388,7 @@ const SearchBar = styled.div`
     cursor: pointer;
     
     &:hover {
-      background-color: #45a049;
+      background-color: #1d2636;
     }
   }
 `;
@@ -406,7 +407,7 @@ const CogWrapper = styled.div`
 const DropdownMenu = styled.div`
   position: absolute;
   margin-top: 5px; /* 톱니바퀴 아래로 약간 떨어지게 설정 */
-  background-color: white;
+  background-color: #414d60; /* 배경색 변경 */
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -420,9 +421,10 @@ const DropdownMenu = styled.div`
     border: none;
     text-align: left;
     cursor: pointer;
+    color: white; /* 글씨 색상 변경 */
 
     &:hover {
-      background-color: #f8f9fa;
+      background-color: #1d2636; /* hover 시 배경색 변경 */
     }
   }
 `;
@@ -434,7 +436,10 @@ const ItemList = styled.div`
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
-  background-color: #f5f5f5;
+  background-color: transparent;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  color: #333;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;

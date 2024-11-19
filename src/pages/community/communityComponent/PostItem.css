@@ -1,6 +1,11 @@
+li{
+  list-style: none;
+  padding: 10px 10px ;
+}
+
 .post-item {
   border: 1px solid #e7e7e7;
-  border-radius: 4px;
+  border-radius: 20px;
   margin: 0 auto 8px;
   padding: 16px;
   background: #fff;
@@ -14,9 +19,9 @@
   background-color: #fafafa;
 }
 
-.post-item.recommended {
+/* .post-item.recommended {
   border: 1px solid #ff3a48;
-}
+} */
 
 .post-content-wrapper {
   display: flex;
@@ -25,14 +30,16 @@
 }
 .category-date-line {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 
 }
 .subcategory {
-  font-size: 13px;
+  font-size: 20px;
   color: #666d75;
   margin: 0;
+  width: 250px;
+  text-align: center;
 }
 
 .title-author-line {
@@ -42,11 +49,13 @@
   margin: 8px 0;
 }
 
-.post-title {
+li.post-titles {
+  width: 500px;
+  text-align: center;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: bold;
   color: #333;
-  margin: 0;
+  margin: 0px;
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -63,10 +72,13 @@
   line-height: 1.4;
 }
 
-.author {
+.post_author {
   font-size: 13px;
   color: #666d75;
   flex-shrink: 0;
+  margin-right:30px;
+  text-align: center;
+  width: 70px;
 }
 
 .post-content-wrapper .post-tags {
@@ -81,12 +93,18 @@
 .post-content-wrapper .tag-item {
   color: #2B96ED !important;
   font-size: 11px !important;
-  margin: 0 !important;
+  margin-left: 35px !important;
   padding: 0 !important;
   font-weight: normal !important;
   text-decoration: none !important;
   background: none !important;
   border: none !important;
+}
+
+.tags_wrap{
+  width: 250px ;
+  margin-left: 70px;
+  text-align: center !important;
 }
 
 .post-info-wrapper {
@@ -98,24 +116,26 @@
   margin-top: 8px;
 }
 
-.post-stats {
+.post-status {
   display: flex;
   gap: 12px;
   color: #98a8b9;
   font-size: 13px;
   align-items: center;
-  margin-left: auto;
+  margin-right:30px;
+
 }
 
-.post-stats span {
+/* .post-stats span {
   display: flex;
   align-items: center;
   gap: 4px;
-}
+} */
 
-.date {
+.post-date {
   font-size: 13px;
   color: #98a8b9;
+  margin-right:20px;
 }
 
 .likes svg {

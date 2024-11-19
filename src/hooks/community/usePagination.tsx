@@ -51,7 +51,7 @@ export const usePagination = ({
           const response = await paginationApi.getKeywordSearchResultsByPage({
             keyword: searchKeyword,
             category: activeTab,
-            page: currentPage,
+            page: pageNumber,
             size: postsPerPage
           }, token);
 

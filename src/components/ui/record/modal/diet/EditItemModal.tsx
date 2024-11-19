@@ -43,7 +43,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,25 +51,25 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: #fff;
+  background: white;
   padding: 30px 20px;
   border-radius: 10px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease-out forwards;
   text-align: center;
 
   h3 {
     font-size: 1.5rem;
-    color: #333;
+    color: #2c3e50;
     margin-bottom: 20px;
   }
 
   label {
     display: block;
     font-weight: bold;
-    color: #666;
+    color: #2c3e50;
     margin-bottom: 12px;
     text-align: left;
   }
@@ -78,14 +78,14 @@ const ModalContent = styled.div`
     width: 100%;
     padding: 10px;
     margin-top: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid #bdc3c7;
     border-radius: 6px;
     font-size: 1rem;
     outline: none;
     transition: border 0.3s;
 
     &:focus {
-      border-color: #007bff;
+      border-color: #3498db;
     }
   }
 
@@ -109,7 +109,7 @@ const ButtonContainer = styled.div`
 
 const SaveButton = styled.button`
   padding: 12px 20px;
-  background-color: #007bff;
+  background-color: #1d2636;
   color: white;
   border: none;
   border-radius: 6px;
@@ -119,18 +119,18 @@ const SaveButton = styled.button`
   transition: background 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #414d60;
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.6);
+    box-shadow: 0 0 4px rgba(29, 38, 54, 0.6);
   }
 `;
 
 const CancelButton = styled.button`
   padding: 12px 20px;
-  background-color: #dc3545;
+  background-color: #1d2636;
   color: white;
   border: none;
   border-radius: 6px;
@@ -140,11 +140,11 @@ const CancelButton = styled.button`
   transition: background 0.3s ease;
 
   &:hover {
-    background-color: #c82333;
+    background-color: #414d60;
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 4px rgba(220, 53, 69, 0.6);
+    box-shadow: 0 0 4px rgba(29, 38, 54, 0.6);
   }
 `;
