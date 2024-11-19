@@ -55,6 +55,7 @@ export const usePost = () => {
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
   const { getComments } = useComment();
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
  // 게시글 목록 조회
  const fetchPosts = async (
@@ -63,8 +64,12 @@ export const usePost = () => {
   page: number = 1,
   size: number = 10
 ) => {
+
   console.log("Fetching posts...");
   setLoading(true);
+  setCurrentPage(1);
+  
+  
   try {
     if (!token) {
       console.error("로그인이 필요합니다.");
@@ -387,6 +392,8 @@ const handleDelete = async (postId: number) => {
     loading,
     totalPages,
     isAuthor,
+    currentPage, 
+    setCurrentPage,
     fetchPosts,
     fetchRecommendedPosts,
     handlePostClick,

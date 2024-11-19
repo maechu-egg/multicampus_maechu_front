@@ -1,10 +1,10 @@
 .filter-section {
   border: 1px solid #e0e0e0;
-  max-width: 800px;  
+  max-width: 1200px;  /* PostItem과 동일하게 수정 */
   margin: 0 auto;    
   width: 95%;   
-  overflow: hidden;
 }
+
 
 .section-headers {
   display: flex;
@@ -45,9 +45,6 @@
   display: flex;
   gap: 20px;
   max-height: 300px;
-  transition: max-height 0.3s ease;
-  overflow: hidden;
-  padding: 0;
 }
 
 .category-section {
