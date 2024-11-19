@@ -4,7 +4,6 @@ import CrewMemberInfo from "./myCrew/CrewMemberInfo";
 import CrewPost from "./myCrew/CrewPost";
 import CrewBattle from "./myCrew/CrewBattle";
 import './CrewPage.css';
-import styled from "styled-components";
 
 interface MyCrewHeaderProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.

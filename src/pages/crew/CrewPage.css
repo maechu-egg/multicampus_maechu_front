@@ -11,3 +11,6 @@
     margin-left: 0px;
 }
 
+.nav-pills .nav-item .nav-link.active {
+    background: #1D2636;
+}
