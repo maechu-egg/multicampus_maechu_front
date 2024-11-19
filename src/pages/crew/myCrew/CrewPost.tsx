@@ -92,7 +92,7 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                 <>
                     <br />
                     {/* 토글 & 검색바와 게시물 작성 버튼 */}
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex justify-content-center align-items-center">
                         <div className="flex-grow-1 text-center">
                             <input
                                 type="text"
@@ -120,6 +120,7 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                     <CrewPostDetail  crewPostId={selectedPost} crewId={crewId} onBack={onBack}/>
                 </>
             )}
+            <br />
 
             {/* 크루 생성 모달창 */}
             <div className="modal fade" id="crewCreatePostModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewCreatePostModalLabel" aria-hidden="true">

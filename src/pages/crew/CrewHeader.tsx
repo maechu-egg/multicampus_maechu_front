@@ -4,6 +4,7 @@ import './CrewPage.css';
 import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
 import MyCrew from "./MyCrew";
+import './Crew.css';
 
 function CrewHeader(): JSX.Element {
     const { state } = useAuth();
@@ -38,7 +39,7 @@ function CrewHeader(): JSX.Element {
         <div className="container">
             <br />
             <br />
-            <ul className="nav nav-tabs" id="myTab" role="tablist">
+            <ul className="nav nav-tabs" id="myTab" role="tablist" style={{borderBottom:"0px"}}>
                 <li className="nav-item" role="presentation">
                     <button
                         className={`nav-link ${activeCrewTab === 0 ? 'active' : ''}`}
@@ -74,7 +75,10 @@ function CrewHeader(): JSX.Element {
                 </li>
             </ul>
 
-            <div className="tab-content" id="myTabContent">
+            <div className="tab-content" 
+                id="myTabContent" 
+                style={{borderRadius: "15px", borderTopLeftRadius: 0, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", background: "white"}}
+                >
                 {activeCrewTab === 0 && (
                     <div 
                         className="tab-pane fade show active"

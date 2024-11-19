@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
 
 interface Feed {
     feed_exTime: number;
@@ -13,11 +14,21 @@ interface CrewBattleFeedContentCardProps {
 }
 
 function CrewBattleFeedContentCard({ feed }: CrewBattleFeedContentCardProps) {
+    const [imgPath, setImgPath] = useState("");
+
+    useEffect(() => {
+        if (feed.feed_img.includes("CrewDefault")) {
+            setImgPath('img/default/CrewDefault.png');
+        } else if(feed.feed_img != "CrewDefault") {
+            setImgPath(`${BASE_URL}${feed.feed_img}`);
+        }
+        console.log("이미지 경로", imgPath);
+    },[feed.feed_img]);
     return (
         <div className="container">
             <div className="form-control" style={{ width: '100%'}}>
                 <div className="d-flex justify-content-center align-items-center">
-                    <img src="/img/running.png" alt="Running" className="img-fluid"/>
+                    <img src={imgPath} alt="Running" className="img-fluid"/>
                 </div>
                 <hr />
                 <div className="d-flex justify-content-between align-items-center">

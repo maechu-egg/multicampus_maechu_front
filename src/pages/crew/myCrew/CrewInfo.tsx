@@ -98,6 +98,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                         <button
                             className="btn btn-danger"
                             onClick={handleDeleteCrew}
+                            style={{background:"rgba(120, 0, 22)", border:"none"}}
                         >
                             크루삭제
                         </button>
@@ -121,8 +122,8 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                 </div>
             )}
             <br />
-            <div className="d-flex justify-content-center align-items-center">
-                <div>
+            <div className="d-flex justify-content-center align-items-center" style={{border:"1px solid #E2E6E9", padding: "20px"}}>
+                <div style={{width: '100%'}}>
                     <img
                         src={imgPath}
                         alt="크루 이미지"
@@ -145,6 +146,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                     </div>
                 </div>
             </div>
+            <br />
 
             {/* 게시물 관리 모달창 */}
             <div className="modal fade" id="postModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="postModalLabel" aria-hidden="true">
