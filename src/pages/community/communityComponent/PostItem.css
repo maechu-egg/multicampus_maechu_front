@@ -78,7 +78,7 @@ li.post-titles {
   flex-shrink: 0;
   margin-right:30px;
   text-align: center;
-  width: 70px;
+  width: 100px;
 }
 
 .post-content-wrapper .post-tags {
@@ -102,7 +102,7 @@ li.post-titles {
 }
 
 .tags_wrap{
-  width: 250px ;
+  width: 500px ;
   margin-left: 70px;
   text-align: center !important;
 }
