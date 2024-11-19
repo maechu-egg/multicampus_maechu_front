@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
 import { Link, useNavigate } from "react-router-dom";
 import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
+const BASE_URL = "http://localhost:8001";
 
 interface Crew {
   crew_id: number;
@@ -247,7 +248,7 @@ function HomePage(): JSX.Element {
                 src={
                   crew.crew_intro_img === "/static/CrewDefault"
                     ? "/img/Home/homeEx1.png"
-                    : crew.crew_intro_img
+                    : `${BASE_URL}${crew.crew_intro_img}`
                 }
                 className="card-img-top card-image"
                 alt={crew.crew_name}
@@ -274,7 +275,7 @@ function HomePage(): JSX.Element {
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalBody>
               {selectedCrewId !== null && (
-                <CrewJoinModal crew_id={selectedCrewId} />
+                <CrewJoinModal crew_id={selectedCrewId} readOnly />
               )}
             </ModalBody>
             <CloseButton onClick={closeModal}>×</CloseButton>
@@ -341,7 +342,9 @@ function HomePage(): JSX.Element {
               <Card
                 key={index}
                 backgroundImage={
-                  workout.post_img1 ?? "/img/default/workDefault1.png"
+                  workout.post_img1
+                    ? `${BASE_URL}${workout.post_img1}`
+                    : "/img/default/workDefault1.png"
                 }
               >
                 <CardContent>
