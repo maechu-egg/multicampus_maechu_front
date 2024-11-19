@@ -686,12 +686,26 @@ const addItemsToDiet = async (dietId: number, mealData: MealData) => {
       <GoalContainer>
         {data ? (
           <>
-            <Goal>{data.weight} kg</Goal>
-            <Goal>목표 : {data.goal}</Goal>
-            <Goal>추천 칼로리 : {data.recommendedCalories} kcal</Goal>
-            <Goal>추천 단백질 : {data.recommendedProtein} g</Goal>
-            <Goal>추천 탄수화물 : {data.recommendedCarb} g</Goal>
-            <Goal>추천 지방 : {data.recommendedFat} g</Goal>
+            <h2 style={{ fontSize: '24px' }}>{data.weight} kg</h2>
+            <p className="goal">목표: {data.goal}</p>
+            <div className="info-container">
+              <div className="info-item">
+                <span>추천 칼로리</span>
+                <span className="label">{data.recommendedCalories} kcal</span>
+              </div>
+              <div className="info-item">
+                <span>추천 단백질</span>
+                <span className="label">{data.recommendedProtein} g</span>
+              </div>
+              <div className="info-item">
+                <span>추천 탄수화물</span>
+                <span className="label">{data.recommendedCarb} g</span>
+              </div>
+              <div className="info-item">
+                <span>추천 지방</span>
+                <span className="label">{data.recommendedFat} g</span>
+              </div>
+            </div>
           </>
         ) : (
           <Goal>표 정보를 로딩 중...</Goal>
@@ -942,31 +956,54 @@ const CurrentDate = styled.div`
 `;
 
 const GoalContainer = styled.div`
-  padding: 20px;
-  background: linear-gradient(135deg, #f0f0f0, #ffffff); // 그라데이션 배경
-  border-radius: 20px; // 더 부드러운 테두리 반경
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); // 부드러운 그림자
-  color: #1D2636;
-  margin-bottom: 20px;
-  position: relative;
-  border: 1px solid #ddd; // 얇은 테두리
-  transition: transform 0.3s ease, box-shadow 0.3s ease; // 부드러운 애니메이션
+  padding: 20px; // 패딩 설정
+  background: #f9f9f9; // 배경색
+  border-radius: 10px; // 테두리 반경
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // 그림자
+  color: #2C3E50; // 텍스트 색상
+  margin-bottom: 20px; // 마진 설정
+  display: flex; // 플렉스 박스 사용
+  flex-direction: column; // 세로 방향으로 정렬
+  align-items: center; // 중앙 정렬
+  text-align: center; // 텍스트 중앙 정렬
 
-  &:hover {
-    transform: translateY(-8px); // 호버 시 더 부드럽게 이동
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); // 호버 시 그림자 강화
-  }
-
-  // 내부 텍스트 스타일
   h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 28px; // 제목 폰트 크기
+    font-weight: 600; // 제목 폰트 두께
+    margin: 0 0 5px 0; // 마진 설정
   }
 
-  p {
-    font-size: 16px;
-    line-height: 1.5;
+  .goal {
+    font-size: 20px; // 목표 폰트 크기
+    font-weight: 500; // 목표 폰트 두께
+    color: #34495E; // 목표 색상
+    margin: 5px 0; // 마진 설정
+  }
+
+  .info-container {
+    display: flex; // 플렉스 박스 사용
+    justify-content: space-between; // 양쪽 정렬
+    width: 100%; // 전체 너비 사용
+    margin-top: 15px; // 위�� 마진 설정
+
+    .info-item {
+      display: flex; // 플렉스 박스 사용
+      flex-direction: column; // 세로 방향으로 정렬
+      align-items: center; // 중앙 정렬
+      padding: 10px; // 패딩 추가
+
+      span {
+        font-size: 16px; // 정보 폰트 크기
+        font-weight: 500; // 정보 폰트 두께
+        color: #2C3E50; // 정보 텍스트 색상
+      }
+
+      .label {
+        font-size: 14px; // 라벨 폰트 크기
+        font-weight: 400; // 라벨 폰트 두께
+        color: #7f8c8d; // 라벨 색상
+      }
+    }
   }
 `;
 
