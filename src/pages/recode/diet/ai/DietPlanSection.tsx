@@ -47,100 +47,100 @@ const DietPlanSection: React.FC<{  onBreakfastClick: () => void; onLunchClick: (
     }
     return (
       <ResultSection>
-        <SectionTitle>
-          <SectionIcon>🍽️</SectionIcon>
-          맞춤형 식단 계획
-        </SectionTitle>
-        <SectionContent>
-          <TimelineContainer>
-            <MealTimelineGrid>
-              {/* 아침 식사 */}
-              <TimelineMealCard $backgroundColor="#FF9800" onClick={onBreakfastClick}>
-                <TimelineMealHeader $backgroundColor="#FF9800">
-                  <DietMealIcon>🌅</DietMealIcon>
-                  <MealTitle>아침</MealTitle>
+      <SectionTitle>
+        <SectionIcon>🍽️</SectionIcon>
+        맞춤형 식단 계획
+      </SectionTitle>
+      <SectionContent>
+        <TimelineContainer>
+          <MealTimelineGrid>
+            {/* 아침 식사 */}
+            <TimelineMealCard $backgroundColor="#42a5f5" onClick={onBreakfastClick}>
+              <TimelineMealHeader $backgroundColor="#2196f3">
+                <DietMealIcon>🌅</DietMealIcon>
+                <MealTitle>아침</MealTitle>
+              </TimelineMealHeader>
+              <TimelineMealContent>
+                <TimelineFoodList>
+                  {meals.breakfast.foods.map((food: string, index: number) => (
+                    <TimelineFoodItem key={index}>
+                      <DietFoodIcon>🌅</DietFoodIcon>
+                      <FoodDetails>
+                        <DietFoodName>{food}</DietFoodName>
+                        <FoodAmount>{meals.breakfast.amounts[index]}</FoodAmount>
+                      </FoodDetails>
+                    </TimelineFoodItem>
+                  ))}
+                </TimelineFoodList>
+              </TimelineMealContent>
+            </TimelineMealCard>
+
+            {/* 점심 식사 */}
+            <TimelineMealCard $backgroundColor="#1e88e5" onClick={onLunchClick}>
+              <TimelineMealHeader $backgroundColor="#1976d2">
+                <DietMealIcon>☀️</DietMealIcon>
+                <MealTitle>점심</MealTitle>
+              </TimelineMealHeader>
+              <TimelineMealContent>
+                <TimelineFoodList>
+                  {meals.lunch.foods.map((food: string, index: number) => (
+                    <TimelineFoodItem key={index}>
+                      <DietFoodIcon>☀️</DietFoodIcon>
+                      <FoodDetails>
+                        <DietFoodName>{food}</DietFoodName>
+                        <FoodAmount>{meals.lunch.amounts[index]}</FoodAmount>
+                      </FoodDetails>
+                    </TimelineFoodItem>
+                  ))}
+                </TimelineFoodList>
+              </TimelineMealContent>
+            </TimelineMealCard>
+
+            {/* 저녁 식사 */}
+            <TimelineMealCard $backgroundColor="#1565c0" onClick={onDinnerClick}>
+              <TimelineMealHeader $backgroundColor="#0d47a1">
+                <DietMealIcon>🌙</DietMealIcon>
+                <MealTitle>저녁</MealTitle>
+              </TimelineMealHeader>
+              <TimelineMealContent>
+                <TimelineFoodList>
+                  {meals.dinner.foods.map((food: string, index: number) => (
+                    <TimelineFoodItem key={index}>
+                      <DietFoodIcon>🌙</DietFoodIcon>
+                      <FoodDetails>
+                        <DietFoodName>{food}</DietFoodName>
+                        <FoodAmount>{meals.dinner.amounts[index]}</FoodAmount>
+                      </FoodDetails>
+                    </TimelineFoodItem>
+                  ))}
+                </TimelineFoodList>
+              </TimelineMealContent>
+            </TimelineMealCard>
+
+            {/* 간식 */}
+            {meals.snack.foods.length > 0 && (
+              <TimelineMealCard $backgroundColor="#0d47a1" onClick={onSnackClick}>
+                <TimelineMealHeader $backgroundColor="#0a3d7a">
+                  <DietMealIcon>🍎</DietMealIcon>
+                  <MealTitle>간식</MealTitle>
                 </TimelineMealHeader>
                 <TimelineMealContent>
                   <TimelineFoodList>
-                    {meals.breakfast.foods.map((food: string, index: number) => (
+                    {meals.snack.foods.map((food: string, index: number) => (
                       <TimelineFoodItem key={index}>
-                        <DietFoodIcon>🍳</DietFoodIcon>
+                        <DietFoodIcon>🍰</DietFoodIcon>
                         <FoodDetails>
                           <DietFoodName>{food}</DietFoodName>
-                          <FoodAmount>{meals.breakfast.amounts[index]}</FoodAmount>
+                          <FoodAmount>{meals.snack.amounts[index]}</FoodAmount>
                         </FoodDetails>
                       </TimelineFoodItem>
                     ))}
                   </TimelineFoodList>
                 </TimelineMealContent>
               </TimelineMealCard>
-
-              {/* 점심 식사 */}
-              <TimelineMealCard $backgroundColor="#4CAF50" onClick={onLunchClick}>
-                <TimelineMealHeader $backgroundColor="#4CAF50">
-                  <DietMealIcon>☀️</DietMealIcon>
-                  <MealTitle>점심</MealTitle>
-                </TimelineMealHeader>
-                <TimelineMealContent>
-                  <TimelineFoodList>
-                    {meals.lunch.foods.map((food: string, index: number) => (
-                      <TimelineFoodItem key={index}>
-                        <DietFoodIcon>🍚</DietFoodIcon>
-                        <FoodDetails>
-                          <DietFoodName>{food}</DietFoodName>
-                          <FoodAmount>{meals.lunch.amounts[index]}</FoodAmount>
-                        </FoodDetails>
-                      </TimelineFoodItem>
-                    ))}
-                  </TimelineFoodList>
-                </TimelineMealContent>
-              </TimelineMealCard>
-
-              {/* 저녁 식사 */}
-              <TimelineMealCard $backgroundColor="#2196F3" onClick={onDinnerClick}>
-                <TimelineMealHeader $backgroundColor="#2196F3">
-                  <DietMealIcon>🌙</DietMealIcon>
-                  <MealTitle>저녁</MealTitle>
-                </TimelineMealHeader>
-                <TimelineMealContent>
-                  <TimelineFoodList>
-                    {meals.dinner.foods.map((food: string, index: number) => (
-                      <TimelineFoodItem key={index}>
-                        <DietFoodIcon>🥗</DietFoodIcon>
-                        <FoodDetails>
-                          <DietFoodName>{food}</DietFoodName>
-                          <FoodAmount>{meals.dinner.amounts[index]}</FoodAmount>
-                        </FoodDetails>
-                      </TimelineFoodItem>
-                    ))}
-                  </TimelineFoodList>
-                </TimelineMealContent>
-              </TimelineMealCard>
-
-              {/* 간식 */}
-              {meals.snack.foods.length > 0 && (
-                <TimelineMealCard $backgroundColor="#9C27B0" onClick={onSnackClick}>
-                  <TimelineMealHeader $backgroundColor="#9C27B0">
-                    <DietMealIcon>🍎</DietMealIcon>
-                    <MealTitle>간식</MealTitle>
-                  </TimelineMealHeader>
-                  <TimelineMealContent>
-                    <TimelineFoodList>
-                      {meals.snack.foods.map((food: string, index: number) => (
-                        <TimelineFoodItem key={index}>
-                          <DietFoodIcon>🍰</DietFoodIcon>
-                          <FoodDetails>
-                            <DietFoodName>{food}</DietFoodName>
-                            <FoodAmount>{meals.snack.amounts[index]}</FoodAmount>
-                          </FoodDetails>
-                        </TimelineFoodItem>
-                      ))}
-                    </TimelineFoodList>
-                  </TimelineMealContent>
-                </TimelineMealCard>
-              )}
-            </MealTimelineGrid>
-          </TimelineContainer>
+            )}
+          </MealTimelineGrid>
+        </TimelineContainer>
         </SectionContent>
       </ResultSection>
     );

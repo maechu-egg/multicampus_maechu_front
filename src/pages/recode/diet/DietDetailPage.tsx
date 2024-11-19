@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import api from '../../../services/api/axios';
 import { useAuth } from '../../../context/AuthContext';
 import { format, parse } from 'date-fns';
@@ -215,87 +215,99 @@ function DietDetailPage(): JSX.Element {
   const date = getFormattedDate();
 
   return (
-    <Container>
-      <SummaryCard>
-        <DateSection>
-          <h2>{format(date, 'yyyy.MM.dd')}</h2>
-          <p>{format(date, 'EEEE', { locale: ko })}</p>
-        </DateSection>
-        <StatsSection>
-          <StatItem>
-            <h3>오늘 먹은 칼로리</h3>
-            <p>{totalCalories} kcal</p>
-          </StatItem>
-          <StatItem>
-            <h3>탄수화물</h3>
-            <p>{totalCarbs} g</p>
-          </StatItem>
-          <StatItem>
-            <h3>단백질</h3>
-            <p>{totalProtein} g</p>
-          </StatItem>
-          <StatItem>
-            <h3>지방</h3>
-            <p>{totalFat} g</p>
-          </StatItem>
-        </StatsSection>
-      </SummaryCard>
-      <SearchBar>
-        <input
-          type="text"
-          placeholder="식품을 검색하세요"
-          value={searchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setSearchTerm(e.target.value);
-        }}
-        />
-        <button onClick={nutrientsApiGet}>
-          검색
-        </button>
-      </SearchBar>
-      <CogWrapper ref={dropdownRef}>
-        <FaCog onClick={() => setIsDropdownOpen((prev) => !prev)} />
-        {isDropdownOpen && dietId !== 0 && (
-          <DropdownMenu>
-            <button onClick={() => setIsUpdateDropdownOpen(true)}>
-              식단 수정
-            </button>
-            <button onClick={() => deleteDiet()}>
-                식단 삭제
+    <>
+      <GlobalStyle /> {/* 전역 스타일 적용 */}
+      <Container>
+        <SummaryCard>
+          <DateSection>
+            <h2>{format(date, 'yyyy.MM.dd')}</h2>
+            <p>{format(date, 'EEEE', { locale: ko })}</p>
+          </DateSection>
+          <StatsSection>
+            <StatItem>
+              <h3>오늘 먹은 칼로리</h3>
+              <p>{totalCalories} kcal</p>
+            </StatItem>
+            <StatItem>
+              <h3>탄수화물</h3>
+              <p>{totalCarbs} g</p>
+            </StatItem>
+            <StatItem>
+              <h3>단백질</h3>
+              <p>{totalProtein} g</p>
+            </StatItem>
+            <StatItem>
+              <h3>지방</h3>
+              <p>{totalFat} g</p>
+            </StatItem>
+          </StatsSection>
+        </SummaryCard>
+        <SearchBar>
+          <input
+            type="text"
+            placeholder="식품을 검색하세요"
+            value={searchTerm}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setSearchTerm(e.target.value);
+          }}
+          />
+          <button onClick={nutrientsApiGet}>
+            검색
+          </button>
+        </SearchBar>
+        <CogWrapper ref={dropdownRef}>
+          <FaCog onClick={() => setIsDropdownOpen((prev) => !prev)} />
+          {isDropdownOpen && dietId !== 0 && (
+            <DropdownMenu>
+              <button onClick={() => setIsUpdateDropdownOpen(true)}>
+                식단 수정
               </button>
-          </DropdownMenu>
-        )}
-      </CogWrapper>
-      <ItemList>
-        {Array.isArray(itemData) && itemData.map((item, index) => (
-          <ItemInfo
-            key={index}
-            item={item}
-            receiveDeletedItem={deleteItem}
-          />
-        ))}
-      </ItemList>
-        {isSelectApiBoolean && (
-          <SelectItemModal
-          searchTerm={searchTerm}
-          apiList={apiList}
-          onClose={() => setIsSelectApiBoolean(false)}
-          onSave={getSelectItem}
-          dietId={dietId}  
-          />
-        )}
-      {isUpdateDropdownOpen && (
-          <MealUpdateModal
-            onClose = {() => setIsUpdateDropdownOpen(false)}
-            onSave ={(meal:string) => editDiet(meal)}
-          />
-        )
-      }
-    </Container>
+              <button onClick={() => deleteDiet()}>
+                  식단 삭제
+                </button>
+            </DropdownMenu>
+          )}
+        </CogWrapper>
+        <ItemList>
+          {Array.isArray(itemData) && itemData.map((item, index) => (
+            <ItemInfo
+              key={index}
+              item={item}
+              receiveDeletedItem={deleteItem}
+            />
+          ))}
+        </ItemList>
+          {isSelectApiBoolean && (
+            <SelectItemModal
+            searchTerm={searchTerm}
+            apiList={apiList}
+            onClose={() => setIsSelectApiBoolean(false)}
+            onSave={getSelectItem}
+            dietId={dietId}  
+            />
+          )}
+        {isUpdateDropdownOpen && (
+            <MealUpdateModal
+              onClose = {() => setIsUpdateDropdownOpen(false)}
+              onSave ={(meal:string) => editDiet(meal)}
+            />
+          )
+        }
+      </Container>
+    </>
   );
 };
 
 export default DietDetailPage;
+
+// 전역 스타일 추가
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: #b6c0d3; // 전체 배경색 설정
+    margin: 0; // 기본 마진 제거
+    padding: 0; // 기본 패딩 제거
+  }
+`;
 
 const Container = styled.div`
   width: 70%;
