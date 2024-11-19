@@ -6,10 +6,29 @@ import api from "services/api/axios";
 import CrewBattleFeedModal from "components/ui/crew/modal/CrewBattleFeedModal";
 import { useAuth } from "context/AuthContext";
 import CrewJoinBattleModal from "components/ui/crew/modal/CrewJoinBattleModal";
+import styled from "styled-components";
 
 interface CrewBattleProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
 }
+
+const Button = styled.button`
+  background-color: #1d2636;
+  color: #fff;
+  border: none;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  &:hover {
+    background-color: #414d60;
+    color: #e0e0e0;
+  }
+`;
 
 function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
     const { state } = useAuth();
@@ -41,19 +60,19 @@ function CrewBattle({ crewId }: CrewBattleProps): JSX.Element {
             <br/>
             <div className="row">
                 <div className="col-6">
-                    <button
+                    <Button
                         className="btn btn-primary mb-3"
                         data-bs-toggle="modal"
                         data-bs-target="#battleModal"
                     >
                         배틀 생성
-                    </button>
+                    </Button>
                 </div>
                 <div className="col-6 d-flex justify-content-end">
-                    <button className="btn btn-primary mb-3 mr-1" data-bs-target="#carousel" data-bs-slide="prev">
+                    <button className="btn btn-primary mb-3 mr-1" data-bs-target="#carousel" data-bs-slide="prev" style={{background: "#1d2636", border: "none"}}>
                         <i className="fa fa-arrow-left"></i>
                     </button>
-                    <button className="btn btn-primary mb-3 mx-4" data-bs-target="#carousel" data-bs-slide="next">
+                    <button className="btn btn-primary mb-3 mx-4" data-bs-target="#carousel" data-bs-slide="next" style={{background: "#1d2636", border: "none"}}>
                         <i className="fa fa-arrow-right"></i>
                     </button>
                 </div>
