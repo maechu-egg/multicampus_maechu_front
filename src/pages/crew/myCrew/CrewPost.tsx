@@ -151,9 +151,9 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                             <button
                                 className="btn btn-primary"
                                 data-bs-toggle="modal"
-                                data-bs-target="#crewCreateModal"
+                                data-bs-target="#crewCreatePostModal"
                             >
-                                크루 생성
+                                게시물 생성
                             </button>
                         </div>
                     </div>
