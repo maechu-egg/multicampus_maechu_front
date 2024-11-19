@@ -9,5 +9,9 @@
 .nav-pills .nav-item {
     margin-right: 5px;
     margin-left: 0px;
+    
 }
 
+.nav-pills .nav-item .nav-link.active {
+    background: #1D2636;
+}
