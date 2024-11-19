@@ -12,8 +12,8 @@ interface PostParams {
 const processImageUrls = (post: any) => {
   return {
     ...post,
-    post_img1: post.post_img1 ? `${BASE_URL}/static/${post.post_img1}?t=${new Date().getTime()}` : null,
-    post_img2: post.post_img2 ? `${BASE_URL}/static/${post.post_img2}?t=${new Date().getTime()}` : null,
+    post_img1: post.post_img1 ? `${BASE_URL}/static/${post.post_img1}` : null,
+    post_img2: post.post_img2 ? `${BASE_URL}/static/${post.post_img2}` : null,
   };
 };
 

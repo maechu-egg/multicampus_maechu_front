@@ -4,6 +4,7 @@ import "./PostDetail.css";
 import { formatDate } from '../../../utils/dateFormat';  
 import CommentSection from "./CommentSection";
 import { usePost } from "hooks/community/usePost";
+import { useAuth } from "context/AuthContext";
 
 interface Comment {
   id: number;
@@ -78,9 +79,13 @@ const PostDetail: React.FC<PostDetailProps> = ({
   onCommentDislike,
   getComments
 }) => {
+  const { state: { token } } = useAuth();
+  const [imgSrc1, setImgSrc1] = useState<string>("");
+  const [imgSrc2, setImgSrc2] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [commentInput, setCommentInput] = useState("");
   const hashtagArray = post_hashtag ? post_hashtag.split(',') : [];
+
 
   const { 
     liked, 
@@ -109,10 +114,51 @@ const PostDetail: React.FC<PostDetailProps> = ({
     fetchComments();
   }, [post_id]);
 
+  
   const handleSortOrderChange = (order: "asc" | "desc") => {
     setSortOrder(order);
   };
+  
+  useEffect(() => {
+    const loadImage = async (imgUrl: string | undefined) => {
+      if (!imgUrl || !token) return null;
+      try {
+        const response = await fetch(imgUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const blob = await response.blob();
+          return URL.createObjectURL(blob);
+        }
+      } catch (error) {
+        console.error("이미지 로드 중 오류:", error);
+      }
+      return null;
+    };
 
+    const loadImages = async () => {
+      if (post_img1) {
+        const url1 = await loadImage(post_img1); // post_img1은 이미 전체 URL
+        if (url1) setImgSrc1(url1);
+      }
+      if (post_img2) {
+        const url2 = await loadImage(post_img2); // post_img2는 이미 전체 URL
+        if (url2) setImgSrc2(url2);
+      }
+    };
+
+    loadImages();
+
+    // cleanup
+    return () => {
+      if (imgSrc1) URL.revokeObjectURL(imgSrc1);
+      if (imgSrc2) URL.revokeObjectURL(imgSrc2);
+    };
+  }, [post_img1, post_img2, token]);
+
+  
   const sortedComments = [...comments].sort((a, b) => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
@@ -159,7 +205,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
         {post_img1 && (
           <div className="post-image">
             <img
-              src={post_img1}
+              src={imgSrc1}
               alt="게시글 이미지 1"
               style={{ maxWidth: "100%", height: "auto" }}
             />
@@ -168,7 +214,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
         {post_img2 && (
           <div className="post-image">
             <img
-              src={post_img2}
+              src={imgSrc2}
               alt="게시글 이미지 2"
               style={{ maxWidth: "100%", height: "auto" }}
             />
