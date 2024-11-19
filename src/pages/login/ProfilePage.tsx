@@ -50,12 +50,26 @@ function ProfilePage(): JSX.Element {
   const { token } = state;
 
   const cities = selectedRegion ? regions[selectedRegion] : [];
-  const subOptions = selectedCategory
-    ? categoryData.subcategories[selectedCategory.value].map((exercise) => ({
-        label: exercise,
-        value: exercise,
-      }))
-    : [];
+
+  // 디버깅 코드 추가
+  console.log("Selected Category Value:", selectedCategory?.value);
+  console.log(
+    "Subcategories for Selected Category:",
+    selectedCategory?.value
+      ? categoryData.subcategories[selectedCategory.value.trim()]
+      : "없음"
+  );
+
+  const subOptions =
+    selectedCategory &&
+    categoryData.subcategories.hasOwnProperty(selectedCategory.value.trim())
+      ? categoryData.subcategories[selectedCategory.value.trim()].map(
+          (exercise) => ({
+            label: exercise,
+            value: exercise,
+          })
+        )
+      : [];
 
   const categoryOptions = categoryData.categories.map((category) => ({
     label: category,
