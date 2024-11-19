@@ -51,7 +51,7 @@ function CrewCreatePostModal({ crewId, crewPostId, onClick, }: { crewId: number,
         data.append("crew_post_title", crew_post_title);
         data.append("crew_post_content", crew_post_content);
         if (crew_post_img) {
-            data.append("imgFile", crew_post_img);
+            data.append("ImgFile", crew_post_img);
         }
         data.append("crew_id", crewId.toString());
         data.append("member_id", member_id ? member_id.toString() : '');
@@ -116,7 +116,7 @@ function CrewCreatePostModal({ crewId, crewPostId, onClick, }: { crewId: number,
                 <br />
                 {/* 폼 제출 버튼 */}
                 <div className="d-flex justify-content-end">
-                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">크루 생성</button>
+                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">게시물 수정</button>
                     &nbsp;&nbsp;&nbsp;
                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">취소</button>
                 </div>
