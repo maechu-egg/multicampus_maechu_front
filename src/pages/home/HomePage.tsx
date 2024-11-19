@@ -274,7 +274,7 @@ function HomePage(): JSX.Element {
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalBody>
               {selectedCrewId !== null && (
-                <CrewJoinModal crew_id={selectedCrewId} />
+                <CrewJoinModal crew_id={selectedCrewId} readOnly />
               )}
             </ModalBody>
             <CloseButton onClick={closeModal}>×</CloseButton>
