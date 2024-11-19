@@ -8,7 +8,7 @@ import { ko } from 'date-fns/locale';
 import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
 import ExerciseAddModal from "components/ui/record/modal/exercise/ExerciseAddModal";
 
-interface ExerciseInfo {
+interface ExerciseDTO {
   exercise_id: number;
   exercise_type: string; 
   duration: number;
@@ -31,7 +31,7 @@ function ExercisePage(): JSX.Element {
   
   const navigate = useNavigate();
   // 운동 리스트
-  const [exerciseData,setExerciseData] = useState<ExerciseInfo[]>([]);
+  const [exerciseData,setExerciseData] = useState<ExerciseDTO[]>([]);
   // 모달 트리거
   const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 모달 오픈 상태
   // 추가할 운동
@@ -91,16 +91,27 @@ function ExercisePage(): JSX.Element {
     setSearchTerm(e.target.value);
   };  
 
-  // EditExerciseModal을 통해 업데이트 된 운동 정보 exerciseData에 반영, 이를 통해 재렌더링하여 클라이언트에서 바로 확인 가능
   const exerSave = (updatedExercise: any) => {
-    setExerciseData((exer) =>
-      exer.map((exercise) =>
-        exercise.exercise_id === updatedExercise.exercise_id ? updatedExercise : exercise
-      )
+    // 기존 데이터를 복사하여 임시 리스트 생성
+    const updatedExerciseData = exerciseData.map((exercise) =>
+      exercise.exercise_id === updatedExercise.exercise_id ? updatedExercise : exercise
     );
-
-    console.log("debug >>> exerciseData : " + exerciseData);
+  
+    // setExerciseData에 임시 리스트를 설정
+    setExerciseData(updatedExerciseData);
+  
+    // 변경된 상태를 로깅하여 확인
+    console.log("debug >>> updatedExerciseData : ", updatedExerciseData);
+  
+    // 임시 리스트에서 총 칼로리 및 시간 계산
+    const totalCalories = updatedExerciseData.reduce((acc: number, exer: any) => acc + exer.calories, 0);
+    const totalTime = updatedExerciseData.reduce((acc: number, exer: any) => acc + exer.duration, 0);
+  
+    // 최종 결과 상태 업데이트
+    setTodayCalorie(totalCalories);
+    setTodayTime(totalTime);
   };
+  
   // 삭제된 ExerciseInfo ExercisePage에 넘겨줌
   const deleteExercise = (deletedExerciseId: number) => {
     setExerciseData((prevExerciseData) => {

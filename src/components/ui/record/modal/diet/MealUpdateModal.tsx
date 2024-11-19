@@ -26,10 +26,8 @@ const MealUpdateModal = ({onClose,onSave}:MealUpdateModalProps): JSX.Element => 
         <ModalOverlay>
           <ModalContent>            
             <MealSelect id="mealSelect" value={selectedMeal} onChange={handleMealChange}>
-                <option value="" disabled>
-                    선택하세요
-                </option>
-                {mealOptions
+            <option value="" disabled selected hidden>선택하세요</option>              
+            {mealOptions
                     .filter((meal) => meal !== food) // food와 다른 옵션만 표시
                     .map((meal) => (
                     <option key={meal} value={meal}>
