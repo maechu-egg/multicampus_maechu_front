@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import CrewBattleFeedDetailModal from "components/ui/crew/modal/CrewBattleFeedDetailModal";
 
 // 배틀 데이터 구조를 위한 인터페이스 정의
 interface BattleItem {
@@ -19,11 +20,24 @@ interface BattleListProps {
 }
 
 function BattleList({ battleData = [] }: BattleListProps): JSX.Element {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBattleId, setSelectedBattleId] = useState<number | null>(null);
+  const [selectedCrewId, setSelectedCrewId] = useState<number | null>(null);
+
+  const handleCardClick = (battleId: number, crewId: number) => {
+    setSelectedBattleId(battleId);
+    setSelectedCrewId(crewId);
+    setIsModalOpen(true); // 모달 열기
+  };
+
   return (
     <BattleContainer>
       {battleData.length > 0 ? (
         battleData.map((battle) => (
-          <BattleCard key={battle.battle_id}>
+          <BattleCard
+            key={battle.battle_id}
+            onClick={() => handleCardClick(battle.battle_id, battle.crew_id)}
+          >
             <BattleCardHeader>
               <BattleName>{battle.battle_name}</BattleName>
               <Status state={battle.battle_state}>
@@ -49,6 +63,62 @@ function BattleList({ battleData = [] }: BattleListProps): JSX.Element {
       ) : (
         <NoData>참여 중인 배틀이 없습니다.</NoData>
       )}
+
+      {/* 모달 컴포넌트 */}
+      {isModalOpen && selectedBattleId !== null && selectedCrewId !== null && (
+        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CrewBattleFeedDetailModal
+              battleId={selectedBattleId}
+              crewId={selectedCrewId}
+            />
+            <CloseButton onClick={() => setIsModalOpen(false)}>
+              닫기
+            </CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {/* 피드 추가 모달 */}
+      <div
+        className="modal fade"
+        id="battleFeedModal"
+        tabIndex={-1}
+        aria-labelledby="battleFeedModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="battleFeedModalLabel">
+                피드 추가
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              {/* 피드 추가 내용을 여기에 추가 */}
+              <p>피드를 추가할 내용을 여기에 작성하세요.</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                닫기
+              </button>
+              <button type="button" className="btn btn-primary">
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </BattleContainer>
   );
 }
@@ -104,6 +174,40 @@ const BattleInfo = styled.p`
 const NoData = styled.p`
   font-size: 1em;
   color: #999;
+`;
+
+// 모달 스타일
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 다른 요소 위에 표시 */
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 80%;
+  max-width: 800px; /* 최대 너비 설정 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative; /* 닫기 버튼을 위한 상대 위치 */
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 `;
 
 export default BattleList;
