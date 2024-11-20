@@ -20,11 +20,11 @@
     margin-left: auto;
     margin-right: auto;
     z-index: 1;
-    width: 140px;
-    height: 140px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     border: 7px solid #8e8e8e;
-    margin-top: -80px;
+    margin-top: -60px;
 }
 
 .card:hover .img2 img{
