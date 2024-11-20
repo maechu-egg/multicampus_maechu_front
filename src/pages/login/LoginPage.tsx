@@ -64,6 +64,7 @@ function LoginPage(): JSX.Element {
       <LoginForm>
         <Title>Login</Title>
         <Input>
+          <label>Email </label>
           <form className="form-floating">
             <input
               type="email"
@@ -78,6 +79,7 @@ function LoginPage(): JSX.Element {
             {emailErrMsg && <ErrMsg>{emailErrMsg}</ErrMsg>}{" "}
             {/* 에러 메시지 조건부 렌더링 */}
           </form>
+          <label>Password </label>
           <form className="form-floating">
             <input
               type="password"
@@ -86,7 +88,11 @@ function LoginPage(): JSX.Element {
               placeholder="Password"
               value={password} // 비밀번호 상태 바인딩
               onChange={(e) => setPassword(e.target.value)} // 비밀번호 변경 처리
-              style={{ width: "100%", marginTop: "20px" }}
+              style={{
+                width: "100%",
+                marginTop: "20px",
+                fontFamily: "monospace",
+              }}
             />
             <label htmlFor="floatingInputPassword">Input with Password</label>
           </form>
@@ -136,7 +142,7 @@ const LoginForm = styled.form`
   justify-content: flex-start; /* 상단 정렬 */
   align-items: flex-start; /* 왼쪽 정렬 */
   width: 100%;
-  max-width: 400px; /* 최대 너비 설정 */
+  max-width: 500px; /* 최대 너비 설정 */
   min-height: 380px; /* 최소 높이 설정 */
 
   border: solid #ccd1d9 1px;
