@@ -40,7 +40,7 @@ function AccountModal({
     setNicknameCheckError("");
     setIsNicknameValid(false);
   };
-
+  //닉네임 중복
   const handleCheckNickname = async () => {
     try {
       const response = await api.post("/user/register/nickname-check", {
@@ -191,7 +191,7 @@ function AccountModal({
     </ModalOverlay>
   );
 }
-
+//탈퇴 버튼 되어 있는데
 const Title = styled.h1`
   width: 100%;
   font-size: 2.5rem;
