@@ -74,22 +74,22 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBat
                     onClick={onClickHandler}
                 >
                     <div className="card-body d-flex justify-content-between align-items-center" style={{height: "110px", padding: "4px"}}>
-                        <div style={{ width: '50%' }}>
+                        <div style={{ width: '40%' }}>
                             <img 
                                 src={`${imgPath}`}
                                 alt="Badge" 
                                 className="img-fluid"
                             />
                         </div>
-                        <ul className="list-unstyled text-center" style={{ width: '50%', marginTop: "20px" }}>
+                        <ul className="list-unstyled text-center" style={{ width: '60%', marginTop: "20px" }}>
                             <li style={{fontSize: "30px"}}>{member.nickname}</li>
                         </ul>
                     </div>
                     <div>
                         <ul className="list-unstyled text-end" style={{ width: '100%' }}>
-                            <li><strong>피드</strong> : {member.feed_count}개</li>
-                            <li><strong>누적 칼로리</strong>:{member.total_feed_kcal}kcal</li>
-                            <li><strong>누적 운동시간</strong>:{member.total_feed_exTime}분</li>
+                            <li style={{padding: 0}}><strong>피드</strong> : {member.feed_count}개</li>
+                            <li style={{padding: 0}}><strong>누적 칼로리</strong>:{member.total_feed_kcal}kcal</li>
+                            <li style={{padding: 0}}><strong>누적 운동시간</strong>:{member.total_feed_exTime}분</li>
                         </ul>
                     </div>
                     <div className="d-flex">

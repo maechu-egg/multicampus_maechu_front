@@ -68,8 +68,6 @@ function CrewJoinModal({
           if (member_id === response.data[i].member_id) {
             setIsMember(true);
             break;
-          } else {
-            setIsMember(false);
           }
         }
       } catch (error) {
