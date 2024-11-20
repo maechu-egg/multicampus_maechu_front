@@ -155,6 +155,7 @@ function CommunityPage(): JSX.Element {
     console.log("location.state:", location.state);
   }, []);
 
+// location이 변경될 때마다 상태 초기화 
 // location이 변경될 때마다 상태 초기화
 useEffect(() => {
   console.log("Current location:", location);
@@ -164,24 +165,27 @@ useEffect(() => {
     fromMyPage?: boolean;
     selectedPost?: Post;
     isRecommended?: boolean;
+    initialKeyword?: string;     
   };
-
-  console.log("Parsed locationState:", locationState);
 
   if (locationState?.fromMyPage && locationState?.selectedPost) {
     console.log("MyPage에서 넘어온 게시글:", locationState.selectedPost);
     setSelectedPost(locationState.selectedPost);
     getComments(locationState.selectedPost.post_id);
-       // 페이지 상단으로 스크롤
-       window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-  } else {
-    console.log("Resetting page state because:", {
-      fromMyPage: locationState?.fromMyPage,
-      hasSelectedPost: !!locationState?.selectedPost
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
     });
+  } else if (locationState?.initialKeyword) {
+    // 키워드로 이동하는 경우
+    resetPageState();
+    setActivePost_sport(locationState.initialKeyword);
+    handleKeywordClick(locationState.initialKeyword, activeTab);
+    handlereKeywordClick(locationState.initialKeyword, activeTab);
+    setCurrentKeywords([locationState.initialKeyword]);
+    fetchPosts(activeTab, locationState.initialKeyword, 1, postsPerPage);
+  } else {
+    console.log("Resetting page state");
     resetPageState();
     fetchPosts("헬스 및 피트니스", "", 1, postsPerPage);
   }

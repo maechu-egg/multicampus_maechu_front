@@ -336,7 +336,16 @@ function HomePage(): JSX.Element {
             </span>
           </TextContainer>
           <IconWrapper>
-            <FontAwesomeIcon icon={faArrowRight} />
+            <FontAwesomeIcon 
+              icon={faArrowRight} 
+              onClick={() => navigate('/communitypage', { 
+                state: { 
+                  fromMyPage: false,
+                  initialKeyword: '중고장터'    
+                } 
+              })}
+              style={{ cursor: 'pointer' }}
+            />
           </IconWrapper>
         </Title>
         <div className="list-group">
@@ -377,7 +386,16 @@ function HomePage(): JSX.Element {
             </span>
           </TextContainer>
           <IconWrapper>
-            <FontAwesomeIcon icon={faArrowRight} />
+            <FontAwesomeIcon 
+              icon={faArrowRight} 
+              onClick={() => navigate('/communitypage', { 
+                state: { 
+                  fromMyPage: false,
+                  initialKeyword: '오운완'             
+                } 
+              })}
+              style={{ cursor: 'pointer' }}
+            />
           </IconWrapper>
         </Title>
         <CardContainer>
