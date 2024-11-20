@@ -65,8 +65,8 @@ const DietPlanSection: React.FC<{  onBreakfastClick: () => void; onLunchClick: (
                 <TimelineFoodList>
                   {meals.breakfast.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🌅</DietFoodIcon>
-                      <FoodDetails>
+                      <DietFoodIcon>🍳</DietFoodIcon>
+                      <FoodDetails> 
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.breakfast.amounts[index]}</FoodAmount>
                       </FoodDetails>
@@ -86,7 +86,7 @@ const DietPlanSection: React.FC<{  onBreakfastClick: () => void; onLunchClick: (
                 <TimelineFoodList>
                   {meals.lunch.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>☀️</DietFoodIcon>
+                      <DietFoodIcon>🥗</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.lunch.amounts[index]}</FoodAmount>
@@ -107,7 +107,7 @@ const DietPlanSection: React.FC<{  onBreakfastClick: () => void; onLunchClick: (
                 <TimelineFoodList>
                   {meals.dinner.foods.map((food: string, index: number) => (
                     <TimelineFoodItem key={index}>
-                      <DietFoodIcon>🌙</DietFoodIcon>
+                      <DietFoodIcon>🍚</DietFoodIcon>
                       <FoodDetails>
                         <DietFoodName>{food}</DietFoodName>
                         <FoodAmount>{meals.dinner.amounts[index]}</FoodAmount>
