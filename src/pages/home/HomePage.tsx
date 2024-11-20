@@ -10,7 +10,10 @@ import { Link, useNavigate } from "react-router-dom";
 import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
 import LoginErrModal from "hooks/loginErrModal";
 import homeBanner from "../../assets/data/homeBanner.json";
+import { postApi } from "services/api/community/postApi";  
+
 const BASE_URL = "http://localhost:8001";
+
 
 interface Crew {
   crew_id: number;
@@ -28,6 +31,8 @@ interface Swap {
   post_like_counts: number; //좋아요 수
   post_date: string; // 작성날짜
   post_sport: string; // 운동 대분류 키워드
+  author: boolean;   
+  member_id: number;  
 }
 
 interface TodayWorkout {
@@ -127,6 +132,35 @@ function HomePage(): JSX.Element {
 
   const closeLoginWarning = () => {
     setIsLoginWarningOpen(false);
+  };
+
+  const handleSwapClick = async (swap: Swap) => {
+    try {
+      if (!token) {
+        console.error("No token available");
+        return;
+      }
+  
+      // 게시글 상세 정보 가져오기
+      const response = await postApi.getPostDetail(swap.post_id, swap.author, token);
+      const detailedPost = response.data;
+      console.log("Detailed post data:", detailedPost);
+  
+      const stateData = { 
+        fromMyPage: true,  // CommunityPage에서 이미 이 상태를 처리하는 로직이 있으므로 활용
+        selectedPost: detailedPost,
+        isRecommended: false
+      };
+      
+      console.log("Navigating with state:", stateData);
+      
+      navigate('/communitypage', {
+        state: stateData,
+        replace: true
+      });
+    } catch (error) {
+      console.error("Error fetching post details:", error);
+    }
   };
 
   useEffect(() => {
@@ -311,26 +345,27 @@ function HomePage(): JSX.Element {
           {isSwapDataLoading ? (
             <p>중고거래 데이터를 불러오는 중입니다...</p>
           ) : swapData.length > 0 ? (
-            swapData.slice(0, 4).map((swap, index) => (
-              <a
-                href="#"
-                className="list-group-item list-group-item-action"
-                key={index}
-              >
-                <div className="d-flex w-100 justify-content-between">
-                  <h5 className="mb-1">{swap.post_title}</h5>
-                  <small className="text-body-secondary">
-                    {formatDate(swap.post_date)}
-                  </small>
-                </div>
-                <p className="mb-2">작성자: {swap.post_nickname}</p>
-                <small className="text-body-secondary">
-                  조회수: {swap.post_views} | 좋아요: {swap.post_like_counts}
-                </small>
-              </a>
-            ))
-          ) : (
-            <p>등록된 중고거래 게시물이 없습니다.</p>
+                swapData.slice(0, 4).map((swap, index) => (
+                  <div
+                    className="list-group-item list-group-item-action"
+                    key={index}
+                    onClick={() => handleSwapClick(swap)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="d-flex w-100 justify-content-between">
+                      <h5 className="mb-1">{swap.post_title}</h5>
+                      <small className="text-body-secondary">
+                        {formatDate(swap.post_date)}
+                      </small>
+                    </div>
+                    <p className="mb-2">작성자: {swap.post_nickname}</p>
+                    <small className="text-body-secondary">
+                      조회수: {swap.post_views} | 좋아요: {swap.post_like_counts}
+                    </small>
+                  </div>
+                ))
+              ) : (
+                <p>등록된 중고거래 게시물이 없습니다.</p>
           )}
         </div>
       </SwapSpot>
