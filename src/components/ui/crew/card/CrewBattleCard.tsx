@@ -98,7 +98,10 @@ function CrewBattleCard({ battle, onDetailClick, crewId }: CrewInfoProps): JSX.E
                         <span className="badge rounded-pill text-bg-danger">모집중</span>
                     )}
                     {battle.battle_state == 1 &&(
-                        <span className="badge rounded-pill text-bg-secondary">진행중</span>
+                        <span className="badge rounded-pill text-bg-success">진행중</span>
+                    )}
+                    {battle.battle_state == 2 &&(
+                        <span className="badge rounded-pill text-bg-secondary">종료</span>
                     )}
                 </div>
                 <div className="d-flex justify-content-center align-items-center">
