@@ -31,7 +31,24 @@ const CrewPostItem: React.FC<PostItemProps> = ({
 }) => {
 
     return (
-        <div className="post-item"  onClick={onClick}>
+        <div 
+            className="post-item"  
+            onClick={onClick}
+            style={{
+                border: crew_post_state === 0 
+                    ? "2px solid #1D2636" 
+                    : crew_post_state === 1 
+                    ? "2px solid #780016" 
+                    : undefined,
+                boxShadow: crew_post_state === 0 
+                    ? "0 0 5px 1px #1D2636" 
+                    : crew_post_state === 1 
+                    ? "0 0 5px 1px #780016" 
+                    : undefined,
+
+                
+            }}
+        >
             <div className="post-content-wrapper">
                 <span className="post-title">{crew_post_title} <span className="badge text-bg-secondary">{crew_post_state === 0 ? "공지" : crew_post_state === 1 ? "인기" : ""}</span></span>        
                 <div className="post-info-wrapper">
