@@ -13,6 +13,7 @@ interface ExerciseInfoProps {
     calories: number;
     met: number;
     record_date: string;
+    member_id: number;
   };
   receiveUpdatedExer: (updatedExercise: any) => void;
   receiveDeletedExer: (deletedExerciseId: number) => void;
@@ -84,14 +85,9 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer, receiveDeletedExer }: Exer
         duration,
         intensity,
       }, { headers: { Authorization: `Bearer ${token}` } } );
-  
-      const updatedExercise = {
-        ...exercise,
-        duration,
-        intensity,
-      };
-  
-      receiveUpdatedExer(updatedExercise); // ExercisePage로 업데이트 전달
+    
+      receiveUpdatedExer(response.data); // ExercisePage로 업데이트 전달
+
       closeExerModal();
     } catch (error) {
       console.log("debug >>> error : " + error);
@@ -122,7 +118,7 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer, receiveDeletedExer }: Exer
           ? `${Math.floor(exercise.duration / 60)} 시간 ${exercise.duration % 60} 분`
           : `${exercise.duration} 분`}
       </InfoText>
-      <InfoText>강도 : {exercise.intensity}</InfoText>
+      <InfoText>강도 : {exercise.intensity.toUpperCase()}</InfoText>
       <InfoText>칼로리 : {exercise.calories} kcal</InfoText>
       <ControlButtonContainer>
         <ControlButton onClick={openExerModal}>+</ControlButton>
@@ -140,7 +136,6 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer, receiveDeletedExer }: Exer
       )}
       {isEditModalOpen && (
         <EditExerciseModal
-          currentDuration={exercise.duration}
           currentIntensity={exercise.intensity}
           onClose={closeExerModal}
           onSave={updateExerInfo}

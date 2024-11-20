@@ -16,39 +16,55 @@ interface SetAddModalProps {
   
 
   const SetAddModal = ({ exercise_id, onClose, onSave }: SetAddModalProps): JSX.Element => {
-    const [weight, setWeight] = useState<number>(0);
-    const [distance, setDistance] = useState<number>(0);
-    const [repetitions, setRepetitions] = useState<number>(0);
+    const [weightValue, setWeightValue] = useState<number>(0);
+    const [distanceValue, setDistanceValue] = useState<number>(0);
+    const [repetitionsValue, setRepetitionsValue] = useState<number>(0);
   
     const handleSave = () => {
-      onSave({ weight, distance, repetitions, exercise_id }); // exercise_id 포함
+      const weight = weightValue || 0;
+      const distance = distanceValue || 0;
+      const repetitions = repetitionsValue || 0;
+  
+      onSave({ weight, distance, repetitions, exercise_id });
       onClose();
     };
-
-  return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <h3>세트 추가</h3>
-        <Label>
-          무게 (kg):
-          <input type="number" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} />
-        </Label>
-        <Label>
-          거리 (km):
-          <input type="number" value={distance} onChange={(e) => setDistance(parseInt(e.target.value))} />
-        </Label>
-        <Label>
-          반복 횟수:
-          <input type="number" value={repetitions} onChange={(e) => setRepetitions(parseInt(e.target.value))} />
-        </Label>
-        <ButtonContainer>
-          <SaveButton onClick={handleSave}>저장</SaveButton>
-          <CancelButton onClick={onClose}>취소</CancelButton>
-        </ButtonContainer>
-      </ModalContent>
-    </ModalOverlay>
-  );
-};
+  
+    return (
+      <ModalOverlay onClick={onClose}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <h3>세트 추가</h3>
+          <Label>
+            무게 (kg):
+            <input
+              type="number"
+              value={weightValue}
+              onChange={(e) => setWeightValue(e.target.value ? parseInt(e.target.value) : 0)}
+            />
+          </Label>
+          <Label>
+            거리 (km):
+            <input
+              type="number"
+              value={distanceValue}
+              onChange={(e) => setDistanceValue(e.target.value ? parseInt(e.target.value) : 0)}
+            />
+          </Label>
+          <Label>
+            반복 횟수:
+            <input
+              type="number"
+              value={repetitionsValue}
+              onChange={(e) => setRepetitionsValue(e.target.value ? parseInt(e.target.value) : 0)}
+            />
+          </Label>
+          <ButtonContainer>
+            <SaveButton onClick={handleSave}>저장</SaveButton>
+            <CancelButton onClick={onClose}>취소</CancelButton>
+          </ButtonContainer>
+        </ModalContent>
+      </ModalOverlay>
+    );
+  };
 export default SetAddModal;
 
 const ModalOverlay = styled.div`
