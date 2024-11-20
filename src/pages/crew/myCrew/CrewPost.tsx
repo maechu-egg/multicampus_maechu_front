@@ -195,7 +195,7 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="crewCreatePostModalLabel">크루 생성</h1>
+                            <h1 className="modal-title fs-5" id="crewCreatePostModalLabel">게시물 생성</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
