@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../services/api/axios";
 import { useAuth } from "../../../context/AuthContext";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
@@ -134,64 +134,69 @@ function ExercisePage(): JSX.Element {
   const date = getFormattedDate();
   
   return (
-    <Container>
-      <SummaryCard>
-        <DateSection>
-          {/* 날짜 포맷팅 */}
-          <h2>{format(date, 'yyyy.MM.dd')}</h2>
-          <p>{format(date, 'EEEE', { locale: ko })}</p>
-        </DateSection>
-        <StatsSection>
-          <StatItem>
-            <h3>오늘 태운 칼로리</h3>
-            <p>{todayCalorie} kcal</p>
-          </StatItem>
-          <StatItem>
-            <h3>오늘 운동한 시간</h3>
-            <p>{todayTime > 60 ? `${Math.floor(todayTime / 60)} 시간 ${todayTime % 60} 분` : `${todayTime} 분`}</p>
-          </StatItem>
-        </StatsSection>
-      </SummaryCard>
-      
-      <SearchBar>
-        <input
-          type="text"
-          placeholder="운동 종목을 검색하세요"
-          value={searchTerm}
-          onChange={handleSearchInputChange}
-        />
-        <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
-          검색
-        </button>
-      </SearchBar>
-      <ExerciseList>
-        {Array.isArray(exerciseData) && exerciseData.map((exercise, index) => (
-          <ExerciseInfo
-            key={index}
-            exercise={exercise}
-            receiveUpdatedExer={exerSave}
-            receiveDeletedExer={deleteExercise}
+    <>
+      <GlobalStyle /> {/* 전역 스타일 적용 */}
+      <Container>
+        <SummaryCard>
+          <DateSection>
+            <h2>{format(date, 'yyyy.MM.dd')}</h2>
+            <p>{format(date, 'EEEE', { locale: ko })}</p>
+          </DateSection>
+          <StatsSection>
+            <StatItem>
+              <h3>오늘 태운 칼로리</h3>
+              <p>{todayCalorie} kcal</p>
+            </StatItem>
+            <StatItem>
+              <h3>오늘 운동한 시간</h3>
+              <p>{todayTime > 60 ? `${Math.floor(todayTime / 60)} 시간 ${todayTime % 60} 분` : `${todayTime} 분`}</p>
+            </StatItem>
+          </StatsSection>
+        </SummaryCard>
+        
+        <SearchBar>
+          <input
+            type="text"
+            placeholder="운동 종목을 검색하세요"
+            value={searchTerm}
+            onChange={handleSearchInputChange}
           />
-        ))}
-      </ExerciseList>
-      {isAddModalOpen && (
-        <ExerciseAddModal
-          searchTerm={searchTerm}
-          onClose={() => {setIsAddModalOpen(false)
-                          setSearchTerm(""); // 검색어 초기화
-          }}
-          successExerInsert={addNewExercise} // 새 운동 추가 후 연동
-      ></ExerciseAddModal>)}     
-    </Container>
+          <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
+            검색
+          </button>
+        </SearchBar>
+        <ExerciseList>
+          {Array.isArray(exerciseData) && exerciseData.map((exercise, index) => (
+            <ExerciseInfo
+              key={index}
+              exercise={exercise}
+              receiveUpdatedExer={exerSave}
+              receiveDeletedExer={deleteExercise}
+            />
+          ))}
+        </ExerciseList>
+        {isAddModalOpen && (
+          <ExerciseAddModal
+            searchTerm={searchTerm}
+            onClose={() => {
+              setIsAddModalOpen(false);
+              setSearchTerm(""); // 검색어 초기화
+            }}
+            successExerInsert={addNewExercise} // 새 운동 추가 후 연동
+          ></ExerciseAddModal>
+        )}
+      </Container>
+    </>
   );
 };
+
 
 const Container = styled.div`
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background: transparent;
+  background: #b6c0d3;
   font-family: 'Noto Sans KR', sans-serif;
 `;
 
@@ -294,6 +299,14 @@ const ExerciseList = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     padding: 12px;
+  }
+`;
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: #b6c0d3; // 전체 배경색 설정
+    margin: 0; // 기본 마진 제거
+    padding: 0; // 기본 패딩 제거
   }
 `;
 

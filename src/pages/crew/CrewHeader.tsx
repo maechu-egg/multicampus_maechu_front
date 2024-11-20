@@ -36,7 +36,7 @@ function CrewHeader(): JSX.Element {
     }, [memberId]);
 
     return (
-        <div style={{background: "#B6C0D3", height: "91vh"}}>
+        <div style={{background: "#B6C0D3", height: "240vh"}}>
         <div className="container">
             <br />
             <br />

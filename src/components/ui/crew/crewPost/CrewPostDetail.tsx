@@ -55,9 +55,9 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
     }
 
     useEffect(() => {
-        if (crew_post_img.includes("CrewDefault")) {
+        if (crew_post_img && crew_post_img.includes("CrewDefault")) {
             setImgPath('img/default/CrewDefault.png');
-        } else if(crew_post_img != "CrewDefault") {
+        } else if (crew_post_img && crew_post_img !== "CrewDefault") {
             setImgPath(`${BASE_URL}${crew_post_img}`);
         }
         console.log("이미지 경로", imgPath);

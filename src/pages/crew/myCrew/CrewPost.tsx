@@ -5,6 +5,7 @@ import { useAuth } from "context/AuthContext";
 import CrewCreatePostModal from "components/ui/crew/modal/CrewCreatePostModal";
 import CrewPostDetail from "components/ui/crew/crewPost/CrewPostDetail";
 import CrewPagination from "components/ui/crew/crewPost/CrewPagination";
+import styled from "styled-components";
 
 interface CrewPostProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
@@ -23,6 +24,24 @@ interface Post {
     member_id: number;
     comment_count: number;
 }
+
+const Button = styled.button`
+  background-color: #6C757D;
+  color: #fff;
+  border: none;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  &:hover {
+    background-color: #A0A5AB;
+    color: #e0e0e0;
+  }
+`;
 
 function CrewPost({ crewId }:CrewPostProps): JSX.Element {
     const { state } = useAuth();
@@ -148,13 +167,13 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                                 style={{ width: "50%"}}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <button
+                            <Button
                                 className="btn btn-primary"
                                 data-bs-toggle="modal"
-                                data-bs-target="#crewCreateModal"
+                                data-bs-target="#crewCreatePostModal"
                             >
-                                크루 생성
-                            </button>
+                                게시물 생성
+                            </Button>
                         </div>
                     </div>
                     <br />
