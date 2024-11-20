@@ -89,39 +89,6 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
 
     return (
         <div className="container">
-            <br />
-            <br />
-            <br />
-            {memberId == crewLeader && (
-                <div className="row">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                        <button
-                            className="btn btn-danger"
-                            onClick={handleDeleteCrew}
-                            style={{background:"rgba(120, 0, 22)", border:"none"}}
-                        >
-                            크루삭제
-                        </button>
-                    </div>
-                    <div className="col-6 d-flex justify-content-end align-items-center">
-                        <button 
-                            className="btn btn-secondary mx-4"
-                            data-bs-toggle="modal"
-                            data-bs-target="#postModal"
-                        >
-                            게시글 관리
-                        </button>
-                        <button 
-                            className="btn btn-secondary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#introModal"
-                        >
-                            소개글 관리
-                        </button>
-                    </div>
-                </div>
-            )}
-            <br />
             <div className="d-flex justify-content-center align-items-center" style={{border:"1px solid #E2E6E9", padding: "20px"}}>
                 <div style={{width: '100%'}}>
                     <img
@@ -147,13 +114,58 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                 </div>
             </div>
             <br />
+            {memberId == crewLeader && (
+                <div className="row">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                        
+                    </div>
+                    <div className="col-6 d-flex justify-content-end align-items-center">
+                        <button 
+                            style={{border: "none", background: "none"}}
+                            data-bs-toggle="modal"
+                            data-bs-target="#postModal"
+                        >
+                            <img
+                                src="/img/crew/setting.png"
+                                alt="크루 수정"
+                                title="크루 수정"
+                                style={{width: "20px"}}
+                            />
+                        </button>
+                        <button 
+                        style={{border: "none", background: "none"}}
+                            data-bs-toggle="modal"
+                            data-bs-target="#introModal"
+                        >
+                            <img
+                                src="/img/crew/info.png"
+                                alt="소개 수정"
+                                title="소개 수정"
+                                style={{width: "20px"}}
+                            />
+                        </button>
+                        <button
+                            onClick={handleDeleteCrew}
+                            style={{border: "none", background: "none"}}
+                        >
+                            <img
+                                src="/img/crew/trash.png"
+                                alt="크루 삭제"
+                                title="크루 삭제"
+                                style={{width: "20px"}}
+                            />
+                        </button>
+                    </div>
+                </div>
+            )}
+            <br />
 
-            {/* 게시물 관리 모달창 */}
+            {/* 게시글 관리 모달창 */}
             <div className="modal fade" id="postModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="postModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered"> 
                     <div className="modal-content" style={{width: "100%", maxWidth: "none"}}>
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="postModalLabel">게시물 수정</h1>
+                            <h1 className="modal-title fs-5" id="postModalLabel">크루 수정</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">

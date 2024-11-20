@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { AxiosError } from "axios";
 import api from "services/api/axios";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 
 interface AccountModalProps {
@@ -33,6 +33,7 @@ function AccountModal({
   const [phone, setPhone] = useState("");
   const [nicknameCheckError, setNicknameCheckError] = useState("");
   const [isNicknameValid, setIsNicknameValid] = useState(false);
+  const navigate = useNavigate();
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -78,6 +79,9 @@ function AccountModal({
           console.log("탈퇴 성공:", response.data);
           onClose();
           onUpdate();
+          console.log("현재 상태의 token:", authState.token); // 현재 상태의 token 출력
+          logout();
+          navigate("/");
         }
       } catch (error) {
         console.error("탈퇴 오류:", error);

@@ -274,7 +274,7 @@ const LoginForm = styled.form`
   justify-content: flex-start; /* 상단 정렬 */
   align-items: flex-start; /* 왼쪽 정렬 */
   width: 100%;
-  max-width: 400px; /* 최대 너비 설정 */
+  max-width: 500px; /* 최대 너비 설정 */
   min-height: 380px; /* 최소 높이 설정 */
 
   border: solid #ccd1d9 1px;

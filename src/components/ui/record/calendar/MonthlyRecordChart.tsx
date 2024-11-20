@@ -1,6 +1,8 @@
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import styled from 'styled-components';
+import { FaRegQuestionCircle } from 'react-icons/fa';
+import CalendarTooltip from "./CalendarTooltip";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -94,7 +96,32 @@ const MonthlyRecordChart = ({
 
   return (
     <ChartContainer>
-      <ChartTitle>이번 달 기록 현황</ChartTitle>
+      <ChartTitle>
+        이번 달 기록 현황
+        <CalendarTooltip text={
+          <>
+            <strong>사용법</strong><br />
+            - 달력 클릭: 날짜를 클릭하여 기록 확인.<br />
+            - 💪🏻: 운동 기록<br />
+            - 🥗: 식단 기록<br />
+            - ✌🏻: 모두 기록<br />
+            - ❌: 기록 없음<br /><br />
+            
+            <strong>칼로리 설명</strong><br />
+            <div style={{ fontSize: '12px' }}>
+              운동 칼로리: 월간 소모 칼로리<br />
+              식단 칼로리: 월간 섭취 칼로리<br />
+              <div style={{textAlign: 'left'}}>
+                순 칼로리: 식단 - 운동 
+              </div>
+            </div>
+          </>
+        }>
+          <span style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '18px' }}>
+            <FaRegQuestionCircle />
+          </span>
+        </CalendarTooltip>
+      </ChartTitle>
       <ChartWrapper>
         <Pie data={data} options={options} />
       </ChartWrapper>
@@ -104,7 +131,7 @@ const MonthlyRecordChart = ({
           <CalorieLabel>운동 칼로리</CalorieLabel>
           <CalorieValue>{burnedCalories.toLocaleString()} kcal</CalorieValue>
         </CalorieItem>
-          <CalorieItem color="#4A5568">
+        <CalorieItem color="#4A5568">
           <CalorieLabel>식단 칼로리</CalorieLabel>
           <CalorieValue>{consumedCalories.toLocaleString()} kcal</CalorieValue>
         </CalorieItem>
@@ -130,6 +157,7 @@ const ChartContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-left: 20px;
+  overflow: visible;
 
   @media (max-width: 850px) {
     width: 100%;

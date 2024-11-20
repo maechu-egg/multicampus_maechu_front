@@ -19,6 +19,7 @@ interface MealPlanData {
   dinner: MealData;
   snack: MealData;
 }
+
 // DietPlanSection 컴포넌트 수정
 const DietPlanSection: React.FC<{  onBreakfastClick: () => void; onLunchClick: () => void; onDinnerClick: () => void; onSnackClick: () => void; meals: MealPlanData | null}> = ({ onBreakfastClick, onLunchClick, onDinnerClick, onSnackClick, meals }) => {
   console.log('DietPlanSection received:', meals); // 컴포넌트가 받은 데이터 로깅

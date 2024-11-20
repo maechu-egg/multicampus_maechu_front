@@ -13,25 +13,30 @@ function MyCrew({myCrew}: { myCrew: any }) {
 
     return(
         <div className="container">
-            <ul className="nav form-control" id="myTab" role="tablist">
-                {myCrew.map((crew: { crew_id: string; crew_name: string }, index: number) => (
-                    <li className="nav-item" role="presentation" key={crew.crew_id}>
-                        <button
-                            className={`nav-link link ${activeCrewTab === index + 1 ? 'active link.active' : ''}`}
-                            onClick={() => handleCrewTabClick(index + 1)}
-                            id={`my-crew${index + 1}`}
-                            data-bs-toggle="tab"
-                            data-bs-target={`#my-crew${index + 1}-pane`}
-                            type="button"
-                            role="tab"
-                            aria-controls={`my-crew${index + 1}-pane`}
-                            aria-selected={activeCrewTab === index + 1}
-                        >
-                            {crew.crew_name}
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <div className="container">
+                <div className="container">
+                    <ul className="nav form-control" id="myTab" role="tablist">
+                        {myCrew.map((crew: { crew_id: string; crew_name: string }, index: number) => (
+                            <li className="nav-item" role="presentation" key={crew.crew_id}>
+                                <button
+                                    className={`nav-link link ${activeCrewTab === index + 1 ? 'active link.active' : ''}`}
+                                    onClick={() => handleCrewTabClick(index + 1)}
+                                    id={`my-crew${index + 1}`}
+                                    data-bs-toggle="tab"
+                                    data-bs-target={`#my-crew${index + 1}-pane`}
+                                    type="button"
+                                    role="tab"
+                                    aria-controls={`my-crew${index + 1}-pane`}
+                                    aria-selected={activeCrewTab === index + 1}
+                                    style={{color: "gray"}}
+                                >
+                                    {crew.crew_name}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
             <div className="tab-content" id="myTabContent">
                 {myCrew.map((crew: { crew_id: string; crew_name: string }, index: number) => (
                     activeCrewTab === index + 1 && (

@@ -154,6 +154,7 @@ function ProfilePage(): JSX.Element {
     <Container>
       <ProfileForm>
         <Title>Profile</Title>
+        <TitleContent>1분, 나에게 맞는 정보 매칭하기</TitleContent>
 
         <FormRow>
           <label>성별</label>
@@ -346,7 +347,7 @@ const ProfileForm = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  max-width: 500px;
+  max-width: 550px;
   min-height: 500px;
   border: solid #ccd1d9 1px;
   border-radius: 15px;
@@ -363,6 +364,13 @@ const Title = styled.h1`
   text-align: left;
   color: #333333;
   margin-bottom: 20px;
+`;
+const TitleContent = styled.h1`
+  font-size: 1.8rem;
+  font-weight: 500;
+  text-align: left;
+  color: #333333;
+  margin-bottom: 30px;
 `;
 
 const StyledInput = styled.input`

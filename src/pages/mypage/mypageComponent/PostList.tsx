@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useAuth } from "context/AuthContext";
 import PostDetail from "pages/community/communityComponent/PostDetail";
 import { useNavigate } from "react-router-dom";
+import { postApi } from "services/api/community/postApi";  
 
 interface Post {
   post_id: number;
@@ -28,7 +29,18 @@ interface Post {
   member_id: number;
   author: boolean;
 }
-
+interface Comment {
+  id: number;
+  postId: number;
+  author: string;
+  content: string;
+  date: string;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status: boolean;
+  comment_dislike_status: boolean;
+  commentAuthor: boolean;
+}
 interface PostData {
   postData: Post[];
 }
@@ -39,7 +51,34 @@ function PostList({ postData }: PostData): JSX.Element {
   const navigate = useNavigate();
 
   const handlePostClick = async (post: Post, isRecommended: boolean) => {
-    navigate(`/community/${post.post_id}`, { state: { post, isRecommended } });
+    console.log("Clicked post:", post);
+    console.log("isRecommended:", isRecommended);
+    
+    try {
+      if (!token) {
+        console.error("No token available");
+        return;
+      }
+  
+      const response = await postApi.getPostDetail(post.post_id, post.author, token);
+      const detailedPost = response.data;
+      console.log("Detailed post data:", detailedPost);
+  
+      const stateData = { 
+        fromMyPage: true,
+        selectedPost: detailedPost,
+        isRecommended
+      };
+      
+      console.log("Navigating with state:", stateData);
+      
+      navigate('/communitypage', {
+        state: stateData,
+        replace: true
+      });
+    } catch (error) {
+      console.error("Error fetching post details:", error);
+    }
   };
 
   return (
