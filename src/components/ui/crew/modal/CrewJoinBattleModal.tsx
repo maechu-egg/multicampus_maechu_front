@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import './Modal.css';
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, crewId:number, onClick:() => void}) {
     const { state } = useAuth();
@@ -15,7 +14,8 @@ function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, c
     const [battle_end_recruitment, setBattleRecruitment] = useState('');
     const [battle_end_date, setBattleEndDate] = useState('');
 
-    const handleSubmit = async() => {
+    const handleSubmit = async(event: React.FormEvent) => {
+        event.preventDefault()
         try{
             const data = {
                 battle_id: battle_id,
@@ -87,7 +87,7 @@ function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, c
                 <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>모집 마감 날짜</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         className="form-control"
                         value={battle_end_recruitment}
                         style={{ width: '100%' }}
@@ -98,7 +98,7 @@ function CrewJoinBattleModal({battle_id, crewId, onClick}: {battle_id: number, c
                 <div className="form-group form-control" style={{ width: '100%' }}>
                     <label>종료 날짜</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         className="form-control"
                         value={battle_end_date}
                         style={{ width: '100%' }}

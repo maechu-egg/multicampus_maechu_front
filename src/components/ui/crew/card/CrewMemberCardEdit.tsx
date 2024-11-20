@@ -3,6 +3,7 @@ import './Card.css';
 import './MemberCard.css';
 import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
+const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
 
 interface Member {
     member_id: number;
@@ -12,6 +13,9 @@ interface Member {
     battle_wins: number;
     crew_member_state: number;
     badge_level: string;
+    email : string;
+    phone : string;
+    member_img : string;
 }
 
 interface CrewInfoProps {
@@ -26,6 +30,33 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
     const token = state.token;
     const [imgPath, setImgPath] = useState<string>("");
     const [crewLeader, setCrewLeader] = useState<number>(0);
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [profileimgPath, setProfileimgPath] = useState('');
+
+    // 전화번호 포맷팅 함수
+    const formatPhoneNumber = (phone: string) => {
+        const cleaned = phone.replace(/\D/g, ''); // 숫자만 추출
+        if (cleaned.length === 11) {
+            return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+        }
+        return phone;
+    };
+
+    // 핸드폰 번호 포맷 설정
+    useEffect(() => {
+        if (member.phone) {
+            setPhoneNumber(formatPhoneNumber(member.phone));
+        }
+    }, [member.phone]);
+
+    useEffect(() => {
+        if(member.member_img !== null) {
+            setProfileimgPath(`${BASE_URL}${member.member_img}`)
+        } else {
+            setProfileimgPath('img/default/UserDefault.png');
+        }
+    })
+
 
     // 뱃지 레벨에 따른 이미지 세팅
     useEffect(() => {
@@ -148,22 +179,22 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
     }
 
     return (
-        <div className="profile-area">
+        <div className="profile-area" style={{padding : 0}}>
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">
                         <div className="card card-member">
-                            <div className="img1"><img src="/img/sky.jpg" alt=""/></div>
+                            <div className="img1"><img src={profileimgPath} alt=""/></div>
                             <div className="img2"><img src={imgPath} alt=""/></div>
                             <div className="main-text list-unstyled">
-                                <h2>{member.nickname}</h2>
-                                <li><strong>나이:</strong> {member.profile_age}</li>
-                                <li><strong>배틀 승리:</strong> {member.battle_wins}</li>
+                                <h2 style={{margin : 0}}>{member.nickname}</h2>
+                                <li style={{padding : 0}}><strong>나이:</strong> {member.profile_age}</li>
+                                <li style={{padding : 0}}><strong>배틀 승리:</strong> {member.battle_wins}</li>
                             </div>
                             <div className="socials">
-                                <i className="fa fa-phone"></i>: 010-1234-5678
+                                <i className="fa fa-phone"></i>: {phoneNumber}
                                 <br />
-                                <i className="fa fa-envelope"></i>: rkddmswhd@naver.com
+                                <i className="fa fa-envelope"></i>: {member.email}
                             </div>
                             <div className="d-flex">
                                 {member.crew_member_state === 0 && memberId == crewLeader && (

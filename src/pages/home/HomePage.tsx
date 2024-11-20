@@ -8,6 +8,8 @@ import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
 import { Link, useNavigate } from "react-router-dom";
 import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
+import LoginErrModal from "hooks/loginErrModal";
+import homeBanner from "../../assets/data/homeBanner.json";
 const BASE_URL = "http://localhost:8001";
 
 interface Crew {
@@ -68,7 +70,14 @@ function HomePage(): JSX.Element {
   const [todayWorkout, setTodayWorkout] = useState<TodayWorkout[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedCrewId, setSelectedCrewId] = useState<number | null>(null);
+  const [isLoginWarningOpen, setIsLoginWarningOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      setIsLoginWarningOpen(true);
+    }
+  }, [token]);
 
   useEffect(() => {
     const getSwapData = async () => {
@@ -114,6 +123,10 @@ function HomePage(): JSX.Element {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedCrewId(null);
+  };
+
+  const closeLoginWarning = () => {
+    setIsLoginWarningOpen(false);
   };
 
   useEffect(() => {
@@ -169,27 +182,22 @@ function HomePage(): JSX.Element {
           </div>
 
           <CarouselInner className="carousel-inner">
-            {["Banner1.png", "Banner3.png", "Banner2.png"].map(
-              (imgSrc, idx) => (
-                <div
-                  key={idx}
-                  className={`carousel-item ${idx === 0 ? "active" : ""}`}
-                >
-                  <img
-                    src={`img/Home/${imgSrc}`}
-                    className="d-block w-100 carousel-image"
-                    alt={`Slide ${idx + 1}`}
-                  />
-                  <div className="carousel-caption d-none d-md-block">
-                    <h5>{`Slide ${idx + 1} label`}</h5>
-                    <p>
-                      Some representative placeholder content for slide{" "}
-                      {idx + 1}.
-                    </p>
-                  </div>
+            {homeBanner.map((slide, idx) => (
+              <div
+                key={idx}
+                className={`carousel-item ${idx === 0 ? "active" : ""}`}
+              >
+                <img
+                  src={`img/Home/${slide.image}`}
+                  className="d-block w-100 carousel-image"
+                  alt={`Slide ${idx + 1}`}
+                />
+                <div className="carousel-caption d-none d-md-block">
+                  <h5>{slide.label}</h5>
+                  <p>{slide.description}</p>
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </CarouselInner>
 
           <CarouselControl
@@ -272,6 +280,7 @@ function HomePage(): JSX.Element {
           ))}
         </Cards>
       </LocalCrew>
+
       {isModalOpen && (
         <ModalOverlay onClick={closeModal}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -367,6 +376,7 @@ function HomePage(): JSX.Element {
           </CardSlider>
         </CardContainer>
       </WorkSpace>
+      <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
     </Container>
   );
 }
@@ -407,12 +417,38 @@ const CarouselInner = styled.div`
 
   .carousel-item {
     height: 100%;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.5) 100%
+      );
+      z-index: 1;
+    }
   }
 
   .carousel-image {
     object-fit: cover;
     height: 100%;
     width: 100%;
+  }
+
+  .carousel-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    color: white;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    z-index: 2;
   }
 `;
 
