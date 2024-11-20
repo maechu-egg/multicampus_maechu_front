@@ -203,11 +203,6 @@ function RecordPage(): JSX.Element {
     <>
       <GlobalStyle />
       <Wrapper>
-        <div className="calendar-header">
-          <TitleContainer>
-            <h1></h1>
-          </TitleContainer>
-        </div>
         <Container>
           <Calendar
             onChange={(value) => setValue(value as Date)}
@@ -366,31 +361,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const TitleContainer = styled.div`
-  background: none;
-  text-align: center;
-
-  h1 {
-    margin: 0;
-    font-size: 32px;
-    font-weight: 550;
-    font-family: 'Pretendard', sans-serif;
-    color: #333333; /* Darker color for contrast */
-  }
-
-  @media (max-width: 850px) {
-    h1 {
-      font-size: 20px;
-    }
-  }
-
-  @media (max-width: 710px) {
-    h1 {
-      font-size: 15px;
-    }
-  }
-`;
-
 const Container = styled.div`
   display: flex;
   flex-direction: row;
@@ -398,6 +368,8 @@ const Container = styled.div`
   max-width: 1000px;
   margin: 0 auto;
   margin-top: 30px;
+  font-family: 'ONE-Mobile-Title'; // 폰트 설정
+
 
   @media (max-width: 850px) {
     flex-direction: column;
@@ -486,6 +458,7 @@ const Container = styled.div`
         min-width: 50px;
         background: none;
         font-size: 17px;
+        font-weight: bold;
       }
 
       @media (max-width: 850px) {
@@ -504,18 +477,21 @@ const Container = styled.div`
     /* 세기 선택 화면의 스타일 */
   .react-calendar__century-view__decades__decade {
       padding: 20px; /* 세기 버튼의 여백을 조정 */
-      font-size: 16px; /* 텍스트 크기 */
+      font-weight: bold;
+      font-size: 17px; /* 텍스트 크기 */
       border-radius: 10px; /* 둥근 모서리 */      
   }
   /* 년도 선택 화면의 스타일 */
   .react-calendar__decade-view__years__year {
       padding: 20px; /* 년도 버튼의 여백 */
+      font-family: 'ONE-Mobile-Title'; // 폰트 설정
       font-size: 16px; /* 텍스트 크기 */
       border-radius: 10px; /* 둥근 모서리 */
   }
   /* 각 월 버튼 스타일 */
   .react-calendar__year-view__months__month {
       padding: 20px; /* 여백을 늘려 버튼 크기 조절 */
+      font-family: 'ONE-Mobile-Title'; // 폰트 설정
       font-size: 16px; /* 폰트 크기 증가 */
       border-radius: 10px; /* 둥근 모서리 */
   }            
@@ -538,6 +514,7 @@ const Container = styled.div`
     .react-calendar__month-view__weekdays {
       font-size: 15px;
       font-weight: 400;
+      font-family: 'ONE-Mobile-Title'; // 폰트 설정
       color: gray;
       border-bottom: 1px solid gray;
       padding-bottom: 5px;
@@ -562,8 +539,8 @@ const Container = styled.div`
         border-left: 0.1px solid lightgray;
         border-right: 0.1px solid lightgray;
         border-bottom: 0.1px solid lightgray;
+        font-family: 'ONE-Mobile-Title'; // 폰트 설정
         font-size: 13px;
-        font-family: 'Pretendard', sans-serif;
         font-weight: 450;
       }
 

@@ -76,6 +76,7 @@ const ModalContent = styled.div`
   animation: fadeIn 0.3s ease-out forwards;
   text-align: center;
 
+
   h3 {
     font-size: 1.5rem;
     color: #333;
