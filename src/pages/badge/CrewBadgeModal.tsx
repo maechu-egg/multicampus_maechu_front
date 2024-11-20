@@ -10,6 +10,7 @@ import BadgeFooterSection from "./badgeModalComponents/BadgeFooterSection";
 import BadgeModalTabs from "./badgeModalComponents/BadgeModalTabs";
 import BadgeScoreGuide from "./badgeModalComponents/BadgeScoreGuide";
 import BadgeRankSection from "./badgeModalComponents/BadgeRankSection";
+import { createPortal } from "react-dom";
 
 interface CrewBadgeModalProps {
   isOpen: boolean;
@@ -346,12 +347,8 @@ function CrewBadgeModal({
     }
   };
 
-  return (
-    <div
-      className="modal-overlay"
-      onClick={onClose}
-      style={{ marginTop: "60px" }}
-    >
+  return createPortal(
+    <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-button" onClick={onClose}>
           X
@@ -366,7 +363,8 @@ function CrewBadgeModal({
         )}
         {renderTabContent()}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

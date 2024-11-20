@@ -47,6 +47,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const AuthContext = createContext<{
   state: AuthState;
   dispatch: React.Dispatch<AuthAction>;
+  logout: () => void; // logout 함수 추가
 } | null>(null); // Context의 타입 정의
 
 // AuthProvider 컴포넌트 정의
@@ -73,8 +74,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     console.log("현재 상태:", state); // 상태 출력
   }, [state.token, state.memberId]); // token과 memberId가 변경될 때마다 실행
 
+  // 로그아웃 함수 추가
+  const logout = () => {
+    dispatch({ type: "LOGOUT" }); // 로그아웃 액션 디스패치
+  };
+
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider value={{ state, dispatch, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -246,9 +246,11 @@ function HomePage(): JSX.Element {
             <div className="card" key={index}>
               <img
                 src={
-                  crew.crew_intro_img === "/static/CrewDefault"
-                    ? "/img/Home/homeEx1.png"
-                    : `${BASE_URL}${crew.crew_intro_img}`
+                  isDataFetched
+                    ? crew.crew_intro_img === "/static/CrewDefault"
+                      ? "/img/Home/homeEx1.png"
+                      : `${BASE_URL}${crew.crew_intro_img}`
+                    : crew.crew_intro_img
                 }
                 className="card-img-top card-image"
                 alt={crew.crew_name}

@@ -9,6 +9,7 @@ import BadgeScoreGuide from "./badgeModalComponents/BadgeScoreGuide";
 import BadgeRankSection from "./badgeModalComponents/BadgeRankSection";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
+import { createPortal } from "react-dom";
 
 interface PersonalBadgeModalProps {
   isOpen: boolean;
@@ -308,7 +309,7 @@ function PersonalBadgeModal({
     }
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-button" onClick={onClose}>
@@ -324,7 +325,8 @@ function PersonalBadgeModal({
         )}
         {renderTabContent()}
       </div>
-    </div>
+    </div>,
+    document.body  
   );
 }
 

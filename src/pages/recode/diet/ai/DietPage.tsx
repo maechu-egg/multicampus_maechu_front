@@ -2,7 +2,7 @@ import axios from "axios"; // axios import 추가
 import { useAuth } from "context/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 import
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useParams } from 'react-router-dom';
 import DietPlanSection from "./DietPlanSection";
 import CautionSection from "./CautionSection";
@@ -32,6 +32,15 @@ interface MealPlanData {
   dinner: MealData;
   snack: MealData;
 }
+
+// 전역 스타일 추가
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: #b6c0d3; // 전체 배경색 설정
+    margin: 0; // 기본 마진 제거
+    padding: 0; // 기본 패딩 제거
+  }
+`;
 
 function DietPage() {
   const navigate = useNavigate(); // useNavigate 훅 사용
@@ -301,7 +310,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         if (error.response?.status === 401) {
           // 토큰이 만료된 경우 로컬 스토리지의 토큰 제거
           localStorage.removeItem('token');
-          // 로그인 페���지로 리다이렉트
+          // 로그인 페이지로 리다이렉트
           navigate('/login', { replace: true });
         }
       }
@@ -343,7 +352,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         if (error.response?.status === 401) {
           // 토큰이 만료된 경우 로컬 스토리지의 토큰 제거
           localStorage.removeItem('token');
-          // 로그인 페���지로 리다이렉트
+          // 로그인 페이지로 리다이렉트
           navigate('/login', { replace: true });
         }
       }
@@ -469,238 +478,233 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Title>오늘의 식단</Title>
-        <InfoContainer>
-          {data ? (
-            <>
-              <TotalCalories>Total : {data.tdee} kcal</TotalCalories>
-              <CurrentDate>{new Date().toLocaleDateString('ko-KR')} {new Date().toLocaleString('ko-KR', { weekday: 'long' })}</CurrentDate>
-            </>
-          ) : (
-            <TotalCalories>로딩 중...</TotalCalories>
-          )}
-        </InfoContainer>
-      </Header>
-      <GoalContainer>
+    <>
+      <GlobalStyle /> {/* 전역 스타일 적용 */}
+      <Container>
+        <Header>
+          <Title>오늘의 식단</Title>
+          <InfoContainer>
+            {data ? (
+              <>
+                <TotalCalories>Total : {data.tdee} kcal</TotalCalories>
+                <CurrentDate>{new Date().toLocaleDateString('ko-KR')} {new Date().toLocaleString('ko-KR', { weekday: 'long' })}</CurrentDate>
+              </>
+            ) : (
+              <TotalCalories>로딩 중...</TotalCalories>
+            )}
+          </InfoContainer>
+        </Header>
+        <GoalContainer>
         {data ? (
           <>
-            <Goal>{data.weight} kg</Goal>
-            <Goal>목표 : {data.goal}</Goal>
-            <Goal>추천 칼로리 : {data.recommendedCalories} kcal</Goal>
-            <Goal>추천 단백질 : {data.recommendedProtein} g</Goal>
-            <Goal>추천 탄수화물 : {data.recommendedCarb} g</Goal>
-            <Goal>추천 지방 : {data.recommendedFat} g</Goal>
+            <div className="nutrition-info">
+            <h2>{data.weight} kg</h2>
+            <p>목표: {data.goal}</p>
+            <p>추천 칼로리: {data.recommendedCalories} kcal</p>
+            <p>추천 단백질: {data.recommendedProtein} g</p>
+            <p>추천 탄수화물: {data.recommendedCarb} g</p>
+            <p>추천 지방: {data.recommendedFat} g</p>
+            </div>
           </>
         ) : (
           <Goal>표 정보를 로딩 중...</Goal>
         )}
       </GoalContainer>
 
-      {/* 메인 화면의 식단 추천 버튼 */}
-      <RecommendationButton onClick={handleRecommendationClick}>
-        식단 추천
-      </RecommendationButton>
+        {/* 메인 화면의 식단 추천 버튼 */}
+        <RecommendationButton onClick={handleRecommendationClick}>
+          식단 추천
+        </RecommendationButton>
 
-      <RecordList>
-        {dietRecords.map((record, index) => (
-          <RecordItem key={index} onClick={() => {
-            if (record.food === "breakfast") {
-              handleRecordClick(record.food);
-            } else if (record.food === "lunch") {
-              handleRecordClick(record.food); 
-            } else if (record.food === "dinner") {
-              handleRecordClick(record.food); 
-            } else if (record.food === "snack") {
-              handleRecordClick(record.food);
-            }
-          }}>
-            <FoodIcon>
-              {record.food === "breakfast" ? "🍳" : 
-               record.food === "lunch" ? "🍚" : 
-               record.food === "dinner" ? "🥗" : 
-               record.food === "snack" ? "🍰" : ""}
-            </FoodIcon>
-            <FoodName>{foodLabels[record.food as keyof typeof foodLabels]}</FoodName>
-          </RecordItem>
-        ))}
-      </RecordList>
+        <RecordList>
+          {dietRecords.map((record, index) => (
+            <RecordItem key={index} onClick={() => handleRecordClick(record.food)}>
+              <FoodIcon>
+                {record.food === "breakfast" ? "🍳" : 
+                 record.food === "lunch" ? "🍚" : 
+                 record.food === "dinner" ? "🥗" : 
+                 record.food === "snack" ? "🍰" : ""}
+              </FoodIcon>
+              <FoodName>{foodLabels[record.food as keyof typeof foodLabels]}</FoodName>
+            </RecordItem>
+          ))}
+        </RecordList>
 
-      {/* 첫 번째 모달 - 입력 폼 */}
-      {isModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <h2>식단 추천</h2>
-              <CloseButton onClick={closeModal}>X</CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              <InputContainer>
-                <label>목표 칼로리:</label>
-                <Input type="number" value={data?.recommendedCalories || 0} readOnly />
+        {/* 첫 번째 모달 - 입력 폼 */}
+        {isModalOpen && (
+          <ModalOverlay>
+            <ModalContent>
+              <ModalHeader>
+                <h2>식단 추천</h2>
+                <CloseButton onClick={closeModal}>X</CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                <InputContainer>
+                  <label>목표 칼로리:</label>
+                  <Input type="number" value={data?.recommendedCalories || 0} readOnly />
 
-                <label>식단 목표:</label>
-                <Input type="text" value={data?.goal || ""} readOnly />
-                
-                <label>재료 (쉼표로 구분 예: 쌀, 계란, 닭가슴살):</label>
-                <Input type="text" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
-                
-                <label>식 제한 (쉼표로 구분 예: 고단백질, 저탄수화물):</label>
-                <Input type="text" value={dietaryRestrictions} onChange={(e) => setDietaryRestrictions(e.target.value)} />
-                
-                <label>알레르기 (쉼표로 구분 예: 우유, 땅콩):</label>
-                <Input type="text" value={allergies} onChange={(e) => setAllergies(e.target.value)} />
-                
-                <label>의료 조건 (쉼표로 구분 예: 당뇨, 고혈압):</label>
-                <Input type="text" value={medicalConditions} onChange={(e) => setMedicalConditions(e.target.value)} />
-                
-                <label>하루 식사 횟수:</label>
-                <Input as="select" value={mealsPerDay} onChange={(e) => setMealsPerDay(e.target.value)}>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </Input>
-                
-                <label>조리 난이도:</label>
-                <Input as="select" value={cookingPreference} onChange={(e) => setCookingPreference(e.target.value)}>
-                    <option value="쉬움">쉬움</option>
-                    <option value="보통">보통</option>
-                    <option value="어려움">어려움</option>
-                </Input>
+                  <label>식단 목표:</label>
+                  <Input type="text" value={data?.goal || ""} readOnly />
+                  
+                  <label>재료 (쉼표로 구분 예: 쌀, 계란, 닭가슴살):</label>
+                  <Input type="text" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
+                  
+                  <label>식 제한 (쉼표로 구분 예: 고단백질, 저탄수화물):</label>
+                  <Input type="text" value={dietaryRestrictions} onChange={(e) => setDietaryRestrictions(e.target.value)} />
+                  
+                  <label>알레르기 (쉼표로 구분 예: 우유, 땅콩):</label>
+                  <Input type="text" value={allergies} onChange={(e) => setAllergies(e.target.value)} />
+                  
+                  <label>의료 조건 (쉼표로 구분 예: 당뇨, 고혈압):</label>
+                  <Input type="text" value={medicalConditions} onChange={(e) => setMedicalConditions(e.target.value)} />
+                  
+                  <label>하루 식사 횟수:</label>
+                  <Input as="select" value={mealsPerDay} onChange={(e) => setMealsPerDay(e.target.value)}>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                  </Input>
+                  
+                  <label>조리 난이도:</label>
+                  <Input as="select" value={cookingPreference} onChange={(e) => setCookingPreference(e.target.value)}>
+                      <option value="쉬움">쉬움</option>
+                      <option value="보통">보통</option>
+                      <option value="어려움">어려움</option>
+                  </Input>
 
-                <RecommendButton onClick={handleRecommend} disabled={isLoading}>
-                  {isLoading ? '추천받는 중...' : '추천받기'}
-                </RecommendButton>
-              </InputContainer>
-            </ModalBody>
-          </ModalContent>
-        </ModalOverlay>
-      )}
+                  <RecommendButton onClick={handleRecommend} disabled={isLoading}>
+                    {isLoading ? '추천받는 중...' : '추천받기'}
+                  </RecommendButton>
+                </InputContainer>
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
+        )}
 
-      {/* 두 번째 모달 - 과 표시 */}
-      {isResultModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <h2>맞춤 식단 계획</h2>
-              <CloseButton onClick={closeResultModal}>×</CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              {dietPlan ? (
-                <>
-                  <DietPlanSection onBreakfastClick={handleBreakfastClick} onLunchClick={handleLunchClick} onDinnerClick={handleDinnerClick} onSnackClick={handleSnackClick} meals={meals != null ? meals :null }/>
-                  <CautionSection dietPlan={dietPlan} />
-                  <CloseModalButton onClick={closeResultModal}>
-                    닫기
-                  </CloseModalButton>
-                </>
-              ) : (
-                <div style={{ 
-                  textAlign: 'center', 
-                  padding: '40px',
-                  color: '#666'
-                }}>
-                  <div style={{ fontSize: '24px', marginBottom: '20px' }}>
-                    🔄
+        {/* 두 번째 모달 - 결과 표시 */}
+        {isResultModalOpen && (
+          <ModalOverlay>
+            <ModalContent>
+              <ModalHeader>
+                <h2>맞춤 식단 계획</h2>
+                <CloseButton onClick={closeResultModal}>×</CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                {dietPlan ? (
+                  <>
+                    <DietPlanSection onBreakfastClick={handleBreakfastClick} onLunchClick={handleLunchClick} onDinnerClick={handleDinnerClick} onSnackClick={handleSnackClick} meals={meals != null ? meals :null }/>
+                    <CautionSection dietPlan={dietPlan} />
+                    <CloseModalButton onClick={closeResultModal}>
+                      닫기
+                    </CloseModalButton>
+                  </>
+                ) : (
+                  <div style={{ 
+                    textAlign: 'center', 
+                    padding: '40px',
+                    color: '#666'
+                  }}>
+                    <div style={{ fontSize: '24px', marginBottom: '20px' }}>
+                      🔄
+                    </div>
+                    <p>맞춤형 식단을 생성하고 있습니다...</p>
                   </div>
-                  <p>맞춤형 식단을 생성하고 있습니다...</p>
-                </div>
-              )}
-            </ModalBody>
-          </ModalContent>
-        </ModalOverlay>
-      )}
+                )}
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
+        )}
 
 
 
-      {/* 아침 상세 달 */}
-      {isBreakfastDetailModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <h2>아침 상세 정보</h2>
-              <CloseButton onClick={() => setIsBreakfastDetailModalOpen(false)}>X</CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              {meals && (
-                <div>
-                  <h3>아침 식사 계획</h3>
-                  <p>음식: {meals.breakfast.foods.join(', ')}</p>
-                  <p>양: {meals.breakfast.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('breakfast')}>식단 추가</button>
-                </div>
-              )}
-            </ModalBody>
-          </ModalContent>
-        </ModalOverlay>
-      )}
+        {/* 아침 상세 달 */}
+        {isBreakfastDetailModalOpen && (
+          <ModalOverlay>
+            <ModalContent>
+              <ModalHeader>
+                <h2>아침 상세 정보</h2>
+                <CloseButton onClick={() => setIsBreakfastDetailModalOpen(false)}>X</CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                {meals && (
+                  <div>
+                    <h3>아침 식사 계획</h3>
+                    <p>음식: {meals.breakfast.foods.join(', ')}</p>
+                    <p>양: {meals.breakfast.amounts.join(', ')}</p>
+                    <StyledButton onClick={() => handleAddMeal('breakfast')}>식단 추가</StyledButton>
+                  </div>
+                )}
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
+        )}
 
-      {/* 점심 상세 모달 */}
-      {isLunchDetailModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <h2>점심 상세 정보</h2>
-              <CloseButton onClick={() => setIsLunchDetailModalOpen(false)}>X</CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              {meals && (
-                <div>
-                  <h3>점심 식사 계획</h3>
-                  <p>음식: {meals.lunch.foods.join(', ')}</p>
-                  <p>양: {meals.lunch.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('lunch')}>식단 추가</button>
-                </div>
-              )}
-            </ModalBody>
-          </ModalContent>
-        </ModalOverlay>
-      )}
+        {/* 점심 상세 모달 */}
+        {isLunchDetailModalOpen && (
+          <ModalOverlay>
+            <ModalContent>
+              <ModalHeader>
+                <h2>점심 상세 정보</h2>
+                <CloseButton onClick={() => setIsLunchDetailModalOpen(false)}>X</CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                {meals && (
+                  <div>
+                    <h3>점심 식사 계획</h3>
+                    <p>음식: {meals.lunch.foods.join(', ')}</p>
+                    <p>양: {meals.lunch.amounts.join(', ')}</p>
+                    <StyledButton onClick={() => handleAddMeal('lunch')}>식단 추가</StyledButton>
+                  </div>
+                )}
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
+        )}
 
-      {/* 저녁 상세 모달 */}
-      {isDinnerDetailModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <h2>저녁 상세 정보</h2>
-              <CloseButton onClick={() => setIsDinnerDetailModalOpen(false)}>X</CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              {meals && (
-                <div>
-                  <h3>저녁 식사 계획</h3>
-                  <p>음식: {meals.dinner.foods.join(', ')}</p>
-                  <p>양: {meals.dinner.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('dinner')}>식단 추가</button>
-                </div>
-              )}
-            </ModalBody>
-          </ModalContent>
-        </ModalOverlay>
-      )}
+        {/* 저녁 상세 모달 */}
+        {isDinnerDetailModalOpen && (
+          <ModalOverlay>
+            <ModalContent>
+              <ModalHeader>
+                <h2>저녁 상세 정보</h2>
+                <CloseButton onClick={() => setIsDinnerDetailModalOpen(false)}>X</CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                {meals && (
+                  <div>
+                    <h3>저녁 식사 계획</h3>
+                    <p>음식: {meals.dinner.foods.join(', ')}</p>
+                    <p>양: {meals.dinner.amounts.join(', ')}</p>
+                    <StyledButton onClick={() => handleAddMeal('dinner')}>식단 추가</StyledButton>
+                  </div>
+                )}
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
+        )}
 
-      {/* 간식 상세 모달 */}
-      {isSnackDetailModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>
-              <h2>간식 상세 정보</h2>
-              <CloseButton onClick={() => setIsSnackDetailModalOpen(false)}>X</CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              {meals && (
-                <div>
-                  <h3>간식 계획</h3>
-                  <p>음식: {meals.snack.foods.join(', ')}</p>
-                  <p>양: {meals.snack.amounts.join(', ')}</p>
-                  <button onClick={() => handleAddMeal('snack')}>식단 추가</button>
-                </div>
-              )}
-            </ModalBody>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-    </Container>
+        {/* 간식 상세 모달 */}
+        {isSnackDetailModalOpen && (
+          <ModalOverlay>
+            <ModalContent>
+              <ModalHeader>
+                <h2>간식 상세 정보</h2>
+                <CloseButton onClick={() => setIsSnackDetailModalOpen(false)}>X</CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                {meals && (
+                  <div>
+                    <h3>간식 계획</h3>
+                    <p>음식: {meals.snack.foods.join(', ')}</p>
+                    <p>양: {meals.snack.amounts.join(', ')}</p>
+                    <StyledButton onClick={() => handleAddMeal('snack')}>식단 추가</StyledButton>
+                  </div>
+                )}
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
+        )}
+      </Container>
+    </>
   );
 }
 
@@ -747,30 +751,37 @@ const CurrentDate = styled.div`
 
 const GoalContainer = styled.div`
   padding: 20px;
-  background: linear-gradient(135deg, #f0f0f0, #ffffff); // 그라데이션 배경
-  border-radius: 20px; // 더 부드러운 테두리 반경
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); // 부드러운 그림자
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   color: #1D2636;
   margin-bottom: 20px;
-  position: relative;
-  border: 1px solid #ddd; // 얇은 테두리
-  transition: transform 0.3s ease, box-shadow 0.3s ease; // 부드러운 애니메이션
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 
-  &:hover {
-    transform: translateY(-8px); // 호버 시 더 부드럽게 이동
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); // 호버 시 그림자 강화
-  }
-
-  // 내부 텍스트 스타일
   h2 {
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin: 0;
   }
 
   p {
     font-size: 16px;
-    line-height: 1.5;
+    margin: 5px 0;
+  }
+
+  .nutrition-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 15px;
+
+    span {
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 `;
 
@@ -972,3 +983,19 @@ const CloseModalButton = styled.button`
   }
 `;
 
+const StyledButton = styled.button`
+  background-color: #1D2636; // 버튼 색상
+  color: white; // 텍스트 색상
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #333C4D; // hover 시 색상 변경
+    transform: translateY(-2px); // hover 시 약간 위로 이동
+  }
+`;
