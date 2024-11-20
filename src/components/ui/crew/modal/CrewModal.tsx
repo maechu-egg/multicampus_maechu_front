@@ -43,7 +43,6 @@ function CrewModal({ crew_id, onClick }: { crew_id: number, onClick: () => void}
                 setCrew_goal(response.data.crew_goal);
                 setCrew_gender(response.data.crew_gender);
                 setCrew_frequency(response.data.crew_frequency);
-                setCrew_state(response.data.crew_satate);
             } catch (error) {
                 console.error('Error getting crew info:', error);
             }

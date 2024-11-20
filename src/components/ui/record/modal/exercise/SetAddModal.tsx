@@ -89,12 +89,6 @@ const ModalContent = styled.div`
   text-align: center;
 `;
 
-const Title = styled.h3`
-  margin-bottom: 20px;
-  font-size: 20px;
-  color: #333333;
-`;
-
 const Label = styled.label`
   display: flex;
   flex-direction: column;

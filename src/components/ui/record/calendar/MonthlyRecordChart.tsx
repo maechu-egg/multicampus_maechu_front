@@ -74,7 +74,6 @@ const MonthlyRecordChart = ({
           padding: 25,
           font: {
             size: 20,
-            family: "'Pretendard', sans-serif",
             weight: 400,
           },
         }

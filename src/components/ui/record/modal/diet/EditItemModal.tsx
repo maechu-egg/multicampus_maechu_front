@@ -62,6 +62,8 @@ const ModalContent = styled.div`
   box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.3s ease-out forwards;
   text-align: center;
+  font-family: 'ONE-Mobile-Title';
+
 
   h3 {
     font-size: 1.5rem;
