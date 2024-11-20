@@ -14,3 +14,7 @@
 .nav-pills .nav-item .nav-link.active {
     background: #1D2636;
 }
+
+.nav-pills .nav-item .nav-link {
+    color: gray;
+}

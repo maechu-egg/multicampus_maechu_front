@@ -26,6 +26,7 @@ function MyCrew({myCrew}: { myCrew: any }) {
                             role="tab"
                             aria-controls={`my-crew${index + 1}-pane`}
                             aria-selected={activeCrewTab === index + 1}
+                            style={{color: "gray"}}
                         >
                             {crew.crew_name}
                         </button>
