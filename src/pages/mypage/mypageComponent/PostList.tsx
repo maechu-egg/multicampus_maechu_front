@@ -28,7 +28,18 @@ interface Post {
   member_id: number;
   author: boolean;
 }
-
+interface Comment {
+  id: number;
+  postId: number;
+  author: string;
+  content: string;
+  date: string;
+  comment_like_counts: number;
+  comment_dislike_counts: number;
+  comment_like_status: boolean;
+  comment_dislike_status: boolean;
+  commentAuthor: boolean;
+}
 interface PostData {
   postData: Post[];
 }
@@ -39,7 +50,25 @@ function PostList({ postData }: PostData): JSX.Element {
   const navigate = useNavigate();
 
   const handlePostClick = async (post: Post, isRecommended: boolean) => {
-    navigate(`/community/${post.post_id}`, { state: { post, isRecommended } });
+    console.log("Clicked post:", post);
+    console.log("isRecommended:", isRecommended);
+    
+    const stateData = { 
+      fromMyPage: true,
+      selectedPost: post,
+      isRecommended
+    };
+    
+    console.log("Navigating with state:", stateData);
+    
+    try {
+      navigate('/communitypage',{
+        state: stateData,
+        replace: true
+      });
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
   };
 
   return (

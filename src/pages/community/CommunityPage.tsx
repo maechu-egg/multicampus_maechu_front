@@ -139,20 +139,33 @@ function CommunityPage(): JSX.Element {
     handleCommentDelete,
   } = useComment();
 
-  
+  useEffect(() => {
+    console.log("CommunityPage mounted, location:", location);
+    console.log("location.state:", location.state);
+  }, []);
+
 // location이 변경될 때마다 상태 초기화
 useEffect(() => {
+  console.log("Current location:", location);
+  console.log("Current location.state:", location.state);
+  
   const locationState = location.state as { 
     fromMyPage?: boolean;
-    selectedPostId?: number;
-    selectedPost?: any;
+    selectedPost?: Post;
+    isRecommended?: boolean;
   };
 
+  console.log("Parsed locationState:", locationState);
+
   if (locationState?.fromMyPage && locationState?.selectedPost) {
-    // MyPage에서 넘어온 경우, handlePostClick 함수를 직접 호출
-    handlePostClick(locationState.selectedPost, false);
+    console.log("MyPage에서 넘어온 게시글:", locationState.selectedPost);
+    setSelectedPost(locationState.selectedPost);
     getComments(locationState.selectedPost.post_id);
   } else {
+    console.log("Resetting page state because:", {
+      fromMyPage: locationState?.fromMyPage,
+      hasSelectedPost: !!locationState?.selectedPost
+    });
     resetPageState();
     fetchPosts("헬스 및 피트니스", "", 1, postsPerPage);
   }
