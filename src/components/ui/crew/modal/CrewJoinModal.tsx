@@ -57,6 +57,17 @@ function CrewJoinModal({
 
     // 크루에 속한 멤버 조회 API를 사용하여 내가 가입되어있는지 판별
     const getCrewMemberInfo = async () => {
+      console.log(
+        "getCrewMemberInfo 함수가 호출되었습니다. 토큰 : ",
+        token,
+        "크루아디 : ",
+        crew_id
+      ); // 함수 시작 시 로그 추가
+      if (!token) {
+        console.error("토큰이 없어서 크루에 속한 멤버 조회 안됌");
+        return; // 토큰이 없으면 요청하지 않음
+      }
+
       try {
         const response = await api.get(`crew/member/list/${crew_id}`, {
           headers: {
@@ -71,7 +82,8 @@ function CrewJoinModal({
           }
         }
       } catch (error) {
-        console.log("Error getting crewMember info", error);
+        console.log("debug >>> 크루 조회용 토큰 ", token);
+        console.error("Error getting crewMember info", error);
       }
     };
     getCrewInfo();
