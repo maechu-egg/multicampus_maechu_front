@@ -138,6 +138,11 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
 
     // 스스로 크루에서 나가는 버튼 활성화
     const exitHandler = async() => {
+        const confirmExit = window.confirm("정말 크루에서 나가시겠습니까?");
+
+        if (!confirmExit) {
+            return;
+        }
         const data = {
             crew_id : crewId,
             member_id : member.member_id
@@ -159,6 +164,11 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
 
     // 크루장만 가능한 크루에서 탈퇴시키는 버튼 활성화
     const expulsionHandler = async() => {
+        const confirmExit = window.confirm("정말 크루에서 탈퇴시키겠습니까?");
+
+        if (!confirmExit) {
+            return;
+        }
         const data = {
             crew_id : crewId,
             member_id : member.member_id
@@ -179,7 +189,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
     }
 
     return (
-        <div className="profile-area" style={{padding : 0}}>
+        <div className="profile-area" style={{padding : 0, width:"80%"}}>
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">
