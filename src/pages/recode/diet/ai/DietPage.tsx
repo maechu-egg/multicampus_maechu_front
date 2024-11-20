@@ -6,6 +6,8 @@ import styled, { createGlobalStyle } from "styled-components";
 import { useParams } from 'react-router-dom';
 import DietPlanSection from "./DietPlanSection";
 import CautionSection from "./CautionSection";
+import { format, parse } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 
 interface MealData {
@@ -53,8 +55,6 @@ interface SummaryData {
 		// 단백질 비율
 		proteinRatio: number
 	},
-	// 소모 칼로리
-	burnedCalories: number,
 	// 일일 권장 칼로리(탄단지비율) 및 bmr, tdee 과 다이어트 목표
 	recommended: {
 		// 목표 탄수화물
@@ -331,7 +331,10 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
     if (memberId !== undefined && state.token) {
       try {
-        const response = await axios.get('http://localhost:8001/record/summary/daily', {
+        const response = await axios.get('http://localhost:8001/record/diet/get/day/nutrients', {
+          params: {
+            record_date : selectedDate
+          },
           headers: {
             'Authorization': `Bearer ${state.token}`,
             'Content-Type': 'application/json'
@@ -340,8 +343,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         });
 
         if (response.data) {
-          const apiData = response.data;
-          setData(apiData);
+          setData(response.data);
           console.log("debug >>> apiData true !!! ");
         }
 
@@ -521,6 +523,19 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
     setIsSnackDetailModalOpen(true);
   };
 
+  // 날짜 포맷
+  const getFormattedDate = () => {
+    try {
+      if (!selectedDate) return new Date();
+      return parse(selectedDate, 'yyyy-MM-dd', new Date());
+    } catch (error) {
+      console.error('날짜 변환 에러:', error);
+      return new Date();
+    }
+  };
+
+  const date = getFormattedDate();
+
   return (
     <>
       <GlobalStyle /> {/* 전역 스타일 적용 */}
@@ -531,7 +546,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
             {data ? (
               <>
                 <TotalCalories> 키 : {data.recommended.height} cm &nbsp; 몸무게 : {data.recommended.weight} kg </TotalCalories>
-                <CurrentDate>{new Date().toLocaleDateString('ko-KR')} {new Date().toLocaleString('ko-KR', { weekday: 'long' })}</CurrentDate>
+                <CurrentDate>{format(date, 'yyyy.MM.dd')} {format(date, 'EEEE', { locale: ko })}</CurrentDate>
               </>
             ) : (
               <TotalCalories>로딩 중...</TotalCalories>
