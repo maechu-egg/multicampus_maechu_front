@@ -7,6 +7,8 @@ import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
 import ExerciseAddModal from "components/ui/record/modal/exercise/ExerciseAddModal";
+import { FaRegQuestionCircle } from 'react-icons/fa';
+import CalendarTooltip from "../../../components/ui/record/calendar/CalendarTooltip";
 
 interface ExerciseDTO {
   exercise_id: number;
@@ -164,7 +166,19 @@ function ExercisePage(): JSX.Element {
             </StatItem>
           </StatsSection>
         </SummaryCard>
-        
+        <CalendarTooltip text={
+          <>
+            <strong>Met 계산법</strong><br />
+            <div style={{ fontSize: '15px' }}>
+              met * 시간(분) * 강도<br />
+            </div>
+            
+          </>
+        }>
+            <span style={{ cursor: 'pointer', fontSize: '25px'}}>
+              <FaRegQuestionCircle />
+            </span>
+          </CalendarTooltip>
         <SearchBar>
           <input
             type="text"
@@ -215,7 +229,6 @@ const SummaryCard = styled.div`
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
