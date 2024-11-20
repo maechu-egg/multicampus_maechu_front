@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 interface EditExerciseModalProps {
-    currentDuration: number;
     currentIntensity: string;
     onClose: () => void;
     onSave: (updateDuration: number, updatedIntensity: string) => void;
 }
 
-const EditExerciseModal = ({ currentDuration, currentIntensity, onClose, onSave }: EditExerciseModalProps): JSX.Element => {
-    const [duration, setDuration] = useState(currentDuration);
-    const [intensity, setIntensity] = useState(currentIntensity);
+const EditExerciseModal = ({ onClose, onSave, currentIntensity }: EditExerciseModalProps): JSX.Element => {
+    const [duration, setDuration] = useState<number | null>(null);
+    const [intensity, setIntensity] = useState<string>("");
 
     const handleSave = () => {
+      if(duration !== null)
         onSave(duration, intensity); // 부모 컴포넌트로 수정된 값 전달
         onClose();
     };
@@ -25,16 +25,18 @@ const EditExerciseModal = ({ currentDuration, currentIntensity, onClose, onSave 
             시간 (분):
             <input
               type="number"
-              value={duration}
+              value={duration !== null ? duration : undefined}
               onChange={(e) => setDuration(parseInt(e.target.value))}
+              placeholder="시간을 입력해주세요"
             />
           </label>
           <label>
             강도:
             <select
-              value={intensity}
+              value={intensity !== null ? intensity : undefined}
               onChange={(e) => setIntensity(e.target.value)}
             >
+              <option value="" disabled selected hidden>강도를 선택하세요</option>              
               <option value={"high"}>상</option>
               <option value={"general"}>중</option>
               <option value={"low"}>하</option>
@@ -114,6 +116,7 @@ const ModalContent = styled.div`
     }
   }
 `;
+
 
 const ButtonContainer = styled.div`
   display: flex;
