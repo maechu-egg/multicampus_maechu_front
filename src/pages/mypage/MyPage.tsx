@@ -4,12 +4,13 @@ import { useAuth } from "../../context/AuthContext";
 import PersonalBadgeModal from "pages/badge/PersonalBadgeModal";
 import CrewBadgeModal from "pages/badge/CrewBadgeModal";
 import api from "../../services/api/axios";
-import PostList from "pages/community/communityComponent/PostList";
+import PostList from "./mypageComponent/PostList";
 import CrewList from "./mypageComponent/CrewList";
 import BattleList from "./mypageComponent/BattleList";
 import AccountModal from "./mypageComponent/AccountModal";
 import ProfileModal from "./mypageComponent/ProfileModal";
 import { Link, useNavigate } from "react-router-dom";
+
 
 import { usePost } from "hooks/community/usePost";
 
@@ -112,6 +113,7 @@ function MyPage(): JSX.Element {
   const [crewData, setCrewData] = useState<any[]>([]);
   const [battleData, setBattleData] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const openPersonalModal = () => setPersonalModalOpen(true);
   const closePersonalModal = () => setPersonalModalOpen(false);
@@ -120,24 +122,7 @@ function MyPage(): JSX.Element {
   const openAccountModal = () => setAccountModalOpen(true);
   const closeAccountModal = () => setAccountModalOpen(false);
   const openProfileModal = () => setProfileModalOpen(true);
-  const closeProfileModal = () => setProfileModalOpen(false);
-
-  const {
-    posts,
-    setPosts,
-    recommendedPosts,
-    setRecommendedPosts,
-    selectedPost,
-    setSelectedPost,
-    loading,
-    isAuthor,
-    fetchPosts,
-    fetchRecommendedPosts,
-    handlePostClick,
-    handleSavePost,
-    handleUpdatePost,
-    handleDelete,
-  } = usePost();
+  const closeProfileModal = () => setProfileModalOpen(false); 
 
   const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
@@ -364,34 +349,16 @@ function MyPage(): JSX.Element {
           ))}
         </Category>
       </Header>
-      <Content>
-        {selectedCategory === "내가 쓴 글" ||
-        selectedCategory === "좋아요 한 글" ? (
-          <PostList
-            posts={posts}
-            recommendedPosts={[]}
-            onPostClick={async (post) => {
-              try {
-                await handlePostClick(post, false);
-                // 상태 전달과 함께 communitypage로 이동
-                navigate("/communitypage", {
-                  state: {
-                    fromMyPage: true,
-                    selectedPostId: post.post_id,
-                    selectedPost: post, // 전체 post 객체 전달
-                  },
-                });
-              } catch (error) {
-                console.error("게시글 상세 조회 실패:", error);
-              }
-            }}
-          />
-        ) : selectedCategory === "참여한 크루" ? (
-          <CrewList crewData={crewData} />
-        ) : selectedCategory === "배틀 중" ? (
-          <BattleList battleData={battleData} />
-        ) : null}
-      </Content>
+    <Content>
+      {selectedCategory === "내가 쓴 글" ||
+      selectedCategory === "좋아요 한 글" ? (
+        <PostList postData={posts} />
+      ) : selectedCategory === "참여한 크루" ? (
+        <CrewList crewData={crewData} />
+      ) : selectedCategory === "배틀 중" ? (
+        <BattleList battleData={battleData} />
+      ) : null}
+    </Content>
     </Container>
   );
 }
