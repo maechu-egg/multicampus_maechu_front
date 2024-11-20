@@ -131,7 +131,7 @@ function CrewInfo({ crewId }: CrewInfoProps): JSX.Element {
                         style={{marginRight: "0px", width: '100%'}}
                     />
                 </div>
-                <div style={{width: '100%'}}>
+                <div style={{width: '100%', margin: "20px"}}>
                     <div className="d-flex justify-content-center">
                         <h1>{crewName}</h1>
                     </div>

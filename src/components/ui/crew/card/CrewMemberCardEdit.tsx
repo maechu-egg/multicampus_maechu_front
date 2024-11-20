@@ -12,6 +12,8 @@ interface Member {
     battle_wins: number;
     crew_member_state: number;
     badge_level: string;
+    email : string;
+    phone : string;
 }
 
 interface CrewInfoProps {
@@ -26,6 +28,24 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
     const token = state.token;
     const [imgPath, setImgPath] = useState<string>("");
     const [crewLeader, setCrewLeader] = useState<number>(0);
+    const [phoneNumber, setPhoneNumber] = useState('');
+
+    // 전화번호 포맷팅 함수
+    const formatPhoneNumber = (phone: string) => {
+        const cleaned = phone.replace(/\D/g, ''); // 숫자만 추출
+        if (cleaned.length === 11) {
+            return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+        }
+        return phone;
+    };
+
+    // 핸드폰 번호 포맷 설정
+    useEffect(() => {
+        if (member.phone) {
+            setPhoneNumber(formatPhoneNumber(member.phone));
+        }
+    }, [member.phone]);
+
 
     // 뱃지 레벨에 따른 이미지 세팅
     useEffect(() => {
@@ -161,9 +181,9 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
                                 <li><strong>배틀 승리:</strong> {member.battle_wins}</li>
                             </div>
                             <div className="socials">
-                                <i className="fa fa-phone"></i>: 010-1234-5678
+                                <i className="fa fa-phone"></i>: {phoneNumber}
                                 <br />
-                                <i className="fa fa-envelope"></i>: rkddmswhd@naver.com
+                                <i className="fa fa-envelope"></i>: {member.email}
                             </div>
                             <div className="d-flex">
                                 {member.crew_member_state === 0 && memberId == crewLeader && (
