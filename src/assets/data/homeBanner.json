@@ -1,0 +1,17 @@
+[
+  {
+    "image": "Banner1.png",
+    "label": "자유롭고 유익한 커뮤니티 공간",
+    "description": "A free and valuable community space"
+  },
+  {
+    "image": "Banner3.png",
+    "label": "사용자에 최적화된 운동과 식단기록 히스토리",
+    "description": "Personalized workout and diet history tailored to users"
+  },
+  {
+    "image": "Banner2.png",
+    "label": "내가 찾고 있던 운동인들의 완벽한 크루 공간",
+    "description": "The perfect space to find your ideal fitness crew"
+  }
+]

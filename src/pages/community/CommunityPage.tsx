@@ -10,13 +10,15 @@ import RecommendedKeywords from "./communityComponent/RecommendedKeywords";
 import categoriesJson from "../../assets/data/categories.json";
 import dataJson from "../../assets/data/data.json";
 import axios from "axios";
-import CategoryDropdown from './communityComponent/CategoryDropdown';
-import {  useLocation, useNavigate, useParams } from "react-router-dom";
-import { useComment } from '../../hooks/community/useComment';
-import { Post,usePost } from '../../hooks/community/usePost';
-import { useSearch } from '../../hooks/community/useSearch';
+import CategoryDropdown from "./communityComponent/CategoryDropdown";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useComment } from "../../hooks/community/useComment";
+import { Post, usePost } from "../../hooks/community/usePost";
+import { useSearch } from "../../hooks/community/useSearch";
 import { useCategory } from "hooks/community/useCategory";
 import { usePagination } from "hooks/community/usePagination";
+import LoginErrModal from "hooks/loginErrModal";
+import { useAuth } from "../../context/AuthContext";
 
 interface CategoryData {
   categories: string[];
@@ -44,43 +46,56 @@ function CommunityPage(): JSX.Element {
   const [totalPages, setTotalPages] = useState(1);
   const [totalpage, setTotalPage] = useState(0);
   const [activePost_sport, setActivePost_sport] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);  // currentPage 상태 추가
+  const [currentPage, setCurrentPage] = useState(1); // currentPage 상태 추가
   const postsPerPage = 10;
   const navigate = useNavigate();
   const { postId } = useParams<{ postId: string }>();
   const location = useLocation();
   const [currentKeywords, setCurrentKeywords] = useState(recommendedKeywords);
- 
-   // 2. usePost 훅을 먼저 사용
-   const {
-     posts,
-     setPosts,
-     recommendedPosts,
-     setRecommendedPosts,
-     selectedPost,
-     setSelectedPost,
-     loading,
-     isAuthor,
-     fetchPosts,
-     fetchRecommendedPosts,
-     handlePostClick,
-     handleSavePost,
-     handleUpdatePost,
-     handleDelete,
-   } = usePost();
- 
-   // 3. useSearch 훅
-   const {
-     isSearchActive,
-     setIsSearchActive,
-     searchTerm,
-     searchKeyword,
-     handleSearch,
-     handleKeywordClick,
-   } = useSearch(postsPerPage, setPosts, setCurrentPage, setTotalPages);
- 
-   // 4. useCategory 훅
-   const {
+  const [isLoginWarningOpen, setIsLoginWarningOpen] = useState<boolean>(false); //로그인 경고창 상태
+  const { state } = useAuth();
+  const { token } = state;
+
+  useEffect(() => {
+    if (!token) {
+      setIsLoginWarningOpen(true);
+    }
+  }, [token]);
+
+  const closeLoginWarning = () => {
+    setIsLoginWarningOpen(false);
+  };
+
+  // 2. usePost 훅을 먼저 사용
+  const {
+    posts,
+    setPosts,
+    recommendedPosts,
+    setRecommendedPosts,
+    selectedPost,
+    setSelectedPost,
+    loading,
+    isAuthor,
+    fetchPosts,
+    fetchRecommendedPosts,
+    handlePostClick,
+    handleSavePost,
+    handleUpdatePost,
+    handleDelete,
+  } = usePost();
+
+  // 3. useSearch 훅
+  const {
+    isSearchActive,
+    setIsSearchActive,
+    searchTerm,
+    searchKeyword,
+    handleSearch,
+    handleKeywordClick,
+  } = useSearch(postsPerPage, setPosts, setCurrentPage, setTotalPages);
+
+  // 4. useCategory 훅
+  const {
     activeTab,
     setActiveTab,
     loading: categoryLoading,
@@ -94,14 +109,11 @@ function CommunityPage(): JSX.Element {
     postsPerPage,
     setActivePost_sport,
     setTotalPages,
-     fetchPosts
+    fetchPosts,
   });
- 
-   // 5. usePagination 훅
-   const {
-    loading: paginationLoading,
-    handlePageChange
-  } = usePagination({
+
+  // 5. usePagination 훅
+  const { loading: paginationLoading, handlePageChange } = usePagination({
     totalpage,
     totalPages,
     postsPerPage,
@@ -116,9 +128,8 @@ function CommunityPage(): JSX.Element {
     setTotalPages,
     setTotalPage,
   });
-  
 
-    // 페이지 상태 초기화 함수
+  // 페이지 상태 초기화 함수
   const resetPageState = () => {
     setShowPostForm(false);
     setSelectedPost(null);
@@ -130,7 +141,7 @@ function CommunityPage(): JSX.Element {
   };
 
   const {
-    comments, 
+    comments,
     setComments,
     commentInput,
     setCommentInput,
@@ -139,50 +150,46 @@ function CommunityPage(): JSX.Element {
     handleCommentDelete,
   } = useComment();
 
-  
-// location이 변경될 때마다 상태 초기화
-useEffect(() => {
-  const locationState = location.state as { 
-    fromMyPage?: boolean;
-    selectedPostId?: number;
-    selectedPost?: any;
-  };
+  // location이 변경될 때마다 상태 초기화
+  useEffect(() => {
+    const locationState = location.state as {
+      fromMyPage?: boolean;
+      selectedPostId?: number;
+      selectedPost?: any;
+    };
 
-  if (locationState?.fromMyPage && locationState?.selectedPost) {
-    // MyPage에서 넘어온 경우, handlePostClick 함수를 직접 호출
-    handlePostClick(locationState.selectedPost, false);
-    getComments(locationState.selectedPost.post_id);
-  } else {
-    resetPageState();
-    fetchPosts("헬스 및 피트니스", "", 1, postsPerPage);
-  }
-}, [location]);
+    if (locationState?.fromMyPage && locationState?.selectedPost) {
+      // MyPage에서 넘어온 경우, handlePostClick 함수를 직접 호출
+      handlePostClick(locationState.selectedPost, false);
+      getComments(locationState.selectedPost.post_id);
+    } else {
+      resetPageState();
+      fetchPosts("헬스 및 피트니스", "", 1, postsPerPage);
+    }
+  }, [location]);
 
+  // 카테고리나 페이지 변경시
+  useEffect(() => {
+    if (!isSearchActive && !loading) {
+      fetchPosts(
+        activeTab, // 카테고리
+        activePost_sport, // 서브카테고리
+        currentPage, // 페이지 번호
+        postsPerPage // 페이지 크기
+      );
+    }
+  }, [activeTab, activePost_sport, currentPage]);
 
-// 카테고리나 페이지 변경시
-useEffect(() => {
-  if (!isSearchActive && !loading) {
-    fetchPosts(
-      activeTab,  // 카테고리
-      activePost_sport,  // 서브카테고리
-      currentPage,  // 페이지 번호
-      postsPerPage  // 페이지 크기
-    );
-  }
-}, [activeTab, activePost_sport, currentPage]);
+  useEffect(() => {
+    console.log("Updated posts:", posts);
+    console.log("Updated posts:", posts);
+  }, [posts]);
 
-useEffect(() => {
-    
-  console.log("Updated posts:", posts);
-  console.log("Updated posts:", posts);
-}, [posts]);
-
-
-useEffect(() => {
-  if (currentPage === 1) {
-    handlePageChange(1); // 첫 페이지로 자동 이동
-  }
-}, [activeTab, activePost_sport, currentKeywords]);
+  useEffect(() => {
+    if (currentPage === 1) {
+      handlePageChange(1); // 첫 페이지로 자동 이동
+    }
+  }, [activeTab, activePost_sport, currentKeywords]);
 
   useEffect(() => {
     if (!isSearchActive && activePost_sport === "") {
@@ -191,8 +198,8 @@ useEffect(() => {
   }, [activeTab]);
 
   useEffect(() => {
-    if (currentPage >= 1) { 
-      handlePageChange(1); 
+    if (currentPage >= 1) {
+      handlePageChange(1);
     }
   }, [activePost_sport]);
 
@@ -214,11 +221,11 @@ useEffect(() => {
     setSelectedPost(null);
     setIsEditing(false);
   };
-  
-  const handlereKeywordClick = (keyword: string, activeTab: string) => { 
+
+  const handlereKeywordClick = (keyword: string, activeTab: string) => {
     // 클릭 시 선택된 키워드를 상태로 업데이트
-    setCurrentKeywords([keyword]);  
-    console.log("Keyword clicked:", keyword); 
+    setCurrentKeywords([keyword]);
+    console.log("Keyword clicked:", keyword);
   };
 
   if (isEditing && selectedPost) {
@@ -232,11 +239,29 @@ useEffect(() => {
           post_sport: selectedPost.post_sport,
           post_hashtag: selectedPost.post_hashtag,
           post_sports_keyword: selectedPost.post_sports_keyword,
-          post_img1: selectedPost.post_img1?.split('/').pop()?.split('?')[0], // URL에서 파일명만 추출
-        post_img2: selectedPost.post_img2?.split('/').pop()?.split('?')[0], // URL에서 파일명만 추출
-      }}
-        onSave={(post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, post_hashtag, imageFiles) => 
-          handleUpdatePost(selectedPost.post_id, post_title, post_contents, post_up_sport, post_sport, post_sports_keyword, post_hashtag, imageFiles)}
+          post_img1: selectedPost.post_img1?.split("/").pop()?.split("?")[0], // URL에서 파일명만 추출
+          post_img2: selectedPost.post_img2?.split("/").pop()?.split("?")[0], // URL에서 파일명만 추출
+        }}
+        onSave={(
+          post_title,
+          post_contents,
+          post_up_sport,
+          post_sport,
+          post_sports_keyword,
+          post_hashtag,
+          imageFiles
+        ) =>
+          handleUpdatePost(
+            selectedPost.post_id,
+            post_title,
+            post_contents,
+            post_up_sport,
+            post_sport,
+            post_sports_keyword,
+            post_hashtag,
+            imageFiles
+          )
+        }
         onCancel={() => setIsEditing(false)}
         post_up_sports={post_up_sports}
         post_sports={post_sports}
@@ -248,60 +273,63 @@ useEffect(() => {
   if (selectedPost) {
     console.log("Selected Post Data:", {
       post_img1: selectedPost.post_img1,
-      post_img2: selectedPost.post_img2
+      post_img2: selectedPost.post_img2,
     });
     return (
-        <div className="community-container">
+      <div className="community-container">
         <div className="top">
-          <div className="topbackground"></div> 
-          <h2 className="top_title">커뮤니티</h2> 
+          <div className="topbackground"></div>
+          <h2 className="top_title">커뮤니티</h2>
         </div>
-      <PostDetail
-        post_id={selectedPost.post_id}
-        post_title={selectedPost.post_title}
-        post_contents={selectedPost.post_contents}
-        post_nickname={selectedPost.post_nickname}
-        post_date={selectedPost.post_date}
-        post_views={selectedPost.post_views}
-        post_up_sport={selectedPost.post_up_sport}
-        post_sport={selectedPost.post_sport}
-        post_sports_keyword={selectedPost.post_sports_keyword}
-        post_hashtag={selectedPost.post_hashtag}
-        likeStatus={selectedPost.likeStatus}
-        post_img1={selectedPost.post_img1}
-        post_img2={selectedPost.post_img2}
-        post_unlike_counts={selectedPost.post_unlike_counts}
-        post_like_counts={selectedPost.post_like_counts}
-        commets_count={selectedPost.comments_count}
-        unlikeStatus={selectedPost.unlikeStatus}
-        member_id={selectedPost.member_id}
-        author={selectedPost.author}
-        onBack={handleBack}
-        onEdit={handleEdit}
-        onDelete={() => handleDelete(selectedPost.post_id)}
-        comments={comments}
-        onAddComment={(content) => handleCommentSubmit(selectedPost.post_id, content)}
-        onCommentDelete={handleCommentDelete}
-        currentUserNickname={""}
-        getComments={getComments}
-        onCommentLike={(commentId, postId) => {
-          // 댓글 좋아요 처리 로직
-          console.log('Comment like:', commentId, postId);
-        }}
-        onCommentDislike={(commentId, postId) => {
-          // 댓글 싫어요 처리 로직
-          console.log('Comment dislike:', commentId, postId);
-        }}
-      />
+        <PostDetail
+          post_id={selectedPost.post_id}
+          post_title={selectedPost.post_title}
+          post_contents={selectedPost.post_contents}
+          post_nickname={selectedPost.post_nickname}
+          post_date={selectedPost.post_date}
+          post_views={selectedPost.post_views}
+          post_up_sport={selectedPost.post_up_sport}
+          post_sport={selectedPost.post_sport}
+          post_sports_keyword={selectedPost.post_sports_keyword}
+          post_hashtag={selectedPost.post_hashtag}
+          likeStatus={selectedPost.likeStatus}
+          post_img1={selectedPost.post_img1}
+          post_img2={selectedPost.post_img2}
+          post_unlike_counts={selectedPost.post_unlike_counts}
+          post_like_counts={selectedPost.post_like_counts}
+          commets_count={selectedPost.comments_count}
+          unlikeStatus={selectedPost.unlikeStatus}
+          member_id={selectedPost.member_id}
+          author={selectedPost.author}
+          onBack={handleBack}
+          onEdit={handleEdit}
+          onDelete={() => handleDelete(selectedPost.post_id)}
+          comments={comments}
+          onAddComment={(content) =>
+            handleCommentSubmit(selectedPost.post_id, content)
+          }
+          onCommentDelete={handleCommentDelete}
+          currentUserNickname={""}
+          getComments={getComments}
+          onCommentLike={(commentId, postId) => {
+            // 댓글 좋아요 처리 로직
+            console.log("Comment like:", commentId, postId);
+          }}
+          onCommentDislike={(commentId, postId) => {
+            // 댓글 싫어요 처리 로직
+            console.log("Comment dislike:", commentId, postId);
+          }}
+        />
       </div>
     );
   }
   /* 메인 화면 렌더링 */
   return (
     <div className="community-container">
-       <div className="top">
-        <div className="topbackground"></div> 
-        <h2 className="top_title">커뮤니티</h2> 
+      <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
+      <div className="top">
+        <div className="topbackground"></div>
+        <h2 className="top_title">커뮤니티</h2>
       </div>
       {!showPostForm && (
         <CategoryDropdown
@@ -311,9 +339,10 @@ useEffect(() => {
           onTabChange={handleCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           recommendedKeywords={recommendedKeywords}
-          onKeywordClick={(keyword) =>{ handleKeywordClick(keyword, activeTab); 
-            handlereKeywordClick(keyword, activeTab); 
-            setCurrentKeywords([keyword]); 
+          onKeywordClick={(keyword) => {
+            handleKeywordClick(keyword, activeTab);
+            handlereKeywordClick(keyword, activeTab);
+            setCurrentKeywords([keyword]);
           }}
         />
       )}
@@ -347,18 +376,18 @@ useEffect(() => {
             </button>
           </div>
           <h3 className="list_title">추천 게시글</h3>
-          <PostList 
-            posts={posts}  
-            recommendedPosts={recommendedPosts} 
-            onPostClick={handlePostClick} 
+          <PostList
+            posts={posts}
+            recommendedPosts={recommendedPosts}
+            onPostClick={handlePostClick}
           />
 
-  <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    onPageChange={handlePageChange}
-  />
-{console.log("totalPages:", totalPages)} 
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+          {console.log("totalPages:", totalPages)}
         </>
       )}
     </div>
