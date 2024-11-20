@@ -168,7 +168,7 @@ function ExercisePage(): JSX.Element {
         <SearchBar>
           <input
             type="text"
-            placeholder="운동 종목을 검색하세요"
+            placeholder="무슨 운동을 하셨나요? "
             value={searchTerm}
             onChange={handleSearchInputChange}
           />

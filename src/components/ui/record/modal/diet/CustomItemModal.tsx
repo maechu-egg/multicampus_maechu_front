@@ -137,7 +137,7 @@ const ModalContent = styled.div`
   max-width: 500px;
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
 `;
@@ -147,6 +147,8 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
 `;
 
 const Form = styled.div`
@@ -168,14 +170,15 @@ const FormItem = styled.div`
 `;
 
 const Input = styled.input`
-  padding: 8px;
+  padding: 10px;
   font-size: 14px;
   border: 1px solid #cccccc;
   border-radius: 5px;
   outline: none;
 
   &:focus {
-    border-color: #007bff;
+    border-color: #1D2636;
+    box-shadow: 0 0 5px rgba(29, 38, 54, 0.5);
   }
 `;
 
@@ -189,13 +192,13 @@ const Actions = styled.div`
 const Button = styled.button<{ cancel?: boolean }>`
   padding: 10px 20px;
   font-size: 14px;
-  color: ${(props) => (props.cancel ? "#666666" : "#ffffff")};
-  background: ${(props) => (props.cancel ? "#f0f0f0" : "#007bff")};
+  color: ${(props) => (props.cancel ? "#1D2636" : "#ffffff")};
+  background: ${(props) => (props.cancel ? "#f0f0f0" : "#1D2636")};
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
   &:hover {
-    background: ${(props) => (props.cancel ? "#e0e0e0" : "#0056b3")};
+    background: ${(props) => (props.cancel ? "#e0e0e0" : "#16202b")};
   }
 `;
