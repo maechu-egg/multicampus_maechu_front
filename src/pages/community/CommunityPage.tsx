@@ -172,6 +172,11 @@ useEffect(() => {
     console.log("MyPage에서 넘어온 게시글:", locationState.selectedPost);
     setSelectedPost(locationState.selectedPost);
     getComments(locationState.selectedPost.post_id);
+       // 페이지 상단으로 스크롤
+       window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
   } else {
     console.log("Resetting page state because:", {
       fromMyPage: locationState?.fromMyPage,
@@ -234,6 +239,11 @@ useEffect(() => {
   const handleBack = () => {
     setSelectedPost(null);
     setIsEditing(false);
+     // 페이지 상단으로 스크롤
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   const handlereKeywordClick = (keyword: string, activeTab: string) => {
