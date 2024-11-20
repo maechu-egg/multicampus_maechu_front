@@ -315,7 +315,6 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
   background: none;
-  font-family: 'Noto Sans KR', sans-serif;
 `;
 
 const SummaryCard = styled.div`

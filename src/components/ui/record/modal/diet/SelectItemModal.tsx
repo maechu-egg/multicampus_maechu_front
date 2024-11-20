@@ -289,40 +289,6 @@ const EmptyMessage = styled.p`
   margin-top: 20px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-`;
-
-const SaveButton = styled.button`
-  background: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-
-  &:hover {
-    background: #45a049;
-  }
-`;
-
-const CancelButton = styled.button`
-  background: #f44336;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-
-  &:hover {
-    background: #e53935;
-  }
-`;
-
 const Footer = styled.div`
   display: flex;
   justify-content: center;

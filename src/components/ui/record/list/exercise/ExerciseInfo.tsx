@@ -175,6 +175,7 @@ const ExercisePoint = styled.div`
 const InfoText = styled.p`
   margin: 8px 0;
   color: #4a4a4a;
+  font-family: 'ONE-Mobile-Title';
   font-size: 1rem;
   font-weight: 550;
 
@@ -196,6 +197,7 @@ const ControlButton = styled.button`
   color: #4A5568;
   border: none;
   cursor: pointer;
+  font-family: 'ONE-Mobile-Title';
   font-size: 1.4rem;
   font-weight: bold;
   margin: 0 7px;
@@ -218,6 +220,7 @@ const ActionButton = styled.button`
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  font-family: 'ONE-Mobile-Title';
   font-size: 0.9rem;
   font-weight: bold;
   align-self: left;

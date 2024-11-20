@@ -153,6 +153,7 @@ const ItemPoint = styled.div`
 const InfoText = styled.p`
   margin: 8px 0;
   color: #4a4a4a;
+  font-family: 'ONE-Mobile-Title';
   font-size: 1rem;
   font-weight: 550;
 
@@ -174,6 +175,7 @@ const ControlButton = styled.button`
   color: #1d2636;
   border: none;
   cursor: pointer;
+  font-family: 'ONE-Mobile-Title';
   font-size: 1.4rem;
   font-weight: bold;
   margin: 0 7px;

@@ -208,7 +208,6 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
   background: #b6c0d3;
-  font-family: 'Noto Sans KR', sans-serif;
 `;
 
 const SummaryCard = styled.div`
