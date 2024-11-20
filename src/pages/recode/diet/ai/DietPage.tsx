@@ -201,6 +201,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
   // ... existing code ...
 
   const handleAddMeal = async (mealType: keyof MealPlanData) => {
+    console.log("debug >>> handlerAddMeal start !!! ");
     console.log("debug: mealType", mealType);
     if (!meals || !meals[mealType]) {
       console.error(`No meal data available for ${mealType}`);
@@ -218,7 +219,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
           dinner: 'DINNER',
           snack: 'SNACK',
         };
-        console.log("debug: mealTypeMap", mealTypeMap);
+        console.log("debug: mealType", mealType);
   
         if (!mealTypeMap[mealType]) {
           console.error(`Invalid mealType: ${mealType}`);
@@ -226,7 +227,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         }
 
         // `dietList` 조건 확인
-        const dietExists = dietList.some(diet => diet.meal_type === mealTypeMap[mealType]);
+        const dietExists = dietList.some(diet => diet.meal_type === mealType);
 
         console.log("debug >>> dietExists : " + dietExists);
 
@@ -245,15 +246,17 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
             console.log("debug: dietId", dietId);
             await addItemsToDiet(dietId, meals[mealType]);
             alert('식단이 추가되었습니다.');
+            navigate(`/record/diet/${selectedDate}/${mealType}`);
           }
         } else {
           // 조건을 만족하면 items만 추가
           if (meals && dietList) {
-            const existingDiet = dietList.find(diet => diet.meal_type === mealTypeMap[mealType]);
+            const existingDiet = dietList.find(diet => diet.meal_type === mealType);
             if (existingDiet) {
               console.log("debug: existingDiet", existingDiet);
               await addItemsToDiet(existingDiet.diet_id, meals[mealType]);
               alert('기존 식단에 항목이 추가되었습니다.');
+              navigate(`/record/diet/${selectedDate}/${mealType}`);
             }
           }
         }
@@ -262,6 +265,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         alert('식단 추가에 실패했습니다.');
       }
     }
+    console.log("debug >>> handlerAddMeal end !!! ");
   };
 
   const addItemsToDiet = async (dietId: number, mealData: MealData) => {
@@ -271,9 +275,13 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
     const { foods, amounts, nutritionalInfo } = mealData;
     console.log("debug: mealData", mealData);
   
+    console.log("debug >>> addItemsToDiet start !!! ");
+
     for (let i = 0; i < foods.length; i++) {
       const food = foods[i];
-      const amount = parseInt(amounts[i], 10); // 양을 정수로 변환
+      const amount = amounts[i].match(/\d+g/g)
+      ?.map((item: string) => parseInt(item.replace('g', ''), 10))
+      .reduce((acc: number, curr: number) => acc + curr, 0) || 0;; // 양을 정수로 변환
       const nutrition = nutritionalInfo[i] || {
         carbs: 0,
         protein: 0,
@@ -306,6 +314,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
       } catch (error) {
         console.error('식품 추가 중 오류 발생:', error);
       }
+      console.log("debug >>> addItemsToDiet end !!! ");
     }
   };
 
@@ -313,19 +322,18 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
   useEffect(() => {
     fetchData();
-    findDietAndItems();
+    findDiet();
   }, []);
 
 
   const fetchData = async () => {
+    console.log("debug >>> fetchData start !!! ");
+
     if (memberId !== undefined && state.token) {
       try {
-        const token = state.token;
-        console.log('Token:', token); // 토큰 확인용 로그
-
         const response = await axios.get('http://localhost:8001/record/summary/daily', {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${state.token}`,
             'Content-Type': 'application/json'
           },
           withCredentials: true // 쿠키 포함 설정 추가
@@ -334,9 +342,8 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         if (response.data) {
           const apiData = response.data;
           setData(apiData);
+          console.log("debug >>> apiData true !!! ");
         }
-        
-        console.log("debug >>> apiData : " + response.data );
 
       } catch (error: any) {
         console.error('데이터를 가져오는 중 오류 발생:', error);
@@ -352,13 +359,14 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
       console.log('No memberId or token available');
       navigate('/login', { replace: true });
     }
+    console.log("debug >>> fetchData end !!! ");
   };
   
   //
-  const findDietAndItems = async () => {
+  const findDiet = async () => {
     if (memberId !== undefined && state.token) {
 
-      console.log("debug >>> findDietAndItems start !!");
+      console.log("debug >>> findDiet start !!");
 
       try {
         const token = state.token;
@@ -373,12 +381,15 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
           withCredentials: true // 쿠키 포함 설정 추가
         });
 
-        console.log("debug >>> findDietAndItems result : " + response.data);
-
-        if (response.data) {
-            console.log("debug >>> dietList : " + response.data);
+        if (response.data.length > 0) {
             setDietList(response.data);
-          };
+            response.data.forEach((item:DietResponseDTO, index:number) => {
+              console.log(`debug >>> diet item ${index + 1}:`, item);
+            });    
+          } else{
+            console.log("debug >>> 식단 테이블이 하나도 없습니다.")
+          }
+          console.log("debug >>> findDiet end !!");
         }
         catch (error: any) {
         console.error('데이터를 가져오는 중 오류 발생:', error);
@@ -618,7 +629,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
                       <option value="보통">보통</option>
                       <option value="어려움">어려움</option>
                   </Input>
-
+                  <br/>
                   <RecommendButton onClick={handleRecommend} disabled={isLoading}>
                     {isLoading ? '추천받는 중...' : '추천받기'}
                   </RecommendButton>
@@ -936,7 +947,7 @@ const ModalContent = styled.div`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); // 그림자 추가
   max-width: 500px; // 최대 너비 설정
   width: 90%; // 반응형 너비
-  max-height: 80vh; // 최대 높이 설정
+  max-height: 75vh; // 최대 높이 설정
   overflow-y: auto; // 세로 스크롤 가능
 `;
 
@@ -972,10 +983,9 @@ const CloseButton = styled.button`
 const ModalBody = styled.div`
   font-size: 16px;
   color: #333; // 본문 텍스트 색상
-  line-height: 1.5; // 줄 간격
+  line-height: 1.7; // 줄 간격
   overflow-y: auto;
   padding: 0 10px;
-  margin-bottom: 60px;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -999,7 +1009,6 @@ const ModalBody = styled.div`
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
 `;
 
 const Input = styled.input`
