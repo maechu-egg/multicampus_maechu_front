@@ -33,6 +33,57 @@ interface MealPlanData {
   snack: MealData;
 }
 
+interface SummaryData {
+	// 일일 섭취 칼로리
+	consumed: {
+		// 탄수화물
+		carb: number,
+		// 양
+		quantity: number,
+		// 지방 비율
+		fatRatio: number,
+		// 탄수화물 비율
+		carbRatio: number,
+		// 단백질 비율
+		protein: number,
+		// 칼로리
+		calorie: number,
+		// 지방
+		fat: number,
+		// 단백질 비율
+		proteinRatio: number
+	},
+	// 소모 칼로리
+	burnedCalories: number,
+	// 일일 권장 칼로리(탄단지비율) 및 bmr, tdee 과 다이어트 목표
+	recommended: {
+		// 목표 탄수화물
+		recommendedCarb: number,
+		// 지방 비율
+		fatRate: number,
+		// 목표 칼로리
+		recommendedCalories: number,
+		// 다이어트 목표
+		goal: string,
+		// 목표 단백질
+		recommendedProtein: number,
+		// bmr(최소 칼로리)
+		bmr: number,
+		// tdee(권장 칼로리)
+		tdee: number,
+		// 몸무게
+		weight: number,
+		// 키
+		height: number,
+		// 탄수화물 비율
+		carbRate: number,
+		// 단백질 비율
+		proteinRate: number,
+		// 목표 지방
+		recommendedFat: number
+	}
+}
+
 // 전역 스타일 추가
 const GlobalStyle = createGlobalStyle`
   body {
@@ -47,16 +98,7 @@ function DietPage() {
   const { state } = useAuth(); // 로그인한 사용자 정보 가져오기
   const memberId = state.memberId; // user 객체에서 memberId 가져오기
   const { selectedDate } = useParams<{ selectedDate: string}>();  
-  const [data, setData] = useState<{
-    bmr: number;
-    tdee: number;
-    weight: number;
-    goal: string;
-    recommendedCalories: number;
-    recommendedProtein: number;
-    recommendedCarb: number;
-    recommendedFat: number;
-  } | null>(null);
+  const [data, setData] = useState<SummaryData | null>(null);
   
   const [dietList, setDietList] = useState<DietResponseDTO[]>([]);
 
@@ -184,7 +226,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         }
 
         // `dietList` 조건 확인
-        const dietExists = dietList.length > 0 && dietList.some(diet => diet.meal_type === mealTypeMap[mealType]);
+        const dietExists = dietList.some(diet => diet.meal_type === mealTypeMap[mealType]);
 
         console.log("debug >>> dietExists : " + dietExists);
 
@@ -281,7 +323,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         const token = state.token;
         console.log('Token:', token); // 토큰 확인용 로그
 
-        const response = await axios.get('http://localhost:8001/record/diet/calculate/tdee', {
+        const response = await axios.get('http://localhost:8001/record/summary/daily', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -291,16 +333,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
         if (response.data) {
           const apiData = response.data;
-          setData({
-            bmr: apiData.bmr,
-            tdee: apiData.tdee,
-            weight: apiData.weight,
-            goal: apiData.goal,
-            recommendedCalories: apiData.recommendedCalories,
-            recommendedProtein: apiData.recommendedProtein,
-            recommendedCarb: apiData.recommendedCarb,
-            recommendedFat: apiData.recommendedFat,
-          });
+          setData(apiData);
         }
         
         console.log("debug >>> apiData : " + response.data );
@@ -342,7 +375,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
         console.log("debug >>> findDietAndItems result : " + response.data);
 
-        if (response.data !== null) {
+        if (response.data) {
             console.log("debug >>> dietList : " + response.data);
             setDietList(response.data);
           };
@@ -367,8 +400,8 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
   const fetchDietPlan = async () => {
     if (data && state.token) {
       const requestBody = {
-        calories: data.recommendedCalories,
-        goal: data.goal,
+        calories: data.recommended.recommendedCalories,
+        goal: data.recommended.goal,
         ingredients: ingredients,
         dietaryRestrictions: dietaryRestrictions.split(",").map(item => item.trim()),
         allergies: allergies.split(",").map(item => item.trim()),
@@ -486,7 +519,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
           <InfoContainer>
             {data ? (
               <>
-                <TotalCalories>Total : {data.tdee} kcal</TotalCalories>
+                <TotalCalories> 키 : {data.recommended.height} cm &nbsp; 몸무게 : {data.recommended.weight} kg </TotalCalories>
                 <CurrentDate>{new Date().toLocaleDateString('ko-KR')} {new Date().toLocaleString('ko-KR', { weekday: 'long' })}</CurrentDate>
               </>
             ) : (
@@ -494,23 +527,38 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
             )}
           </InfoContainer>
         </Header>
-        <GoalContainer>
         {data ? (
-          <>
-            <div className="nutrition-info">
-            <h2>{data.weight} kg</h2>
-            <p>목표: {data.goal}</p>
-            <p>추천 칼로리: {data.recommendedCalories} kcal</p>
-            <p>추천 단백질: {data.recommendedProtein} g</p>
-            <p>추천 탄수화물: {data.recommendedCarb} g</p>
-            <p>추천 지방: {data.recommendedFat} g</p>
+          <GoalContainer>
+            <div className="weight-info">
+            <h2>{data.recommended.goal}</h2>
             </div>
-          </>
-        ) : (
+            <div className="goal-consumed-container">
+              <div className="nutrition-info">
+                <h3>목표</h3>
+                <div className="info-block">
+                  <div>
+                    <p>권장 칼로리: {data.recommended.recommendedCalories} kcal</p>
+                    <p>권장 단백질: {data.recommended.recommendedProtein} g</p>
+                    <p>권장 탄수화물: {data.recommended.recommendedCarb} g</p>
+                    <p>권장 지방: {data.recommended.recommendedFat} g</p>
+                  </div>
+                </div>
+              </div>
+              <div className="nutrition-info">
+                <h3>섭취량</h3>
+                <div className="info-block">
+                  <div>
+                    <p>섭취 칼로리: {data.consumed.calorie} kcal</p>
+                    <p>섭취 탄수화물: {data.consumed.carb} g</p>
+                    <p>섭취 단백질: {data.consumed.protein} g</p>
+                    <p>섭취 지방: {data.consumed.fat} g</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </GoalContainer>) : (
           <Goal>표 정보를 로딩 중...</Goal>
         )}
-      </GoalContainer>
-
         {/* 메인 화면의 식단 추천 버튼 */}
         <RecommendationButton onClick={handleRecommendationClick}>
           식단 추천
@@ -521,8 +569,8 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
             <RecordItem key={index} onClick={() => handleRecordClick(record.food)}>
               <FoodIcon>
                 {record.food === "breakfast" ? "🍳" : 
-                 record.food === "lunch" ? "🍚" : 
-                 record.food === "dinner" ? "🥗" : 
+                 record.food === "lunch" ? "🥗" : 
+                 record.food === "dinner" ? "🍚" : 
                  record.food === "snack" ? "🍰" : ""}
               </FoodIcon>
               <FoodName>{foodLabels[record.food as keyof typeof foodLabels]}</FoodName>
@@ -541,10 +589,10 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
               <ModalBody>
                 <InputContainer>
                   <label>목표 칼로리:</label>
-                  <Input type="number" value={data?.recommendedCalories || 0} readOnly />
+                  <Input type="number" value={data?.recommended.recommendedCalories || 0} readOnly />
 
                   <label>식단 목표:</label>
-                  <Input type="text" value={data?.goal || ""} readOnly />
+                  <Input type="text" value={data?.recommended.goal || ""} readOnly />
                   
                   <label>재료 (쉼표로 구분 예: 쌀, 계란, 닭가슴살):</label>
                   <Input type="text" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
@@ -758,13 +806,18 @@ const GoalContainer = styled.div`
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
 
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
+  .weight-info {
+    align-self: flex-start;
+    margin-bottom: 15px;
+
+    h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0;
+    }
   }
 
   p {
@@ -772,18 +825,36 @@ const GoalContainer = styled.div`
     margin: 5px 0;
   }
 
-  .nutrition-info {
+  .goal-consumed-container {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 15px;
+    gap: 20px;
+  }
 
-    span {
-      font-size: 16px;
-      font-weight: bold;
+  .nutrition-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .info-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 `;
+
 
 const Goal = styled.div`
   font-size: 18px;
