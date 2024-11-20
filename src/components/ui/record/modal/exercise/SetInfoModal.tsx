@@ -87,15 +87,15 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
                 <InfoText>세트 {index + 1}</InfoText>
                 {editingSetId === set.set_id ? (
                   <>
-                    <InfoText>
-                      무게: <input type="number" value={editData.weight} onChange={(e) => handleInputChange("weight", parseInt(e.target.value))} /> kg
-                    </InfoText>
-                    <InfoText>
-                      횟수: <input type="number" value={editData.repetitions} onChange={(e) => handleInputChange("repetitions", parseInt(e.target.value))} /> 회
-                    </InfoText>
-                    <InfoText>
-                      거리: <input type="number" value={editData.distance} onChange={(e) => handleInputChange("distance", parseFloat(e.target.value))} /> km
-                    </InfoText>
+                    <Label>
+                      무게: <input type="number" value={editData.weight} onChange={(e) => handleInputChange("weight", parseInt(e.target.value))} />
+                    </Label>
+                    <Label>
+                      횟수: <input type="number" value={editData.repetitions} onChange={(e) => handleInputChange("repetitions", parseInt(e.target.value))} />
+                    </Label>
+                    <Label>
+                      거리: <input type="number" value={editData.distance} onChange={(e) => handleInputChange("distance", parseFloat(e.target.value))} /> 
+                    </Label>
                     <SaveButton onClick={handleSave}>저장</SaveButton>
                   </>
                 ) : (
@@ -188,6 +188,23 @@ const InfoText = styled.p`
   margin: 0;
   font-size: 1rem;
   color: #444;
+`;
+
+const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-weight: bold;
+  font-size: 14px;
+  color: #555555;
+
+  input {
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 `;
 
 const ControlButtonContainer = styled.div`

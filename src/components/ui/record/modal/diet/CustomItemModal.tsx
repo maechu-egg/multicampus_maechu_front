@@ -19,23 +19,27 @@ interface CustomItemModalProps {
 
 const CustomItemModal = ({ searchTerm, onClose, onSave }: CustomItemModalProps): JSX.Element => {
     const [foodNm, setFoodNm] = useState<string>(searchTerm);
-    const [inputQuantity, setInputQuantity] = useState<string>(""); // 빈 문자열로 초기화
-    const [energy, setEnergy] = useState<string>("");
-    const [carbs, setCarbs] = useState<string>("");
-    const [protein, setProtein] = useState<string>("");
-    const [fat, setFat] = useState<string>("");
+    const [inputQuantity, setInputQuantity] = useState<null | number>(null); // 빈 문자열로 초기화
+    const [energy, setEnergy] = useState<null | number>(null);
+    const [carbs, setCarbs] = useState<null | number>(null);
+    const [protein, setProtein] = useState<null | number>(null);
+    const [fat, setFat] = useState<null | number>(null);
   
     const handleSave = () => {
-      const dto: FoodCalculateDTO = {
-        foodNm,
-        inputQuantity: Number(inputQuantity), // 빈 문자열은 0으로 처리
-        energy: Number(energy),
-        carbs: Number(carbs),
-        protein: Number(protein),
-        fat: Number(fat),
-        diet_id: 0,
+      if(inputQuantity && energy && 
+         carbs && protein && fat){
+
+         const dto: FoodCalculateDTO = {
+          foodNm,
+          inputQuantity: inputQuantity, // 빈 문자열은 0으로 처리
+          energy: energy,
+          carbs: carbs,
+          protein: protein,
+          fat: fat,
+          diet_id: 0,
+        };
+        onSave(dto);  
       };
-      onSave(dto);
     };
 
     return (
@@ -51,46 +55,52 @@ const CustomItemModal = ({ searchTerm, onClose, onSave }: CustomItemModalProps):
                 type="text"
                 value={foodNm}
                 onChange={(e) => setFoodNm(e.target.value)}
+                placeholder="음식을 입력해주세요"
               />
             </FormItem>
             <FormItem>
               <label>양</label>
               <Input
                 type="number"
-                value={inputQuantity}
-                onChange={(e) => setInputQuantity(e.target.value)} // 문자열로 처리
+                value={inputQuantity !== null ? inputQuantity : undefined}
+                onChange={(e) => setInputQuantity(parseInt(e.target.value))} // 문자열로 처리
+                placeholder="양을 입력해주세요"
               />
             </FormItem>
             <FormItem>
               <label>칼로리</label>
               <Input
                 type="number"
-                value={energy}
-                onChange={(e) => setEnergy(e.target.value)}
+                value={energy!== null ? energy : undefined}
+                onChange={(e) => setEnergy(parseInt(e.target.value))}
+                placeholder="칼로리를 입력해주세요"
               />
             </FormItem>
             <FormItem>
               <label>탄수화물</label>
               <Input
                 type="number"
-                value={carbs}
-                onChange={(e) => setCarbs(e.target.value)}
+                value={carbs !== null ? carbs : undefined}
+                onChange={(e) => setCarbs(parseInt(e.target.value))}
+                placeholder="탄수화물을 입력해주세요"
               />
             </FormItem>
             <FormItem>
               <label>단백질</label>
               <Input
                 type="number"
-                value={protein}
-                onChange={(e) => setProtein(e.target.value)}
+                value={protein !== null ? protein : undefined}
+                onChange={(e) => setProtein(parseInt(e.target.value))}
+                placeholder="단백질을 입력해주세요"
               />
             </FormItem>
             <FormItem>
               <label>지방</label>
               <Input
                 type="number"
-                value={fat}
-                onChange={(e) => setFat(e.target.value)}
+                value={fat !== null ? fat : undefined}
+                onChange={(e) => setFat(parseInt(e.target.value))}
+                placeholder="지방을 입력해주세요"
               />
             </FormItem>
           </Form>

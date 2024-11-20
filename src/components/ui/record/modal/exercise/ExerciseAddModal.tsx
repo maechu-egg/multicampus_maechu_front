@@ -22,9 +22,8 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
   const { state } = useAuth();
   const token = state.token;
 
-  const [exerciseType, setExerciseType] = useState(searchTerm);
-  const [duration, setDuration] = useState<number>(0);
-  const [intensity, setIntensity] = useState<string>("HIGH");
+  const [duration, setDuration] = useState<number | null>(null);
+  const [intensity, setIntensity] = useState<string | null>(null);
   const [exerciseId, setExerciseId] = useState<number>(0);
   const [sets, setSets] = useState<SetInfo[]>([]); // 세트 정보를 저장하는 상태
   const [isSetModalOpen, setIsSetModalOpen] = useState(false); // 세트 추가 모달 상태
@@ -33,7 +32,7 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
   const exerciseInsert = async () => {
     try {
       const response = await api.post("record/exercise/insert/type", {
-        exercise_type: exerciseType,
+        exercise_type: searchTerm,
         intensity: intensity,
         duration: duration,
         member_id: state.memberId,
@@ -112,15 +111,20 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
         <h3>새로운 운동 추가</h3>
         <Label>
           운동:
-          <input type="text" value={exerciseType} onChange={(e) => setExerciseType(e.target.value)} />
+          <input type="text" value={searchTerm} readOnly/>
         </Label>
         <Label>
           시간 (분):
-          <input type="number" value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} />
+          <input type="number"
+            value={duration !== null ? duration : undefined}
+            onChange={(e) => setDuration(parseInt(e.target.value))}
+            placeholder="시간을 입력해주세요"
+          />
         </Label>
         <Label>
           강도:
-          <select value={intensity} onChange={(e) => setIntensity(e.target.value)}>
+          <select value={intensity !== null ? intensity : undefined} onChange={(e) => setIntensity(e.target.value)}>
+            <option value="" disabled selected hidden>강도를 선택하세요</option>
             <option value="HIGH">상</option>
             <option value="GENERAL">중</option>
             <option value="LOW">하</option>

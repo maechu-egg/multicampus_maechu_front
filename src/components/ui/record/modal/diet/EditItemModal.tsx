@@ -7,11 +7,13 @@ interface EditItemModalProps {
 }
 
 const EditItemModal = ({onClose, onSave}: EditItemModalProps): JSX.Element => {
-    const [updatedQuantity,setUpdatedQuantity] = useState(0);
+    const [updatedQuantity,setUpdatedQuantity] = useState<number | null>(null);
 
     const handleSave = () => {
+      if(updatedQuantity !== null){
         onSave(updatedQuantity); // 부모 컴포넌트로 수정된 값 전달
         onClose();
+      };
     };
 
     return (
@@ -22,8 +24,9 @@ const EditItemModal = ({onClose, onSave}: EditItemModalProps): JSX.Element => {
               양
               <input
                 type="number"
-                value={updatedQuantity}
+                value={updatedQuantity !== null ? updatedQuantity : ''}
                 onChange={(e) => setUpdatedQuantity(parseInt(e.target.value))}
+                placeholder="양을 입력하세요"
               />
             </label>
             <ButtonContainer>
