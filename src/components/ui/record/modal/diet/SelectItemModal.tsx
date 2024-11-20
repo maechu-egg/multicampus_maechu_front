@@ -212,9 +212,10 @@ const ModalContent = styled.div`
   max-width: 500px;
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
+  border: 1px solid #e0e0e0;
 `;
 
 const Header = styled.div`
@@ -225,14 +226,16 @@ const Header = styled.div`
 `;
 
 const CloseButton = styled.button`
-  background: transparent;
+  background: #1D2636;
+  color: white;
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #666666;
+  border-radius: 5px;
+  padding: 10px 15px;
 
   &:hover {
-    color: #ff5a5a;
+    background: #16202b;
   }
 `;
 
@@ -327,11 +330,12 @@ const Footer = styled.div`
   display: flex;
   justify-content: center;
   padding: 16px;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #e0e0e0;
+  background: #f9f9f9;
 `;
 
 const ManualEntryButton = styled.button`
-  background-color: #007bff;
+  background-color: #1D2636;
   color: white;
   border: none;
   border-radius: 4px;
@@ -340,7 +344,7 @@ const ManualEntryButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #16202b;
   }
 `;
 

@@ -18,11 +18,17 @@ interface DietRecord {
   totalCalories: number;
 }
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    background-color: #b6c0d3;
-  }
-`;
+
+// 사용자에게 보여줄 설명문
+/*
+  환영합니다! 이 페이지는 여러분의 운동 및 식단 기록을 관리하는 곳입니다.
+  
+  - **캘린더**: 월별로 운동과 식단 기록을 확인하세요.
+  - **기록 추가**: 날짜를 클릭하여 운동 및 식단 기록을 추가하거나 수정할 수 있습니다.
+  - **칼로리 추적**: 월간 소모 및 섭취 칼로리를 확인하여 건강한 생활을 유지하세요.
+
+  여러분의 건강한 라이프스타일을 응원합니다!
+*/
 
 function RecordPage(): JSX.Element {
   const [exerciseDates, setExerciseDates] = useState<string[]>([]);
@@ -250,119 +256,126 @@ function RecordPage(): JSX.Element {
   );
 };
 
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: #b6c0d3;
+  }
+`;
+
 // 스타일 컴포넌트 추가
 const ModalOverlay = styled.div`
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1000;
-  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.7); // 모달 배경의 반투명 검정색
+  display: flex; // 플렉스 박스 사용
+  justify-content: center; // 수평 중앙 정렬
+  align-items: center; // 수직 중앙 정렬
+  position: fixed; // 고정 위치
+  top: 0; // 상단에 위치
+  left: 0; // 좌측에 위치
+  width: 100%; // 전체 너비
+  height: 100%; // 전체 높이
+  z-index: 1000; // 다른 요소 위에 표시
+  backdrop-filter: blur(8px); // 배경 흐림 효과
 `;
 
 const ModalContent = styled.div`
-  background: linear-gradient(135deg, #f0f0f0, #ffffff);
-  border-radius: 15px;
-  padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  max-width: 500px;
-  width: 90%;
-  position: relative;
-  animation: zoomIn 0.3s ease-in-out;
+  background: linear-gradient(135deg, #f0f0f0, #ffffff); // 그라데이션 배경
+  border-radius: 15px; // 둥근 모서리
+  padding: 40px; // 내부 여백
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); // 그림자 효과
+  text-align: center; // 텍스트 중앙 정렬
+  max-width: 500px; // 최대 너비
+  width: 90%; // 너비 비율
+  position: relative; // 상대 위치
+  animation: zoomIn 0.3s ease-in-out; // 애니메이션 효과
 
   @keyframes zoomIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.8); } // 애니메이션 시작 상태
+    to { opacity: 1; transform: scale(1); } // 애니메이션 종료 상태
   }
 `;
 
 const ModalHeader = styled.h3`
-  margin-bottom: 20px;
-  font-size: 28px;
-  font-weight: 700;
-  color: #444;
-  letter-spacing: 1px;
+  margin-bottom: 20px; // 하단 여백
+  font-size: 28px; // 글자 크기
+  font-weight: 700; // 글자 두께
+  color: #444; // 글자 색상
+  letter-spacing: 1px; // 글자 간격
 `;
 
 const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
+  display: flex; // 플렉스 박스 사용
+  justify-content: space-around; // 버튼 간격 조정
+  margin-bottom: 20px; // 하단 여백
 `;
 
 const ModalButton = styled.button`
-  background-color: #1D2636;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  padding: 15px 30px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  background-color: #1D2636; // 버튼 배경색
+  color: white; // 글자 색상
+  border: none; // 테두리 없음
+  border-radius: 25px; // 둥근 모서리
+  padding: 15px 30px; // 내부 여백
+  cursor: pointer; // 커서 포인터
+  font-size: 16px; // 글자 크기
+  font-weight: 600; // 글자 두께
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s; // 전환 효과
 
   &:hover {
-    background-color: #414d60;
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background-color: #414d60; // 호버 시 배경색 변경
+    transform: scale(1.05); // 호버 시 크기 증가
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); // 호버 시 그림자 효과
   }
 `;
 
 const CloseButton = styled.button`
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 24px;
-  color: #bbb;
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  transition: color 0.3s;
+  background-color: transparent; // 투명 배경
+  border: none; // 테두리 없음
+  cursor: pointer; // 커서 포인터
+  font-size: 24px; // 글자 크기
+  color: #bbb; // 글자 색상
+  position: absolute; // 절대 위치
+  top: 15px; // 상단 위치
+  right: 15px; // 우측 위치
+  transition: color 0.3s; // 색상 전환 효과
 
   &:hover {
-    color: #888;
+    color: #888; // 호버 시 색상 변경
   }
 `;
 
 const Wrapper = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  margin-top: 0px;
-  background: #b6c0d3;  // 바탕색 변경
-  border-radius: 0;  // 모서리 둥글기 제거
-  border: none;      // 테두리 제거
-  box-shadow: none;  // 그림자 효과 제거
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 1200px; // 최대 너비
+  margin: 0 auto; // 중앙 정렬
+  padding: 20px; // 내부 여백
+  margin-top: 0px; // 상단 여백
+  background: #b6c0d3; // 배경색
+  border-radius: 0; // 모서리 둥글기 제거
+  border: none; // 테두리 제거
+  box-shadow: none; // 그림자 효과 제거
+  overflow: hidden; // 오버플로우 숨김
+  display: flex; // 플렉스 박스 사용
+  flex-direction: column; // 세로 방향 정렬
+  align-items: center; // 중앙 정렬
 
   /* Calendar "Header" Feel for Title */
   .calendar-header {
     background-color: transparent; // 배경색을 투명하게 변경
-    border-bottom: none;           // 하단 테두리 제거
-    padding: 15px;
-    width: 100%;
-    border-top-left-radius: 0;     // 모서리 둥글기 제거
-    border-top-right-radius: 0;    // 모서리 둥글기 제거
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-bottom: none; // 하단 테두리 제거
+    padding: 15px; // 내부 여백
+    width: 100%; // 전체 너비
+    border-top-left-radius: 0; // 모서리 둥글기 제거
+    border-top-right-radius: 0; // 모서리 둥글기 제거
+    display: flex; // 플렉스 박스 사용
+    align-items: center; // 중앙 정렬
+    justify-content: center; // 중앙 정렬
   }
 
   @media (max-width: 850px) {
-    padding: 20px;
+    padding: 20px; // 반응형 패딩 조정
   }
 
   @media (max-width: 710px) {
-    padding: 10px;
+    padding: 10px; // 반응형 패딩 조정
   }
 `;
 
