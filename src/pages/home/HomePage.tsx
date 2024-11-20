@@ -134,7 +134,7 @@ function HomePage(): JSX.Element {
     setIsLoginWarningOpen(false);
   };
 
-  const handleSwapClick = async (swap: Swap) => {
+  const handleSwapClick = async (post: Swap | TodayWorkout) => {
     try {
       if (!token) {
         console.error("No token available");
@@ -142,17 +142,15 @@ function HomePage(): JSX.Element {
       }
   
       // 게시글 상세 정보 가져오기
-      const response = await postApi.getPostDetail(swap.post_id, swap.author, token);
+      const response = await postApi.getPostDetail(post.post_id, 'author' in post ? post.author : false, token);
       const detailedPost = response.data;
       console.log("Detailed post data:", detailedPost);
   
       const stateData = { 
-        fromMyPage: true,  // CommunityPage에서 이미 이 상태를 처리하는 로직이 있으므로 활용
+        fromMyPage: true,
         selectedPost: detailedPost,
         isRecommended: false
       };
-      
-      console.log("Navigating with state:", stateData);
       
       navigate('/communitypage', {
         state: stateData,
@@ -386,13 +384,15 @@ function HomePage(): JSX.Element {
           <CardSlider>
             {[...todayWorkout, ...todayWorkout].map((workout, index) => (
               <Card
-                key={index}
-                backgroundImage={
-                  workout.post_img1
-                    ? `${BASE_URL}${workout.post_img1}`
-                    : "/img/default/workDefault1.png"
-                }
-              >
+              key={index}
+              backgroundImage={
+                workout.post_img1
+                  ? `${BASE_URL}${workout.post_img1}`
+                  : "/img/default/workDefault1.png"
+              }
+              onClick={() => handleSwapClick(workout)}
+              style={{ cursor: 'pointer' }}
+            >
                 <CardContent>
                   <h3>{workout.post_title}</h3>
                   <p>By: {workout.post_nickname}</p>
