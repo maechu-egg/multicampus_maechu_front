@@ -45,20 +45,14 @@ function RecordPage(): JSX.Element {
     if (!token) {
       setIsLoginWarningOpen(true);
     }
+    fetchMonthData(value);
+    console.log("debug >>> memberId : " + memberId);
+    console.log("debug >>> token : " + token);
   }, [token]);
+
   const closeLoginWarning = () => {
     setIsLoginWarningOpen(false);
   };
-  // 컴포넌트 마운트 시 현재 월 데이터 조회
-  // useEffect(() => {
-  //   if (!token) {
-  //     navigate("/login");
-  //   }
-  //   console.log("debug >>> memberId : " + memberId);
-  //   console.log("debug >>> token : " + token);
-
-  //   fetchMonthData(value);
-  // }, []); // 컴포넌트 마운트 시 1회 실행
 
   // 현재 날짜 기준 월 데이터 조회
   const fetchMonthData = async (date: Date) => {
@@ -411,7 +405,6 @@ const Container = styled.div`
   max-width: 1000px;
   margin: 0 auto;
   margin-top: 30px;
-  font-family: 'ONE-Mobile-Title'; // 폰트 설정
 
 
   @media (max-width: 850px) {
@@ -478,7 +471,6 @@ const Container = styled.div`
     padding: 5px;
     background: none;
     text-align: center;
-
     &:hover {
       background-color: #f0f0f0;
     }
@@ -488,7 +480,7 @@ const Container = styled.div`
     color: #ff0000;
   }
 
-  .react-calendar__month-view__days__day--neighboringMonth {
+  .react-calendar__month-view __days__day--neighboringMonth {
     color: #cccccc;
   }
 
@@ -501,6 +493,7 @@ const Container = styled.div`
         min-width: 50px;
         background: none;
         font-size: 17px;
+        font-weight: bold;
       }
 
     @media (max-width: 850px) {
@@ -520,18 +513,21 @@ const Container = styled.div`
   .react-calendar__century-view__decades__decade {
       padding: 20px; /* 세기 버튼의 여백을 조정 */
       font-size: 16px; /* 텍스트 크기 */
+      font-weight: bold;
       border-radius: 10px; /* 둥근 모서리 */      
   }
   /* 년도 선택 화면의 스타일 */
   .react-calendar__decade-view__years__year {
       padding: 20px; /* 년도 버튼의 여백 */
       font-size: 16px; /* 텍스트 크기 */
+      font-family: 'ONE-Mobile-Title';
       border-radius: 10px; /* 둥근 모서리 */
   }
   /* 각 월 버튼 스타일 */
   .react-calendar__year-view__months__month {
       padding: 20px; /* 여백을 늘려 버튼 크기 조절 */
       font-size: 16px; /* 폰트 크기 증가 */
+      font-family: 'ONE-Mobile-Title';
       border-radius: 10px; /* 둥근 모서리 */
   }            
   /* 반응형 조정 예시 */
@@ -552,7 +548,7 @@ const Container = styled.div`
     
     .react-calendar__month-view__weekdays {
       font-size: 15px;
-      font-weight: 400;
+      font-family: 'ONE-Mobile-Title';
       color: gray;
       border-bottom: 1px solid gray;
       padding-bottom: 5px;
@@ -578,8 +574,7 @@ const Container = styled.div`
         border-right: 0.1px solid lightgray;
         border-bottom: 0.1px solid lightgray;
         font-size: 13px;
-        font-family: 'Pretendard', sans-serif;
-        font-weight: 450;
+        font-family: 'ONE-Mobile-Title';
       }
 
     button:last-child {
