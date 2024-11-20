@@ -122,6 +122,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   margin-top: 20px;
+  font-family: 'ONE-Mobile-Title'; // 폰트 설정
 `;
 
 const SaveButton = styled.button`
