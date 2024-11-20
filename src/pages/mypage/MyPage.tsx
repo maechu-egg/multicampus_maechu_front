@@ -173,20 +173,26 @@ function MyPage(): JSX.Element {
     }
   };
 
+  const fetchUserInfo = async () => {
+    try {
+      const response = await api.get("/info", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUserInfo(response.data);
+      console.log("사용자 계정 정보 조회 : ", response.data);
+    } catch (error) {
+      console.error("사용자 정보 조회 오류:", error);
+    }
+  };
+
   useEffect(() => {
-    const userInfo = async () => {
-      try {
-        const response = await api.get("/info", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUserInfo(response.data);
-        console.log("사용자 정보 조회 응답 데이터 : ", response.data);
-      } catch (error) {
-        console.error("사용자 정보 조회 오류:", error);
-      }
-    };
-    userInfo();
-  }, [token, state]);
+    fetchUserInfo();
+  }, []);
+
+  // Callback to refresh user info
+  const refreshUserInfo = () => {
+    fetchUserInfo();
+  };
 
   useEffect(() => {
     const userKcalInfo = async () => {
@@ -260,9 +266,9 @@ function MyPage(): JSX.Element {
                 />
                 <ProfileImage
                   src={
-                    userInfo.memberImg === "/null"
+                    userInfo.memberImg === null
                       ? "/img/default/UserDefault.png"
-                      : `${BASE_URL}${userInfo.memberImg}`
+                      : `${BASE_URL}${userInfo.memberImg}?t=${new Date().getTime()}`
                   }
                   alt="Profile"
                 />
@@ -286,6 +292,7 @@ function MyPage(): JSX.Element {
             isOpen={isAccountModalOpen}
             onClose={closeAccountModal}
             userInfo={userInfo}
+            onUpdate={refreshUserInfo}
           />
         )}
 

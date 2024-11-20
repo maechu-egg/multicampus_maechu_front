@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { AxiosError } from "axios";
 import api from "services/api/axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "context/AuthContext";
 
 interface AccountModalProps {
@@ -16,15 +16,17 @@ interface AccountModalProps {
     phone: string;
     verified: boolean;
   };
+  onUpdate: () => void;
 }
 
 function AccountModal({
   isOpen,
   onClose,
   userInfo,
+  onUpdate,
 }: AccountModalProps): JSX.Element | null {
-  const { state: authState } = useAuth();
-  const { token, memberId } = authState;
+  const { state: authState, logout } = useAuth();
+  const { token } = authState;
 
   const [member_img, setMemberImg] = useState<File | null>(null);
   const [nickname, setNickname] = useState("");
@@ -38,7 +40,7 @@ function AccountModal({
     setNicknameCheckError("");
     setIsNicknameValid(false);
   };
-
+  //닉네임 중복
   const handleCheckNickname = async () => {
     try {
       const response = await api.post("/user/register/nickname-check", {
@@ -59,21 +61,44 @@ function AccountModal({
       }
     }
   };
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "에이 설마; 정말 탈퇴할거라고?! 운동 기록 날려버릴거야??"
+    );
+
+    if (confirmDelete) {
+      try {
+        const response = await api.delete("/user/delete", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          console.log("탈퇴 성공:", response.data);
+          onClose();
+          onUpdate();
+        }
+      } catch (error) {
+        console.error("탈퇴 오류:", error);
+      }
+    } else {
+      console.log("탈퇴가 취소되었습니다.");
+    }
+  };
 
   const handleUpdate = async () => {
     try {
       const formData = new FormData();
       if (member_img) {
-        formData.append("memberImgFile", member_img); //새로운 이미지 파일 저장
+        formData.append("memberImgFile", member_img);
       } else {
-        formData.append("member_img", userInfo.memberImg); //이미지 수정안했을 때
+        formData.append("member_img", userInfo.memberImg);
       }
 
       formData.append("nickname", nickname || userInfo.nickname);
       formData.append("phone", phone || userInfo.phone);
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
+
       const response = await api.patch("/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -84,6 +109,7 @@ function AccountModal({
       if (response.status === 200) {
         console.log("수정 성공:", response.data);
         onClose();
+        onUpdate();
       }
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -157,12 +183,15 @@ function AccountModal({
               수정
             </button>
           </FooterContainer>
+          <DeleteAccountButton onClick={handleDelete}>
+            탈퇴하시겠습니까 ? 정말로 ? 엥 왜 ?
+          </DeleteAccountButton>
         </InfoContainer>
       </ModalContainer>
     </ModalOverlay>
   );
 }
-
+//탈퇴 버튼 되어 있는데
 const Title = styled.h1`
   width: 100%;
   font-size: 2.5rem;
@@ -188,8 +217,8 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  width: 400px;
-  max-height: 90vh;
+  width: 450px;
+  max-height: 100vh;
   overflow-y: auto;
   background: #fff;
   padding: 20px;
@@ -208,7 +237,19 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
 `;
+const DeleteAccountButton = styled.div`
+  display: flex;
+  justify-content: center;
+  color: gray;
+  margin-top: 40px;
+  cursor: pointer;
+  font-size: 0.9rem;
 
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`;
 const InfoContainer = styled.div`
   margin-top: 10px;
   text-align: left;

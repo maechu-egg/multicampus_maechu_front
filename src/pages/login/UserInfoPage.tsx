@@ -31,7 +31,7 @@ const UserInfoPage = (): JSX.Element => {
     };
 
     fetchUserInfo(); // 사용자 정보 조회 함수 호출
-  }, [token, state]); // state 추가
+  }, []); // state 추가
 
   // 이미지 src를 콘솔에 출력
   useEffect(() => {
