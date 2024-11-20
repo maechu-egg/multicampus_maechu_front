@@ -245,7 +245,7 @@ function DietDetailPage(): JSX.Element {
         <SearchBar>
           <input
             type="text"
-            placeholder="식품을 검색하세요"
+            placeholder="무슨 음식을 먹었나요?"
             value={searchTerm}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setSearchTerm(e.target.value);
