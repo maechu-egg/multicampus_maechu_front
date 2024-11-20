@@ -169,6 +169,11 @@ export const usePost = () => {
       setSelectedPost(response.data);
       setIsAuthor(response.data.Author);
       getComments(post.post_id);  // 댓글 가져오기 추가
+       // 페이지 상단으로 스크롤
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     } catch (error) {
       console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
     }

@@ -337,7 +337,11 @@ function SignPage(): JSX.Element {
               placeholder="6자 이상 입력"
               value={password}
               onChange={handlePasswordChange}
-              style={{ width: "100%", marginRight: "10px" }}
+              style={{
+                width: "100%",
+                marginRight: "10px",
+                fontFamily: "monospace",
+              }}
             />
             <input
               type="password"
@@ -346,7 +350,12 @@ function SignPage(): JSX.Element {
               placeholder="비밀번호 확인"
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
-              style={{ width: "100%", marginRight: "10px", marginTop: "10px" }}
+              style={{
+                width: "100%",
+                marginRight: "10px",
+                marginTop: "10px",
+                fontFamily: "monospace",
+              }}
             />
 
             <label
@@ -375,11 +384,11 @@ function SignPage(): JSX.Element {
             >
               <button
                 type="button"
-                className="btn btn-dark"
+                className="btn btn-secondary"
                 onClick={handleSignUp}
                 disabled={!isSignUpEnabled}
                 style={{
-                  backgroundColor: isSignUpEnabled ? "#212529" : "#A0A5AB",
+                  backgroundColor: isSignUpEnabled ? "#212529" : "#6C757D",
                 }}
               >
                 Sign Up

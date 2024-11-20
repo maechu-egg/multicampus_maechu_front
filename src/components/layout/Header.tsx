@@ -62,6 +62,11 @@ function Header(): JSX.Element {
     navigate("/");
   };
 
+  // 상태 변경 시 로그 출력
+  useEffect(() => {
+    console.log("현재 토큰:", state.token); // 현재 토큰 출력
+  }, [state.token]);
+
   return (
     <Container ref={HeaderRef} className={isScrolled ? "scrolled" : ""}>
       <HamburgerMenuIcon onClick={toggleMenu} className="hamburger-menu" />
