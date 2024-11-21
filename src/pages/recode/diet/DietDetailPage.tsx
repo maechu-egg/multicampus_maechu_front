@@ -310,8 +310,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const Container = styled.div`
-  width: 70%;
-  height: 100vh;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: none;
@@ -321,12 +321,11 @@ const SummaryCard = styled.div`
   background: white;
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #ccc;
+  margin-bottom: 20px;
 `;
 
 const DateSection = styled.div`
@@ -350,6 +349,8 @@ const StatsSection = styled.div`
 `;
 
 const StatItem = styled.div`
+  display: flex;
+  flex-direction: column;
   text-align: center;
   
   h3 {
@@ -367,7 +368,7 @@ const StatItem = styled.div`
 `;
 
 const SearchBar = styled.div`
-  position: relative;
+ position: relative;
   margin-bottom: 30px;
 
   input {
@@ -391,15 +392,16 @@ const SearchBar = styled.div`
     top: 50%;
     transform: translateY(-50%);
     padding: 8px 16px;
-    background-color: #414d60;
+    background: #1D2636;
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
+    transition: background 0.3s;
     
     &:hover {
-      background-color: #1d2636;
+      background: #333C4D;
     }
   }
 `;
