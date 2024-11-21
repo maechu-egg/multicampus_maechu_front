@@ -116,12 +116,12 @@ const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoPr
           <ControlButton onClick={deleteItemInfo}>-</ControlButton>
         </ControlButtonContainer>
       </HeaderBar>
-    <InfoText>식품명 : {itemData.item_name}</InfoText>
-    <InfoText>양 : {itemData.quantity} g</InfoText>
-    <InfoText>칼로리 : {itemData.calories} kcal</InfoText>
-    <InfoText>탄수화물 : {itemData.carbs} g</InfoText>
-    <InfoText>단백질 : {itemData.protein} g</InfoText>
-    <InfoText>지방 : {itemData.fat} g</InfoText>
+    <InfoText>식품명 : {item.item_name}</InfoText>
+    <InfoText>양 : {item.quantity} g</InfoText>
+    <InfoText>칼로리 : {item.calories} kcal</InfoText>
+    <InfoText>탄수화물 : {item.carbs} g</InfoText>
+    <InfoText>단백질 : {item.protein} g</InfoText>
+    <InfoText>지방 : {item.fat} g</InfoText>
     {isEditModalOpen && (
       <EditItemModal
       onClose={closeItemModal}
