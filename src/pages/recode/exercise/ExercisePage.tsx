@@ -8,7 +8,6 @@ import { ko } from 'date-fns/locale';
 import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
 import ExerciseAddModal from "components/ui/record/modal/exercise/ExerciseAddModal";
 import { FaRegQuestionCircle } from 'react-icons/fa';
-import { MdLightbulbOutline } from "react-icons/md";
 import CalendarTooltip from "../../../components/ui/record/calendar/CalendarTooltip";
 
 interface ExerciseDTO {
@@ -127,8 +126,6 @@ function ExercisePage(): JSX.Element {
       // 상태 업데이트
       setTodayCalorie(totalCalories);
       setTodayTime(totalTime);
-      setExerciseData(updatedExerciseData);
-
 
       return updatedExerciseData; // 업데이트된 운동 데이터 반환
     });
@@ -270,7 +267,7 @@ const StatItem = styled.div`
     font-size: 20px;
     font-weight: 700;
     margin: 0;
-    color: #333C4D;
+    color: #212529;
   }
 `;
 
@@ -288,7 +285,7 @@ const SearchBar = styled.div`
     
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #2e5987;
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
   }
@@ -315,13 +312,12 @@ const SearchBar = styled.div`
 
 const ExerciseList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
   background-color: transparent;
-  width: 100%;
 
   @media (max-width: 768px) {
     padding: 12px;

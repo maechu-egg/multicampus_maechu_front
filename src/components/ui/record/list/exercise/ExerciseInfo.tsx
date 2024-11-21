@@ -114,14 +114,13 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer, receiveDeletedExer }: Exer
       <HeaderBar>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <HeaderIcon>🏃</HeaderIcon>
-          <HeaderText>운동 정보</HeaderText>
+          <HeaderText>{exercise.exercise_type}</HeaderText>
         </div>
         <ControlButtonContainer>
           <ControlButton onClick={openExerModal}>+</ControlButton>
           <ControlButton onClick={deleteExerInfo}>-</ControlButton>
         </ControlButtonContainer>
       </HeaderBar>
-      <InfoText>운동명 : {exercise.exercise_type}</InfoText>
       <InfoText>
         시간 :{" "}
         {exercise.duration > 60
@@ -161,8 +160,8 @@ const ExercisePoint = styled.div`
   flex-direction: column;
   padding: 0;
   margin: 16px 0;
-  border: 1px solid #e0e0e0;
   border-radius: 12px;
+  border: none;
   background-color: #fafafa;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -256,7 +255,7 @@ const ActionButton = styled.button`
   }
 `;
 const HeaderIcon = styled.div`
-  margin-right: 8px;
+  margin-right: 10px;
   font-size: 1.5rem;
   color: #fff;
 `;
@@ -266,4 +265,5 @@ const HeaderText = styled.h2`
   font-family: 'ONE-Mobile-Title';
   font-size: 1.2rem;
   font-weight: bold;
+  margin-bottom: 1px;
 `;

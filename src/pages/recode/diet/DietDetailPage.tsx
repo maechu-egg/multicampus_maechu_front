@@ -148,21 +148,37 @@ function DietDetailPage(): JSX.Element {
     }
   };
 
-  const getSelectItem = () => {
-    dietGet();
-    setIsSelectApiBoolean(false);
+  const getSelectItem = async () => {
+    try {
+      await dietGet(); // dietGet을 호출해서 최신 데이터를 가져옴
+      setIsSelectApiBoolean(false);
+    } catch (error) {
+      console.error('debug >>> getSelectItem error:', error);
+    }
   }
 
   // 삭제된 ItemInfo ItemPage에 넘겨줌
-  const deleteItem = (deletedItemId: number) => {
-    setItemData((prevItemData) =>
-      prevItemData.filter((item) => item.item_id !== deletedItemId)
-    );
+  const deleteItem = (deletedItem: ItemResponseDTO) => {
+    setItemData((prevItemData) => {
+      const updatedItemData = prevItemData.filter((item) => item !== deletedItem);
+      return updatedItemData;
+    });
   };
-
 
   const navigateDietPage = () => {
     navigate(`/record/diet/${selectedDate}`);
+  };
+
+  const itemSave = (updatedItem: any) => {
+    // 기존 데이터를 복사하여 임시 리스트 생성
+    const updatedItemData = itemData.map((item) =>
+      item.item_id === updatedItem.exercise_id ? updatedItem : item
+    );
+  
+    setItemData(updatedItemData);
+  
+    // 변경된 상태를 로깅하여 확인
+    console.log("debug >>> updatedExerciseData : ", updatedItemData);  
   };
 
   const deleteDiet = async () => {  
@@ -273,6 +289,7 @@ function DietDetailPage(): JSX.Element {
             <ItemInfo
               key={index}
               item={item}
+              receiveUpdatedItem={itemSave}
               receiveDeletedItem={deleteItem}
             />
           ))}
@@ -325,7 +342,7 @@ const SummaryCard = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `;
 
 const DateSection = styled.div`
@@ -368,7 +385,7 @@ const StatItem = styled.div`
 `;
 
 const SearchBar = styled.div`
- position: relative;
+  position: relative;
   margin-bottom: 30px;
 
   input {
@@ -381,7 +398,7 @@ const SearchBar = styled.div`
     
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #2e5987;
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
   }
@@ -419,7 +436,6 @@ const CogWrapper = styled.div`
 
 const DropdownMenu = styled.div`
   position: absolute;
-  margin-top: 5px; /* 톱니바퀴 아래로 약간 떨어지게 설정 */
   background-color: #414d60; /* 배경색 변경 */
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -437,7 +453,7 @@ const DropdownMenu = styled.div`
     color: white; /* 글씨 색상 변경 */
 
     &:hover {
-      background-color: #1d2636; /* hover 시 배경색 변경 */
+      background-color: #2c2e30; /* hover 시 배경색 변경 */
     }
   }
 `;
@@ -445,17 +461,13 @@ const DropdownMenu = styled.div`
 const ItemList = styled.div`
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
-  background-color: transparent;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 16px;
-  color: #333;
+  background-color: transparent;  
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
     padding: 12px;
   }
 `;

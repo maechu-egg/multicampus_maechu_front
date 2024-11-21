@@ -13,7 +13,7 @@ const TooltipContainer = styled.div`
 
 const TooltipText = styled.div`
   visibility: hidden;
-  width: 250px;
+  width: 270px;
   background-color: rgba(0, 0, 0, 0.9);
   color: #fff;
   text-align: center;
