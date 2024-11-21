@@ -17,6 +17,11 @@ interface Comment {
   comment_like_status: boolean;
   comment_dislike_status: boolean;
   commentAuthor: boolean;
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
 }
 
 interface PostDetailProps {
@@ -46,6 +51,11 @@ interface PostDetailProps {
   commets_count: number;
   member_id: number;
   author: boolean;
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
   onCommentLike: (commentId: number, postId: number) => void;
   onCommentDislike: (commentId: number, postId: number) => void;
   getComments: (postId: number) => Promise<void>;
@@ -77,7 +87,8 @@ const PostDetail: React.FC<PostDetailProps> = ({
   author,
   onCommentLike,
   onCommentDislike,
-  getComments
+  getComments,
+  member_badge_level
 }) => {
   const { state: { token } } = useAuth();
   const [imgSrc1, setImgSrc1] = useState<string>("");
@@ -86,6 +97,18 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [commentInput, setCommentInput] = useState("");
   const hashtagArray = post_hashtag ? post_hashtag.split(',') : [];
 
+  const badgeImages: { [key: string]: string } = {
+    다이아몬드: '/img/personalBadge/badgeDiamond.png',
+    플래티넘: '/img/personalBadge/badgePlatinum.png',
+    골드: '/img/personalBadge/badgeGold.png',
+    실버: '/img/personalBadge/badgeSilver.png',
+    브론즈: '/img/personalBadge/badgeBronze.png',
+    기본: '/img/personalBadge/badgeDefault.png',
+  };
+  
+  const getBadgeImage = (level: string): string => {
+    return badgeImages[level] || badgeImages['기본'];
+  };
 
   const { 
     liked, 
@@ -164,7 +187,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
     const dateB = new Date(b.date).getTime();
     return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
   });
-
+  const badgeImage = getBadgeImage(member_badge_level);
   return (
     <div className="post-detail">
       <input type="hidden" value={post_id} />
@@ -178,7 +201,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
       <div className="post-header">
         <h2>{post_title}</h2>
         <div className="post-info">
-          <span className="author">{post_nickname}</span>
+          <span className="author">{post_nickname}
+          <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" /> 
+          </span>
           <div className="info-right">
             <span className="date">{formatDate(post_date)}</span>
             <span className="views">조회수: {post_views}</span>
