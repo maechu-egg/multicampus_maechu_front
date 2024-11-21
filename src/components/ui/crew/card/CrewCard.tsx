@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CiLocationOn } from "react-icons/ci";
 const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
 

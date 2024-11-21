@@ -7,6 +7,8 @@ import { useNavigate, useParams } from "react-router-dom"; // 페이지 이동�
 import styled, { createGlobalStyle } from "styled-components";
 import CautionSection from "./CautionSection";
 import DietPlanSection from "./DietPlanSection";
+import { format, parse } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 
 interface MealData {
@@ -522,6 +524,19 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
     setIsSnackDetailModalOpen(true);
   };
 
+  // 날짜 포맷
+  const getFormattedDate = () => {
+    try {
+      if (!selectedDate) return new Date();
+      return parse(selectedDate, 'yyyy-MM-dd', new Date());
+    } catch (error) {
+      console.error('날짜 변환 에러:', error);
+      return new Date();
+    }
+  };
+
+  const date = getFormattedDate();
+
   return (
     <>
       <GlobalStyle /> {/* 전역 스타일 적용 */}
@@ -554,7 +569,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
             {data ? (
               <>
                 <TotalCalories> 키 : {data.recommended.height} cm &nbsp; 몸무게 : {data.recommended.weight} kg </TotalCalories>
-                <CurrentDate>{new Date().toLocaleDateString('ko-KR')} {new Date().toLocaleString('ko-KR', { weekday: 'long' })}</CurrentDate>
+                <CurrentDate>{format(date, 'yyyy.MM.dd')} {format(date, 'EEEE', { locale: ko })}</CurrentDate>
                 
               </>
             ) : (

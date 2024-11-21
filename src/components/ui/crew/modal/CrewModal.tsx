@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Modal.css';
 import { useAuth } from "context/AuthContext";
-import { useNavigate } from 'react-router-dom';
 import CrewSearchDivEdit from '../selectDiv/CrewSearchDivEdit';
 import CrewLocationDiv from '../selectDiv/CrewLocationDiv';
 import api from 'services/api/axios';

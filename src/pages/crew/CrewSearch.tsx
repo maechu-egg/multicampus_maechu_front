@@ -120,6 +120,7 @@ function CrewSearch(): JSX.Element {
                 )}
             </div>
 
+            {/* 크루 가입 모달 */}
             <div className="modal fade" id="crewJoinModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewJoinModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>
@@ -136,6 +137,7 @@ function CrewSearch(): JSX.Element {
                 </div>
             </div>
 
+            {/* 크루 생성 모달 */}
             <div className="modal fade" id="crewCreateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex={-1} aria-labelledby="crewCreateModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-lg modal-dialog-centered">
                     <div className="modal-content" style={{ width: "100%", maxWidth: "none" }}>

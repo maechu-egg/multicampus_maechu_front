@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CrewPostList from "components/ui/crew/crewPost/CrewPostList";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
