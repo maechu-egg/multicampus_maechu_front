@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 import "./CrewPostDetail.css";
 import { useAuth } from "context/AuthContext";

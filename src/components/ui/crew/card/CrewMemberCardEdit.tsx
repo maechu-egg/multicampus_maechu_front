@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import './Card.css';
 import './MemberCard.css';
 import { useAuth } from "context/AuthContext";

@@ -1,4 +1,3 @@
-import React from 'react';
 import './CrewPagination.css';
 
 interface PaginationProps {

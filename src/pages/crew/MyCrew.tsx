@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import './CrewPage.css';
 import './MyCrew.css';
 import MyCrewHeader from "./MyCrewHeader";
