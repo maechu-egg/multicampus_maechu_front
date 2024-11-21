@@ -243,53 +243,53 @@ const PostForm: React.FC<PostFormProps> = ({
         </div>
 
         <div className="mb-3">
-  <label className="form-label">
-    이미지 업로드:
-    {post_sports_keyword === "오운완" && (
-      <span className="text-danger ms-1">*필수</span>
-    )}
-  </label>
-  <input 
-    type="file" 
-    className="form-control" 
-    multiple 
-    onChange={handleImageChange}
-    accept="image/*"
-  />
-  {(imageFiles || existingImages.length > 0) && (
-    <div className="mt-2">
-      업로드된 파일:
-      <ul className="list-unstyled">
-        {existingImages.map((filename, index) => (
-          <li key={`existing-${index}`} className="d-flex align-items-center mb-1">
-            <span>{getOriginalFileName(filename)}</span>
-            <button
-              type="button"
-              className="btn btn-sm text-danger ms-2"
-              onClick={() => removeExistingImage(index)}
-              style={{ padding: '0 5px', fontSize: '18px', border: 'none', background: 'none' }}
-            >
-              ×
-            </button>
-          </li>
-        ))}
-        {imageFiles?.map((file, index) => (
-          <li key={`new-${index}`} className="d-flex align-items-center mb-1">
-            <span>{file.name}</span>
-            <button
-              type="button"
-              className="btn btn-sm text-danger ms-2"
-              onClick={() => removeNewImage(index)}
-              style={{ padding: '0 5px', fontSize: '18px', border: 'none', background: 'none' }}
-            >
-              ×
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
-</div>
+          <label className="form-label">
+            이미지 업로드:
+            {post_sports_keyword === "오운완" && (
+              <span className="text-danger ms-1">*필수</span>
+            )}
+          </label>
+          <input 
+            type="file" 
+            className="form-control" 
+            multiple 
+            onChange={handleImageChange}
+            accept="image/*"
+          />
+          {(imageFiles || existingImages.length > 0) && (
+            <div className="mt-2">
+              업로드된 파일:
+              <ul className="list-unstyled">
+                {existingImages.map((filename, index) => (
+                  <li key={`existing-${index}`} className="d-flex align-items-center mb-1">
+                    <span>{getOriginalFileName(filename)}</span>
+                    <button
+                      type="button"
+                      className="btn btn-sm text-danger ms-2"
+                      onClick={() => removeExistingImage(index)}
+                      style={{ padding: '0 5px', fontSize: '18px', border: 'none', background: 'none' }}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+                {imageFiles?.map((file, index) => (
+                  <li key={`new-${index}`} className="d-flex align-items-center mb-1">
+                    <span>{file.name}</span>
+                    <button
+                      type="button"
+                      className="btn btn-sm text-danger ms-2"
+                      onClick={() => removeNewImage(index)}
+                      style={{ padding: '0 5px', fontSize: '18px', border: 'none', background: 'none' }}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
         {error && (
           <div className="alert alert-danger mb-3" role="alert">
