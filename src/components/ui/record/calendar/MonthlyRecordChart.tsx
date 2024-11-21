@@ -100,20 +100,20 @@ const MonthlyRecordChart = ({
         이번 달 기록 현황
         <CalendarTooltip text={
           <>
-            <strong>사용법</strong><br />
-            - 달력 클릭: 날짜를 클릭하여 기록 확인.<br />
-            - 💪🏻: 운동 기록<br />
-            - 🥗: 식단 기록<br />
-            - ✌🏻: 모두 기록<br />
-            - ❌: 기록 없음<br /><br />
+            <strong>사용법</strong><br/>
+            &nbsp;  날짜를 클릭하여 페이지 이동<br/><br/>
+            PASS : 운동 or 식단만 기록<br />
+            PERPECT : 둘 다 기록<br />
+            💪🏻 : 운동 기록<br />
+            🥗 : 식단 기록<br />
+            ✌🏻 : 모두 기록<br />
+            ❌ : 기록 없음<br /><br />
             
             <strong>칼로리 설명</strong><br />
-            <div style={{ fontSize: '12px' }}>
+            <div style={{ fontSize: '12px'}}>
               운동 칼로리: 월간 소모 칼로리<br />
               식단 칼로리: 월간 섭취 칼로리<br />
-              <div style={{textAlign: 'left'}}>
-                순 칼로리: 식단 - 운동 
-              </div>
+              순 칼로리: 식단 - 운동 
             </div>
           </>
         }>
