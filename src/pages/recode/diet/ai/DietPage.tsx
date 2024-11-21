@@ -323,6 +323,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
   useEffect(() => {
     fetchData();
     findDiet();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
