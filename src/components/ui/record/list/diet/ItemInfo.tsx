@@ -106,6 +106,22 @@ const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoPr
         <ControlButton onClick={openItemModal}>+</ControlButton>
         <ControlButton onClick={deleteItemInfo}>-</ControlButton>
     </ControlButtonContainer>
+      <HeaderBar>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HeaderIcon>🍽️</HeaderIcon>
+          <HeaderText>식품 정보</HeaderText>
+        </div>
+        <ControlButtonContainer>
+          <ControlButton onClick={openItemModal}>+</ControlButton>
+          <ControlButton onClick={deleteItemInfo}>-</ControlButton>
+        </ControlButtonContainer>
+      </HeaderBar>
+    <InfoText>식품명 : {itemData.item_name}</InfoText>
+    <InfoText>양 : {itemData.quantity} g</InfoText>
+    <InfoText>칼로리 : {itemData.calories} kcal</InfoText>
+    <InfoText>탄수화물 : {itemData.carbs} g</InfoText>
+    <InfoText>단백질 : {itemData.protein} g</InfoText>
+    <InfoText>지방 : {itemData.fat} g</InfoText>
     {isEditModalOpen && (
       <EditItemModal
       onClose={closeItemModal}
@@ -120,7 +136,7 @@ export default ItemInfo;
 const ItemPoint = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 0;
   margin: 16px 0;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
@@ -128,19 +144,19 @@ const ItemPoint = styled.div`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   position: relative; /* 자식 요소의 절대 위치를 위한 설정 */
+  width: 100%;
 
   &:hover {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   }
 
   @media (max-width: 768px) {
-    padding: 12px;
     margin: 8px 0;
   }
 `;
 
 const InfoText = styled.p`
-  margin: 8px 0;
+  margin: 8px 25px;
   color: #4a4a4a;
   font-family: 'ONE-Mobile-Title';
   font-size: 1rem;
@@ -152,7 +168,7 @@ const InfoText = styled.p`
 `;
 
 const ControlButtonContainer = styled.div`
-  position: absolute;
+
   top: 8px;
   right: 8px;
   display: flex;
@@ -160,8 +176,8 @@ const ControlButtonContainer = styled.div`
 
 const ControlButton = styled.button`
   padding: 4px 8px;
-  background-color: #fafafa;
-  color: #1d2636;
+  background-color: #021D39;
+  color: #fff;
   border: none;
   cursor: pointer;
   font-family: 'ONE-Mobile-Title';
@@ -175,8 +191,31 @@ const ControlButton = styled.button`
   }
 
   &:focus { 
-    box-shadow: 0 0 0 3px #1d2636;
+    box-shadow: 0 0 0 3px #4A5568;
   }
 `;
+const HeaderBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #021D39;
+  padding: 8px 16px;
+  width: 100%;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+`;
+const HeaderIcon = styled.div`
+  margin-top: 0px;
+  margin-right: 10px;
+  font-size: 1.5rem;
+  color: #fff;
+`;
 
-
+const HeaderText = styled.h2`
+  color: #fff;
+  font-family: 'ONE-Mobile-Title';
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1px;
+`;
