@@ -132,14 +132,14 @@ const SaveButton = styled.button`
   padding: 10px 20px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #4caf50;
+  background-color: #1d2636;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #1d2636;
   }
 `;
 
@@ -147,13 +147,13 @@ const CancelButton = styled.button`
   padding: 10px 20px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #f44336;
+  background-color: #1d2636;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: #d32f2f;
+    background-color: #1d2636;
   }
 `;
