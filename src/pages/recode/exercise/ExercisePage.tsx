@@ -167,19 +167,21 @@ function ExercisePage(): JSX.Element {
             </StatItem>
           </StatsSection>
         </SummaryCard>
-        <CalendarTooltip text={
-          <>
-            <strong>Met 계산법</strong><br />
-            <div style={{ fontSize: '15px' }}>
-              met * 시간(분) * 강도<br />
-            </div>
-            
-          </>
-        }>
-            <span style={{ cursor: 'pointer', fontSize: '25px'}}>
-              <MdLightbulbOutline />
+        <ParentContainer>
+          <CalendarTooltip text={
+            <>
+              <strong>Met 계산법</strong><br />
+              <div style={{ fontSize: '15px' }}>
+                met * 시간(분) * 강도<br />
+              </div>
+              
+            </>
+          }>
+            <span style={{ cursor: 'pointer', fontSize: '25px' }}>
+              <FaRegQuestionCircle />
             </span>
           </CalendarTooltip>
+        </ParentContainer>
         <SearchBar>
           <input
             type="text"
@@ -334,5 +336,9 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const ParentContainer = styled.div`
+  display: flex;
+  justify-content: flex-end; // 자식 요소 오른쪽 정렬
+`;
 
 export default ExercisePage;
