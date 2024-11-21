@@ -96,27 +96,16 @@ const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoPr
 
   return (
     <ItemPoint>
-    <InfoText>식품명 : {item.item_name}</InfoText>
-    <InfoText>양 : {item.quantity} g</InfoText>
-    <InfoText>칼로리 : {item.calories} kcal</InfoText>
-    <InfoText>탄수화물 : {item.carbs} g</InfoText>
-    <InfoText>단백질 : {item.protein} g</InfoText>
-    <InfoText>지방 : {item.fat} g</InfoText>
-    <ControlButtonContainer>
-        <ControlButton onClick={openItemModal}>+</ControlButton>
-        <ControlButton onClick={deleteItemInfo}>-</ControlButton>
-    </ControlButtonContainer>
       <HeaderBar>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <HeaderIcon>🍽️</HeaderIcon>
-          <HeaderText>식품 정보</HeaderText>
+          <HeaderText>{item.item_name}</HeaderText>
         </div>
         <ControlButtonContainer>
           <ControlButton onClick={openItemModal}>+</ControlButton>
           <ControlButton onClick={deleteItemInfo}>-</ControlButton>
         </ControlButtonContainer>
       </HeaderBar>
-    <InfoText>식품명 : {item.item_name}</InfoText>
     <InfoText>양 : {item.quantity} g</InfoText>
     <InfoText>칼로리 : {item.calories} kcal</InfoText>
     <InfoText>탄수화물 : {item.carbs} g</InfoText>
@@ -138,8 +127,8 @@ const ItemPoint = styled.div`
   flex-direction: column;
   padding: 0;
   margin: 16px 0;
-  border: 1px solid #e0e0e0;
   border-radius: 12px;
+  border: none;
   background-color: #fafafa;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -155,6 +144,18 @@ const ItemPoint = styled.div`
   }
 `;
 
+const HeaderBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #021D39;
+  padding: 8px 16px;
+  width: 100%;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
 const InfoText = styled.p`
   margin: 8px 25px;
   color: #4a4a4a;
@@ -168,10 +169,8 @@ const InfoText = styled.p`
 `;
 
 const ControlButtonContainer = styled.div`
-
-  top: 8px;
-  right: 8px;
   display: flex;
+  gap: 8px;
 `;
 
 const ControlButton = styled.button`
@@ -194,19 +193,7 @@ const ControlButton = styled.button`
     box-shadow: 0 0 0 3px #4A5568;
   }
 `;
-const HeaderBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #021D39;
-  padding: 8px 16px;
-  width: 100%;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-`;
 const HeaderIcon = styled.div`
-  margin-top: 0px;
   margin-right: 10px;
   font-size: 1.5rem;
   color: #fff;
