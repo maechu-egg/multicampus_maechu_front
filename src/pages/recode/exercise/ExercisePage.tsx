@@ -261,13 +261,13 @@ const StatItem = styled.div`
   text-align: center;
   
   h3 {
-    font-size: 18px;
-    color: #333C4D;
+    font-size: 14px;
+    color: #868e96;
     margin: 0 0 5px 0;
   }
   
   p {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     margin: 0;
     color: #333C4D;
