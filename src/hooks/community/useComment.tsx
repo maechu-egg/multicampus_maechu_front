@@ -12,6 +12,11 @@ export interface Comment {
   comment_like_status: boolean;
   comment_dislike_status: boolean;
   commentAuthor: boolean;
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
 }
 
 interface ServerComment {
@@ -24,6 +29,11 @@ interface ServerComment {
   commentAuthor: boolean;
   comment_like_status: boolean;  
   comment_dislike_status: boolean; 
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
 }
 
 export const useComment = () => {
@@ -56,6 +66,11 @@ export const useComment = () => {
           commentAuthor: serverComment.commentAuthor,
           comment_like_status: serverComment.comment_like_status ?? false,
           comment_dislike_status: serverComment.comment_dislike_status ?? false,
+          current_points : serverComment.current_points,
+          crew_current_points:serverComment.crew_current_points,
+          member_badge_level: getLevelLabel(serverComment.current_points),
+          crew_badge_level :  getLevelLabel(serverComment.crew_current_points),
+          crew_battle_wins : serverComment.crew_battle_wins,
         }));
   
         console.log("변환된 댓글 데이터:", newComments);
@@ -68,6 +83,15 @@ export const useComment = () => {
         console.error("에러 상태:", error.response.status);
       }
     }
+  };
+
+  const getLevelLabel = (points: number) => {
+    if (points >= 100) return "다이아몬드";
+    if (points >= 70) return "플래티넘";
+    if (points >= 50) return "골드";
+    if (points >= 30) return "실버";
+    if (points >= 10) return "브론즈";
+    return "기본";
   };
 
   const handleCommentSubmit = async (postId: number, content: string) => {

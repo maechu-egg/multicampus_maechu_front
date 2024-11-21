@@ -39,6 +39,11 @@ export interface Post {
   post_unlike_counts: number;
   member_id: number;
   author: boolean;
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
 }
 
 export const usePost = () => {
@@ -115,6 +120,11 @@ export const usePost = () => {
         post_unlike_counts: post.post_unlike_counts,
         member_id: post.member_id,
         author: post.author,
+        current_points : post.current_points,
+        crew_current_points:post.crew_current_points,
+        member_badge_level: getLevelLabel(post.current_points),
+        crew_badge_level :  getLevelLabel(post.crew_current_points),
+        crew_battle_wins : post.crew_battle_wins,
       }));
       setPosts(mappedPosts);
     } catch (error) {
@@ -205,7 +215,7 @@ export const usePost = () => {
       }
 
       const response = await postApi.createPost(formData, token);
-
+ 
       if (response.status >= 200 && response.status < 300) {
         alert("게시글이 작성되었습니다.");
         navigate('/communitypage');
@@ -218,6 +228,15 @@ export const usePost = () => {
       console.error('Error:', error);
       return false;
     }
+  };
+
+  const getLevelLabel = (points: number) => {
+    if (points >= 100) return "다이아몬드";
+    if (points >= 70) return "플래티넘";
+    if (points >= 50) return "골드";
+    if (points >= 30) return "실버";
+    if (points >= 10) return "브론즈";
+    return "기본";
   };
 
 

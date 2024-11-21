@@ -35,8 +35,26 @@ interface PostItemProps {
   personal_badge?: string;  // 개인 뱃지 레벨
   crew_badge?: string;   
   isRecommended?: boolean; 
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
   onClick: () => void;
 }
+
+const badgeImages: { [key: string]: string } = {
+  다이아몬드: '/img/personalBadge/badgeDiamond.png',
+  플래티넘: '/img/personalBadge/badgePlatinum.png',
+  골드: '/img/personalBadge/badgeGold.png',
+  실버: '/img/personalBadge/badgeSilver.png',
+  브론즈: '/img/personalBadge/badgeBronze.png',
+  기본: '/img/personalBadge/badgeDefault.png',
+};
+
+const getBadgeImage = (level: string): string => {
+  return badgeImages[level] || badgeImages['기본'];
+};
 
 const PostItem: React.FC<PostItemProps> = ({
   post_title,
@@ -52,12 +70,14 @@ const PostItem: React.FC<PostItemProps> = ({
   isRecommended, 
   personal_badge,
   crew_badge,
+  member_badge_level,
   onClick
 }) => {
 
   // 해시태그 문자열을 쉼표와 공백(", ") 기준으로 나누어 배열로 변환
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : [];
-
+  const badgeImage = getBadgeImage(member_badge_level);
+ 
 
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`} onClick={onClick}>
@@ -98,7 +118,9 @@ const PostItem: React.FC<PostItemProps> = ({
         <ul className="category-date-line">
           <li className="subcategory">[{post_sport || '자유'}]</li>
           <li className="post-titles">{post_title}</li>
-          <li className="post_author">{post_nickname}</li>
+          <li className="post_author">{post_nickname}
+            <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />  
+          </li>
           <li className="post-date">{formatDate(post_date)}</li>
         </ul>
   
