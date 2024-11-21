@@ -317,7 +317,7 @@ const ManualEntryButton = styled.button`
 const FoodInfo = styled.div`
   margin-top: 20px;
   background: #f7f7f7;
-  border-left: 5px solid #4caf50;
+  border-left: 5px solid #1d2636;
   padding: 10px 15px;
   border-radius: 5px;
 

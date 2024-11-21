@@ -190,7 +190,7 @@ function ExercisePage(): JSX.Element {
             onChange={handleSearchInputChange}
           />
           <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
-            검색
+            추가
           </button>
         </SearchBar>
         <ExerciseList>
@@ -315,15 +315,15 @@ const SearchBar = styled.div`
 
 const ExerciseList = styled.div`
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
   background-color: transparent;
+  width: 100%;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
     padding: 12px;
   }
 `;

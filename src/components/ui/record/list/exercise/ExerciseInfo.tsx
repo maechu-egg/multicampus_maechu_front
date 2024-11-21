@@ -111,6 +111,16 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer, receiveDeletedExer }: Exer
 
   return (
     <ExercisePoint>
+      <HeaderBar>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HeaderIcon>🏃</HeaderIcon>
+          <HeaderText>운동 정보</HeaderText>
+        </div>
+        <ControlButtonContainer>
+          <ControlButton onClick={openExerModal}>+</ControlButton>
+          <ControlButton onClick={deleteExerInfo}>-</ControlButton>
+        </ControlButtonContainer>
+      </HeaderBar>
       <InfoText>운동명 : {exercise.exercise_type}</InfoText>
       <InfoText>
         시간 :{" "}
@@ -120,10 +130,6 @@ const ExerciseInfo = ({ exercise, receiveUpdatedExer, receiveDeletedExer }: Exer
       </InfoText>
       <InfoText>강도 : {exercise.intensity.toUpperCase()}</InfoText>
       <InfoText>칼로리 : {exercise.calories} kcal</InfoText>
-      <ControlButtonContainer>
-        <ControlButton onClick={openExerModal}>+</ControlButton>
-        <ControlButton onClick={deleteExerInfo}>-</ControlButton>
-      </ControlButtonContainer>
       <ActionButton onClick={showSetInfo}>세트</ActionButton>
       {isSetModalOpen && (
         <SetInfoModal
@@ -153,7 +159,7 @@ export default ExerciseInfo;
 const ExercisePoint = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 32px 16px 16px;
+  padding: 0;
   margin: 16px 0;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
@@ -161,19 +167,32 @@ const ExercisePoint = styled.div`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   position: relative;
+  width: 100%;
 
   &:hover {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   }
 
   @media (max-width: 768px) {
-    padding: 28px 12px 12px;
     margin: 8px 0;
   }
 `;
 
+
+const HeaderBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #021D39;
+  padding: 8px 16px;
+  width: 100%;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
 const InfoText = styled.p`
-  margin: 8px 0;
+  margin: 8px 25px;
   color: #4a4a4a;
   font-family: 'ONE-Mobile-Title';
   font-size: 1rem;
@@ -185,16 +204,14 @@ const InfoText = styled.p`
 `;
 
 const ControlButtonContainer = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 8px;
   display: flex;
+  gap: 8px;
 `;
 
 const ControlButton = styled.button`
   padding: 4px 8px;
-  background-color: #fafafa;
-  color: #4A5568;
+  background-color: #021D39;
+  color: #fff;
   border: none;
   cursor: pointer;
   font-family: 'ONE-Mobile-Title';
@@ -213,7 +230,10 @@ const ControlButton = styled.button`
 `;
 
 const ActionButton = styled.button`
-  margin-top: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
   padding: 5px 16px;
   background-color: #1D2636;
   color: white;
@@ -235,4 +255,15 @@ const ActionButton = styled.button`
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
   }
 `;
+const HeaderIcon = styled.div`
+  margin-right: 8px;
+  font-size: 1.5rem;
+  color: #fff;
+`;
 
+const HeaderText = styled.h2`
+  color: #fff;
+  font-family: 'ONE-Mobile-Title';
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
