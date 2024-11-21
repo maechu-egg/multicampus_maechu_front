@@ -541,26 +541,6 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
     <>
       <GlobalStyle /> {/* 전역 스타일 적용 */}
       <Container>
-      <CalendarTooltip text={
-          <TooltipContent>
-            <strong>식단 추천 및 기록 방법</strong>
-            <TooltipText>
-              <p>헤리스-베네딕트 공식을 이용해 BMR을 계산합니다.</p>
-              <p>활동 강도에 따라 TDEE(권장 칼로리)를 계산합니다.</p>
-              <p>사용자의 운동목표에 따른 비율을 곱하여 권장 칼로리를 결정합니다.</p>
-              <p>그 값을 기준으로 식단을 추천합니다.</p>
-              <GoalList>
-                <li><strong>다이어트:</strong> 체중을 줄이거나 체지방을 줄이는 것을 목표로 합니다.</li>
-                <li><strong>벌크업:</strong> 체지방 증가를 감수하면서 골격극 등 다른 체성분을 증가시킵니다.</li>
-                <li><strong>린매스업:</strong> 체지방은 유지하면서 골격극을 증가시킵니다.</li>
-              </GoalList>
-            </TooltipText>
-          </TooltipContent>
-        }>
-            <span style={{ cursor: 'pointer', fontSize: '20px' }}>
-              <FaRegQuestionCircle />
-            </span>
-          </CalendarTooltip>
         <Header>
           <Title>오늘의 식단
           </Title>
@@ -581,7 +561,29 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
           <GoalContainer>
             
             <div className="weight-info">
-            <h2>{data.recommended.goal}</h2>
+            <h2>{data.recommended.goal}
+              &nbsp;
+            <CalendarTooltip text={
+          <TooltipContent>
+            <strong>식단 추천 및 기록 방법</strong>
+            <TooltipText>
+              <p>헤리스-베네딕트 공식을 이용해 BMR을 계산합니다.</p>
+              <p>활동 강도에 따라 TDEE(권장 칼로리)를 계산합니다.</p>
+              <p>사용자의 운동목표에 따른 비율을 곱하여 권장 칼로리를 결정합니다.</p>
+              <p>그 값을 기준으로 식단을 추천합니다.</p>
+              <GoalList>
+                <li><strong>다이어트:</strong> 체중을 줄이거나 체지방을 줄이는 것을 목표로 합니다.</li>
+                <li><strong>벌크업:</strong> 체지방 증가를 감수하면서 골격극 등 다른 체성분을 증가시킵니다.</li>
+                <li><strong>린매스업:</strong> 체지방은 유지하면서 골격극을 증가시킵니다.</li>
+              </GoalList>
+            </TooltipText>
+          </TooltipContent>
+        }>
+            <span style={{ cursor: 'pointer', fontSize: '20px' }}>
+              <FaRegQuestionCircle />
+            </span>
+          </CalendarTooltip>
+            </h2>
             </div>
             <div className="goal-consumed-container">
               <div className="nutrition-info">
