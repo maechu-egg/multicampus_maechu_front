@@ -32,7 +32,11 @@ interface RecommendedPostsProps {
   post_hashtag: string;
   post_like_counts: number;
   likeStatus :boolean;
-
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
   isRecommended?: boolean; 
   onClick: () => void;
 }
