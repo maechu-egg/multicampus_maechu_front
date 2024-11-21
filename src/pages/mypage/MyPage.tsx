@@ -11,10 +11,9 @@ import AccountModal from "./mypageComponent/AccountModal";
 import ProfileModal from "./mypageComponent/ProfileModal";
 import { Link, useNavigate } from "react-router-dom";
 
-
 import { usePost } from "hooks/community/usePost";
 
-const BASE_URL = "http://localhost:8001";
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/";
 
 const categories = ["내가 쓴 글", "좋아요 한 글", "참여한 크루", "배틀 중"];
 interface ProfileData {
@@ -127,7 +126,7 @@ function MyPage(): JSX.Element {
   const openAccountModal = () => setAccountModalOpen(true);
   const closeAccountModal = () => setAccountModalOpen(false);
   const openProfileModal = () => setProfileModalOpen(true);
-  const closeProfileModal = () => setProfileModalOpen(false); 
+  const closeProfileModal = () => setProfileModalOpen(false);
 
   const handleCategoryClick = async (category: string) => {
     setSelectedCategory(category);
@@ -258,9 +257,22 @@ function MyPage(): JSX.Element {
                   src={
                     userInfo.memberImg === null
                       ? "/img/default/UserDefault.png"
-                      : `${BASE_URL}${userInfo.memberImg}?t=${new Date().getTime()}`
+                      : `${BASE_URL}${userInfo.memberImg}`
                   }
                   alt="Profile"
+                  onError={(e) => {
+                    console.error("Image load error:", e);
+                    console.log(
+                      "Failed URL:",
+                      `${BASE_URL}${userInfo.memberImg}`
+                    );
+                  }}
+                  onLoad={() => {
+                    console.log(
+                      "Image loaded:",
+                      `${BASE_URL}${userInfo.memberImg}`
+                    );
+                  }}
                 />
                 <NickName>{userInfo.nickname}</NickName>
               </IconWrapper>
@@ -354,16 +366,16 @@ function MyPage(): JSX.Element {
           ))}
         </Category>
       </Header>
-    <Content>
-      {selectedCategory === "내가 쓴 글" ||
-      selectedCategory === "좋아요 한 글" ? (
-        <PostList postData={posts} />
-      ) : selectedCategory === "참여한 크루" ? (
-        <CrewList crewData={crewData} />
-      ) : selectedCategory === "배틀 중" ? (
-        <BattleList battleData={battleData} />
-      ) : null}
-    </Content>
+      <Content>
+        {selectedCategory === "내가 쓴 글" ||
+        selectedCategory === "좋아요 한 글" ? (
+          <PostList postData={posts} />
+        ) : selectedCategory === "참여한 크루" ? (
+          <CrewList crewData={crewData} />
+        ) : selectedCategory === "배틀 중" ? (
+          <BattleList battleData={battleData} />
+        ) : null}
+      </Content>
     </Container>
   );
 }

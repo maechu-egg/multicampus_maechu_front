@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { useAuth } from "context/AuthContext";
 import PostDetail from "pages/community/communityComponent/PostDetail";
 import { useNavigate } from "react-router-dom";
-import { postApi } from "services/api/community/postApi";  
 
 interface Post {
   post_id: number;
@@ -53,31 +52,22 @@ function PostList({ postData }: PostData): JSX.Element {
   const handlePostClick = async (post: Post, isRecommended: boolean) => {
     console.log("Clicked post:", post);
     console.log("isRecommended:", isRecommended);
-    
+
+    const stateData = {
+      fromMyPage: true,
+      selectedPost: post,
+      isRecommended,
+    };
+
+    console.log("Navigating with state:", stateData);
+
     try {
-      if (!token) {
-        console.error("No token available");
-        return;
-      }
-  
-      const response = await postApi.getPostDetail(post.post_id, post.author, token);
-      const detailedPost = response.data;
-      console.log("Detailed post data:", detailedPost);
-  
-      const stateData = { 
-        fromMyPage: true,
-        selectedPost: detailedPost,
-        isRecommended
-      };
-      
-      console.log("Navigating with state:", stateData);
-      
-      navigate('/communitypage', {
+      navigate("/communitypage", {
         state: stateData,
-        replace: true
+        replace: true,
       });
     } catch (error) {
-      console.error("Error fetching post details:", error);
+      console.error("Navigation error:", error);
     }
   };
 
@@ -95,7 +85,14 @@ function PostList({ postData }: PostData): JSX.Element {
               <span>🏷️ {post.post_sport}</span> |{" "}
               <span>👁️ {post.post_views} views</span>
             </Details>
-            <Content>{post.post_contents || "No content available."}</Content>
+            <Hashtags>
+              {post.post_hashtag &&
+                post.post_hashtag
+                  .split(",")
+                  .map((hashtag, index) => (
+                    <span key={index}>{hashtag.trim()}</span>
+                  ))}
+            </Hashtags>
             <Footer>
               <span>👍 {post.post_like_counts}</span>
               <span>{new Date(post.post_date).toLocaleDateString()}</span>
@@ -118,7 +115,11 @@ const Container = styled.div`
   flex-direction: column;
   gap: 16px;
 `;
-
+const Hashtags = styled.div`
+  font-size: 0.85em;
+  color: #6886ba;
+  margin-top: 8px;
+`;
 const PostItem = styled.div`
   border: 1px solid grey;
   border-radius: 8px;
