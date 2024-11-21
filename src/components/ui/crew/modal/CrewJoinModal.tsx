@@ -357,15 +357,6 @@ function CrewJoinModal({
           >
             크루 가입 신청
           </button>
-          &nbsp;&nbsp;&nbsp;
-          <button
-            type="button"
-            className="btn btn-danger"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
-            취소
-          </button>
         </div>
       </form>
     </div>
