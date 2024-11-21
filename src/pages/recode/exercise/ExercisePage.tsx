@@ -8,6 +8,7 @@ import { ko } from 'date-fns/locale';
 import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
 import ExerciseAddModal from "components/ui/record/modal/exercise/ExerciseAddModal";
 import { FaRegQuestionCircle } from 'react-icons/fa';
+import { MdLightbulbOutline } from "react-icons/md";
 import CalendarTooltip from "../../../components/ui/record/calendar/CalendarTooltip";
 
 interface ExerciseDTO {
@@ -176,7 +177,7 @@ function ExercisePage(): JSX.Element {
           </>
         }>
             <span style={{ cursor: 'pointer', fontSize: '25px'}}>
-              <FaRegQuestionCircle />
+              <MdLightbulbOutline />
             </span>
           </CalendarTooltip>
         <SearchBar>
