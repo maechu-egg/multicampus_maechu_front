@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CrewInfo from "./myCrew/CrewInfo";
 import CrewMemberInfo from "./myCrew/CrewMemberInfo";
 import CrewPost from "./myCrew/CrewPost";

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import './Modal.css';
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
-import { useNavigate } from 'react-router-dom';
 
 interface CrewBattleProps {
     crewId: number; // 크루 ID를 prop으로 받습니다.
