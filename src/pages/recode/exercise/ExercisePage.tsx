@@ -8,7 +8,6 @@ import { ko } from 'date-fns/locale';
 import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
 import ExerciseAddModal from "components/ui/record/modal/exercise/ExerciseAddModal";
 import { FaRegQuestionCircle } from 'react-icons/fa';
-import { MdLightbulbOutline } from "react-icons/md";
 import CalendarTooltip from "../../../components/ui/record/calendar/CalendarTooltip";
 
 interface ExerciseDTO {
@@ -127,8 +126,6 @@ function ExercisePage(): JSX.Element {
       // 상태 업데이트
       setTodayCalorie(totalCalories);
       setTodayTime(totalTime);
-      setExerciseData(updatedExerciseData);
-
 
       return updatedExerciseData; // 업데이트된 운동 데이터 반환
     });

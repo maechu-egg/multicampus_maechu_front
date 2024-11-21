@@ -148,21 +148,37 @@ function DietDetailPage(): JSX.Element {
     }
   };
 
-  const getSelectItem = () => {
-    dietGet();
-    setIsSelectApiBoolean(false);
+  const getSelectItem = async () => {
+    try {
+      await dietGet(); // dietGet을 호출해서 최신 데이터를 가져옴
+      setIsSelectApiBoolean(false);
+    } catch (error) {
+      console.error('debug >>> getSelectItem error:', error);
+    }
   }
 
   // 삭제된 ItemInfo ItemPage에 넘겨줌
-  const deleteItem = (deletedItemId: number) => {
-    setItemData((prevItemData) =>
-      prevItemData.filter((item) => item.item_id !== deletedItemId)
-    );
+  const deleteItem = (deletedItem: ItemResponseDTO) => {
+    setItemData((prevItemData) => {
+      const updatedItemData = prevItemData.filter((item) => item !== deletedItem);
+      return updatedItemData;
+    });
   };
-
 
   const navigateDietPage = () => {
     navigate(`/record/diet/${selectedDate}`);
+  };
+
+  const itemSave = (updatedItem: any) => {
+    // 기존 데이터를 복사하여 임시 리스트 생성
+    const updatedItemData = itemData.map((item) =>
+      item.item_id === updatedItem.exercise_id ? updatedItem : item
+    );
+  
+    setItemData(updatedItemData);
+  
+    // 변경된 상태를 로깅하여 확인
+    console.log("debug >>> updatedExerciseData : ", updatedItemData);  
   };
 
   const deleteDiet = async () => {  
@@ -273,6 +289,7 @@ function DietDetailPage(): JSX.Element {
             <ItemInfo
               key={index}
               item={item}
+              receiveUpdatedItem={itemSave}
               receiveDeletedItem={deleteItem}
             />
           ))}

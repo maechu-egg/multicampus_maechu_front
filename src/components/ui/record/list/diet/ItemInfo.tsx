@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../../../../context/AuthContext";
 import styled from "styled-components";
 import api from "../../../../../services/api/axios";
@@ -15,7 +15,9 @@ interface ItemInfoProps {
         calories: number;
         diet_id: number;  
     };
-    receiveDeletedItem: (deletedItemId: number) => void;    
+    receiveDeletedItem: (deletedItem: ItemResponseDTO) => void;
+    receiveUpdatedItem: (updatedItem: any) => void;
+    key: number;    
 }
 
 interface ItemResponseDTO {
@@ -29,26 +31,11 @@ interface ItemResponseDTO {
     diet_id: number;  
 }
 
-const ItemInfo = ({item, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
+const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
-  
-  const [itemData,setItemData] = useState<ItemResponseDTO>({
-    item_id: 0,
-    item_name: "",
-    quantity: 0,
-    carbs: 0,
-    protein: 0,
-    fat: 0,
-    calories: 0,
-    diet_id: 0       
-  });
-  
+    
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  useEffect(() => {
-    setItemData(item);
-  }, []);
 
   const closeItemModal = () => {
       setIsEditModalOpen(false);
@@ -60,15 +47,15 @@ const ItemInfo = ({item, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
     
   const updateItemInfo = async (quantity: number) => {
   
-      const rate = quantity / itemData.quantity;
+      const rate = quantity / item.quantity;
       
-      const updatedCalories = Math.floor(itemData.calories * rate);
-      const updatedCarbs = Math.floor(itemData.carbs * rate);
-      const updatedProtein = Math.floor(itemData.protein * rate);
-      const updatedFat = Math.floor(itemData.fat * rate);
+      const updatedCalories = Math.floor(item.calories * rate);
+      const updatedCarbs = Math.floor(item.carbs * rate);
+      const updatedProtein = Math.floor(item.protein * rate);
+      const updatedFat = Math.floor(item.fat * rate);
       
       const updatedItem:ItemResponseDTO = {
-        ...itemData,
+        ...item,
         quantity,
         calories: updatedCalories,
         carbs: updatedCarbs,
@@ -84,7 +71,9 @@ const ItemInfo = ({item, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
         });
     
         console.log("debug >>> response from server : ", response.data);
-        setItemData(updatedItem);
+        
+        receiveUpdatedItem(updatedItem);
+
         closeItemModal();
       } catch (error) {
         console.log("debug >>> error : ", error);
@@ -99,7 +88,7 @@ const ItemInfo = ({item, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
       });
   
       console.log("debug >>> delete row : " + response.data);
-      receiveDeletedItem(item.item_id);
+      receiveDeletedItem(item);
     } catch(error) {
         console.log("debug >>> error : " + error );
     }
@@ -107,12 +96,12 @@ const ItemInfo = ({item, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
 
   return (
     <ItemPoint>
-    <InfoText>식품명 : {itemData.item_name}</InfoText>
-    <InfoText>양 : {itemData.quantity} g</InfoText>
-    <InfoText>칼로리 : {itemData.calories} kcal</InfoText>
-    <InfoText>탄수화물 : {itemData.carbs} g</InfoText>
-    <InfoText>단백질 : {itemData.protein} g</InfoText>
-    <InfoText>지방 : {itemData.fat} g</InfoText>
+    <InfoText>식품명 : {item.item_name}</InfoText>
+    <InfoText>양 : {item.quantity} g</InfoText>
+    <InfoText>칼로리 : {item.calories} kcal</InfoText>
+    <InfoText>탄수화물 : {item.carbs} g</InfoText>
+    <InfoText>단백질 : {item.protein} g</InfoText>
+    <InfoText>지방 : {item.fat} g</InfoText>
     <ControlButtonContainer>
         <ControlButton onClick={openItemModal}>+</ControlButton>
         <ControlButton onClick={deleteItemInfo}>-</ControlButton>

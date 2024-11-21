@@ -557,6 +557,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
                       <li><strong>다이어트:</strong> 체중을 줄이거나 체지방을 줄이는 것을 목표로 합니다.</li>
                       <li><strong>벌크업:</strong> 체지방 증가를 감수하면서 골격극 등 다른 체성분을 증가시킵니다.</li>
                       <li><strong>린매스업:</strong> 체지방은 유지하면서 골격극을 증가시킵니다.</li>
+                      <li><strong>유지:</strong> 현재 몸 상태를 유지합니다.</li>
                   </TooltipText>
                 </>
                 }>
