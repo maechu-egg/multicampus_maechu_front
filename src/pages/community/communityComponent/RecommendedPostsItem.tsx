@@ -59,6 +59,10 @@ const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
   // 해시태그 문자열을 쉼표와 공백(", ") 기준으로 나누어 배열로 변환
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : [];
 
+  const formatDateYMD = (dateString: string) => {
+    const fullDate = formatDate(dateString); // 기존 formatDate 함수 사용
+    return fullDate.split(' ')[0]; // 공백을 기준으로 분리하여 첫 번째 부분(년-월-일)만 반환
+  };
 
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`} onClick={onClick}>
@@ -75,7 +79,7 @@ const RecommendedPostsItem: React.FC<RecommendedPostsProps> = ({
             ))}
           </div>
         )} */}
-                <span className="date">{formatDate(post_date)}</span>
+                 <span className="date">{formatDateYMD(post_date)}</span>
         
         <div className="post-info-wrapper">
          
