@@ -26,19 +26,30 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
   const [editingSetId, setEditingSetId] = useState<number | null>(null);
   const [editData, setEditData] = useState<SetInfo>({} as SetInfo);
 
+  const [weight, setWeight] = useState<number | undefined>(editData.weight);
+  const [distance, setDistance] = useState<number | undefined>(editData.distance);
+  const [repetitions, setRepetitions] = useState<number | undefined>(editData.repetitions);
+
   const openEditModal = (currentData: SetInfo) => {
     setEditingSetId(currentData.set_id);
     setEditData(currentData);
   };
 
-  const handleInputChange = (field: keyof SetInfo, value: number) => {
-    setEditData((prev) => ({ ...prev, [field]: value }));
-  };
-
   const handleSave = async () => {
     if (editingSetId !== null) {
-      await updateSetInfo(editData);
-      setEditingSetId(null); // 저장 후 수정 모드 해제
+      if ((weight != null && distance != null && repetitions != null)
+        && !(weight === 0 && distance === 0  && repetitions === 0)) {
+
+        editData.distance = distance;
+        editData.repetitions = repetitions;
+        editData.weight = weight;
+        
+        await updateSetInfo(editData);
+        setEditingSetId(null); // 저장 후 수정 모드 해제
+        
+      } else{
+        alert("값은 한 개 이상 넣어야 합니다.");
+      }
     }
   };
 
@@ -88,13 +99,25 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
                 {editingSetId === set.set_id ? (
                   <>
                     <Label>
-                      무게: <input type="number" value={editData.weight} onChange={(e) => handleInputChange("weight", parseInt(e.target.value))} />
+                      무게: 
+                      <input type="number" value={weight} 
+                        onChange={(e) => setWeight(parseInt(e.target.value))}
+                        placeholder="무게는 선택사항입니다"
+                      />
                     </Label>
                     <Label>
-                      횟수: <input type="number" value={editData.repetitions} onChange={(e) => handleInputChange("repetitions", parseInt(e.target.value))} />
+                      횟수: 
+                      <input type="number" value={repetitions} 
+                        onChange={(e) => setRepetitions(parseInt(e.target.value))} 
+                        placeholder="횟수는 선택사항입니다"
+                      />
                     </Label>
                     <Label>
-                      거리: <input type="number" value={editData.distance} onChange={(e) => handleInputChange("distance", parseFloat(e.target.value))} /> 
+                      거리: 
+                      <input type="number" value={distance} 
+                        onChange={(e) => setDistance(parseInt(e.target.value))} 
+                        placeholder="거리는 선택사항입니다"
+                      /> 
                     </Label>
                     <SaveButton onClick={handleSave}>저장</SaveButton>
                   </>

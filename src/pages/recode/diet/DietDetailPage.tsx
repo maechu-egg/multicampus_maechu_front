@@ -137,17 +137,21 @@ function DietDetailPage(): JSX.Element {
 
   // openApi 호출 함수
   const nutrientsApiGet = async () => {
-    try {
-      const response = await api.get("record/api/nutrient", {
-       params: { foodNm : searchTerm }, 
-       headers: { Authorization: `Bearer ${token}` }
-      });
+    if(searchTerm){
+      try {
+        const response = await api.get("record/api/nutrient", {
+        params: { foodNm : searchTerm }, 
+        headers: { Authorization: `Bearer ${token}` }
+        });
 
-      console.log("debug >>> item api get : ", response);
-      setApiList(response.data);
-      setIsSelectApiBoolean(true);
-    } catch (error) {
-      console.error("debug >>> error", error);
+        console.log("debug >>> item api get : ", response);
+        setApiList(response.data);
+        setIsSelectApiBoolean(true);
+      } catch (error) {
+        console.error("debug >>> error", error);
+      }
+    } else {
+      alert("음식을 입력해주세요");
     }
   };
 

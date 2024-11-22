@@ -25,9 +25,12 @@ interface SetAddModalProps {
       const weight = weightValue !== undefined ? weightValue : 0;
       const distance = distanceValue !== undefined ? distanceValue : 0;
       const repetitions = repetitionsValue !== undefined ? repetitionsValue : 0;
-  
-      onSave({ weight, distance, repetitions, exercise_id });
-      onClose();
+      if(weight !== 0 && distance !== 0 && repetitions !==0){
+        onSave({ weight, distance, repetitions, exercise_id });
+        onClose();
+      } else{
+        alert("값은 한 개 이상 넣어야 합니다.");
+      }  
     };
   
     return (

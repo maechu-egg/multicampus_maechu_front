@@ -200,7 +200,7 @@ function ExercisePage(): JSX.Element {
             value={searchTerm}
             onChange={handleSearchInputChange}
           />
-          <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
+          <button onClick={() => searchTerm.length > 0 ? setIsAddModalOpen(true) : alert("운동을 입력해주세요")}>
             검색
           </button>
         </SearchBar>
