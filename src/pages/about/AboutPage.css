@@ -70,7 +70,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1d2636;
+  background: linear-gradient(135deg, #1d2636, #2a2f3a, #1a1a1a, #2a2f3a, #1d2636);
   opacity: 0.7;
   transform: scale(0.98);
   transition: all 0.5s ease;
@@ -86,7 +86,7 @@
 .info-section.active:hover {
   transform: translateX(10px) translateY(-5px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  background: linear-gradient(135deg, #2e3a4d 0%, #2e3a4d 100%);
+  background: linear-gradient(135deg, #2a2f3a, #1d2636, #2a2f3a, #1a1a1a, #2a2f3a);
 }
 
 .info-content {
