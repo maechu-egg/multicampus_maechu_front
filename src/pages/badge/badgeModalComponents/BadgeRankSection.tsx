@@ -116,12 +116,12 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
               alt={crewRank.badge_level} 
               className="rank-badge-image"
             />
-            <span className="username">
-              {crewRank.nickname}
+            <span className="username-section">
+              <span className="nickname">{crewRank.nickname}</span>
               {crewRank.member_id === (currentRank as CrewRankUser)?.member_id && 
                 <span className="current-user-tag">나</span>
               }
-            </span>
+            </span> 
           </div>
         </div>
       );
@@ -135,8 +135,8 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
               alt={personalRank.badgeLevel} 
               className="rank-badge-image"
             />
-            <span className="username">
-              {personalRank.nickname}  {/* memberId를 nickname으로 변경 */}
+            <span className="username-section">
+              <span className="nickname">{personalRank.nickname}</span>
               {isCrew 
                 ? (rank as CrewRankUser).member_id === (currentRank as CrewRankUser)?.member_id 
                 : (rank as PersonalRankUser).memberId === (currentRank as PersonalRankUser)?.memberId && 
