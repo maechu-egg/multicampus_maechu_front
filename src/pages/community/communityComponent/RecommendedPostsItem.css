@@ -1,8 +1,8 @@
 /* 추천 게시물 스타일 */
 .post-item.recommended {
-  width: 210px;
+  width: 205px;
   height: 250px;
-  margin: 16px;
+  margin: 10px;
   padding-top: 25px;
   background: #fff;
   border-radius: 12px;
@@ -39,12 +39,14 @@
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
-  margin: 0;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;    
-  height: 22px;           /* 한 줄 높이로 수정 */
+  height: 22px;
+  width: 180px;          /* 가로폭 제한 추가 */
+  display: block;        /* inline에서 block으로 변경 */
+  padding: 0 10px 0 0;
 }
 
 /* .post-item.recommended .post-tags {

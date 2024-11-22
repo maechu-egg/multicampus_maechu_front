@@ -23,3 +23,22 @@
     background-color: #414d60;
     color: #e0e0e0;
 }
+
+
+@media screen and (min-width: 481px) and (max-width: 696px) {
+  .search-bar{
+    transform: scale(0.95);
+  }
+  .search-bar button{
+    transform: scale(0.95);
+  }
+}
+
+@media screen and (min-width: 300px) and (max-width: 481px) {
+  .search-bar{
+    transform: scale(0.95);
+  }
+  .search-bar button{
+    transform: scale(0.9);
+  }
+}

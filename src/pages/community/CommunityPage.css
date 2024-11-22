@@ -102,3 +102,25 @@ body{
     margin: 15px auto;
   }
 }
+
+@media screen and (min-width: 481px) and (max-width: 696px) {
+  .write-button{
+    transform: scale(0.85);
+  }
+  .search-and-write{
+    transform: scale(0.95);
+    gap:10px;
+    padding:0px;
+  }
+}
+
+@media screen and (min-width: 300px) and (max-width: 481px) {
+  .write-button{
+    transform: scale(0.85);
+  }
+  .search-and-write{
+    transform: scale(0.95);
+    gap:0px;
+    padding:0px;
+  }
+}

@@ -11,6 +11,7 @@ interface CategoryDropdownProps {
   recommendedKeywords: string[];
   onKeywordClick: (keyword: string) => void;
   showKeywords?: boolean;
+  variant?: 'community' | 'crew';
 }
 
 interface CategoriesData {
@@ -29,6 +30,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   recommendedKeywords,
   onKeywordClick,
   showKeywords = true,
+  variant = 'community' 
 }) => {
   const defaultCategory = "헬스 및 피트니스";
   const [selectedMain, setSelectedMain] = useState(activeTab || defaultCategory);
@@ -68,11 +70,11 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
     : [];
 
     return (
-      <div className="filter-section">
-        <div className="section-headers">
-          <div className="header-item">카테고리 선택</div>
-          <div className="header-item">상세 카테고리</div>
-          {showKeywords && <div className="header-item">추천 키워드</div>}
+      <div className={`filter-section ${variant}-filter-section`}>
+        <div className={`section-headers ${variant}-section-headers`}>
+          <div className={`header-item ${variant}-header-item`}>카테고리 선택</div>
+          <div className={`header-item ${variant}-header-item`}>상세 카테고리</div>
+          {showKeywords && <div className={`header-item ${variant}-header-item`}>추천 키워드</div>}
           <button 
             className="toggle-button"
             onClick={handleToggle}
