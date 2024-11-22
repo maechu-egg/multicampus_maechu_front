@@ -136,10 +136,19 @@ const BattleCard = styled.div`
   width: 100%;
   max-width: 80%;
   padding: 16px;
-  border: 1px solid #ddd;
+  border: 1px solid grey;
   border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background: white;
+  overflow: hidden;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+  }
 `;
 
 const BattleCardHeader = styled.div`
