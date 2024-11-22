@@ -23,7 +23,7 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
   const token = state.token;
 
   const [duration, setDuration] = useState<number | null>(null);
-  const [intensity, setIntensity] = useState<string | null>(null);
+  const [intensity, setIntensity] = useState<string>("");
   const [exerciseId, setExerciseId] = useState<number>(0);
   const [sets, setSets] = useState<SetInfo[]>([]); // 세트 정보를 저장하는 상태
   const [isSetModalOpen, setIsSetModalOpen] = useState(false); // 세트 추가 모달 상태
@@ -78,16 +78,22 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
   };
  // 저장 버튼 클릭 시
   const handleSave = async () => {
-    const exerciseResponse = await exerciseInsert();
-    console.log("debug >>> exerciseResponse : ", exerciseResponse);
-    if (exerciseResponse) {
-      const isSuccess = await setInsert(exerciseResponse); // 운동 추가 후 세트 추가
-      console.log("debug >>> isSuccess : ", isSuccess);
-      successExerInsert(isSuccess);
-    } else {
-      successExerInsert(false);
+    if(intensity && duration){
+      const exerciseResponse = await exerciseInsert();
+      console.log("debug >>> exerciseResponse : ", exerciseResponse);
+      if (exerciseResponse) {
+        const isSuccess = await setInsert(exerciseResponse); // 운동 추가 후 세트 추가
+        console.log("debug >>> isSuccess : ", isSuccess);
+        successExerInsert(isSuccess);
+      } else {
+        successExerInsert(false);
+      }
+      onClose(); // 모달 닫기
+    } else{
+
+      alert("양식에 맞춰 입력해주세요");
+
     }
-    onClose(); // 모달 닫기
   };
 
   // 세트 추가 모달에서 받은 세트 정보를 저장
@@ -123,7 +129,7 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
         </Label>
         <Label>
           강도:
-          <select value={intensity !== null ? intensity : undefined} onChange={(e) => setIntensity(e.target.value)}>
+          <select value={intensity !== "" ? intensity : ""} onChange={(e) => setIntensity(e.target.value)}>
             <option value="" disabled selected hidden>강도를 선택하세요</option>
             <option value="HIGH">상</option>
             <option value="GENERAL">중</option>

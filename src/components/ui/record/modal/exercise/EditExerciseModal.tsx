@@ -12,9 +12,14 @@ const EditExerciseModal = ({ onClose, onSave, currentIntensity }: EditExerciseMo
     const [intensity, setIntensity] = useState<string>("");
 
     const handleSave = () => {
-      if(duration !== null)
+      if(duration && intensity){
         onSave(duration, intensity); // 부모 컴포넌트로 수정된 값 전달
         onClose();
+      } else {
+
+        alert("양식에 맞춰 입력해주세요");
+
+      }
     };
 
     return (
@@ -33,7 +38,7 @@ const EditExerciseModal = ({ onClose, onSave, currentIntensity }: EditExerciseMo
           <label>
             강도:
             <select
-              value={intensity !== null ? intensity : undefined}
+              value={intensity !== "" ? intensity : ""}
               onChange={(e) => setIntensity(e.target.value)}
             >
               <option value="" disabled selected hidden>강도를 선택하세요</option>              

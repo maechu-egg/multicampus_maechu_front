@@ -36,11 +36,11 @@ interface FoodCalculateDTO {
 
 const QuantitySetModal = ({ searchTerm, nutrient, onClose, onSave }: QuantitySetModalProps): JSX.Element => {
   // 양
-  const [quantity, setQuantity] = useState<number | null>();
+  const [quantity, setQuantity] = useState<number | undefined>();
 
   const handleSave = () => {
     // Nutrient -> FoodCalculateDTO 변환
-    if(quantity !== null && quantity !== undefined){
+    if(quantity){
     const foodCalculateDTO: FoodCalculateDTO = {
       foodNm: nutrient.foodNm,
       inputQuantity: quantity,
@@ -52,6 +52,8 @@ const QuantitySetModal = ({ searchTerm, nutrient, onClose, onSave }: QuantitySet
     };
 
     onSave(foodCalculateDTO); // 부모 컴포넌트에 변환된 데이터 전달
+    } else {
+        alert("양식에 맞춰 입력해주세요");
     }
   };
 
@@ -64,7 +66,7 @@ const QuantitySetModal = ({ searchTerm, nutrient, onClose, onSave }: QuantitySet
           양(g) :
           <input
             type="number"
-            value={quantity !== null ? quantity : undefined}
+            value={quantity}
             onChange={(e) => setQuantity(parseInt(e.target.value))}
             placeholder="양을 입력해주세요"
           />

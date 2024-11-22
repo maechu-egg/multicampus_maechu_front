@@ -17,7 +17,6 @@ interface ItemInfoProps {
     };
     receiveDeletedItem: (deletedItem: ItemResponseDTO) => void;
     receiveUpdatedItem: (updatedItem: any) => void;
-    key: number;    
 }
 
 interface ItemResponseDTO {
@@ -31,31 +30,25 @@ interface ItemResponseDTO {
     diet_id: number;  
 }
 
-const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
+const ItemInfo = ({item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
     
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const closeItemModal = () => {
-      setIsEditModalOpen(false);
-  };
-  
-  const openItemModal = () => {
-    setIsEditModalOpen(true);
-  };
+  const [itemInfo,setItemInfo] = useState<ItemResponseDTO>(item);
     
   const updateItemInfo = async (quantity: number) => {
   
-      const rate = quantity / item.quantity;
+      const rate = quantity / itemInfo.quantity;
       
-      const updatedCalories = Math.floor(item.calories * rate);
-      const updatedCarbs = Math.floor(item.carbs * rate);
-      const updatedProtein = Math.floor(item.protein * rate);
-      const updatedFat = Math.floor(item.fat * rate);
+      const updatedCalories = Math.floor(itemInfo.calories * rate);
+      const updatedCarbs = parseFloat((itemInfo.carbs * rate).toFixed(2));
+      const updatedProtein = parseFloat((itemInfo.protein * rate).toFixed(2));
+      const updatedFat = parseFloat((itemInfo.fat * rate).toFixed(2));
       
       const updatedItem:ItemResponseDTO = {
-        ...item,
+        ...itemInfo,
         quantity,
         calories: updatedCalories,
         carbs: updatedCarbs,
@@ -73,8 +66,9 @@ const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoPr
         console.log("debug >>> response from server : ", response.data);
         
         receiveUpdatedItem(updatedItem);
+        setItemInfo(updatedItem);
 
-        closeItemModal();
+        setIsEditModalOpen(false);
       } catch (error) {
         console.log("debug >>> error : ", error);
       }
@@ -102,18 +96,18 @@ const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoPr
           <HeaderText>{item.item_name}</HeaderText>
         </div>
         <ControlButtonContainer>
-          <ControlButton onClick={openItemModal}>+</ControlButton>
+          <ControlButton onClick={() => setIsEditModalOpen(true)}>+</ControlButton>
           <ControlButton onClick={deleteItemInfo}>-</ControlButton>
         </ControlButtonContainer>
       </HeaderBar>
-    <InfoText>양 : {item.quantity} g</InfoText>
-    <InfoText>칼로리 : {item.calories} kcal</InfoText>
-    <InfoText>탄수화물 : {item.carbs} g</InfoText>
-    <InfoText>단백질 : {item.protein} g</InfoText>
-    <InfoText>지방 : {item.fat} g</InfoText>
+    <InfoText>양 : {itemInfo.quantity} g</InfoText>
+    <InfoText>칼로리 : {itemInfo.calories} kcal</InfoText>
+    <InfoText>탄수화물 : {itemInfo.carbs} g</InfoText>
+    <InfoText>단백질 : {itemInfo.protein} g</InfoText>
+    <InfoText>지방 : {itemInfo.fat} g</InfoText>
     {isEditModalOpen && (
       <EditItemModal
-      onClose={closeItemModal}
+      onClose={() => setIsEditModalOpen(false)}
       onSave={updateItemInfo}
         />
     )}      

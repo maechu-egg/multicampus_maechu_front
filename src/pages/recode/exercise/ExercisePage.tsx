@@ -69,6 +69,7 @@ function ExercisePage(): JSX.Element {
   // 마운트 시 exericseGet 실행
   useEffect(() => {
     if (!token) {
+      alert("로그인 페이지로 이동합니다.");
       console.log("debug >>> token is null");
       navigate("/loginpage");
       return;
@@ -78,7 +79,7 @@ function ExercisePage(): JSX.Element {
     if (selectedDate) {
       exerciseGet(selectedDate);
     }
-  }, []);
+  }, [token]);
 
   // ExerciseAddModal을 통해 추가된 운동을 exerciseData에 반영
   const addNewExercise = (successBoolean: boolean) => {
@@ -199,7 +200,7 @@ function ExercisePage(): JSX.Element {
             value={searchTerm}
             onChange={handleSearchInputChange}
           />
-          <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
+          <button onClick={() => searchTerm.length > 0 ? setIsAddModalOpen(true) : alert("운동을 입력해주세요")}>
             검색
           </button>
         </SearchBar>
