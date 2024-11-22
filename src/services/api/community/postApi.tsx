@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8001';
-
+const BASE_URLI = "https://workspace.kr.object.ncloudstorage.com/";
 interface PostParams {
   page: number;
   size: number;
@@ -12,8 +12,8 @@ interface PostParams {
 const processImageUrls = (post: any) => {
   return {
     ...post,
-    post_img1: post.post_img1 ? `${BASE_URL}/static/${post.post_img1}` : null,
-    post_img2: post.post_img2 ? `${BASE_URL}/static/${post.post_img2}` : null,
+    post_img1: post.post_img1 ? `${BASE_URLI}${post.post_img1}` : null,
+    post_img2: post.post_img2 ? `${BASE_URLI}${post.post_img2}` : null,
   };
 };
 
@@ -30,20 +30,20 @@ export const postApi = {
       });
       
       // 응답 데이터 구조에 따라 처리
-      if (response.data.posts) {
-        const processedPosts = response.data.posts.map((post: any) => {
-          // 이미지 파일명이 있는 경우에만 URL 생성
-          const hasImage1 = post.post_img1 && post.post_img1.trim() !== '';
-          const hasImage2 = post.post_img2 && post.post_img2.trim() !== '';
+      // if (response.data.posts) {
+      //   const processedPosts = response.data.posts.map((post: any) => {
+      //     // 이미지 파일명이 있는 경우에만 URL 생성
+      //     const hasImage1 = post.post_img1 && post.post_img1.trim() !== '';
+      //     const hasImage2 = post.post_img2 && post.post_img2.trim() !== '';
           
-          return {
-            ...post,
-            post_img1: hasImage1 ? `${BASE_URL}/static/${post.post_img1}` : null,
-            post_img2: hasImage2 ? `${BASE_URL}/static/${post.post_img2}` : null,
-          };
-        });
-        response.data.posts = processedPosts;
-      }
+      //     return {
+      //       ...post,
+      //       post_img1: hasImage1 ? `${BASE_URLI}${post.post_img1}`  : null,
+      //       post_img2: hasImage2 ? `${BASE_URLI}${post.post_img1}` : null,
+      //     };
+      //   });
+      //   response.data.posts = processedPosts;
+      // }
       
       return response;
     } catch (error) {
@@ -157,7 +157,7 @@ deletePost: async (postId: number, token: string) => {
         }
       );
 
-      response.data = processImageUrls(response.data);
+      // response.data = processImageUrls(response.data);
       return response;
     } catch (error) {
       console.error('Error fetching post detail:', error);
