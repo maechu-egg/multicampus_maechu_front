@@ -2,6 +2,10 @@
   padding: 20px;
 }
 
+.community-container.content-view {
+  background-color: #b6c0d3;
+}
+
 body{
   
   font-family: var(  --font-ONE-Mobile-Title );
