@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Post } from './usePost';
 import { searchApi } from '../../services/api/community/searchApi';
+import { useNavigate } from 'react-router-dom';
 
 export const useSearch = (
   postsPerPage: number, 
@@ -12,7 +13,23 @@ export const useSearch = (
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const navigate = useNavigate();
 
+  const shouldNavigateToCommunityPage = (message: string) => {
+    return message !== "검색 결과가 없습니다.";
+  };
+  
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setModalMessage("");
+  
+    if (shouldNavigateToCommunityPage(modalMessage)) {
+      navigate("/communitypage");
+    }
+  };
   const handleSearch = async (searchTerm: string, page: number = 1) => {
     console.log("Searching for:", searchTerm);
     if (searchTerm.trim() === "") {
@@ -40,7 +57,8 @@ export const useSearch = (
         const fetchedPosts = response.data.posts;
         if (!fetchedPosts || fetchedPosts.length === 0) {
           setPosts([]);
-          alert("검색 결과가 없습니다.");
+          setModalMessage("검색 결과가 없습니다.");
+          setIsModalOpen(true);
           setCurrentPage(1);
           setTotalPages(1);
         } else {
@@ -75,20 +93,25 @@ export const useSearch = (
           setPosts(mappedPosts);
           setTotalPages(response.data.totalPages);
         }
-      } else if (response.status === 404) {
-        console.error("검색 결과가 없습니다: ", response.statusText);
-        alert("검색 결과가 없습니다.");
+      }  else if (response.status >= 400) {
+        console.error("검색 결과를 가져오는 중 오류 발생: ", response.statusText);
+        setModalMessage("검색 결과를 가져오던 중 오류가 발생했습니다.");
+        setIsModalOpen(true);
+        setPosts([]);
+      }
+    } catch (error:any) {
+      if (error.response && error.response.status === 404) {
+        console.error("검색 결과가 없습니다: ", error.response.data.message || error.response.statusText);
+        setModalMessage("검색 결과가 없습니다.");
+        setIsModalOpen(true);
         setPosts([]);
         setCurrentPage(1);
         setTotalPages(1);
-      } else if (response.status >= 400) {
-        console.error("검색 결과를 가져오는 중 오류 발생: ", response.statusText);
-        alert("검색 결과를 가져오던 중 오류가 발생했습니다.");
-        setPosts([]);
+      } else {
+        console.error("서버와의 통신 중 오류 발생:", error);
+        setModalMessage("서버와의 통신에서 오류가 발생했습니다.");
+        setIsModalOpen(true);
       }
-    } catch (error) {
-      console.error("서버와의 통신 중 오류 발생:", error);
-      alert("서버와의 통신에서 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
@@ -124,7 +147,8 @@ export const useSearch = (
         const fetchedPosts = response.data.searchList;
         if (!fetchedPosts || fetchedPosts.length === 0) {
           setPosts([]);
-          alert("검색 결과가 없습니다.");
+          setModalMessage("검색 결과가 없습니다.");
+          setIsModalOpen(true);
           setCurrentPage(1);
           setTotalPages(1);
         } else {
@@ -134,11 +158,13 @@ export const useSearch = (
         }
       } else {
         console.error("키워드 검색 결과를 가져오는 중 오류 발생:", response.statusText);
-        alert("키워드 검색 결과를 가져오던 중 오류가 발생했습니다.");
+        setModalMessage("키워드 검색 결과를 가져오던 중 오류가 발생했습니다.");
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("서버와의 통신 중 오류 발생:", error);
-      alert("서버와의 통신에서 오류가 발생했습니다.");
+      setModalMessage("서버와의 통신에서 오류가 발생했습니다.");
+      setIsModalOpen(true);
     } finally {
       setLoading(false);
     }
@@ -163,5 +189,8 @@ export const useSearch = (
     loading,
     handleSearch,
     handleKeywordClick,
+    isModalOpen,
+    modalMessage,
+    handleModalClose,
   };
 };
