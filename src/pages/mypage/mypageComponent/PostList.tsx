@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useAuth } from "context/AuthContext";
 import PostDetail from "pages/community/communityComponent/PostDetail";
 import { useNavigate } from "react-router-dom";
+import { postApi } from "services/api/community/postApi";
 
 interface Post {
   post_id: number;
@@ -50,24 +51,31 @@ function PostList({ postData }: PostData): JSX.Element {
   const navigate = useNavigate();
 
   const handlePostClick = async (post: Post, isRecommended: boolean) => {
-    console.log("Clicked post:", post);
-    console.log("isRecommended:", isRecommended);
-
-    const stateData = {
-      fromMyPage: true,
-      selectedPost: post,
-      isRecommended,
-    };
-
-    console.log("Navigating with state:", stateData);
-
     try {
+      if (!token) {
+        console.error("No token available");
+        return;
+      }
+  
+      const response = await postApi.getPostDetail(
+        post.post_id,
+        post.author,
+        token  
+      );
+      const detailedPost = response.data;
+  
+      const stateData = {
+        fromMyPage: true,
+        selectedPost: detailedPost,
+        isRecommended,
+      };
+  
       navigate("/communitypage", {
         state: stateData,
         replace: true,
       });
     } catch (error) {
-      console.error("Navigation error:", error);
+      console.error("Error fetching post details:", error);
     }
   };
 
