@@ -5,6 +5,9 @@ import { formatDate } from '../../../utils/dateFormat';
 import CommentSection from "./CommentSection";
 import { usePost } from "hooks/community/usePost";
 import { useAuth } from "context/AuthContext";
+import ConfirmModal from "./ConfirmModal";
+import AlertModal from "./AlertModal";
+
 
 interface Comment {
   id: number;
@@ -59,6 +62,11 @@ interface PostDetailProps {
   onCommentLike: (commentId: number, postId: number) => void;
   onCommentDislike: (commentId: number, postId: number) => void;
   getComments: (postId: number) => Promise<void>;
+  isModalOpen: boolean; // 모달 상태
+  modalMessage: string; // 모달 메시지
+  handleModalClose: () => void; // 모달 닫기 함수
+  isConfirmModalOpen: boolean; // Confirm Modal 상태
+  setIsConfirmModalOpen: (isOpen: boolean) => void;
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
@@ -88,7 +96,12 @@ const PostDetail: React.FC<PostDetailProps> = ({
   onCommentLike,
   onCommentDislike,
   getComments,
-  member_badge_level
+  member_badge_level,
+  isModalOpen,
+  modalMessage,
+  handleModalClose,
+  isConfirmModalOpen,
+  setIsConfirmModalOpen,
 }) => {
   const { state: { token } } = useAuth();
   const [imgSrc1, setImgSrc1] = useState<string>("");
@@ -96,6 +109,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [commentInput, setCommentInput] = useState("");
   const hashtagArray = post_hashtag ? post_hashtag.split(',') : [];
+  const BASE_URLI = "https://workspace.kr.object.ncloudstorage.com/";
 
   const badgeImages: { [key: string]: string } = {
     다이아몬드: '/img/personalBadge/badgeDiamond.png',
@@ -137,49 +151,53 @@ const PostDetail: React.FC<PostDetailProps> = ({
     fetchComments();
   }, [post_id]);
 
+  const handleCancel = () => {
+    console.log("삭제 취소됨");
+    setIsConfirmModalOpen(false);
+  };
   
   const handleSortOrderChange = (order: "asc" | "desc") => {
     setSortOrder(order);
   };
   
-  useEffect(() => {
-    const loadImage = async (imgUrl: string | undefined) => {
-      if (!imgUrl || !token) return null;
-      try {
-        const response = await fetch(imgUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const blob = await response.blob();
-          return URL.createObjectURL(blob);
-        }
-      } catch (error) {
-        console.error("이미지 로드 중 오류:", error);
-      }
-      return null;
-    };
+  // useEffect(() => {
+  //   const loadImage = async (imgUrl: string | undefined) => {
+  //     if (!imgUrl || !token) return null;
+  //     try {
+  //       const response = await fetch(imgUrl, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       });
+  //       if (response.ok) {
+  //         const blob = await response.blob();
+  //         return URL.createObjectURL(blob);
+  //       }
+  //     } catch (error) {
+  //       console.error("이미지 로드 중 오류:", error);
+  //     }
+  //     return null;
+  //   };
 
-    const loadImages = async () => {
-      if (post_img1) {
-        const url1 = await loadImage(post_img1); // post_img1은 이미 전체 URL
-        if (url1) setImgSrc1(url1);
-      }
-      if (post_img2) {
-        const url2 = await loadImage(post_img2); // post_img2는 이미 전체 URL
-        if (url2) setImgSrc2(url2);
-      }
-    };
+  //   const loadImages = async () => {
+  //     if (post_img1) {
+  //       const url1 = await loadImage(post_img1); // post_img1은 이미 전체 URL
+  //       if (url1) setImgSrc1(url1);
+  //     }
+  //     if (post_img2) {
+  //       const url2 = await loadImage(post_img2); // post_img2는 이미 전체 URL
+  //       if (url2) setImgSrc2(url2);
+  //     }
+  //   };
 
-    loadImages();
+  //   loadImages();
 
-    // cleanup
-    return () => {
-      if (imgSrc1) URL.revokeObjectURL(imgSrc1);
-      if (imgSrc2) URL.revokeObjectURL(imgSrc2);
-    };
-  }, [post_img1, post_img2, token]);
+  //   // cleanup
+  //   return () => {
+  //     if (imgSrc1) URL.revokeObjectURL(imgSrc1);
+  //     if (imgSrc2) URL.revokeObjectURL(imgSrc2);
+  //   };
+  // }, [post_img1, post_img2, token]);
 
   
   const sortedComments = [...comments].sort((a, b) => {
@@ -218,9 +236,29 @@ const PostDetail: React.FC<PostDetailProps> = ({
           <button id="edit-button" className="btn btn-primary" onClick={onEdit}>
             수정
           </button>
-          <button id="delete-button" className="btn btn-danger" onClick={onDelete}>
+          {/* <button id="delete-button" className="btn btn-danger" onClick={onDelete}>
+            삭제
+          </button> */}
+            <button id="delete-button" className="btn btn-danger" 
+                    onClick={() => setIsConfirmModalOpen(true)}
+            >
             삭제
           </button>
+          <ConfirmModal
+              isOpen={isConfirmModalOpen}
+              title="⚠️ 게시글 삭제"
+              message="정말로 이 게시글을 삭제하시겠습니까?"
+              // onConfirm={onDelete}
+              // onCancel={handleCancel}
+              onConfirm={() => onDelete()} // 삭제 함수 호출
+              onCancel={() => setIsConfirmModalOpen(false)} // ConfirmModal 닫기
+          />
+                  <AlertModal
+                    isOpen={isModalOpen}
+                    message={modalMessage}
+                    onClose={handleModalClose} // 수정된 handleModalClose 사용
+          />
+
         </div>
       )}
 
@@ -230,7 +268,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
         {post_img1 && (
           <div className="post-image">
             <img
-              src={imgSrc1}
+              src={`${BASE_URLI}${post_img1}`}
               alt="게시글 이미지 1"
               style={{ maxWidth: "100%", height: "auto" }}
             />
@@ -239,7 +277,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
         {post_img2 && (
           <div className="post-image">
             <img
-              src={imgSrc2}
+              src={`${BASE_URLI}${post_img2}`}
               alt="게시글 이미지 2"
               style={{ maxWidth: "100%", height: "auto" }}
             />

@@ -61,6 +61,9 @@ export const usePost = () => {
   const [dislikeCount, setDislikeCount] = useState(0);
   const { getComments } = useComment();
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
  // 게시글 목록 조회
  const fetchPosts = async (
@@ -189,6 +192,7 @@ export const usePost = () => {
     }
   };
 
+
   // 게시글 작성
   const handleSavePost = async (
     post_title: string,
@@ -222,17 +226,26 @@ export const usePost = () => {
       const response = await postApi.createPost(formData, token);
  
       if (response.status >= 200 && response.status < 300) {
-        alert("게시글이 작성되었습니다.");
-        navigate('/communitypage');
-        return true;
+        setModalMessage("게시글이 작성되었습니다.");
+        setIsModalOpen(true);
+       
+        
       } else {
-        console.error('게시글을 작성할 수 없습니다.');
-        return false;
+        setModalMessage('게시글을 작성할 수 없습니다.');
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error('Error:', error);
       return false;
     }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setModalMessage("");
+
+      navigate("/communitypage"); 
+  
   };
 
   const getLevelLabel = (points: number) => {
@@ -284,17 +297,18 @@ export const usePost = () => {
           posts.map((post) => (post.post_id === postId ? updatedPost : post))
         );
         setSelectedPost(updatedPost);
-        alert("게시글이 수정되었습니다.");
-        navigate("/communitypage");
+        setModalMessage("게시글이 수정되었습니다.");
+        setIsModalOpen(true);
         return true;
       } else {
-        console.error("게시글을 수정할 수 없습니다.");
-        navigate("/communitypage");
+        setModalMessage("게시글을 수정할 수 없습니다.");
+        setIsModalOpen(true);
         return false;
       }
     } catch (error) {
       console.error("서버와의 통신 중 오류가 발생했습니다.:", error);
-      navigate("/communitypage");
+      setModalMessage("서버와의 통신 중 오류가 발생했습니다.:");
+      setIsModalOpen(true);
       return false;
     }
   };
@@ -307,31 +321,30 @@ const handleDelete = async (postId: number) => {
       alert("로그인이 필요합니다.");
       return false;
     }
-
+    setIsConfirmModalOpen(false);
     console.log('Current token:', token); // 토큰 확인용 로그
 
-    if (!window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      return false;
-    }
+    // if (!window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+    //   return false;
+    // }
 
     const response = await postApi.deletePost(postId, token);
-    
+ 
     if (response.status === 200) {
-      alert('게시글이 삭제되었습니다.');
-      navigate('/communitypage');
-      return true;
+      setModalMessage('게시글이 삭제되었습니다.');
+      setIsModalOpen(true);   
     } else {
-      alert('게시글 삭제에 실패했습니다.');
-      return false;
+      setModalMessage('게시글 삭제에 실패했습니다.');
+      setIsModalOpen(true);
     }
   } catch (error) {
     console.error('게시글 삭제 중 오류 발생:', error);
     if (axios.isAxiosError(error) && error.response?.status === 403) {
-      alert("게시글 삭제 권한이 없습니다.");
+      setModalMessage("게시글 삭제 권한이 없습니다.");
     } else {
-      alert("게시글 삭제 중 오류가 발생했습니다.");
+      setModalMessage("게시글 삭제 중 오류가 발생했습니다.");
     }
-    return false;
+    setIsModalOpen(true);
   }
 };
 
@@ -435,5 +448,10 @@ const handleDelete = async (postId: number) => {
     handleLike,
     handleDislike,
     getComments,
+    isModalOpen,
+    modalMessage,
+    handleModalClose,
+    setIsConfirmModalOpen,
+    isConfirmModalOpen,
   };
 };

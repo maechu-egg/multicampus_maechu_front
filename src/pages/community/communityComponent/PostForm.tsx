@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./PostForm.css";
+import AlertModal from "./AlertModal";
+import { useNavigate } from "react-router-dom";
 
 interface PostFormProps {
   mode: "create" | "edit";
@@ -27,6 +29,9 @@ interface PostFormProps {
   post_up_sports: string[];
   post_sports: { [key: string]: string[] };
   recommendedKeywords: string[];
+  isModalOpen: boolean; // 모달 상태
+  modalMessage: string; // 모달 메시지
+  handleModalClose: () => void; // 모달 닫기 함수
 }
 
 const PostForm: React.FC<PostFormProps> = ({
@@ -37,6 +42,9 @@ const PostForm: React.FC<PostFormProps> = ({
   post_up_sports,
   post_sports,
   recommendedKeywords,
+  isModalOpen,
+  modalMessage,
+  handleModalClose,
 }) => {
   const [post_title, setPost_title] = useState(initialData?.post_title || "");
   const [post_contents, setPost_contents] = useState(initialData?.post_contents || "");
@@ -53,7 +61,9 @@ const PostForm: React.FC<PostFormProps> = ({
   );
 
   const [error, setError] = useState<string>("");
-  
+  const navigate = useNavigate();
+
+
   // 초기 이미지 파일명들을 저장할 state 추가
   const [existingImages, setExistingImages] = useState<string[]>(() => {
     const images = [];
@@ -368,6 +378,11 @@ const PostForm: React.FC<PostFormProps> = ({
       >
         {mode === "create" ? "작성하기" : "수정하기"}
       </button>
+          <AlertModal
+                    isOpen={isModalOpen}
+                    message={modalMessage}
+                    onClose={handleModalClose} 
+          />
       <button 
         type="button" 
         id="postform-cancel-btn" 
