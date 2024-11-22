@@ -56,9 +56,9 @@ function DietDetailPage(): JSX.Element {
   const [itemData,setItemData] = useState<ItemResponseDTO[]>([]);
   const [dietId,setDietId] =useState(0);
   // meal 영양성분
-  const totalCarbs = itemData.reduce((acc, item) => acc + item.carbs, 0);
-  const totalProtein = itemData.reduce((acc, item) => acc + item.protein, 0);
-  const totalFat = itemData.reduce((acc, item) => acc + item.fat, 0);
+  const totalCarbs = Math.round(itemData.reduce((acc, item) => acc + item.carbs, 0));
+  const totalProtein = Math.round(itemData.reduce((acc, item) => acc + item.protein, 0));
+  const totalFat = Math.round(itemData.reduce((acc, item) => acc + item.fat, 0));
   const totalCalories = itemData.reduce((acc, item) => acc + item.calories, 0);
   
   // openApi 식품 리스트 나열 모달 트리거
@@ -340,6 +340,7 @@ function DietDetailPage(): JSX.Element {
         </ItemList>
           {isSelectApiBoolean && (
             <SelectItemModal
+            itemList={itemData}
             searchTerm={searchTerm}
             apiList={apiList}
             onClose={() => setIsSelectApiBoolean(false)}

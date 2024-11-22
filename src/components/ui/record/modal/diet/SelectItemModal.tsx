@@ -41,7 +41,18 @@ interface ItemRequestDTO {
   diet_id: number;  
 }
 
+interface ItemResponseDTO {
+  item_id: number;
+  item_name: string;
+  quantity: number;
+  carbs: number;
+  protein: number;
+  fat: number;
+  calories: number;
+  diet_id: number;  
+}
 interface SelectItemModalProps {
+  itemList: ItemResponseDTO[]
   searchTerm: string;
   apiList: Nutrient[];
   onClose: () => void;
@@ -49,7 +60,7 @@ interface SelectItemModalProps {
   dietId: number;
 }
 
-const SelectItemModal = ({ searchTerm ,apiList, onClose, onSave, dietId }: SelectItemModalProps): JSX.Element => {
+const SelectItemModal = ({ itemList,searchTerm ,apiList, onClose, onSave, dietId }: SelectItemModalProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
 
@@ -80,13 +91,15 @@ const SelectItemModal = ({ searchTerm ,apiList, onClose, onSave, dietId }: Selec
     const itemRequestDTO: ItemRequestDTO = {
       item_name: dto.foodNm,
       quantity: dto.inputQuantity,
-      carbs: dto.carbs,
-      protein: dto.protein,
-      fat: dto.fat,
+      carbs: parseFloat(dto.carbs.toFixed(2)),
+      protein: parseFloat(dto.protein.toFixed(2)),
+      fat: parseFloat(dto.fat.toFixed(2)),
       calories: Math.round(dto.energy), // 소수점 제거
       diet_id: dto.diet_id,
     };
   
+    console.log("debug >>> itemRequestDTO : " + itemRequestDTO);
+
     try {
       const response = await api.post("record/diet/insert/item", itemRequestDTO, {
         headers: { Authorization: `Bearer ${token}` },
@@ -100,6 +113,18 @@ const SelectItemModal = ({ searchTerm ,apiList, onClose, onSave, dietId }: Selec
 
   // `QuantitySetModal`에서 전달받은 FoodCalculateDTO 처리
   const handleSave = async (dto: FoodCalculateDTO) => {
+
+    // 이미 존재하는 식품인지 확인
+    const isDuplicate = itemList.some((item) => item.item_name === dto.foodNm);
+
+    if (isDuplicate) {
+      alert("해당 식품이 이미 존재합니다.");
+
+      setSelectedItem(null); // 선택 초기화
+      setIsCustomModalOpen(false);  
+      return;
+    }
+    
     if (dietId === 0) {
       // dietId가 0일 경우: 식단 추가 후 식품 추가
       const newDietId = await dietInsert();
@@ -118,11 +143,6 @@ const SelectItemModal = ({ searchTerm ,apiList, onClose, onSave, dietId }: Selec
     setIsCustomModalOpen(false);
   };
 
-  // 아이템 클릭 핸들러
-  const handleItemClick = (item: Nutrient) => {
-    setSelectedItem(item);
-  };
-
   return (
     <ModalOverlay>
       <ModalContent>
@@ -136,7 +156,7 @@ const SelectItemModal = ({ searchTerm ,apiList, onClose, onSave, dietId }: Selec
           <ItemList>
             {apiList.length > 0 ? (
               apiList.map((item, index) => (
-                <ItemCard key={index} onClick={() => handleItemClick(item)}>
+                <ItemCard key={index} onClick={() => setSelectedItem(item)}>
                   <h4>{item.foodNm}</h4>
                   <p>칼로리: {item.energy} kcal</p>
                   <p>
@@ -297,7 +317,6 @@ const Footer = styled.div`
   justify-content: center;
   padding: 16px;
   border-top: 1px solid #e0e0e0;
-  background: #f9f9f9;
 `;
 
 const ManualEntryButton = styled.button`

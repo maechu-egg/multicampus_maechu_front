@@ -17,7 +17,6 @@ interface ItemInfoProps {
     };
     receiveDeletedItem: (deletedItem: ItemResponseDTO) => void;
     receiveUpdatedItem: (updatedItem: any) => void;
-    key: number;    
 }
 
 interface ItemResponseDTO {
@@ -31,7 +30,7 @@ interface ItemResponseDTO {
     diet_id: number;  
 }
 
-const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
+const ItemInfo = ({item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoProps): JSX.Element => {
   const { state } = useAuth();
   const token = state.token;
     
@@ -44,9 +43,9 @@ const ItemInfo = ({key,item, receiveUpdatedItem, receiveDeletedItem}: ItemInfoPr
       const rate = quantity / itemInfo.quantity;
       
       const updatedCalories = Math.floor(itemInfo.calories * rate);
-      const updatedCarbs = Math.floor(itemInfo.carbs * rate);
-      const updatedProtein = Math.floor(itemInfo.protein * rate);
-      const updatedFat = Math.floor(itemInfo.fat * rate);
+      const updatedCarbs = parseFloat((itemInfo.carbs * rate).toFixed(2));
+      const updatedProtein = parseFloat((itemInfo.protein * rate).toFixed(2));
+      const updatedFat = parseFloat((itemInfo.fat * rate).toFixed(2));
       
       const updatedItem:ItemResponseDTO = {
         ...itemInfo,

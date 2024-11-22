@@ -83,8 +83,9 @@ const CustomItemModal = ({ searchTerm, onClose, onSave }: CustomItemModalProps):
               <Input
                 type="number"
                 value={carbs}
-                onChange={(e) => setCarbs(parseInt(e.target.value))}
+                onChange={(e) => setCarbs(parseFloat(e.target.value))}
                 placeholder="탄수화물을 입력해주세요"
+                step="0.01"
               />
             </FormItem>
             <FormItem>
@@ -92,8 +93,9 @@ const CustomItemModal = ({ searchTerm, onClose, onSave }: CustomItemModalProps):
               <Input
                 type="number"
                 value={protein}
-                onChange={(e) => setProtein(parseInt(e.target.value))}
+                onChange={(e) => setProtein(parseFloat(e.target.value))}
                 placeholder="단백질을 입력해주세요"
+                step="0.01"
               />
             </FormItem>
             <FormItem>
@@ -101,8 +103,9 @@ const CustomItemModal = ({ searchTerm, onClose, onSave }: CustomItemModalProps):
               <Input
                 type="number"
                 value={fat}
-                onChange={(e) => setFat(parseInt(e.target.value))}
+                onChange={(e) => setFat(parseFloat(e.target.value))}
                 placeholder="지방을 입력해주세요"
+                step="0.01"
               />
             </FormItem>
           </Form>
