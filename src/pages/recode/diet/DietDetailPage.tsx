@@ -367,10 +367,12 @@ const GlobalStyle = createGlobalStyle`
 
 const Container = styled.div`
   width: 100%;
+  min-height: 800px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: none;
+  margin-bottom: 100px;
 `;
 
 const SummaryCard = styled.div`

@@ -232,10 +232,12 @@ export default ExercisePage;
 
 const Container = styled.div`
   width: 100%;
+  min-height: 800px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: #b6c0d3;
+  margin-bottom: 100px;
 `;
 
 const SummaryCard = styled.div`

@@ -373,7 +373,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  margin-bottom: 100px;
   /* Calendar "Header" Feel for Title */
   .calendar-header {
     background-color: transparent; // 배경색을 투명하게 변경
