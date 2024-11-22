@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CrewBattleModal from "components/ui/crew/modal/CrewBattleModal";
 import CrewBattleCard from "components/ui/crew/card/CrewBattleCard";
 import CrewBattleFeedDetailModal from "components/ui/crew/modal/CrewBattleFeedDetailModal";

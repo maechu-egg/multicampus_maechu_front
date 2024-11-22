@@ -30,7 +30,21 @@ const CommentItem: React.FC<CommentItemProps> = ({
     setCommentDislikeCount(comment.comment_dislike_counts);
   }, [ comment.comment_like_status , comment.comment_dislike_status, comment.comment_like_counts, comment.comment_dislike_counts]);
 
+    
+  const badgeImages: { [key: string]: string } = {
+    다이아몬드: '/img/personalBadge/badgeDiamond.png',
+    플래티넘: '/img/personalBadge/badgePlatinum.png',
+    골드: '/img/personalBadge/badgeGold.png',
+    실버: '/img/personalBadge/badgeSilver.png',
+    브론즈: '/img/personalBadge/badgeBronze.png',
+    기본: '/img/personalBadge/badgeDefault.png',
+  };
   
+  const getBadgeImage = (level: string): string => {
+    return badgeImages[level] || badgeImages['기본'];
+  };
+  const badgeImage = getBadgeImage(comment.member_badge_level);
+
   const handleCommentLike = async (commentId: number, post_id: number) => {
     const token = localStorage.getItem("authToken");
     if (!token) {
@@ -149,10 +163,14 @@ const CommentItem: React.FC<CommentItemProps> = ({
       }
     }
   };
+
+
   return (
     <div className="comment">
       <div className="comment-header">
-        <span className="comment-author">{comment.author}</span>
+        <span className="comment-author">{comment.author}
+        <img src={badgeImage} alt={`${comment.member_badge_level} badge`} className="member_badge_img" /> 
+        </span>
         <span className="comment-date">{formatDate(comment.date)}</span>
       </div>
       <div className="comment-content">{comment.content}</div>

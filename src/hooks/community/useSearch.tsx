@@ -65,7 +65,12 @@ export const useSearch = (
                 post_img1: post.post_img1 || '',
                 post_img2: post.post_img2 || '',
                 member_id: post.member_id || 0,
-                author: post.author || false
+                author: post.author || false,
+                current_points : post.current_points,
+                crew_current_points:post.crew_current_points,
+                member_badge_level: getLevelLabel(post.current_points),
+                crew_badge_level :  getLevelLabel(post.crew_current_points),
+                crew_battle_wins : post.crew_battle_wins,
               }));
           setPosts(mappedPosts);
           setTotalPages(response.data.totalPages);
@@ -137,6 +142,15 @@ export const useSearch = (
     } finally {
       setLoading(false);
     }
+  };
+
+  const getLevelLabel = (points: number) => {
+    if (points >= 100) return "다이아몬드";
+    if (points >= 70) return "플래티넘";
+    if (points >= 50) return "골드";
+    if (points >= 30) return "실버";
+    if (points >= 10) return "브론즈";
+    return "기본";
   };
 
   return {

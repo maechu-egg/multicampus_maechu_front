@@ -1,11 +1,12 @@
 import axios from "axios"; // axios import 추가
+import CalendarTooltip from "components/ui/record/calendar/CalendarTooltip";
 import { useAuth } from "context/AuthContext";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 import
+import { FaRegQuestionCircle } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom"; // 페이지 이동을 위한 import
 import styled, { createGlobalStyle } from "styled-components";
-import { useParams } from 'react-router-dom';
-import DietPlanSection from "./DietPlanSection";
 import CautionSection from "./CautionSection";
+import DietPlanSection from "./DietPlanSection";
 import { format, parse } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -55,6 +56,8 @@ interface SummaryData {
 		// 단백질 비율
 		proteinRatio: number
 	},
+	// 소모 칼로리
+	burnedCalories: number,
 	// 일일 권장 칼로리(탄단지비율) 및 bmr, tdee 과 다이어트 목표
 	recommended: {
 		// 목표 탄수화물
@@ -323,6 +326,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
   useEffect(() => {
     fetchData();
     findDiet();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -331,10 +335,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
     if (memberId !== undefined && state.token) {
       try {
-        const response = await axios.get('http://localhost:8001/record/diet/get/day/nutrients', {
-          params: {
-            record_date : selectedDate
-          },
+        const response = await axios.get('http://localhost:8001/record/summary/daily', {
           headers: {
             'Authorization': `Bearer ${state.token}`,
             'Content-Type': 'application/json'
@@ -343,7 +344,8 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         });
 
         if (response.data) {
-          setData(response.data);
+          const apiData = response.data;
+          setData(apiData);
           console.log("debug >>> apiData true !!! ");
         }
 
@@ -541,12 +543,35 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
       <GlobalStyle /> {/* 전역 스타일 적용 */}
       <Container>
         <Header>
-          <Title>오늘의 식단</Title>
+          <TitleContainer>
+            <Title>오늘의 식단</Title>
+            &nbsp;&nbsp;
+              <CalendarTooltip text={
+                <>
+                  <strong>식단 추천 및 기록 방법</strong>
+                  <TooltipText>
+                    <p>헤리스-베네딕트 공식을 이용해 BMR을 계산합니다.</p>
+                    <p>활동 강도에 따라 TDEE(권장 칼로리)를 계산합니다.</p>
+                    <p>사용자의 운동목표에 따른 비율을 곱하여 권장 칼로리를 결정합니다.</p>
+                    <p>그 값을 기준으로 식단을 추천합니다.</p>
+                      <li><strong>다이어트:</strong> 체중을 줄이거나 체지방을 줄이는 것을 목표로 합니다.</li>
+                      <li><strong>벌크업:</strong> 체지방 증가를 감수하면서 골격극 등 다른 체성분을 증가시킵니다.</li>
+                      <li><strong>린매스업:</strong> 체지방은 유지하면서 골격극을 증가시킵니다.</li>
+                      <li><strong>유지:</strong> 현재 몸 상태를 유지합니다.</li>
+                  </TooltipText>
+                </>
+                }>
+                <span style={{ cursor: 'pointer', fontSize: '20px' }}>
+                  <FaRegQuestionCircle />
+                </span>
+            </CalendarTooltip>
+          </TitleContainer>      
           <InfoContainer>
             {data ? (
               <>
                 <TotalCalories> 키 : {data.recommended.height} cm &nbsp; 몸무게 : {data.recommended.weight} kg </TotalCalories>
                 <CurrentDate>{format(date, 'yyyy.MM.dd')} {format(date, 'EEEE', { locale: ko })}</CurrentDate>
+                
               </>
             ) : (
               <TotalCalories>로딩 중...</TotalCalories>
@@ -556,7 +581,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         {data ? (
           <GoalContainer>
             <div className="weight-info">
-            <h2>{data.recommended.goal}</h2>
+              <h2>{data.recommended.goal}</h2>
             </div>
             <div className="goal-consumed-container">
               <div className="nutrition-info">
@@ -796,6 +821,11 @@ const Container = styled.div`
 const Header = styled.div`
   text-align: center;
   margin-bottom: 30px;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: center; // 가로 중앙 정렬
 `;
 
 const Title = styled.h1`
@@ -1093,4 +1123,8 @@ const StyledButton = styled.button`
     background-color: #333C4D; // hover 시 색상 변경
     transform: translateY(-2px); // hover 시 약간 위로 이동
   }
+`;
+
+const TooltipText = styled.div`
+  margin-top: 10px;
 `;

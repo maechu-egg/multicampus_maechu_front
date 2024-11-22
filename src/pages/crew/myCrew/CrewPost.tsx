@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CrewPostList from "components/ui/crew/crewPost/CrewPostList";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
@@ -179,11 +179,14 @@ function CrewPost({ crewId }:CrewPostProps): JSX.Element {
                     <br />
                     <div className="container">
                         <h2>최신 공지 및 인기 게시물</h2>
+                        <br />
                         <CrewPostList posts={notification} onPostClick={handlePostClick} />
                         <CrewPostList posts={popular} onPostClick={handlePostClick} />
                     </div>
                     <div className="container">
+                        <br />
                         <h2>전체 게시물</h2>
+                        <br />
                         <CrewPostList posts={posts.filter(post => post.crew_post_title.includes(searchTerm))} onPostClick={handlePostClick}/>
                         <CrewPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange}/>
                     </div>

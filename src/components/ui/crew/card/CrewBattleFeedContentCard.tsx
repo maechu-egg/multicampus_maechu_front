@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
+import { useEffect, useState } from "react";
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/"; // 서버의 기본 URL
 
 interface Feed {
     feed_exTime: number;

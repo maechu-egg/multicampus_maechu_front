@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Modal.css';
 import CrewBattleFeedCard from "../card/CrewBattleFeedCard";

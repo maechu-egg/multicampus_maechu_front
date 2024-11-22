@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CrewModal from "components/ui/crew/modal/CrewModal";
 import CrewIntroModal from "components/ui/crew/modal/CrewIntroModal";
 import api from "services/api/axios";
 import { useAuth } from "context/AuthContext";
-const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/"; // 서버의 기본 URL
 
 
 interface CrewInfoProps {

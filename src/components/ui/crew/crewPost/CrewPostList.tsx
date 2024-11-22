@@ -1,4 +1,3 @@
-import React from "react";
 import CrewPostItem from "./CrewPostItem";
 
 interface Post {

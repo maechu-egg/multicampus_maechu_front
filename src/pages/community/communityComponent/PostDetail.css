@@ -297,6 +297,15 @@
   font-weight: 500;
 }
 
+.member_badge_img{
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  margin-left:8px;
+  margin-top:-3px;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .post-detail {

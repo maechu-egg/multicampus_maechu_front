@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import './Card.css';
 import './MemberCard.css';
 import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
-const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/"; // 서버의 기본 URL
 
 interface Member {
     member_id: number;
