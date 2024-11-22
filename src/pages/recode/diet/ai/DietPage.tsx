@@ -541,7 +541,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
   return (
     <>
       <GlobalStyle /> {/* 전역 스타일 적용 */}
-      <Container>
+      <Container style={{width: "100%"}}>
         <Header>
           <TitleContainer>
             <Title>오늘의 식단</Title>

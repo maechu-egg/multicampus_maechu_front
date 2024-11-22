@@ -1,7 +1,12 @@
+
 #root {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* 브라우저 높이에 맞게 레이아웃 확장 */
+    min-height: 100vh; /* 브라우저 높이에 맞게 확장 */
+}
+
+.main-content {
+    flex-grow: 1; /* 남는 공간을 채우도록 설정 */
 }
 
 .footer {
