@@ -64,7 +64,7 @@ const PostList: React.FC<PostListProps> = ({
       {recommendedPosts && recommendedPosts.length > 0 && (
         <RecommendedSection>         
           <ScrollContainer>
-            {recommendedPosts.map((post) => (
+            {recommendedPosts.slice(0, 5).map((post) => (
               <RecommendedPostsItem
                 key={post.post_id}
                 {...post}
