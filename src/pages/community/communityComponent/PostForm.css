@@ -1,7 +1,7 @@
 
 .post-form-container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 80px auto;
   padding: 2rem;
   background-color: #ffffff;
   border-radius: 12px;
@@ -132,6 +132,7 @@
   .post-form-container {
     max-width: 700px;
     padding: 1.5rem;
+    margin:60px auto;
   }
   .form-control, .form-select {
     font-size: 15px;
@@ -143,7 +144,7 @@
   .post-form-container {
     max-width: 100%;
     padding: 1rem;
-    margin: 0 1rem;
+    margin: 50px 1rem;
   }
   .form-control, .form-select {
     font-size: 14px;

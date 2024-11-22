@@ -258,7 +258,8 @@ useEffect(() => {
 
   if (isEditing && selectedPost) {
     return (
-      <PostForm
+      <div className="community-container content-view">
+        <PostForm
         mode="edit"
         initialData={{
           post_title: selectedPost.post_title,
@@ -295,8 +296,11 @@ useEffect(() => {
         post_sports={post_sports}
         recommendedKeywords={recommendedKeywords}
       />
+      </div>
+      
     );
   }
+
   const getLevelLabel = (points: number) => {
     if (points >= 100) return "다이아몬드";
     if (points >= 70) return "플래티넘";
@@ -305,16 +309,16 @@ useEffect(() => {
     if (points >= 10) return "브론즈";
     return "기본";
   };
+
   if (selectedPost) {
     console.log("Selected Post Data:", {
       post_img1: selectedPost.post_img1,
       post_img2: selectedPost.post_img2,
     });
     return (
-      <div className="community-container">
+      <div className="community-container content-view">
         <div className="top">
-          <div className="topbackground"></div>
-          <h2 className="top_title">커뮤니티</h2>
+
         </div>
         <PostDetail
           post_id={selectedPost.post_id}
@@ -365,12 +369,16 @@ useEffect(() => {
   }
   /* 메인 화면 렌더링 */
   return (
-    <div className="community-container">
+    <div className={`community-container ${showPostForm ? 'content-view' : ''}`}>
       <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
+
+      {!showPostForm && !selectedPost && (
       <div className="top">
         <div className="topbackground"></div>
         <h2 className="top_title">커뮤니티</h2>
       </div>
+      
+      )}
       {!showPostForm && (
         <CategoryDropdown
           post_up_sports={post_up_sports}

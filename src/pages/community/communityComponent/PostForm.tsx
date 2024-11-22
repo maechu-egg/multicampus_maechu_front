@@ -11,8 +11,8 @@ interface PostFormProps {
     post_sport: string;
     post_hashtag: string;
     post_sports_keyword: string;
-    post_img1?: string;  // 추가
-    post_img2?: string;  // 추가
+    post_img1?: string;  
+    post_img2?: string;  
   };
   onSave: (
     post_title: string,
@@ -45,9 +45,13 @@ const PostForm: React.FC<PostFormProps> = ({
   const [post_sports_keyword, setPost_sports_keyword] = useState(initialData?.post_sports_keyword || "");
   const [imageFiles, setImageFiles] = useState<File[] | null>(null);
   const [tagInput, setTagInput] = useState("");
-  const [tagList, setTagList] = useState<string[]>(
-    initialData?.post_hashtag ? initialData.post_hashtag.split(", ") : []
+  const [keywordTag, setKeywordTag] = useState<string>("");
+  const [customTags, setCustomTags] = useState<string[]>(
+    initialData?.post_hashtag ? 
+      initialData.post_hashtag.split(", ").filter(tag => !recommendedKeywords.includes(tag.replace('#', ''))) 
+      : []
   );
+
   const [error, setError] = useState<string>("");
   
   // 초기 이미지 파일명들을 저장할 state 추가
@@ -131,33 +135,61 @@ const PostForm: React.FC<PostFormProps> = ({
       return;
     }
 
+    const allTags = [keywordTag, ...customTags].filter(tag => tag !== "").join(", ");
+
     onSave(
       post_title,
       post_contents,
       post_up_sport,
       post_sport,
       post_sports_keyword,
-      tagList.join(", "),
+      allTags,
       imageFiles
     );
   };
+
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (tagInput.trim() !== '') {
         const newTag = tagInput.trim().startsWith('#') ? tagInput.trim() : `#${tagInput.trim()}`;
-        if (!tagList.includes(newTag)) {
-          setTagList([...tagList, newTag]);
+        if (!customTags.includes(newTag) && newTag !== keywordTag) {
+          setCustomTags([...customTags, newTag]);
         }
         setTagInput('');
       }
     }
   };
 
+
   const removeTag = (tagToRemove: string) => {
-    const newTagList = tagList.filter(post_hashtag => post_hashtag !== tagToRemove);
-    setTagList(newTagList);
+    // 키워드 태그는 삭제할 수 없음
+    if (tagToRemove === keywordTag) return;
+    
+    const newCustomTags = customTags.filter(tag => tag !== tagToRemove);
+    setCustomTags(newCustomTags);
+  };
+
+
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedKeyword = e.target.value;
+    setPost_sports_keyword(selectedKeyword);
+    setError("");
+    
+    // 키워드 태그 설정
+    if (selectedKeyword) {
+      setKeywordTag(`#${selectedKeyword}`);
+    } else {
+      setKeywordTag("");
+    }
+  };
+
+  // 버튼 비활성화 함수
+  const isSubmitDisabled = () => {
+    return post_sports_keyword === "오운완" && 
+           (!imageFiles || imageFiles.length === 0) && 
+           existingImages.length === 0;
   };
 
   return (
@@ -202,10 +234,7 @@ const PostForm: React.FC<PostFormProps> = ({
           <select 
             className="form-select" 
             value={post_sports_keyword} 
-            onChange={(e) => {
-              setPost_sports_keyword(e.target.value);
-              setError(""); // 키워드 변경 시 에러 메시지 초기화
-            }}
+            onChange={handleKeywordChange}  
           >
             <option value="">선택하세요</option>
             {recommendedKeywords?.map((keyword) => (
@@ -298,39 +327,56 @@ const PostForm: React.FC<PostFormProps> = ({
         )}
 
         <div className="mb-3">
-          <label className="form-label">태그:</label>
-          <div className="tags-input-container">
-            {tagList.map((tag, index) => (
-              <span key={index} className="tag-item me-2">
-                {tag}
-                <button
-                  type="button"
-                  className="tag-remove-btn"
-                  onClick={() => removeTag(tag)}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-            <input
-              type="text"
-              className="tag-input border-0"
-              placeholder="태그를 입력하고 Enter를 누르세요"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={handleTagKeyDown}
-            />
-          </div>
-        </div>
+              <label className="form-label">태그:</label>
+              <div className="tags-input-container">
+                {/* 키워드 태그 표시 */}
+                {keywordTag && (
+                  <span className="tag-item me-2 keyword-tag">
+                    {keywordTag}
+                  </span>
+                )}
+                {/* 커스텀 태그 표시 */}
+                {customTags.map((tag, index) => (
+                  <span key={index} className="tag-item me-2">
+                    {tag}
+                    <button
+                      type="button"
+                      className="tag-remove-btn"
+                      onClick={() => removeTag(tag)}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+        <input
+          type="text"
+          className="tag-input border-0"
+          placeholder="태그를 입력하고 Enter를 누르세요"
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          onKeyDown={handleTagKeyDown}
+        />
+      </div>
+    </div>
 
-        <div className="d-flex justify-content-end gap-2">
-          <button type="submit" id="postform-submit-btn" className="btn btn-primary">
-            {mode === "create" ? "작성하기" : "수정하기"}
-          </button>
-          <button type="button" id="postform-cancel-btn" className="btn btn-secondary" onClick={onCancel}>
-            {mode === "create" ? "작성취소" : "수정취소"}
-          </button>
-        </div>
+    <div className="d-flex justify-content-end gap-2">
+      <button 
+        type="submit" 
+        id="postform-submit-btn" 
+        className={`btn btn-primary ${isSubmitDisabled() ? 'disabled' : ''}`}
+        disabled={isSubmitDisabled()}
+      >
+        {mode === "create" ? "작성하기" : "수정하기"}
+      </button>
+      <button 
+        type="button" 
+        id="postform-cancel-btn" 
+        className="btn btn-secondary" 
+        onClick={onCancel}
+      >
+        {mode === "create" ? "작성취소" : "수정취소"}
+      </button>
+    </div>
       </form>
     </div>
   );
