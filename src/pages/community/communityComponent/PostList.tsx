@@ -94,10 +94,11 @@ const PostList: React.FC<PostListProps> = ({
 };
 
 const RecommendedSection = styled.div`
-  margin: 0 auto 24px auto; /* 상하 마진 24px, 좌우 auto로 중앙 정렬 */
-  width: 70%;  /* 전체 너비의 70%만 차지 */
-  max-width: 1200px; /* 너무 커지지 않도록 최대 너비 설정 */
+  margin: 0 auto 24px auto; 
+  width: 100%;  
+  max-width: 1200px; 
 `;
+
 
 const ScrollContainer = styled.div`
   display: flex;
@@ -105,11 +106,40 @@ const ScrollContainer = styled.div`
   gap: 16px;
   padding: 16px 0;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  width: 100%;
+
+  &:active {
+    cursor: grabbing;
+  }
   
+  /* 스크롤바 기본 스타일 */
   &::-webkit-scrollbar {
-    display: none;
+    width: 8px;
+    height: 8px;
+    display: none;  /* 기본적으로 숨김 */
+  }
+  
+  /* 호버 시 스크롤바 표시 */
+  &:hover::-webkit-scrollbar {
+    display: block;  /* 호버 시에만 표시 */
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #ABC7FF;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #8BA7DF;
   }
 `;
+
 
 export default PostList;

@@ -41,6 +41,7 @@ interface PostItemProps {
   crew_badge_level : string;
   crew_battle_wins : number;
   onClick: () => void;
+  member_id : number;
 }
 
 const badgeImages: { [key: string]: string } = {
@@ -71,7 +72,8 @@ const PostItem: React.FC<PostItemProps> = ({
   personal_badge,
   crew_badge,
   member_badge_level,
-  onClick
+  onClick,
+  member_id,
 }) => {
 
   // 해시태그 문자열을 쉼표와 공백(", ") 기준으로 나누어 배열로 변환
@@ -114,7 +116,7 @@ const PostItem: React.FC<PostItemProps> = ({
             </span>
           </div>
         </div> */}
-
+        <input type="hidden" value={member_id} />
         <ul className="category-date-line">
           <li className="subcategory">[{post_sport || '자유'}]</li>
           <li className="post-titles">{post_title}</li>

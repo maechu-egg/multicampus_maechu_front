@@ -19,6 +19,7 @@ import { useCategory } from "hooks/community/useCategory";
 import { usePagination } from "hooks/community/usePagination";
 import LoginErrModal from "hooks/loginErrModal";
 import { useAuth } from "../../context/AuthContext";
+import AlertModal from "./communityComponent/AlertModal";
 
 interface CategoryData {
   categories: string[];
@@ -82,6 +83,11 @@ function CommunityPage(): JSX.Element {
     handleSavePost,
     handleUpdatePost,
     handleDelete,
+    handleModalClose,
+    isModalOpen,
+    modalMessage,
+    setIsConfirmModalOpen,
+    isConfirmModalOpen
   } = usePost();
 
   // 3. useSearch 훅
@@ -92,6 +98,9 @@ function CommunityPage(): JSX.Element {
     searchKeyword,
     handleSearch,
     handleKeywordClick,
+    isModalOpen: isSearchModalOpen, // 모달 상태 이름 변경
+    modalMessage: searchModalMessage, // 메시지 이름 변경
+    handleModalClose: handleSearchModalClose,
   } = useSearch(postsPerPage, setPosts, setCurrentPage, setTotalPages);
 
   // 4. useCategory 훅
@@ -258,7 +267,8 @@ useEffect(() => {
 
   if (isEditing && selectedPost) {
     return (
-      <PostForm
+      <div className="community-container content-view">
+        <PostForm
         mode="edit"
         initialData={{
           post_title: selectedPost.post_title,
@@ -294,9 +304,15 @@ useEffect(() => {
         post_up_sports={post_up_sports}
         post_sports={post_sports}
         recommendedKeywords={recommendedKeywords}
+        isModalOpen={isModalOpen}
+        modalMessage={modalMessage}
+        handleModalClose={handleModalClose}
       />
+      </div>
+      
     );
   }
+
   const getLevelLabel = (points: number) => {
     if (points >= 100) return "다이아몬드";
     if (points >= 70) return "플래티넘";
@@ -305,16 +321,16 @@ useEffect(() => {
     if (points >= 10) return "브론즈";
     return "기본";
   };
+
   if (selectedPost) {
     console.log("Selected Post Data:", {
       post_img1: selectedPost.post_img1,
       post_img2: selectedPost.post_img2,
     });
     return (
-      <div className="community-container">
+      <div className="community-container content-view">
         <div className="top">
-          <div className="topbackground"></div>
-          <h2 className="top_title">커뮤니티</h2>
+
         </div>
         <PostDetail
           post_id={selectedPost.post_id}
@@ -343,7 +359,6 @@ useEffect(() => {
           crew_battle_wins  ={selectedPost.crew_battle_wins}
           onBack={handleBack}
           onEdit={handleEdit}
-          onDelete={() => handleDelete(selectedPost.post_id)}
           comments={comments}
           onAddComment={(content) =>
             handleCommentSubmit(selectedPost.post_id, content)
@@ -359,18 +374,32 @@ useEffect(() => {
             // 댓글 싫어요 처리 로직
             console.log("Comment dislike:", commentId, postId);
           }}
+          isModalOpen={isModalOpen}
+          modalMessage={modalMessage}
+          handleModalClose={handleModalClose}
+          // onDelete={() => handleDelete(selectedPost.post_id)}
+          onDelete={() => {
+              setIsConfirmModalOpen(true);
+              handleDelete(selectedPost.post_id);}} // ConfirmModal 열기
+          isConfirmModalOpen={isConfirmModalOpen} // ConfirmModal 상태 전달
+          setIsConfirmModalOpen={setIsConfirmModalOpen}
+
         />
       </div>
     );
   }
   /* 메인 화면 렌더링 */
   return (
-    <div className="community-container">
+    <div className={`community-container ${showPostForm ? 'content-view' : ''}`}>
       <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
+
+      {!showPostForm && !selectedPost && (
       <div className="top">
         <div className="topbackground"></div>
         <h2 className="top_title">커뮤니티</h2>
       </div>
+      
+      )}
       {!showPostForm && (
         <CategoryDropdown
           post_up_sports={post_up_sports}
@@ -386,6 +415,18 @@ useEffect(() => {
           }}
         />
       )}
+        {/* useSearch 모달 */}
+          <AlertModal
+                    isOpen={isSearchModalOpen} 
+                    message={searchModalMessage} 
+                    onClose={handleSearchModalClose} 
+          />
+          {/* usePost 모달 */}
+          <AlertModal
+                    isOpen={isModalOpen}
+                    message={modalMessage}
+                    onClose={handleModalClose} 
+          />
 
       {showPostForm ? (
         <PostForm
@@ -403,6 +444,9 @@ useEffect(() => {
           post_up_sports={post_up_sports}
           post_sports={post_sports}
           recommendedKeywords={recommendedKeywords}
+          isModalOpen={isModalOpen}
+          modalMessage={modalMessage}
+          handleModalClose={handleModalClose}
         />
       ) : (
         <>
