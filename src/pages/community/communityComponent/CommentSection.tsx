@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CommentItem from "./CommentItem";
-import type { Comment } from "../../../hooks/community/useComment"; 
+import { useComment, type Comment } from "../../../hooks/community/useComment"; 
 import "./Comment.css"; 
+import ConfirmModal from "./ConfirmModal";
+import AlertModal from "./AlertModal";
 
 interface CommentSectionProps {
   comments: Comment[];
@@ -12,6 +14,9 @@ interface CommentSectionProps {
   onCommentDislike: (commentId: number, postId: number) => void;
   commentInput: string;
   setCommentInput: React.Dispatch<React.SetStateAction<string>>;
+  showAlertModal: boolean;
+  alertMessage: string;
+  setShowAlertModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
@@ -23,13 +28,45 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   onCommentDislike,
   commentInput,
   setCommentInput,
+  showAlertModal,
+  alertMessage,
+  setShowAlertModal,
 }) => {
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+
+  
+
+  const handleDeleteClick = (commentId: number) => {
+    setCommentToDelete(commentId);
+    setShowConfirmModal(true);
+  };
+  useEffect(() => {
+    console.log("댓글 목록 업데이트됨:", comments);
+  }, [comments]);
+  const handleConfirmDeleteClick  = async () => {
+    if (commentToDelete !== null) {
+     onCommentDelete(commentToDelete, postId);
+
+    }
+    setShowConfirmModal(false);
+    setCommentToDelete(null);
+
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmModal(false);
+    setCommentToDelete(null);
+  };
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (commentInput.trim() !== "") {
       onAddComment(commentInput);
       setCommentInput("");
     }
+  };
+  const handleAlertClose = () => {
+    setShowAlertModal(false);
   };
 
   return (
@@ -39,7 +76,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           <CommentItem
             key={comment.id}
             comment={comment}
-            onCommentDelete={onCommentDelete}
+            // onCommentDelete={onCommentDelete}
+            onCommentDelete={handleDeleteClick}
             post_id={postId}
           />
         ))}
@@ -58,6 +96,20 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           </button>
         </div>
       </form>
+
+         {/* Confirm Delete Modal */}
+         <ConfirmModal
+        isOpen={showConfirmModal}
+        title="⚠️댓글 삭제"
+        message="정말로 이 댓글을 삭제하시겠습니까?"
+        onConfirm={handleConfirmDeleteClick }
+        onCancel={handleCancelDelete}
+      />
+       <AlertModal
+        isOpen={showAlertModal}
+        message={alertMessage}
+        onClose={handleAlertClose}
+      />
     </div>
   );
 };

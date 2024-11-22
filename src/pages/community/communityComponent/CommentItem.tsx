@@ -3,6 +3,7 @@ import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import { formatDate } from '../../../utils/dateFormat';
 import { commentApi } from 'services/api/community/commentApi';
 import type { Comment } from '../../../hooks/community/useComment';
+import ConfirmModal from './ConfirmModal';
 
 
 
@@ -163,6 +164,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
       }
     }
   };
+ 
 
 
   return (
@@ -179,7 +181,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
           <button
           id="comment-delete-btn"
           className="btn btn-danger me-2"
-          onClick={() => onCommentDelete(comment.id, post_id)}
+          // onClick={() => onCommentDelete(comment.id, post_id)}
+          onClick={()=> onCommentDelete(comment.id, post_id)}
           >
             삭제
           </button>
