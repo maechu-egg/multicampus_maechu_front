@@ -5,7 +5,7 @@ import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
 import CrewCommentSection from "./CrewCommentSection";
 import CrewCreatePostModal from "../modal/CrewUpdatePostModal";
-const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/"; // 서버의 기본 URL
 
 
 function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewId:number, onBack: () => void}) {
@@ -141,6 +141,24 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
                 </div>
             </div>
             <hr className="border border-secondary border-1 opacity-50" />
+            <div className="d-flex justify-content-end">
+                {member_id == memberId && (
+                    <div className="edit-delete-buttons">
+                        <button 
+                            id="edit-button"
+                            className="btn btn-primary me-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#postUpdateModal"
+                        >
+                            수정
+                        </button>
+                        <button id="delete-button" className="btn btn-danger me-2" onClick={onDelete}>
+                            삭제
+                        </button>
+                    </div>
+                )}
+            </div>
+
             <div className="post-content">{crew_post_content}</div>
 
             <div className="post-images">
@@ -157,20 +175,6 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
             </div>
 
             <div className="reaction-buttons">
-                {member_id == memberId && (
-                    <div className="edit-delete-buttons">
-                        <button 
-                            className="btn btn-primary me-2"
-                            data-bs-toggle="modal"
-                            data-bs-target="#postUpdateModal"
-                        >
-                            수정
-                        </button>
-                        <button className="btn btn-danger me-2" onClick={onDelete}>
-                            삭제
-                        </button>
-                    </div>
-                )}
                 <div className="like-dislike-buttons">
                     <button
                         className={`btn ${isLiked ? "btn-primary" : "btn-outline-primary"} me-2`}
@@ -179,7 +183,7 @@ function CrewPostDetail({crewPostId, crewId, onBack} : {crewPostId:number, crewI
                         <FaThumbsUp /> {crew_post_like}
                     </button>
                 </div>
-                <button className="btn btn-secondary" onClick={onBack}>
+                <button id="back-button" className="btn btn-secondary" onClick={onBack}>
                     뒤로가기
                 </button>
             </div>

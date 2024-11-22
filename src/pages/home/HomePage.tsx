@@ -10,10 +10,9 @@ import { Link, useNavigate } from "react-router-dom";
 import CrewJoinModal from "components/ui/crew/modal/CrewJoinModal";
 import LoginErrModal from "hooks/loginErrModal";
 import homeBanner from "../../assets/data/homeBanner.json";
-import { postApi } from "services/api/community/postApi";  
+import { postApi } from "services/api/community/postApi";
 
-const BASE_URL = "http://localhost:8001";
-
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/";
 
 interface Crew {
   crew_id: number;
@@ -31,8 +30,8 @@ interface Swap {
   post_like_counts: number; //좋아요 수
   post_date: string; // 작성날짜
   post_sport: string; // 운동 대분류 키워드
-  author: boolean;   
-  member_id: number;  
+  author: boolean;
+  member_id: number;
 }
 
 interface TodayWorkout {
@@ -140,21 +139,25 @@ function HomePage(): JSX.Element {
         console.error("No token available");
         return;
       }
-  
+
       // 게시글 상세 정보 가져오기
-      const response = await postApi.getPostDetail(post.post_id, 'author' in post ? post.author : false, token);
+      const response = await postApi.getPostDetail(
+        post.post_id,
+        "author" in post ? post.author : false,
+        token
+      );
       const detailedPost = response.data;
       console.log("Detailed post data:", detailedPost);
-  
-      const stateData = { 
+
+      const stateData = {
         fromMyPage: true,
         selectedPost: detailedPost,
-        isRecommended: false
+        isRecommended: false,
       };
-      
-      navigate('/communitypage', {
+
+      navigate("/communitypage", {
         state: stateData,
-        replace: true
+        replace: true,
       });
     } catch (error) {
       console.error("Error fetching post details:", error);
@@ -294,6 +297,19 @@ function HomePage(): JSX.Element {
                 }
                 className="card-img-top card-image"
                 alt={crew.crew_name}
+                onError={(e) => {
+                  console.error("Image load error:", e);
+                  console.log(
+                    "Failed URL:",
+                    `${BASE_URL}${crew.crew_intro_img}`
+                  );
+                }}
+                onLoad={() => {
+                  console.log(
+                    "Image loaded:",
+                    `${BASE_URL}${crew.crew_intro_img}`
+                  );
+                }}
               />
               <div className="card-body">
                 <h5 className="card-title">{crew.crew_name}</h5>
@@ -336,15 +352,17 @@ function HomePage(): JSX.Element {
             </span>
           </TextContainer>
           <IconWrapper>
-            <FontAwesomeIcon 
-              icon={faArrowRight} 
-              onClick={() => navigate('/communitypage', { 
-                state: { 
-                  fromMyPage: false,
-                  initialKeyword: '중고장터'    
-                } 
-              })}
-              style={{ cursor: 'pointer' }}
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              onClick={() =>
+                navigate("/communitypage", {
+                  state: {
+                    fromMyPage: false,
+                    initialKeyword: "중고장터",
+                  },
+                })
+              }
+              style={{ cursor: "pointer" }}
             />
           </IconWrapper>
         </Title>
@@ -352,27 +370,27 @@ function HomePage(): JSX.Element {
           {isSwapDataLoading ? (
             <p>중고거래 데이터를 불러오는 중입니다...</p>
           ) : swapData.length > 0 ? (
-                swapData.slice(0, 4).map((swap, index) => (
-                  <div
-                    className="list-group-item list-group-item-action"
-                    key={index}
-                    onClick={() => handleSwapClick(swap)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="d-flex w-100 justify-content-between">
-                      <h5 className="mb-1">{swap.post_title}</h5>
-                      <small className="text-body-secondary">
-                        {formatDate(swap.post_date)}
-                      </small>
-                    </div>
-                    <p className="mb-2">작성자: {swap.post_nickname}</p>
-                    <small className="text-body-secondary">
-                      조회수: {swap.post_views} | 좋아요: {swap.post_like_counts}
-                    </small>
-                  </div>
-                ))
-              ) : (
-                <p>등록된 중고거래 게시물이 없습니다.</p>
+            swapData.slice(0, 4).map((swap, index) => (
+              <div
+                className="list-group-item list-group-item-action"
+                key={index}
+                onClick={() => handleSwapClick(swap)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="d-flex w-100 justify-content-between">
+                  <h5 className="mb-1">{swap.post_title}</h5>
+                  <small className="text-body-secondary">
+                    {formatDate(swap.post_date)}
+                  </small>
+                </div>
+                <p className="mb-2">작성자: {swap.post_nickname}</p>
+                <small className="text-body-secondary">
+                  조회수: {swap.post_views} | 좋아요: {swap.post_like_counts}
+                </small>
+              </div>
+            ))
+          ) : (
+            <p>등록된 중고거래 게시물이 없습니다.</p>
           )}
         </div>
       </SwapSpot>
@@ -386,15 +404,17 @@ function HomePage(): JSX.Element {
             </span>
           </TextContainer>
           <IconWrapper>
-            <FontAwesomeIcon 
-              icon={faArrowRight} 
-              onClick={() => navigate('/communitypage', { 
-                state: { 
-                  fromMyPage: false,
-                  initialKeyword: '오운완'             
-                } 
-              })}
-              style={{ cursor: 'pointer' }}
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              onClick={() =>
+                navigate("/communitypage", {
+                  state: {
+                    fromMyPage: false,
+                    initialKeyword: "오운완",
+                  },
+                })
+              }
+              style={{ cursor: "pointer" }}
             />
           </IconWrapper>
         </Title>
@@ -402,15 +422,15 @@ function HomePage(): JSX.Element {
           <CardSlider>
             {[...todayWorkout, ...todayWorkout].map((workout, index) => (
               <Card
-              key={index}
-              backgroundImage={
-                workout.post_img1
-                  ? `${BASE_URL}${workout.post_img1}`
-                  : "/img/default/workDefault1.png"
-              }
-              onClick={() => handleSwapClick(workout)}
-              style={{ cursor: 'pointer' }}
-            >
+                key={index}
+                backgroundImage={
+                  workout.post_img1
+                    ? `${BASE_URL}${workout.post_img1}`
+                    : "/img/default/workDefault1.png"
+                }
+                onClick={() => handleSwapClick(workout)}
+                style={{ cursor: "pointer" }}
+              >
                 <CardContent>
                   <h3>{workout.post_title}</h3>
                   <p>By: {workout.post_nickname}</p>
@@ -429,6 +449,7 @@ function HomePage(): JSX.Element {
           </CardSlider>
         </CardContainer>
       </WorkSpace>
+      <br />
       <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
     </Container>
   );
