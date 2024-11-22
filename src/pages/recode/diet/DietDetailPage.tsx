@@ -73,6 +73,7 @@ function DietDetailPage(): JSX.Element {
 
   useEffect(() => {
       if (!state.token) {
+        alert("로그인 페이지로 이동합니다.");
         console.log("debug >>> token is null");
         navigate("/loginpage");
         return;
@@ -82,7 +83,7 @@ function DietDetailPage(): JSX.Element {
       console.log("debug >>> memberId : " + memberId);
 
       dietGet();
-  }, []);
+  }, [token]);
 
 
   useEffect(() => {

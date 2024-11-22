@@ -16,14 +16,15 @@ interface SetAddModalProps {
   
 
   const SetAddModal = ({ exercise_id, onClose, onSave }: SetAddModalProps): JSX.Element => {
-    const [weightValue, setWeightValue] = useState<number>(0);
-    const [distanceValue, setDistanceValue] = useState<number>(0);
-    const [repetitionsValue, setRepetitionsValue] = useState<number>(0);
+    const [weightValue, setWeightValue] = useState<number | undefined>(undefined);
+    const [distanceValue, setDistanceValue] = useState<number | undefined>(undefined);
+    const [repetitionsValue, setRepetitionsValue] = useState<number | undefined>(undefined);
   
     const handleSave = () => {
-      const weight = weightValue || 0;
-      const distance = distanceValue || 0;
-      const repetitions = repetitionsValue || 0;
+
+      const weight = weightValue !== undefined ? weightValue : 0;
+      const distance = distanceValue !== undefined ? distanceValue : 0;
+      const repetitions = repetitionsValue !== undefined ? repetitionsValue : 0;
   
       onSave({ weight, distance, repetitions, exercise_id });
       onClose();
@@ -38,7 +39,8 @@ interface SetAddModalProps {
             <input
               type="number"
               value={weightValue}
-              onChange={(e) => setWeightValue(e.target.value ? parseInt(e.target.value) : 0)}
+              onChange={(e) => setWeightValue(e.target.value ? parseInt(e.target.value) : undefined)}
+              placeholder="무게는 선택사항입니다."
             />
           </Label>
           <Label>
@@ -46,16 +48,16 @@ interface SetAddModalProps {
             <input
               type="number"
               value={distanceValue}
-              onChange={(e) => setDistanceValue(e.target.value ? parseInt(e.target.value) : 0)}
-            />
+              onChange={(e) => setDistanceValue(e.target.value ? parseInt(e.target.value) : undefined)}
+              placeholder="거리는 선택사항입니다."            />
           </Label>
           <Label>
             반복 횟수:
             <input
               type="number"
               value={repetitionsValue}
-              onChange={(e) => setRepetitionsValue(e.target.value ? parseInt(e.target.value) : 0)}
-            />
+              onChange={(e) => setRepetitionsValue(e.target.value ? parseInt(e.target.value) : undefined)}
+              placeholder="횟수는 선택사항입니다."            />
           </Label>
           <ButtonContainer>
             <SaveButton onClick={handleSave}>저장</SaveButton>

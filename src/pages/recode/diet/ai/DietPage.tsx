@@ -324,10 +324,17 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 // ... existing code ...
 
   useEffect(() => {
+    if (!state.token) {
+      alert("로그인 페이지로 이동합니다.");
+      console.log("debug >>> token is null");
+      navigate("/loginpage");
+      return;
+    }
+
     fetchData();
     findDiet();
      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state.token]);
 
 
   const fetchData = async () => {
