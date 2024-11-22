@@ -13,7 +13,9 @@ const TooltipContainer = styled.div`
 
 const TooltipText = styled.div`
   visibility: hidden;
-  width: 270px;
+  max-width: 300px;
+  min-width: 150px;
+  width: 250px;
   background-color: rgba(0, 0, 0, 0.9);
   color: #fff;
   text-align: center;
@@ -22,7 +24,6 @@ const TooltipText = styled.div`
   position: absolute;
   z-index: 1;
   top: 100%;
-  right: 0;
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
@@ -34,8 +35,14 @@ const TooltipText = styled.div`
     transform: translateY(0);
   }
 
-  @media (max-width: 600px) {
+ @media (max-width: 880px) {
     width: 200px;
+    padding: 8px;
+  } 
+
+  @media (max-width: 700px) {
+    width: 150px;  // 예시로 너비를 더 줄였습니다.
+    padding: 6px;  // 작은 화면에서 여백을 조정해 텍스트가 더 잘 맞도록 해줍니다.
   }
 `;
 

@@ -98,29 +98,36 @@ const MonthlyRecordChart = ({
     <ChartContainer>
       <ChartTitle>
         이번 달 기록 현황
-        <CalendarTooltip text={
-          <>
-            <strong>사용법</strong><br/>
-            &nbsp;  날짜를 클릭하여 페이지 이동<br/><br/>
-            PASS : 운동 or 식단만 기록<br />
-            PERPECT : 둘 다 기록<br />
-            💪🏻 : 운동 기록<br />
-            🥗 : 식단 기록<br />
-            ✌🏻 : 모두 기록<br />
-            ❌ : 기록 없음<br /><br />
-            
-            <strong>칼로리 설명</strong><br />
-            <div style={{ fontSize: '12px'}}>
-              운동 칼로리: 월간 소모 칼로리<br />
-              식단 칼로리: 월간 섭취 칼로리<br />
-              순 칼로리: 식단 - 운동 
-            </div>
-          </>
-        }>
+        <CustomTool>
+          <ToolTip>
+            <ToolTipTitle> ✏️ 사용법</ToolTipTitle>
+            <br/>
+            <ToolTipText>
+              <li>날짜를 클릭하여 페이지 이동</li>
+              <li>PASS : 운동 or 식단만 기록<br/>
+                  PERPECT : 둘 다 기록</li>                    
+              <li>
+                💪🏻 : 운동 기록<br/>
+                🥗 : 식단 기록<br/>
+                ✌🏻 : 모두 기록<br/>
+                ❌ : 기록 없음
+              </li>
+            </ToolTipText>
+            <hr/>
+            <ToolTipTitle> ✒️ 칼로리 설명</ToolTipTitle>
+            <br/>
+            <ToolTipText>
+              <li>
+                운동 칼로리: 월간 소모 칼로리<br/>
+                식단 칼로리: 월간 섭취 칼로리<br/>
+                순 칼로리: 섭취 - 운동
+              </li>
+            </ToolTipText>
+          </ToolTip>
           <span style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '18px' }}>
             <FaRegQuestionCircle />
           </span>
-        </CalendarTooltip>
+        </CustomTool>
       </ChartTitle>
       <ChartWrapper>
         <Pie data={data} options={options} />
@@ -159,16 +166,10 @@ const ChartContainer = styled.div`
   margin-left: 20px;
   overflow: visible;
 
-  @media (max-width: 850px) {
-    width: 100%;
-    height: 600px;
-    margin: 10px auto;
-  }
-
-  @media (max-width: 710px) {
+  @media (max-width: 1100px) {
     width: 100%;
     height: auto;
-    margin: 10px 0;
+    margin: 10px auto;
   }
 `;
 
@@ -242,6 +243,72 @@ const CalorieValue = styled.span`
   color: #E2E8F0;
   font-size: 0.7rem;
   font-weight: bold;
+`;
+
+
+const ToolTipTitle = styled.div`
+  font-size: 18px;
+
+   @media (max-width: 850px) {
+    font-size: 17px;
+  } 
+
+  @media (max-width: 710px) {
+    font-size: 15px;
+  }
+`;
+
+const ToolTipText = styled.div`
+  font-size: 15px;
+
+  @media (max-width: 850px) {
+    font-size: 14px;
+  } 
+
+  @media (max-width: 710px) {
+    font-size: 12px;
+  }
+`;
+
+const CustomTool = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const ToolTip = styled.div`
+  visibility: hidden;
+  max-width: 300px;
+  min-width: 150px;
+  width: 240px;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  right: 0;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5);
+
+  ${CustomTool}:hover & {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+ @media (max-width: 880px) {
+    width: 200px;
+    padding: 7px;
+  } 
+
+  @media (max-width: 700px) {
+    width: 150px;  // 예시로 너비를 더 줄였습니다.
+    padding: 6px;  // 작은 화면에서 여백을 조정해 텍스트가 더 잘 맞도록 해줍니다.
+  }
 `;
 
 export default MonthlyRecordChart;
