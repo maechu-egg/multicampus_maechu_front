@@ -10,6 +10,8 @@ import { FaCog } from 'react-icons/fa';
 import ItemInfo from 'components/ui/record/list/diet/ItemInfo';
 import SelectItemModal from 'components/ui/record/modal/diet/SelectItemModal';
 import MealUpdateModal from 'components/ui/record/modal/diet/MealUpdateModal';
+import CalendarTooltip from 'components/ui/record/calendar/CalendarTooltip';
+import { FaRegQuestionCircle } from 'react-icons/fa';
 
 interface ItemResponseDTO {
   item_id: number;
@@ -217,6 +219,19 @@ function DietDetailPage(): JSX.Element {
     }  
   };
 
+  const foodTranslation = () => {
+    switch (food) {
+      case 'breakfast':
+        return '아침';
+      case 'lunch':
+        return '점심';
+      case 'dinner':
+        return '저녁';
+      case 'snack':
+        return '간식';
+    }
+  };
+
   // 날짜 포맷
   const getFormattedDate = () => {
     try {
@@ -236,12 +251,36 @@ function DietDetailPage(): JSX.Element {
       <Container>
         <SummaryCard>
           <DateSection>
-            <h2>{format(date, 'yyyy.MM.dd')}</h2>
+          <h2>{format(date, 'yyyy.MM.dd ')}       
+                <CalendarTooltip text={
+                 <> 
+                  <ToolTipTitle>🤷 칼로리 게산</ToolTipTitle>
+                  <ToolTipText>
+                    <li>
+                      <a href='https://www.data.go.kr/data/15127578/openapi.do#/tab_layer_detail_function'>식품의약품안전처</a>의 식품영양성분 API로부터 영양성분을 받아와
+                      계산합니다.
+                    </li>
+                  </ToolTipText>
+                  <hr/>
+                  <ToolTipTitle>🤷‍♂️ 추천 알고리즘</ToolTipTitle>
+                  <ToolTipText>
+                    <li>
+                      <a href='https://en.wikipedia.org/wiki/Levenshtein_distance'>Levenshtein distance</a> 알고리즘을 이용해 내부적으로 삽입정렬, 병합정렬을 통해
+                      사용자가 입력한 식품과 편집거리가 작은 20개 식품을 선별해 리스트로 보여줍니다.
+                    </li>
+                  </ToolTipText>
+                  </>
+                }>
+              <span style={{ cursor: 'pointer', fontSize: '20px' }}>
+                <FaRegQuestionCircle />
+              </span>
+            </CalendarTooltip> 
+          </h2>
             <p>{format(date, 'EEEE', { locale: ko })}</p>
           </DateSection>
           <StatsSection>
             <StatItem>
-              <h3>오늘 먹은 칼로리</h3>
+              <h3>{foodTranslation()}</h3>
               <p>{totalCalories} kcal</p>
             </StatItem>
             <StatItem>
@@ -328,10 +367,12 @@ const GlobalStyle = createGlobalStyle`
 
 const Container = styled.div`
   width: 100%;
+  min-height: 800px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: none;
+  margin-bottom: 100px;
 `;
 
 const SummaryCard = styled.div`
@@ -469,5 +510,30 @@ const ItemList = styled.div`
 
   @media (max-width: 768px) {
     padding: 12px;
+  }
+`;
+
+const ToolTipTitle = styled.div`
+  font-size: 18px;
+
+   @media (max-width: 850px) {
+    font-size: 17px;
+  } 
+
+  @media (max-width: 710px) {
+    font-size: 15px;
+  }
+`;
+
+const ToolTipText = styled.div`
+  font-size: 15px;
+  text-align: left;
+
+  @media (max-width: 850px) {
+    font-size: 14px;
+  } 
+
+  @media (max-width: 710px) {
+    font-size: 12px;
   }
 `;
