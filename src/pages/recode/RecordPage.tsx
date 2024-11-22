@@ -279,6 +279,8 @@ function RecordPage(): JSX.Element {
   );
 };
 
+export default RecordPage;
+
 // 스타일 컴포넌트 추가
 const ModalOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.7); // 모달 배경의 반투명 검정색
@@ -371,7 +373,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  margin-bottom: 100px;
   /* Calendar "Header" Feel for Title */
   .calendar-header {
     background-color: transparent; // 배경색을 투명하게 변경
@@ -398,12 +400,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
-  margin-top: 30px;
+  margin-top: 10px;
 
 
-  @media (max-width: 850px) {
+  @media (max-width: 1100px) {
     flex-direction: column;
     align-items: center;
   }
@@ -454,6 +456,10 @@ const Container = styled.div`
     background-color: white;
     box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5);
     border-radius: 15px;
+
+    @media (max-width: 1100px) {
+      min-width: 600px;
+    }
 
     @media (max-width: 850px) {
       min-width: 500px;
@@ -647,5 +653,3 @@ const GlobalStyle = createGlobalStyle`
     background-color: #b6c0d3;
   }
 `;
-
-export default RecordPage;

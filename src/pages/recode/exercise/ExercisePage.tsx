@@ -150,7 +150,35 @@ function ExercisePage(): JSX.Element {
       <Container>
         <SummaryCard>
           <DateSection>
-            <h2>{format(date, 'yyyy.MM.dd')}</h2>
+            <h2>{format(date, 'yyyy.MM.dd ')}       
+              <CalendarTooltip text={
+                <>
+                  <ToolTipTitle>⏳ 칼로리 계산법</ToolTipTitle>
+                    <br/>
+                    <ToolTipText>
+                      <li>
+                        MET는 1분간 소비되는 단위 체중당 에너지 소비량으로 
+                        1분에 3.5ml의 산소를 섭취한다는 것을 의미합니다.   
+                      </li>
+                      <li>
+                        MET는 <a href="https://www.data.go.kr/data/15068730/fileData.do">한국건강증진개발원</a>에서 가져와 데이터 정제 후 DB에서 보관합니다.              
+                      </li>
+                  </ToolTipText>
+                  <hr/>
+                  <ToolTipTitle>⏳ MET 공식</ToolTipTitle>
+                    <br/>
+                    <ToolTipText>
+                      <li>1 * (3.5ml * kg * min)</li>
+                      <li>= air(ml)</li>
+                      <li>air(L) * 5 = kcal</li>                 
+                  </ToolTipText>
+               </>
+              }>
+              <span style={{ cursor: 'pointer', fontSize: '20px' }}>
+                <FaRegQuestionCircle />
+              </span>
+            </CalendarTooltip>
+          </h2>
             <p>{format(date, 'EEEE', { locale: ko })}</p>
           </DateSection>
           <StatsSection>
@@ -164,21 +192,6 @@ function ExercisePage(): JSX.Element {
             </StatItem>
           </StatsSection>
         </SummaryCard>
-        <ParentContainer>
-          <CalendarTooltip text={
-            <>
-              <strong>Met 계산법</strong><br />
-              <div style={{ fontSize: '15px' }}>
-                met * 시간(분) * 강도<br />
-              </div>
-              
-            </>
-          }>
-            <span style={{ cursor: 'pointer', fontSize: '25px' }}>
-              <FaRegQuestionCircle />
-            </span>
-          </CalendarTooltip>
-        </ParentContainer>
         <SearchBar>
           <input
             type="text"
@@ -187,7 +200,7 @@ function ExercisePage(): JSX.Element {
             onChange={handleSearchInputChange}
           />
           <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
-            추가
+            검색
           </button>
         </SearchBar>
         <ExerciseList>
@@ -215,13 +228,16 @@ function ExercisePage(): JSX.Element {
   );
 };
 
+export default ExercisePage;
 
 const Container = styled.div`
   width: 100%;
+  min-height: 800px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: #b6c0d3;
+  margin-bottom: 100px;
 `;
 
 const SummaryCard = styled.div`
@@ -232,6 +248,7 @@ const SummaryCard = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 30px;
 `;
 
 const DateSection = styled.div`
@@ -332,9 +349,27 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const ParentContainer = styled.div`
-  display: flex;
-  justify-content: flex-end; // 자식 요소 오른쪽 정렬
+const ToolTipTitle = styled.div`
+  font-size: 18px;
+
+   @media (max-width: 850px) {
+    font-size: 17px;
+  } 
+
+  @media (max-width: 710px) {
+    font-size: 15px;
+  }
 `;
 
-export default ExercisePage;
+const ToolTipText = styled.div`
+  font-size: 15px;
+  text-align: left;
+
+  @media (max-width: 850px) {
+    font-size: 14px;
+  } 
+
+  @media (max-width: 710px) {
+    font-size: 12px;
+  }
+`;
