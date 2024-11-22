@@ -449,6 +449,7 @@ function HomePage(): JSX.Element {
           </CardSlider>
         </CardContainer>
       </WorkSpace>
+      <br />
       <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
     </Container>
   );
