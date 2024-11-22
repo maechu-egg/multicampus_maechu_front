@@ -36,6 +36,11 @@ interface Post {
   post_unlike_counts: number;
   member_id: number;
   author: boolean;
+  current_points : number;
+  crew_current_points:number;
+  member_badge_level:string;
+  crew_badge_level : string;
+  crew_battle_wins : number;
 }
 
 interface UseCategoryProps {

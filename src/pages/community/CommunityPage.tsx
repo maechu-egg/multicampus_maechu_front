@@ -297,7 +297,14 @@ useEffect(() => {
       />
     );
   }
-
+  const getLevelLabel = (points: number) => {
+    if (points >= 100) return "다이아몬드";
+    if (points >= 70) return "플래티넘";
+    if (points >= 50) return "골드";
+    if (points >= 30) return "실버";
+    if (points >= 10) return "브론즈";
+    return "기본";
+  };
   if (selectedPost) {
     console.log("Selected Post Data:", {
       post_img1: selectedPost.post_img1,
@@ -329,6 +336,11 @@ useEffect(() => {
           unlikeStatus={selectedPost.unlikeStatus}
           member_id={selectedPost.member_id}
           author={selectedPost.author}
+          current_points ={selectedPost.current_points}
+          crew_current_points ={selectedPost.crew_current_points}
+          member_badge_level ={getLevelLabel(selectedPost.current_points)}
+          crew_badge_level  ={getLevelLabel(selectedPost.crew_current_points)}
+          crew_battle_wins  ={selectedPost.crew_battle_wins}
           onBack={handleBack}
           onEdit={handleEdit}
           onDelete={() => handleDelete(selectedPost.post_id)}

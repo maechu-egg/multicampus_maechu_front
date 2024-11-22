@@ -13,7 +13,7 @@ const TooltipContainer = styled.div`
 
 const TooltipText = styled.div`
   visibility: hidden;
-  width: 250px;
+  width: 270px;
   background-color: rgba(0, 0, 0, 0.9);
   color: #fff;
   text-align: center;
@@ -22,12 +22,11 @@ const TooltipText = styled.div`
   position: absolute;
   z-index: 1;
   top: 100%;
-  left: 50%;
+  right: 0;
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
   box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5);
-  max-width: 174px;
 
   ${TooltipContainer}:hover & {
     visibility: visible;

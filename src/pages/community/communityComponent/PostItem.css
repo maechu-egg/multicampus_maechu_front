@@ -50,7 +50,7 @@ li{
 }
 
 li.post-titles {
-  width: 500px;
+  width: 400px;
   text-align: center;
   font-size: 15px;
   font-weight: bold;
@@ -78,7 +78,10 @@ li.post-titles {
   flex-shrink: 0;
   margin-right:30px;
   text-align: center;
-  width: 100px;
+  width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center
 }
 
 .post-content-wrapper .post-tags {
@@ -148,6 +151,15 @@ li.post-titles {
 
 .views svg {
   color: #98a8b9;
+}
+
+.member_badge_img{
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  margin-left:8px;
+  margin-top:-3px;
 }
 
 /* 반응형 스타일 */

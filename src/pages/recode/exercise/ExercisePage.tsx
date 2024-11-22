@@ -8,7 +8,6 @@ import { ko } from 'date-fns/locale';
 import ExerciseInfo from "../../../components/ui/record/list/exercise/ExerciseInfo";
 import ExerciseAddModal from "components/ui/record/modal/exercise/ExerciseAddModal";
 import { FaRegQuestionCircle } from 'react-icons/fa';
-import { MdLightbulbOutline } from "react-icons/md";
 import CalendarTooltip from "../../../components/ui/record/calendar/CalendarTooltip";
 
 interface ExerciseDTO {
@@ -127,8 +126,6 @@ function ExercisePage(): JSX.Element {
       // 상태 업데이트
       setTodayCalorie(totalCalories);
       setTodayTime(totalTime);
-      setExerciseData(updatedExerciseData);
-
 
       return updatedExerciseData; // 업데이트된 운동 데이터 반환
     });
@@ -167,19 +164,21 @@ function ExercisePage(): JSX.Element {
             </StatItem>
           </StatsSection>
         </SummaryCard>
-        <CalendarTooltip text={
-          <>
-            <strong>Met 계산법</strong><br />
-            <div style={{ fontSize: '15px' }}>
-              met * 시간(분) * 강도<br />
-            </div>
-            
-          </>
-        }>
-            <span style={{ cursor: 'pointer', fontSize: '25px'}}>
-              <MdLightbulbOutline />
+        <ParentContainer>
+          <CalendarTooltip text={
+            <>
+              <strong>Met 계산법</strong><br />
+              <div style={{ fontSize: '15px' }}>
+                met * 시간(분) * 강도<br />
+              </div>
+              
+            </>
+          }>
+            <span style={{ cursor: 'pointer', fontSize: '25px' }}>
+              <FaRegQuestionCircle />
             </span>
           </CalendarTooltip>
+        </ParentContainer>
         <SearchBar>
           <input
             type="text"
@@ -188,7 +187,7 @@ function ExercisePage(): JSX.Element {
             onChange={handleSearchInputChange}
           />
           <button onClick={() => setIsAddModalOpen(searchTerm.length > 0)}>
-            검색
+            추가
           </button>
         </SearchBar>
         <ExerciseList>
@@ -259,16 +258,16 @@ const StatItem = styled.div`
   text-align: center;
   
   h3 {
-    font-size: 18px;
-    color: #333C4D;
+    font-size: 14px;
+    color: #868e96;
     margin: 0 0 5px 0;
   }
   
   p {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     margin: 0;
-    color: #333C4D;
+    color: #212529;
   }
 `;
 
@@ -286,7 +285,7 @@ const SearchBar = styled.div`
     
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #2e5987;
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
   }
@@ -313,15 +312,14 @@ const SearchBar = styled.div`
 
 const ExerciseList = styled.div`
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
   background-color: transparent;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
     padding: 12px;
   }
 `;
@@ -334,5 +332,9 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const ParentContainer = styled.div`
+  display: flex;
+  justify-content: flex-end; // 자식 요소 오른쪽 정렬
+`;
 
 export default ExercisePage;
