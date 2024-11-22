@@ -387,6 +387,7 @@ const Container = styled.div`
 
   height: 100%;
   background-color: #b6c0d3;
+  z-index: 4;
 
   @media (min-width: 900px) {
     flex-direction: row;
