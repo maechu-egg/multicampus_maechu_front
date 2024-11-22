@@ -13,6 +13,7 @@
     font-size: 14px;
     text-align: center;
     margin-top: auto; /* 자동으로 남는 공간 위로 밀기 */
+    z-index: 5;
 }
 
 .footer-top {
