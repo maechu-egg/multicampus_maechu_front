@@ -1,9 +1,17 @@
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* 브라우저 높이에 맞게 레이아웃 확장 */
+}
+
 .footer {
     background-color: #1e1e2f;
     color: #fff;
     padding: 20px 0;
     font-family: Arial, sans-serif;
     font-size: 14px;
+    text-align: center;
+    margin-top: auto; /* 자동으로 남는 공간 위로 밀기 */
 }
 
 .footer-top {

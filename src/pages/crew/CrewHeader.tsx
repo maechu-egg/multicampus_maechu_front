@@ -48,7 +48,7 @@ function CrewHeader(): JSX.Element {
   }, [memberId]);
 
   return (
-    <div style={{ background: "#B6C0D3", height: "240vh" }}>
+    <div style={{ background: "#B6C0D3", height: "100%"}}>
       <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
       <div className="container">
         <br />
@@ -130,6 +130,7 @@ function CrewHeader(): JSX.Element {
           )}
         </div>
       </div>
+      <br />
     </div>
   );
 }
