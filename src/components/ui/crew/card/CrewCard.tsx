@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CiLocationOn } from "react-icons/ci";
-const BASE_URL = "http://localhost:8001"; // 서버의 기본 URL
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/"; // 서버의 기본 URL
 
 function CrewCard({crew, onCrewClick}: { crew: any; onCrewClick: () => void }) {
 

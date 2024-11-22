@@ -13,6 +13,7 @@ import RecordPage from "./pages/recode/RecordPage";
 import AboutPage from "./pages/about/AboutPage";
 import LoginPage from "./pages/login/LoginPage";
 import Header from "../src/components/layout/Header";
+import Footer from "components/layout/Footer";
 import SignPage from "./pages/login/SignPage";
 import ForgotPwPage from "./pages/login/ForgotPwPage";
 import UserInfoPage from "./pages/login/UserInfoPage";
@@ -43,6 +44,7 @@ function AppRouter() {
         <Route path="/loginpage" element={<LoginPage />}></Route>
         <Route path="/badgestatuspage" element={<BadgeStatusPage />}></Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
