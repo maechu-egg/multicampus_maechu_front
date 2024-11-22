@@ -77,6 +77,7 @@ function CrewSearch(): JSX.Element {
                         recommendedKeywords={[]}
                         onKeywordClick={() => {}}
                         showKeywords={false}
+                        variant="crew" 
                     />
                 </div>
             </div>
