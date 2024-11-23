@@ -1,0 +1,182 @@
+.badge-guide-container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  max-height: 70vh; /* 추가: 뷰포트 높이의 70%로 제한 */
+  overflow-y: auto; /* 추가: 세로 스크롤 활성화 */
+}
+
+/* 추가: 컨테이너 스크롤바 스타일링 */
+.badge-guide-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.badge-guide-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.badge-guide-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.badge-guide-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.guide-toggle-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.guide-toggle-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.guide-toggle-button h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.guide-toggle-button + .guide-toggle-button {
+  margin-top: 15px;
+}
+
+.arrow {
+  color: white;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.arrow.up {
+  transform: rotate(180deg);
+}
+
+.badge-guide-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  animation: slideDown 0.3s ease-out;
+  max-height: 400px;  
+  overflow-y: auto;  
+  padding-right: 10px;  
+}
+
+.badge-guide-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.badge-guide-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.badge-guide-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.badge-guide-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@keyframes slideDown {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.badge-guide-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  border: 1px solid #eee;
+}
+
+.badge-guide-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.badge-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
+  object-fit: contain;
+}
+
+.badge-info {
+  flex: 1;
+}
+
+.badge-info h4 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.required-score {
+  color: #6e8efb;
+  font-size: 0.9rem;
+  margin: 5px 0;
+  font-weight: 500;
+}
+
+.description {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.point-guide-list {
+  margin: 10px 0 20px 0;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.point-guide-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.point-guide-item:last-child {
+  border-bottom: none;
+}
+
+.point-type {
+  color: #333;
+  font-weight: 500;
+}
+
+.point-value {
+  color: #6e8efb;
+  font-weight: 600;
+}

@@ -1,0 +1,26 @@
+#comment-submit-btn {
+    background-color: #1D2636;
+    border-color: #1D2636;
+    transition: all 0.2s;
+    padding: 8px 16px;
+    font-weight: 500;
+  }
+  
+  #comment-submit-btn:hover {
+    background-color: #333C4D;
+    border-color: #1c7ed6;
+    transform: translateY(-1px);
+  }
+  
+  #comment-delete-btn {
+    background-color: #1D2636;
+    border-color: #1D2636;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  
+  #comment-delete-btn:hover {
+    background-color: #333C4D;
+    border-color: #1c7ed6;
+    transform: translateY(-1px);
+  }

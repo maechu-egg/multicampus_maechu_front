@@ -1,20 +1,15 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppRouter from "./Router";
-
-import HomePage from "./pages/home/HomePage";
+import { AuthProvider } from "./context/AuthContext"; // AuthProvider 임포트
 
 function App() {
   // 유저 recoil 세팅 해야함
   return (
-    // <BrowserRouter>
-    //   <Routes>
-    //     <Route path="/" element={<HomePage />}></Route>
-    //   </Routes>
-    // </BrowserRouter>
-    <>
+    <AuthProvider>
+      {" "}
+      {/* AuthProvider로 애플리케이션 감싸기 */}
       <AppRouter />
-    </>
+    </AuthProvider>
   );
 }
 

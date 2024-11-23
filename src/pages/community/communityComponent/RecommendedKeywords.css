@@ -1,0 +1,28 @@
+.recommended-keywords {
+  margin: 20px 0;
+  padding: 15px;
+  display: flex;           
+  justify-content: center; 
+}
+
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center; /* 추가 */
+}
+
+.keyword {
+  padding: 5px 12px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.keyword:hover {
+  background-color: #e9ecef;
+}
