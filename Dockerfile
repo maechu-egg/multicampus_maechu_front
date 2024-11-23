@@ -6,8 +6,8 @@ WORKDIR /app
 # package.json과 lock 파일만 복사
 COPY package*.json ./
 
-# 의존성 설치 전에 캐시와 심볼릭 링크 문제 방지
-RUN npm cache clean --force && rm -rf node_modules && npm install --legacy-peer-deps --no-bin-links
+# 의존성 설치
+RUN npm install --legacy-peer-deps --no-bin-links
 
 # 애플리케이션 소스 복사
 COPY . .
