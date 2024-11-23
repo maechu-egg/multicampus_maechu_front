@@ -140,12 +140,11 @@ export const useComment = () => {
         const response = await commentApi.deleteComment(commentId, token);
   
         if (response.status === 200) {
-          console.log("여기로 오는건가?");
+         
           await getComments(postId);  // 댓글 목록 새로고침
         
-          // setAlertMessage("댓글이 삭제되었습니다.");
-          // setShowAlertModal(true);
-       
+          setAlertMessage("댓글이 삭제되었습니다.");
+          setShowAlertModal(true);
        
         } else {
           setAlertMessage("댓글 삭제에 실패했습니다.");
@@ -158,6 +157,9 @@ export const useComment = () => {
       }
     
   };
+  const handleAlertClose = () => {
+    setShowAlertModal(false);
+  };
 
 
 
@@ -169,11 +171,8 @@ export const useComment = () => {
     getComments,
     handleCommentSubmit,
     handleCommentDelete,
-  
     showAlertModal,
-    setShowAlertModal,
     alertMessage,
-    setAlertMessage,
- 
+    handleAlertClose,
   };
 };
