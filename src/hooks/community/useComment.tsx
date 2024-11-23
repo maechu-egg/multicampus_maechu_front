@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { commentApi } from '../../services/api/community/commentApi';
 
 export interface Comment {
@@ -39,6 +39,8 @@ interface ServerComment {
 export const useComment = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentInput, setCommentInput] = useState<string>("");
+  const [showAlertModal, setShowAlertModal] = useState(false); // 알림 모달 표시 여부 상태
+  const [alertMessage, setAlertMessage] = useState(""); // 알림 메시지 상태
 
   const getComments = async (postId: number) => {
     console.log("getComment ! ");
@@ -96,7 +98,8 @@ export const useComment = () => {
 
   const handleCommentSubmit = async (postId: number, content: string) => {
     if (!content.trim()) {
-      alert("댓글을 입력하세요.");
+      setAlertMessage("댓글을 입력하세요.");
+      setShowAlertModal(true);
       return;
     }
 
@@ -116,7 +119,6 @@ export const useComment = () => {
 
       if (response.status === 201) {
         setCommentInput("");
-        alert(response.data.message);
         getComments(postId);
       } else {
         alert(response.data.message);
@@ -127,7 +129,7 @@ export const useComment = () => {
   };
   
   const handleCommentDelete = async (commentId: number, postId: number) => {
-    if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+  
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
@@ -138,16 +140,23 @@ export const useComment = () => {
         const response = await commentApi.deleteComment(commentId, token);
   
         if (response.status === 200) {
+          console.log("여기로 오는건가?");
           await getComments(postId);  // 댓글 목록 새로고침
-          alert("댓글이 삭제되었습니다.");
+        
+          // setAlertMessage("댓글이 삭제되었습니다.");
+          // setShowAlertModal(true);
+       
+       
         } else {
-          alert("댓글 삭제에 실패했습니다.");
+          setAlertMessage("댓글 삭제에 실패했습니다.");
+          setShowAlertModal(true);
         }
       } catch (error) {
         console.error('서버와의 통신 중 오류 발생:', error);
-        alert("댓글 삭제 중 오류가 발생했습니다.");
+        setAlertMessage("댓글 삭제 중 오류가 발생했습니다.");
+        setShowAlertModal(true);
       }
-    }
+    
   };
 
 
@@ -160,5 +169,11 @@ export const useComment = () => {
     getComments,
     handleCommentSubmit,
     handleCommentDelete,
+  
+    showAlertModal,
+    setShowAlertModal,
+    alertMessage,
+    setAlertMessage,
+ 
   };
 };

@@ -56,9 +56,9 @@ function DietDetailPage(): JSX.Element {
   const [itemData,setItemData] = useState<ItemResponseDTO[]>([]);
   const [dietId,setDietId] =useState(0);
   // meal 영양성분
-  const totalCarbs = itemData.reduce((acc, item) => acc + item.carbs, 0);
-  const totalProtein = itemData.reduce((acc, item) => acc + item.protein, 0);
-  const totalFat = itemData.reduce((acc, item) => acc + item.fat, 0);
+  const totalCarbs = Math.round(itemData.reduce((acc, item) => acc + item.carbs, 0));
+  const totalProtein = Math.round(itemData.reduce((acc, item) => acc + item.protein, 0));
+  const totalFat = Math.round(itemData.reduce((acc, item) => acc + item.fat, 0));
   const totalCalories = itemData.reduce((acc, item) => acc + item.calories, 0);
   
   // openApi 식품 리스트 나열 모달 트리거
@@ -73,6 +73,7 @@ function DietDetailPage(): JSX.Element {
 
   useEffect(() => {
       if (!state.token) {
+        alert("로그인 페이지로 이동합니다.");
         console.log("debug >>> token is null");
         navigate("/loginpage");
         return;
@@ -82,7 +83,7 @@ function DietDetailPage(): JSX.Element {
       console.log("debug >>> memberId : " + memberId);
 
       dietGet();
-  }, []);
+  }, [token]);
 
 
   useEffect(() => {
@@ -136,17 +137,21 @@ function DietDetailPage(): JSX.Element {
 
   // openApi 호출 함수
   const nutrientsApiGet = async () => {
-    try {
-      const response = await api.get("record/api/nutrient", {
-       params: { foodNm : searchTerm }, 
-       headers: { Authorization: `Bearer ${token}` }
-      });
+    if(searchTerm){
+      try {
+        const response = await api.get("record/api/nutrient", {
+        params: { foodNm : searchTerm }, 
+        headers: { Authorization: `Bearer ${token}` }
+        });
 
-      console.log("debug >>> item api get : ", response);
-      setApiList(response.data);
-      setIsSelectApiBoolean(true);
-    } catch (error) {
-      console.error("debug >>> error", error);
+        console.log("debug >>> item api get : ", response);
+        setApiList(response.data);
+        setIsSelectApiBoolean(true);
+      } catch (error) {
+        console.error("debug >>> error", error);
+      }
+    } else {
+      alert("음식을 입력해주세요");
     }
   };
 
@@ -335,6 +340,7 @@ function DietDetailPage(): JSX.Element {
         </ItemList>
           {isSelectApiBoolean && (
             <SelectItemModal
+            itemList={itemData}
             searchTerm={searchTerm}
             apiList={apiList}
             onClose={() => setIsSelectApiBoolean(false)}

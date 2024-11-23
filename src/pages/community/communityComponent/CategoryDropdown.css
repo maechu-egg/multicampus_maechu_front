@@ -5,6 +5,33 @@
   width: 95%;        /* PostItem과 동일하게 유지 */
 }
 
+@media screen and (min-width: 481px) and (max-width: 696px) {
+  .community-filter-section{
+    transform: scale(0.98);
+  }  
+  .community-filter-section .category-item,
+  .community-filter-section .keyword {
+    font-size: 15px;
+  }
+  .community-filter-section .header-item.community-header-item {
+   font-size: 14px;
+  }
+ 
+}
+
+@media screen and (min-width: 300px) and (max-width: 481px) {
+  .community-filter-section{
+    transform: scale(0.95);
+  }  
+  .community-filter-section .category-item,
+  .community-filter-section .keyword {
+    font-size: 14px;
+  }
+  .community-filter-section .header-item.community-header-item {
+   font-size: 12px;
+  }
+ 
+}
 
 .section-headers {
   display: flex;

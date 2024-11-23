@@ -1,5 +1,5 @@
 .rank-section {
-  padding: 20px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -18,7 +18,7 @@
   max-height: 300px;
   margin: 0 auto;
   overflow-y: auto;
-  padding-right: 10px;
+  padding-right: 0px;
   width: 100%; 
 }
 
@@ -39,28 +39,40 @@
   flex: 1;
 }
 
+/* Webkit 브라우저용 스크롤바 스타일 */
 .rank-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.rank-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  width: 6px;  
+  background-color: transparent;  
 }
 
 .rank-list::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+  background-color: rgba(110, 142, 251, 0.3); 
+  border-radius: 10px;  
+  transition: background-color 0.2s ease; 
+}
+
+.rank-list:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(110, 142, 251, 0.5);  
 }
 
 .rank-list::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background-color: rgba(110, 142, 251, 0.7); 
+}
+
+/* Firefox용 스크롤바 스타일 */
+.rank-list {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.rank-list:hover {
+  scrollbar-color: rgba(110, 142, 251, 0.5) transparent;
 }
 
 .rank-item {
   display: flex;
   align-items: center;
-  padding: 15px 25px;
+  padding: 15px 10px;
   margin-bottom: 10px;
   background: white;
   border-radius: 12px;
@@ -69,11 +81,11 @@
 }
 
 .rank-item:hover {
-  transform: translateX(5px);
+  transform: translateX(-5px);
 }
 
 .rank-position {
-  width: 50px; 
+  width: 30px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,11 +106,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-left: 20px; 
-  padding: 0 10px;  
+  margin-left: 10px; 
+ 
 }
 
-.username {
+.username-section {
   font-weight: 500;
   color: #333;
   display: flex;
@@ -112,11 +124,19 @@
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.8rem;
+  flex-shrink: 0;  /* 크기 고정 */
 }
 
+.nickname {
+  max-width: 120px;  /* 한글 7자 정도가 들어갈 수 있는 너비 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .score {
   color: #6e8efb;
   font-weight: 600;
+
 }
 
 .top-three {
