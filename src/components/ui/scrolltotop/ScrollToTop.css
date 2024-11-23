@@ -11,9 +11,9 @@
     border: 0;
     background-color: #1d2636;
     color: white;
-    padding: 5px 10px;
+    padding: 5px 5px;
     border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     top: 0;
     right: 0;
     cursor: pointer;
@@ -28,4 +28,18 @@
   .top-btn:focus {
     border: none;
     outline: none;
+  }
+  
+  @media (max-width: 768px) {
+    .top-btn {
+        padding: 2px 2px; /* 작은 화면에서 패딩 증가 */
+        font-size: 14px; /* 글꼴 크기 조정 */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .top-btn {
+        padding: 1px 1px; /* 더 작은 화면에서 패딩 증가 */
+        font-size: 12px; /* 글꼴 크기 더 조정 */
+    }
   }
