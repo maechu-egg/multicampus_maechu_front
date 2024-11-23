@@ -259,7 +259,7 @@ function DietDetailPage(): JSX.Element {
           <h2>{format(date, 'yyyy.MM.dd ')}       
                 <CalendarTooltip text={
                  <> 
-                  <ToolTipTitle>🤷 칼로리 게산</ToolTipTitle>
+                  <ToolTipTitle>🤷 칼로리 계산</ToolTipTitle>
                   <ToolTipText>
                     <li>
                       <a href='https://www.data.go.kr/data/15127578/openapi.do#/tab_layer_detail_function'>식품의약품안전처</a>의 식품영양성분 API로부터 영양성분을 받아와
