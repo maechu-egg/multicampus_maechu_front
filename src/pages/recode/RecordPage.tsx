@@ -8,6 +8,8 @@ import MonthlyRecordChart from "../../components/ui/record/calendar/MonthlyRecor
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
 import LoginErrModal from "hooks/loginErrModal";
+
+
 // 타입 정의 추가
 interface ExerciseRecord {
   record_date: string;
