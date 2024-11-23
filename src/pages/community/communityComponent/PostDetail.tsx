@@ -7,6 +7,7 @@ import { usePost } from "hooks/community/usePost";
 import { useAuth } from "context/AuthContext";
 import ConfirmModal from "./ConfirmModal";
 import AlertModal from "./AlertModal";
+import { useComment } from "hooks/community/useComment";
 
 
 interface Comment {
@@ -110,6 +111,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const [commentInput, setCommentInput] = useState("");
   const hashtagArray = post_hashtag ? post_hashtag.split(',') : [];
   const BASE_URLI = "https://workspace.kr.object.ncloudstorage.com/";
+  const [commentss, setCommentss] = useState<Comment[]>([]);
 
   const badgeImages: { [key: string]: string } = {
     다이아몬드: '/img/personalBadge/badgeDiamond.png',
@@ -123,6 +125,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   const getBadgeImage = (level: string): string => {
     return badgeImages[level] || badgeImages['기본'];
   };
+  const badgeImage = getBadgeImage(member_badge_level);
 
   const { 
     liked, 
@@ -136,6 +139,16 @@ const PostDetail: React.FC<PostDetailProps> = ({
     handleLike, 
     handleDislike 
   } = usePost();
+
+  const {
+    comments: commentList,
+    setComments,
+    showAlertModal,
+    setShowAlertModal,
+    alertMessage,
+    setAlertMessage,
+    handleCommentDelete,
+  } = useComment();
 
   useEffect(() => {
     setLikeCount(post_like_counts);
@@ -199,13 +212,12 @@ const PostDetail: React.FC<PostDetailProps> = ({
   //   };
   // }, [post_img1, post_img2, token]);
 
-  
   const sortedComments = [...comments].sort((a, b) => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
     return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
   });
-  const badgeImage = getBadgeImage(member_badge_level);
+  
   return (
     <div className="post-detail">
       <input type="hidden" value={post_id} />
@@ -345,6 +357,10 @@ const PostDetail: React.FC<PostDetailProps> = ({
           onCommentDislike={onCommentDislike}
           commentInput={commentInput}
           setCommentInput={setCommentInput}
+          showAlertModal={showAlertModal}
+          alertMessage={alertMessage}
+          setShowAlertModal={setShowAlertModal}
+          
         />
       </div>
     </div>
