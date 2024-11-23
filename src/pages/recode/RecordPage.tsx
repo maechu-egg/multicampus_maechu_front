@@ -370,7 +370,7 @@ const Wrapper = styled.div`
   border-radius: 0;  // 모서리 둥글기 제거
   border: none;      // 테두리 제거
   box-shadow: none;  // 그림자 효과 제거
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
