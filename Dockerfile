@@ -1,34 +1,31 @@
-# Use the official Node.js image as a base
-FROM cloudtype/node:18 AS build
+# 1. 빌드 단계: Node.js를 사용하여 정적 파일 생성
+FROM node:18-alpine AS build
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and lock files
-COPY ./package*.json ./
-COPY ./yarn.lock ./
+# package.json과 lock 파일만 복사
+COPY package*.json ./
 
-# Install dependencies
-RUN echo "use npmjs.org registry" \
-    && if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then npm ci --force; \
-    elif [ -f pnpm-lock.yaml ]; then pnpm i --frozen-lockfile; \
-    elif [ -f package.json ]; then yarn; fi
+# 의존성 설치 전에 캐시와 심볼릭 링크 문제 방지
+RUN npm cache clean --force && rm -rf node_modules && npm install --legacy-peer-deps --no-bin-links
 
-# Copy the rest of the application code
+# 애플리케이션 소스 복사
 COPY . .
 
-# Build the application
+# 정적 파일 빌드
 RUN npm run build
 
-# Use Nginx to serve the application
+# 2. 배포 단계: Nginx로 정적 파일 제공
 FROM nginx:1.20-alpine
 
-# Copy the build output to Nginx's html directory
+# Nginx 설정 파일 복사 (필요한 경우)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# 빌드된 정적 파일 복사
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose the port Nginx is running on
+# 컨테이너 포트 노출
 EXPOSE 80
 
-# Start Nginx
+# Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
