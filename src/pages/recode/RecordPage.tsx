@@ -8,6 +8,8 @@ import MonthlyRecordChart from "../../components/ui/record/calendar/MonthlyRecor
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api/axios";
 import LoginErrModal from "hooks/loginErrModal";
+
+
 // 타입 정의 추가
 interface ExerciseRecord {
   record_date: string;
@@ -283,7 +285,7 @@ export default RecordPage;
 
 // 스타일 컴포넌트 추가
 const ModalOverlay = styled.div`
-  background-color: rgba(0, 0, 0, 0.7); // 모달 배경의 반투명 검정색
+  background-color: rgba(0, 0, 0, 0.5); // 모달 배경의 반투명 검정색
   display: flex; // 플렉스 박스 사용
   justify-content: center; // 수평 중앙 정렬
   align-items: center; // 수직 중앙 정렬
@@ -293,7 +295,6 @@ const ModalOverlay = styled.div`
   width: 100%; // 전체 너비
   height: 100%; // 전체 높이
   z-index: 1000; // 다른 요소 위에 표시
-  backdrop-filter: blur(8px); // 배경 흐림 효과
 `;
 
 const ModalContent = styled.div`
@@ -632,16 +633,16 @@ const Container = styled.div`
         height: 120px; /* 원하는 크기로 설정 */
       }
 
-      @media (max-width: 850px) {
+      @media (max-width: 1000px) {
         img {
-          width: 120px; /* 반응형 크기 조정 */
-          height: 120px;
+          width: 100px; /* 반응형 크기 조정 */
+          height: 100px;
         }
       }
       @media (max-width: 710px) {
         img {
-          width: 120px;
-          height: 120px;
+          width: 70px;
+          height: 70px;
         }
       }
     }
