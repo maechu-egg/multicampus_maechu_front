@@ -26,8 +26,8 @@ function AboutPage() {
               <section className="info-section active">
                 <div className="info-content">
                   <div className="info-text">
-                    <h2>WHY</h2>
-                    <h3>혼자하는 운동이 지겹지 않으세요?</h3>
+                    <h2>WHY ?</h2>
+                    <h3>혼자하는 운동..지겹지 않으세요?</h3>
                     <p>
                       운동을 시작하고 지속하는 것이 왜 어려울까요?
                       <br />
@@ -61,9 +61,9 @@ function AboutPage() {
                     />
                   </div>
                   <div className="info-text">
-                    <h2>WHAT</h2>
+                    <h2>WHAT ?</h2>
                     <h3>
-                      단순한 운동 기록을 넘어선 소셜 피트니스 플랫폼입니다
+                      단순한 운동 기록을 넘어선 소셜 피트니스 플랫폼
                     </h3>
                     <p>
                       당신의 완벽한 운동 파트너가 되어드립니다.
@@ -90,7 +90,7 @@ function AboutPage() {
               <section className="info-section active">
                 <div className="info-content">
                   <div className="info-text">
-                    <h2>WHO</h2>
+                    <h2>WHO ?</h2>
                     <h3>운동을 즐기고 싶은 모든 분들을 위해 준비했습니다</h3>
                     <p>
                       이런 분들을 위해 준비했습니다.
