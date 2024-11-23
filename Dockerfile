@@ -7,7 +7,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # 의존성 설치
-RUN npm install --legacy-peer-deps --no-bin-links --force
+RUN rm -rf node_modules package-lock.json && \
+    npm cache clean --force && \
+    npm install --legacy-peer-deps
 
 # 애플리케이션 소스 복사
 COPY . .
