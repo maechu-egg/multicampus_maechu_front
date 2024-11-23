@@ -1,5 +1,5 @@
 import "./ScrollToTop.css";
-import { BiSolidArrowFromBottom } from "react-icons/bi";
+import { MdOutlineKeyboardArrowUp } from "react-icons/md";
 
 export function ScrollToTop(): JSX.Element {
   const handleTop = (): void => {
@@ -15,7 +15,7 @@ export function ScrollToTop(): JSX.Element {
         className="top-btn"
         onClick={handleTop}
       >
-        <BiSolidArrowFromBottom
+        <MdOutlineKeyboardArrowUp
           style={{ width: "40px", height: "40px" }}
         />
       </button>
