@@ -68,6 +68,9 @@ interface PostDetailProps {
   handleModalClose: () => void; // 모달 닫기 함수
   isConfirmModalOpen: boolean; // Confirm Modal 상태
   setIsConfirmModalOpen: (isOpen: boolean) => void;
+  showAlertModal: boolean; // <- 추가
+  alertMessage: string; // <- 추가
+  handleAlertClose: () => void; // 여기 추가
 }
 
 const PostDetail: React.FC<PostDetailProps> = ({
@@ -103,6 +106,9 @@ const PostDetail: React.FC<PostDetailProps> = ({
   handleModalClose,
   isConfirmModalOpen,
   setIsConfirmModalOpen,
+  showAlertModal,
+  alertMessage,
+  handleAlertClose,
 }) => {
   const { state: { token } } = useAuth();
   const [imgSrc1, setImgSrc1] = useState<string>("");
@@ -139,16 +145,6 @@ const PostDetail: React.FC<PostDetailProps> = ({
     handleLike, 
     handleDislike 
   } = usePost();
-
-  const {
-    comments: commentList,
-    setComments,
-    showAlertModal,
-    setShowAlertModal,
-    alertMessage,
-    setAlertMessage,
-    handleCommentDelete,
-  } = useComment();
 
   useEffect(() => {
     setLikeCount(post_like_counts);
@@ -212,6 +208,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
   //   };
   // }, [post_img1, post_img2, token]);
 
+
   const sortedComments = [...comments].sort((a, b) => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
@@ -223,7 +220,7 @@ const PostDetail: React.FC<PostDetailProps> = ({
       <input type="hidden" value={post_id} />
       
       <div className="post-category">
-        {post_up_sport} 게시판 - {post_sport} - {post_sports_keyword}
+        {post_up_sport} 게시판 - {post_sport} &nbsp;&nbsp; {post_sports_keyword}
       </div>
 
       <hr className="border border-secondary border-1 opacity-50" />
@@ -357,11 +354,12 @@ const PostDetail: React.FC<PostDetailProps> = ({
           onCommentDislike={onCommentDislike}
           commentInput={commentInput}
           setCommentInput={setCommentInput}
-          showAlertModal={showAlertModal}
-          alertMessage={alertMessage}
-          setShowAlertModal={setShowAlertModal}
-          
         />
+        <AlertModal
+        isOpen={showAlertModal}
+        message={alertMessage}
+        onClose={handleAlertClose}
+      />
       </div>
     </div>
   );

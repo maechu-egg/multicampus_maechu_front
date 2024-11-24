@@ -148,7 +148,7 @@ function CommunityPage(): JSX.Element {
     setActiveTab("헬스 및 피트니스");
     setActivePost_sport("");
   };
-
+ 
   const {
     comments,
     setComments,
@@ -157,6 +157,10 @@ function CommunityPage(): JSX.Element {
     getComments,
     handleCommentSubmit,
     handleCommentDelete,
+    showAlertModal,
+    alertMessage,
+    handleAlertClose,
+   
   } = useComment();
 
   useEffect(() => {
@@ -383,7 +387,9 @@ useEffect(() => {
               handleDelete(selectedPost.post_id);}} // ConfirmModal 열기
           isConfirmModalOpen={isConfirmModalOpen} // ConfirmModal 상태 전달
           setIsConfirmModalOpen={setIsConfirmModalOpen}
-
+          showAlertModal={showAlertModal}
+          alertMessage={alertMessage}
+          handleAlertClose={handleAlertClose}
         />
       </div>
     );
@@ -427,6 +433,8 @@ useEffect(() => {
                     message={modalMessage}
                     onClose={handleModalClose} 
           />
+
+          
 
       {showPostForm ? (
         <PostForm

@@ -14,9 +14,6 @@ interface CommentSectionProps {
   onCommentDislike: (commentId: number, postId: number) => void;
   commentInput: string;
   setCommentInput: React.Dispatch<React.SetStateAction<string>>;
-  showAlertModal: boolean;
-  alertMessage: string;
-  setShowAlertModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
@@ -28,9 +25,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   onCommentDislike,
   commentInput,
   setCommentInput,
-  showAlertModal,
-  alertMessage,
-  setShowAlertModal,
 }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
@@ -65,9 +59,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       setCommentInput("");
     }
   };
-  const handleAlertClose = () => {
-    setShowAlertModal(false);
-  };
+
 
   return (
     <div className="comments-section">
@@ -105,11 +97,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         onConfirm={handleConfirmDeleteClick }
         onCancel={handleCancelDelete}
       />
-       <AlertModal
-        isOpen={showAlertModal}
-        message={alertMessage}
-        onClose={handleAlertClose}
-      />
+
     </div>
   );
 };
