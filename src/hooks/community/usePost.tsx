@@ -267,7 +267,8 @@ export const usePost = () => {
     post_sport: string,
     post_sports_keyword: string,
     post_hashtag: string,
-    imageFiles: File[] | null
+    imageFiles: File[] | null,
+    existingImages : string[],
   ) => {
     const formData = new FormData();
     formData.append("post_title", post_title);
@@ -276,6 +277,10 @@ export const usePost = () => {
     formData.append("post_sport", post_sport);
     formData.append("post_hashtag", post_hashtag);
     formData.append("post_sports_keyword", post_sports_keyword);
+
+    if (existingImages.length > 0) {
+      formData.append("existing_image", existingImages[0]); // 기존 이미지 파일 이름 전송
+    }
 
     if (imageFiles) {
       for (let i = 0; i < Math.min(imageFiles.length, 2); i++) {

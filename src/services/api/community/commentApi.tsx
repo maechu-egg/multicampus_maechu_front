@@ -46,7 +46,7 @@ export const commentApi = {
     token: string
   ) => {
     return await api.delete(
-      `/community/comment${commentId}/commentlikedelete`,
+      `/community/comment/${commentId}/commentlikedelete`,
       {
         params: { post_id },
         headers: { Authorization: `Bearer ${token}` },

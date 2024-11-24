@@ -132,7 +132,7 @@ const PostItem: React.FC<PostItemProps> = ({
         return;
       }
   
-      const response = await axios.get(`http://localhost:8001/community/posts/showprofile`, {
+      const response = await axios.get(`http://localhost:8080/community/posts/showprofile`, {
         params: {
           member_id: member_id, // 쿼리 파라미터로 전달
         },
@@ -200,16 +200,16 @@ const PostItem: React.FC<PostItemProps> = ({
           </div>
         </div> */}
         <input type="hidden" value={member_id} />
-        <ul className="category-date-line">
-          <li className="subcategory">[{post_sport || '자유'}]</li>
-          <li className="post-titles"  onClick={onClick}>{post_title}</li>
+        <ul className="category-date-line" >
+          <li className="subcategory" onClick={onClick}>[{post_sport || '자유'}]</li>
+          <li className="post-titles" onClick={onClick} >{post_title}</li>
           <li className="post_author" onClick={handleProfileClick} >{post_nickname}
             <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />  
           </li>
-          <li className="post-date">{formatDate(post_date)}</li>
+          <li className="post-date" onClick={onClick}>{formatDate(post_date)}</li>
         </ul>
   
-        <div className="post-info-wrapper">
+        <div className="post-info-wrapper" onClick={onClick}>
           <div className="tags_wrap">
           {hashtagArray.length > 0 && (
             <div className="post-tags">
