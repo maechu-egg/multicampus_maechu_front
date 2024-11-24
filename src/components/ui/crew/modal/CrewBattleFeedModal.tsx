@@ -54,12 +54,16 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
         e.preventDefault();
         const data = new FormData();
         data.append("feed_post", feed_post);
-        data.append("feed_kcal", feed_kcal.toString());
+        if (feed_kcal) {
+            data.append("feed_kcal", feed_kcal.toString());
+        }
         if (feed_img) {
-            data.append("ImgFile", feed_img);
+            data.append("feed_img", feed_img);
         }
         data.append("feed_exTime", feed_exTime.toString());
-        data.append("feed_sport", crew_sport);
+        if (crew_sport) {
+            data.append("feed_sport", crew_sport);
+        }
         data.append("battle_id", battle_id.toString());
         data.append("participant_id", participantId.toString());
         data.append("member_id", memberId!.toString())

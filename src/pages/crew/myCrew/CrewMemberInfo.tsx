@@ -14,7 +14,7 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
     //특정 크루에 가입된 크루원 목록 API
     const selectCrewMember = async () => {
         try {
-            const response = await api.get(`http://localhost:8001/crew/member/list/${crewId}`, {
+            const response = await api.get(`crew/member/list/${crewId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
