@@ -63,9 +63,14 @@ const ProfileImage = styled.img`
 `;
 
 const Nickname = styled.h2`
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-bottom: 15px;
+ font-size: 1.2rem;
+ font-weight: bold;
+ margin-bottom: 15px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ max-width: 250px;
+ margin: 0 auto 15px;
 `;
 
 const BadgeContainer = styled.div`
