@@ -291,7 +291,8 @@ useEffect(() => {
           post_sport,
           post_sports_keyword,
           post_hashtag,
-          imageFiles
+          imageFiles,
+          existingImages
         ) =>
           handleUpdatePost(
             selectedPost.post_id,
@@ -301,7 +302,8 @@ useEffect(() => {
             post_sport,
             post_sports_keyword,
             post_hashtag,
-            imageFiles
+            imageFiles,
+            existingImages,
           )
         }
         onCancel={() => setIsEditing(false)}

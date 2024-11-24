@@ -23,7 +23,8 @@ interface PostFormProps {
     post_sport: string,
     post_hashtag: string,
     post_sports_keyword: string,
-    imageFiles: File[] | null
+    imageFiles: File[] | null,
+    existingImages : string[],
   ) => void;
   onCancel: () => void;
   post_up_sports: string[];
@@ -100,20 +101,34 @@ const PostForm: React.FC<PostFormProps> = ({
   };
 
 
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     const newFiles = Array.from(e.target.files);
+  //     const totalFiles = [...(imageFiles || []), ...newFiles];
+  
+  //     if (totalFiles.length > 2) {
+  //       alert("최대 2개의 이미지만 업로드할 수 있습니다.");
+  //       return;
+  //     }
+  
+  //     setImageFiles(totalFiles);
+  //     setError(""); // 이미지가 업로드되면 에러 메시지 초기화
+  //   }
+  // };
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 기존 이미지가 있으면 업로드 차단
+    if (existingImages.length > 0) {
+      alert("기존 이미지가 있으므로 새로운 이미지를 업로드할 수 없습니다.");
+      return;
+    }
+  
     if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files);
-      const totalFiles = [...(imageFiles || []), ...newFiles];
-  
-      if (totalFiles.length > 2) {
-        alert("최대 2개의 이미지만 업로드할 수 있습니다.");
-        return;
-      }
-  
-      setImageFiles(totalFiles);
+      const selectedFile = e.target.files[0]; // 단일 파일만 선택
+      setImageFiles(selectedFile ? [selectedFile] : null); // 배열로 저장 형태 유지
       setError(""); // 이미지가 업로드되면 에러 메시지 초기화
     }
   };
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,7 +169,8 @@ const PostForm: React.FC<PostFormProps> = ({
       post_sport,
       post_sports_keyword,
       allTags,
-      imageFiles
+      imageFiles,
+      existingImages, 
     );
   };
 
