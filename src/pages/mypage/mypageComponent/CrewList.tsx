@@ -22,8 +22,7 @@ interface CrewItem {
 interface CrewListProps {
   crewData?: CrewItem[]; // Optional property
 }
-
-const BASE_URL = "http://localhost:8001";
+const BASE_URL = "https://workspace.kr.object.ncloudstorage.com/";
 
 function CrewList({ crewData = [] }: CrewListProps): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
