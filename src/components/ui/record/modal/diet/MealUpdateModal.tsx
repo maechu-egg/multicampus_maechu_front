@@ -70,17 +70,26 @@ const ModalContent = styled.div`
   background: #fff;
   padding: 30px 20px;
   border-radius: 10px;
-  width: 90%;
+  width: 80%;
   max-width: 400px;
   box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-out forwards;
   text-align: center;
 
-
   h3 {
     font-size: 1.5rem;
     color: #333;
     margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      font-size: 1.4rem;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
   }
 
   label {
@@ -89,6 +98,16 @@ const ModalContent = styled.div`
     color: #666;
     margin-bottom: 12px;
     text-align: left;
+
+    @media (max-width: 768px) {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 375px) {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
   }
 
   input, select {
@@ -103,6 +122,16 @@ const ModalContent = styled.div`
 
     &:focus {
       border-color: #007bff;
+    }
+
+    @media (max-width: 768px) {
+      padding: 9px;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 375px) {
+      padding: 8px;
+      font-size: 0.9rem;
     }
   }
 
@@ -130,12 +159,30 @@ const MealSelect = styled.select`
     outline: none;
     border-color: #45a049;
   }
+
+  @media (max-width: 768px) {
+    padding: 9px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    font-size: 14px;
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    margin-top: 18px;
+  }
+
+  @media (max-width: 375px) {
+    margin-top: 15px;
+  }
 `;
 
 const SaveButton = styled.button<{ primary?: boolean }>`
@@ -159,6 +206,16 @@ const SaveButton = styled.button<{ primary?: boolean }>`
     outline: none;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.6);
   }
+
+  @media (max-width: 768px) {
+    padding: 11px 18px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
 `;
 
 const CancelButton = styled.button<{ primary?: boolean }>`
@@ -181,6 +238,17 @@ const CancelButton = styled.button<{ primary?: boolean }>`
     outline: none;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.6);
   }
+
+  @media (max-width: 768px) {
+    padding: 11px 18px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
 `;
+
 
 export default MealUpdateModal;

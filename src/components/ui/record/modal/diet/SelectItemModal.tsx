@@ -228,7 +228,7 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background: #ffffff;
-  width: 90%;
+  width: 80%;
   max-width: 500px;
   border-radius: 10px;
   padding: 20px;
@@ -236,6 +236,26 @@ const ModalContent = styled.div`
   position: relative;
   overflow: hidden;
   border: 1px solid #e0e0e0;
+
+  @media (max-width: 768px) {
+    padding: 18px;
+    max-width: 450px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 15px;
+    max-width: 400px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 12px;
+    max-width: 350px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 10px;
+    max-width: 300px;
+  }
 `;
 
 const Header = styled.div`
@@ -243,6 +263,14 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 375px) {
+    margin-bottom: 15px;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -256,6 +284,16 @@ const CloseButton = styled.button`
 
   &:hover {
     background: #16202b;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    padding: 9px 13px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 16px;
+    padding: 8px 12px;
   }
 `;
 
@@ -275,6 +313,14 @@ const ItemList = styled.div`
   }
   &::-webkit-scrollbar-thumb:hover {
     background-color: #cccccc;
+  }
+
+  @media (max-width: 768px) {
+    max-height: 250px;
+  }
+
+  @media (max-width: 375px) {
+    max-height: 200px;
   }
 `;
 
@@ -296,12 +342,28 @@ const ItemCard = styled.div`
     margin: 0 0 8px 0;
     font-size: 16px;
     color: #333333;
+
+    @media (max-width: 768px) {
+      font-size: 15px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 14px;
+    }
   }
 
   p {
     margin: 4px 0;
     font-size: 14px;
     color: #555555;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 12px;
+    }
   }
 `;
 
@@ -310,6 +372,16 @@ const EmptyMessage = styled.p`
   font-size: 16px;
   color: #999999;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 14px;
+    margin-top: 15px;
+  }
 `;
 
 const Footer = styled.div`
@@ -317,6 +389,14 @@ const Footer = styled.div`
   justify-content: center;
   padding: 16px;
   border-top: 1px solid #e0e0e0;
+
+  @media (max-width: 768px) {
+    padding: 14px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 12px;
+  }
 `;
 
 const ManualEntryButton = styled.button`
@@ -331,6 +411,16 @@ const ManualEntryButton = styled.button`
   &:hover {
     background-color: #16202b;
   }
+
+  @media (max-width: 768px) {
+    padding: 9px 18px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
 `;
 
 const FoodInfo = styled.div`
@@ -344,11 +434,27 @@ const FoodInfo = styled.div`
     margin-bottom: 10px;
     font-size: 16px;
     color: #333333;
+
+    @media (max-width: 768px) {
+      font-size: 15px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 14px;
+    }
   }
 
   p {
     margin: 4px 0;
     font-size: 14px;
     color: #555555;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 12px;
+    }
   }
 `;

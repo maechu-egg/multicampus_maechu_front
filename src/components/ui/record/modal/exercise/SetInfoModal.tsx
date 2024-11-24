@@ -157,6 +157,22 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+
+  @media (max-width: 768px) {
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  @media (max-width: 425px) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  @media (max-width: 375px) {
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  @media (max-width: 320px) {
+    background: rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const ModalContent = styled.div`
@@ -164,7 +180,7 @@ const ModalContent = styled.div`
   padding: 24px;
   border-radius: 12px;
   max-width: 450px;
-  width: 90%;
+  width: 80%;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-out forwards;
   text-align: center;
@@ -174,6 +190,26 @@ const ModalContent = styled.div`
     color: #333;
     margin-bottom: 16px;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
   }
 
   @keyframes fadeIn {
@@ -198,6 +234,26 @@ const SetInfoWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    gap: 5px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px;
+    gap: 4px;
+  }
 `;
 
 const IndexContainer = styled.div`
@@ -205,12 +261,44 @@ const IndexContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
+
+  @media (max-width: 768px) {
+    gap: 5px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 4px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 3px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 2px;
+  }
 `;
 
 const InfoText = styled.p`
   margin: 0;
   font-size: 1rem;
   color: #444;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Label = styled.label`
@@ -227,12 +315,48 @@ const Label = styled.label`
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+      padding: 7px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 6px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 5px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 4px;
+      font-size: 10px;
+    }
   }
 `;
 
 const ControlButtonContainer = styled.div`
   display: flex;
   gap: 8px;
+
+  @media (max-width: 768px) {
+    gap: 7px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 6px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 5px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 4px;
+  }
 `;
 
 const ControlButton = styled.button`
@@ -254,6 +378,26 @@ const ControlButton = styled.button`
     outline: none;
     box-shadow: 0 0 0 2px rgba(29, 38, 54, 0.4);
   }
+
+  @media (max-width: 768px) {
+    padding: 3px 5px;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 425px) {
+    padding: 3px 4px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 2px 4px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 320px) {
+    padding: 2px 3px;
+    font-size: 0.85rem;
+  }
 `;
 
 const SaveButton = styled.button`
@@ -265,8 +409,29 @@ const SaveButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+
   &:hover {
     background: #333C4D;
+  }
+
+  @media (max-width: 768px) {
+    padding: 5px 11px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 425px) {
+    padding: 4px 10px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 4px 9px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 320px) {
+    padding: 3px 8px;
+    font-size: 0.8rem;
   }
 `;
 
@@ -284,5 +449,25 @@ const CloseButton = styled.button`
 
   &:hover {
     background-color: #333C4D;
+  }
+
+  @media (max-width: 768px) {
+    padding: 9px 15px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 7px 13px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 `;
