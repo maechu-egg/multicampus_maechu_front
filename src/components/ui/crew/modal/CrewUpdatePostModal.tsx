@@ -12,6 +12,7 @@ function CrewCreatePostModal({ crewId, crewPostId, onClick, }: { crewId: number,
     const [crew_post_title, setCrew_post_title] = useState('');
     const [crew_post_content, setCrew_post_content] = useState('');
     const [crew_post_img, setCrew_post_img] = useState<File | null>(null);
+    const [crew_post_state, setCrew_post_state] = useState(2);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -36,6 +37,7 @@ function CrewCreatePostModal({ crewId, crewPostId, onClick, }: { crewId: number,
                 console.log("특정 게시물 정보 조회 response : ", response.data);
                 setCrew_post_title(response.data.crew_post_title);
                 setCrew_post_content(response.data.crew_post_content);
+                setCrew_post_state(response.data.crew_post_state);
             } catch (err) {
                 console.log("특정 게시물 정보 조회 에러 ", err);
             }
@@ -55,6 +57,7 @@ function CrewCreatePostModal({ crewId, crewPostId, onClick, }: { crewId: number,
         }
         data.append("crew_id", crewId.toString());
         data.append("member_id", member_id ? member_id.toString() : '');
+        data.append("crew_post_state", crew_post_state.toString());
 
         const updateCrewPost = async () => {
             try {
