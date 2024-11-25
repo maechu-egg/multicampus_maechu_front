@@ -87,9 +87,9 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBat
                     </div>
                     <div>
                         <ul className="list-unstyled text-end" style={{ width: '100%' }}>
-                            <li style={{padding: 0}}><strong>피드</strong> : {member.feed_count}개</li>
-                            <li style={{padding: 0}}><strong>누적 칼로리</strong>:{member.total_feed_kcal}kcal</li>
-                            <li style={{padding: 0}}><strong>누적 운동시간</strong>:{member.total_feed_exTime}분</li>
+                            <li style={{padding: 0}}><strong>피드</strong> : {member.feed_count}개&nbsp;&nbsp;</li>
+                            <li style={{padding: 0}}><strong>누적 칼로리</strong>:{member.total_feed_kcal}kcal&nbsp;&nbsp;</li>
+                            <li style={{padding: 0}}><strong>누적 운동시간</strong>:{member.total_feed_exTime}분&nbsp;&nbsp;</li>
                         </ul>
                     </div>
                     <div className="d-flex">

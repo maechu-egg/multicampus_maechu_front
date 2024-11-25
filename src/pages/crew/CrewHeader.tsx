@@ -21,11 +21,13 @@ function CrewHeader(): JSX.Element {
   const handleCrewTabClick = (index: number) => {
     setActiveCrewTab(index); // Update active tab index
   };
+
   useEffect(() => {
     if (!token) {
       setIsLoginWarningOpen(true);
     }
   }, [token]);
+
   const closeLoginWarning = () => {
     setIsLoginWarningOpen(false);
   };
@@ -71,7 +73,7 @@ function CrewHeader(): JSX.Element {
               role="tab"
               aria-controls="crew-search-pane"
               aria-selected="true"
-              style={{ fontSize: "30px" }}
+              style={{ fontSize: "25px" }}
             >
               Find Crew
             </button>
@@ -88,7 +90,7 @@ function CrewHeader(): JSX.Element {
               role="tab"
               aria-controls="my-crew-pane"
               aria-selected="true"
-              style={{ fontSize: "30px" }}
+              style={{ fontSize: "25px" }}
             >
               My Crew
             </button>
