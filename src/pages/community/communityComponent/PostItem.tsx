@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaThumbsUp, FaComment, FaEye } from "react-icons/fa";
 import "./PostItem.css";
-import { formatDate } from '../../../utils/dateFormat'; 
+import { formatDate, formatDateShort } from '../../../utils/dateFormat'; 
 import ProfileModal from "./ProfileModal";
 import axios from "axios";
 
@@ -81,6 +81,8 @@ const PostItem: React.FC<PostItemProps> = ({
   // 해시태그 문자열을 쉼표와 공백(", ") 기준으로 나누어 배열로 변환
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : [];
   const badgeImage = getBadgeImage(member_badge_level);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState<string>("");
@@ -156,6 +158,15 @@ const PostItem: React.FC<PostItemProps> = ({
     setIsModalOpen(false);
   };
   
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setWindowWidth(window.innerWidth);
+    };
+     window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`}>
       <div className="post-content-wrapper">
@@ -200,41 +211,64 @@ const PostItem: React.FC<PostItemProps> = ({
           </div>
         </div> */}
         <input type="hidden" value={member_id} />
-        <ul className="category-date-line" >
-          <li className="subcategory" onClick={onClick}>[{post_sport || '자유'}]</li>
-          <li className="post-titles" onClick={onClick} >{post_title}</li>
-          <li className="post_author" onClick={handleProfileClick} >{post_nickname}
-            <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />  
+        {isMobile ? (
+         // 모바일 레이아웃
+         <>
+           <ul className="category-date-line">
+             <li className="subcategory" onClick={onClick}>[{post_sport || '자유'}]</li>
+             <li className="post-date" onClick={onClick}>{windowWidth <= 400 ? formatDateShort(post_date) : formatDate(post_date)}</li>
+           </ul>
+           <ul className="title-author-line">
+             <li className="post-titles" onClick={onClick}>{post_title}</li>
+             <li className="post_author" onClick={handleProfileClick}>
+               <div className="nickname-container">
+                 {post_nickname}
+               </div>
+               <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />
+             </li>
+           </ul>
+         </>
+       ) : (
+         // 데스크톱 레이아웃
+         <ul className="category-date-line">
+           <li className="subcategory">[{post_sport || '자유'}]</li>
+           <li className="post-titles" onClick={onClick}>{post_title}</li>
+           <li className="post_author" onClick={handleProfileClick}>
+             <div className="nickname-container">
+               {post_nickname}
+             </div>
+             <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />
+           </li>
+           <li className="post-date" onClick={onClick}>{formatDate(post_date)}
           </li>
-          <li className="post-date" onClick={onClick}>{formatDate(post_date)}</li>
-        </ul>
-  
+         </ul>
+       )}
         <div className="post-info-wrapper" onClick={onClick}>
-          <div className="tags_wrap">
-          {hashtagArray.length > 0 && (
-            <div className="post-tags">
-              {hashtagArray.map((tag, index) => (
-                <span key={index} className="tag-item">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-          </div>
-          <div className="post-status">
-            <span className="likes">
-              <FaThumbsUp /> {post_like_counts}
-            </span>
-            <span className="comments">
-              <FaComment /> {comments_count}
-            </span>
-            <span className="views">
-              <FaEye /> {post_views}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+         <div className="tags_wrap">
+           {hashtagArray.length > 0 && (
+             <div className="post-tags">
+               {hashtagArray.map((tag, index) => (
+                 <span key={index} className="tag-item">
+                   {tag}
+                 </span>
+               ))}
+             </div>
+           )}
+         </div>
+         <div className="post-status">
+           <span className="likes">
+             <FaThumbsUp /> {post_like_counts}
+           </span>
+           <span className="comments">
+             <FaComment /> {comments_count}
+           </span>
+           <span className="views">
+             <FaEye /> {post_views}
+           </span>
+         </div>
+       </div>
+     </div>
+   </div>
   );
 };
 

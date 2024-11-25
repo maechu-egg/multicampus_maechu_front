@@ -485,10 +485,30 @@ const ProfileButton = styled.button`
 `;
 
 const NickName = styled.h2`
-  margin: 0;
-  font-size: 0.8em;
-  color: #333;
-`;
+ margin: 0;
+ font-size: 0.8em;
+ color: #333;
+ white-space: normal;
+ overflow: visible;
+ text-overflow: clip;
+ /* 520px부터 300px*/
+@media (max-width: 520px) and (min-width: 300px) {
+   max-width: calc(80px + (100vw - 300px) * 0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+  /* 900px 이상 */
+ @media (min-width: 900px) {
+   max-width: calc(80px + (100vw - 900px) * 0.25);
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+  /* 1200px 이상일 때 최대 너비 제한 */
+ @media (min-width: 1780px) {
+   max-width: 350px;
+ }`;
 
 const Divider = styled.hr`
   width: 80%;
