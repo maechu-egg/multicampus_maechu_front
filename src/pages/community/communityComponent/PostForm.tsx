@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./PostForm.css";
 import AlertModal from "./AlertModal";
@@ -63,7 +63,7 @@ const PostForm: React.FC<PostFormProps> = ({
 
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
-
+  const maxLength = 30;
 
   // 초기 이미지 파일명들을 저장할 state 추가
   const [existingImages, setExistingImages] = useState<string[]>(() => {
@@ -218,6 +218,24 @@ const PostForm: React.FC<PostFormProps> = ({
            existingImages.length === 0;
   };
 
+  
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+
+    // 최대 글자수를 초과하지 않도록 설정
+    if (inputValue.length <= maxLength) {
+        setPost_title(inputValue);
+    }
+};
+
+useEffect(() => {
+    // 초기 데이터가 변경되었을 때에도 반영
+    if (initialData?.post_title) {
+        setPost_title(initialData.post_title);
+    }
+}, [initialData]);
+
   return (
     <div className="post-form-container">
       <h2 className="form-title">{mode === "create" ? "게시물 작성" : "게시물 수정"}</h2>
@@ -282,9 +300,15 @@ const PostForm: React.FC<PostFormProps> = ({
             type="text"
             className="form-control"
             value={post_title}
-            onChange={(e) => setPost_title(e.target.value)}
+            // onChange={(e) => setPost_title(e.target.value)}
+            onChange={handleInputChange}
+
             placeholder="제목을 입력하세요"
+            maxLength={maxLength}
           />
+           <p className = "post_title_length">
+                {post_title.length}/{maxLength} 글자
+            </p>
         </div>
 
         <div className="mb-3">

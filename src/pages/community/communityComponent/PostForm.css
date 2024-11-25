@@ -16,6 +16,11 @@
   font-weight: 600;
 }
 
+.post_title_length{
+  padding-left : 12px;
+  color: #777;
+}
+
 .form-control, .form-select {
   border: 1px solid #dee2e6;
   border-radius: 8px;
@@ -32,6 +37,8 @@
   resize: vertical;
   font-size: 14px !important;  /* !important 추가 */
   line-height: 1.5 !important;
+  padding-left:10px !important;
+  padding-right:10px !important;
 }
 
 
