@@ -360,8 +360,6 @@ function DietDetailPage(): JSX.Element {
   );
 };
 
-export default DietDetailPage;
-
 // 전역 스타일 추가
 const GlobalStyle = createGlobalStyle`
   body {
@@ -379,6 +377,26 @@ const Container = styled.div`
   padding: 20px;
   background: none;
   margin-bottom: 100px;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+    min-height: 600px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+    min-height: 500px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    min-height: 450px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+    min-height: 400px;
+  }
 `;
 
 const SummaryCard = styled.div`
@@ -390,50 +408,166 @@ const SummaryCard = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    padding: 18px;
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
 `;
 
 const DateSection = styled.div`
   text-align: left;
-  
+
   h2 {
     font-size: 24px;
     margin: 0;
     font-weight: 700;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 20px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 16px;
+    }
   }
-  
+
   p {
     color: #868e96;
     margin: 5px 0 0 0;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 12px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 11px;
+    }
   }
 `;
 
 const StatsSection = styled.div`
   display: flex;
   gap: 30px;
+
+  @media (max-width: 768px) {
+    gap: 25px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 20px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 15px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 10px;
+  }
 `;
 
 const StatItem = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
-  
+
   h3 {
     font-size: 14px;
     color: #868e96;
     margin: 0 0 5px 0;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 12px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 11px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 10px;
+    }
   }
-  
+
   p {
     font-size: 20px;
     font-weight: 700;
     margin: 0;
     color: #212529;
+
+    @media (max-width: 768px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 15px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 14px;
+    }
   }
 `;
 
 const SearchBar = styled.div`
   position: relative;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 425px) {
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 375px) {
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 320px) {
+    margin-bottom: 10px;
+  }
 
   input {
     width: 100%;
@@ -442,11 +576,27 @@ const SearchBar = styled.div`
     border-radius: 10px;
     background: white;
     font-size: 16px;
-    
+
     &:focus {
       outline: none;
       border-color: #2e5987;
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      padding: 13px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 12px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 10px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 8px;
     }
   }
 
@@ -463,27 +613,79 @@ const SearchBar = styled.div`
     font-size: 14px;
     cursor: pointer;
     transition: background 0.3s;
-    
+
     &:hover {
       background: #333C4D;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+      padding: 7px 14px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 11px;
+      padding: 5px 10px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 10px;
+      padding: 4px 8px;
     }
   }
 `;
 
 const CogWrapper = styled.div`
   display: flex;
-  justify-content: flex-end; /* 우측 정렬 */
-  margin: 10px 0; /* 위아래 여백 추가 */
-  
+  justify-content: flex-end;
+  margin: 10px 0;
+
+  @media (max-width: 768px) {
+    margin: 8px 0;
+  }
+
+  @media (max-width: 425px) {
+    margin: 6px 0;
+  }
+
+  @media (max-width: 375px) {
+    margin: 5px 0;
+  }
+
+  @media (max-width: 320px) {
+    margin: 4px 0;
+  }
+
   svg {
     cursor: pointer;
     font-size: 24px;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 20px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 16px;
+    }
   }
 `;
 
 const DropdownMenu = styled.div`
   position: absolute;
-  background-color: #414d60; /* 배경색 변경 */
+  background-color: #414d60;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -497,10 +699,26 @@ const DropdownMenu = styled.div`
     border: none;
     text-align: left;
     cursor: pointer;
-    color: white; /* 글씨 색상 변경 */
+    color: white;
 
     &:hover {
-      background-color: #2c2e30; /* hover 시 배경색 변경 */
+      background-color: #2c2e30;
+    }
+
+    @media (max-width: 768px) {
+      padding: 9px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 8px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 7px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 6px;
     }
   }
 `;
@@ -512,22 +730,47 @@ const ItemList = styled.div`
   margin: 20px;
   padding: 16px;
   border-radius: 8px;
-  background-color: transparent;  
+  background-color: transparent;
 
   @media (max-width: 768px) {
     padding: 12px;
+    gap: 14px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+    gap: 12px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 `;
 
 const ToolTipTitle = styled.div`
   font-size: 18px;
 
-   @media (max-width: 850px) {
+  @media (max-width: 768px) {
     font-size: 17px;
-  } 
+  }
 
-  @media (max-width: 710px) {
+  @media (max-width: 425px) {
     font-size: 15px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 13px;
   }
 `;
 
@@ -535,11 +778,23 @@ const ToolTipText = styled.div`
   font-size: 15px;
   text-align: left;
 
-  @media (max-width: 850px) {
+  @media (max-width: 768px) {
     font-size: 14px;
-  } 
+  }
 
-  @media (max-width: 710px) {
+  @media (max-width: 425px) {
     font-size: 12px;
   }
+
+  @media (max-width: 375px) {
+    font-size: 11px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 10px;
+  }
 `;
+
+
+export default DietDetailPage;
+

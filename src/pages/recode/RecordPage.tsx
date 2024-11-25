@@ -295,6 +295,22 @@ const ModalOverlay = styled.div`
   width: 100%; // 전체 너비
   height: 100%; // 전체 높이
   z-index: 1000; // 다른 요소 위에 표시
+
+  @media (max-width: 768px) {
+    background-color: rgba(0, 0, 0, 0.45);
+  }
+
+  @media (max-width: 425px) {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  @media (max-width: 375px) {
+    background-color: rgba(0, 0, 0, 0.35);
+  }
+
+  @media (max-width: 320px) {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const ModalContent = styled.div`
@@ -312,6 +328,26 @@ const ModalContent = styled.div`
     from { opacity: 0; transform: scale(0.8); }
     to { opacity: 1; transform: scale(1); }
   }
+
+  @media (max-width: 768px) {
+    padding: 35px;
+    max-width: 450px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 30px;
+    max-width: 400px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 25px;
+    max-width: 350px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 20px;
+    max-width: 300px;
+  }
 `;
 
 const ModalHeader = styled.h3`
@@ -320,12 +356,44 @@ const ModalHeader = styled.h3`
   font-weight: 700; // 글자 두께
   color: #444; // 글자 색상
   letter-spacing: 1px; // 글자 간격
+
+  @media (max-width: 768px) {
+    font-size: 26px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 24px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 22px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 20px;
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex; // 플렉스 박스 사용
   justify-content: space-around; // 버튼 간격 조정
   margin-bottom: 20px; // 하단 여백
+
+  @media (max-width: 768px) {
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 425px) {
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 375px) {
+    margin-bottom: 14px;
+  }
+
+  @media (max-width: 320px) {
+    margin-bottom: 12px;
+  }
 `;
 
 const ModalButton = styled.button`
@@ -344,6 +412,26 @@ const ModalButton = styled.button`
     transform: scale(1.05); // 호버 시 크기 증가
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); // 호버 시 그림자 효과
   }
+
+  @media (max-width: 768px) {
+    padding: 13px 28px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 12px 26px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 11px 24px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 10px 22px;
+    font-size: 12px;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -359,6 +447,22 @@ const CloseButton = styled.button`
 
   &:hover {
     color: #888; // 호버 시 색상 변경
+  }
+
+  @media (max-width: 768px) {
+    font-size: 22px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 16px;
   }
 `;
 
@@ -395,6 +499,18 @@ const Wrapper = styled.div`
   @media (max-width: 710px) {
     padding: 10px; // 반응형 패딩 조정
   }
+
+  @media (max-width: 425px) {
+    padding: 8px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 6px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 4px;
+  }
 `;
 
 const Container = styled.div`
@@ -405,10 +521,25 @@ const Container = styled.div`
   margin: 0 auto;
   margin-top: 10px;
 
-
   @media (max-width: 1100px) {
     flex-direction: column;
     align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 900px;
+  }
+
+  @media (max-width: 425px) {
+    max-width: 700px;
+  }
+
+  @media (max-width: 375px) {
+    max-width: 600px;
+  }
+
+  @media (max-width: 320px) {
+    max-width: 500px;
   }
 
   .modal-content {
@@ -420,6 +551,22 @@ const Container = styled.div`
       margin-bottom: 2rem;
       font-size: 1.8rem;
       font-weight: 600;
+
+      @media (max-width: 768px) {
+        font-size: 1.6rem;
+      }
+
+      @media (max-width: 425px) {
+        font-size: 1.4rem;
+      }
+
+      @media (max-width: 375px) {
+        font-size: 1.3rem;
+      }
+
+      @media (max-width: 320px) {
+        font-size: 1.2rem;
+      }
     }
 
     .button-group {
@@ -427,6 +574,22 @@ const Container = styled.div`
       display: flex;
       justify-content: center;
       margin-bottom: 1rem;
+
+      @media (max-width: 768px) {
+        font-size: 1.8rem;
+      }
+
+      @media (max-width: 425px) {
+        font-size: 1.6rem;
+      }
+
+      @media (max-width: 375px) {
+        font-size: 1.5rem;
+      }
+
+      @media (max-width: 320px) {
+        font-size: 1.4rem;
+      }
     }
 
     button {
@@ -440,6 +603,22 @@ const Container = styled.div`
       &:hover {
         background-color: lightgray;
         transform: scale(1.1);
+      }
+
+      @media (max-width: 768px) {
+        padding: 0.7rem 1.4rem;
+      }
+
+      @media (max-width: 425px) {
+        padding: 0.6rem 1.3rem;
+      }
+
+      @media (max-width: 375px) {
+        padding: 0.5rem 1.2rem;
+      }
+
+      @media (max-width: 320px) {
+        padding: 0.4rem 1.1rem;
       }
     }
 
@@ -469,7 +648,20 @@ const Container = styled.div`
     @media (max-width: 710px) {
       min-width: 200px;
     }
+
+    @media (max-width: 425px) {
+      min-width: 180px;
+    }
+
+    @media (max-width: 375px) {
+      min-width: 160px;
+    }
+
+    @media (max-width: 320px) {
+      min-width: 140px;
+    }
   }
+
   .react-calendar__tile {
     padding: 5px;
     background: none;
@@ -477,13 +669,29 @@ const Container = styled.div`
     &:hover {
       background-color: #f0f0f0;
     }
+
+    @media (max-width: 768px) {
+      padding: 4px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 3px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 2px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 1px;
+    }
   }
 
   .react-calendar__month-view__days__day--weekend {
     color: #ff0000;
   }
 
-  .react-calendar__month-view __days__day--neighboringMonth {
+  .react-calendar__month-view__days__day--neighboringMonth {
     color: #cccccc;
   }
 
@@ -491,94 +699,199 @@ const Container = styled.div`
     border-bottom: 1px solid gray;
     padding-bottom: 5px;
 
-      button {
-        border-radius: 15px;
-        min-width: 50px;
-        background: none;
-        font-size: 17px;
-        font-weight: bold;
-      }
+    button {
+      border-radius: 15px;
+      min-width: 50px;
+      background: none;
+      font-size: 17px;
+      font-weight: bold;
+    }
 
-    @media (max-width: 850px) {
+    @media (max-width: 768px) {
       button {
-        font-size: 15px;
+        font-size: 14px;
       }
     }
 
-    @media (max-width: 710px) {
+    @media (max-width: 425px) {
       button {
-        font-size: 13px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 375px) {
+      button {
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      button {
+        font-size: 10px;
       }
     }
   }
 
   /* 세기 선택 화면의 스타일 */
   .react-calendar__century-view__decades__decade {
-      padding: 20px; /* 세기 버튼의 여백을 조정 */
-      font-size: 16px; /* 텍스트 크기 */
-      font-weight: bold;
-      border-radius: 10px; /* 둥근 모서리 */      
+    padding: 20px; /* 세기 버튼의 여백을 조정 */
+    font-size: 16px; /* 텍스트 크기 */
+    font-weight: bold;
+    border-radius: 10px; /* 둥근 모서리 */
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 11px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 10px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 9px;
+    }
   }
+
   /* 년도 선택 화면의 스타일 */
   .react-calendar__decade-view__years__year {
-      padding: 20px; /* 년도 버튼의 여백 */
-      font-size: 16px; /* 텍스트 크기 */
-      font-family: 'ONE-Mobile-Title';
-      border-radius: 10px; /* 둥근 모서리 */
+    padding: 20px; /* 년도 버튼의 여백 */
+    font-size: 16px; /* 텍스트 크기 */
+    font-family: 'ONE-Mobile-Title';
+    border-radius: 10px; /* 둥근 모서리 */
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 11px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 10px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 9px;
+    }
   }
+
   /* 각 월 버튼 스타일 */
   .react-calendar__year-view__months__month {
-      padding: 20px; /* 여백을 늘려 버튼 크기 조절 */
-      font-size: 16px; /* 폰트 크기 증가 */
-      font-family: 'ONE-Mobile-Title';
-      border-radius: 10px; /* 둥근 모서리 */
-  }            
+    padding: 20px; /* 여백을 늘려 버튼 크기 조절 */
+    font-size: 16px; /* 폰트 크기 증가 */
+    font-family: 'ONE-Mobile-Title';
+    border-radius: 10px; /* 둥근 모서리 */
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 11px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 10px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 9px;
+    }
+  }
+
   /* 반응형 조정 예시 */
-  @media (max-width: 850px) {
+  @media (max-width: 768px) {
     .react-calendar__century-view__decades__decade,
     .react-calendar__decade-view__years__year,
     .react-calendar__year-view__months__month {
-      font-size: 14px;
+      font-size: 13px;
     }
   }
-  @media (max-width: 710px) {
+
+  @media (max-width: 425px) {
     .react-calendar__century-view__decades__decade,
     .react-calendar__decade-view__years__year,
     .react-calendar__year-view__months__month {
-      font-size: 12px;
+      font-size: 11px;
     }
   }
-    
-    .react-calendar__month-view__weekdays {
-      font-size: 15px;
-      font-family: 'ONE-Mobile-Title';
-      color: gray;
-      border-bottom: 1px solid gray;
-      padding-bottom: 5px;
+
+  @media (max-width: 375px) {
+    .react-calendar__century-view__decades__decade,
+    .react-calendar__decade-view__years__year,
+    .react-calendar__year-view__months__month {
+      font-size: 10px;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .react-calendar__century-view__decades__decade,
+    .react-calendar__decade-view__years__year,
+    .react-calendar__year-view__months__month {
+      font-size: 9px;
+    }
+  }
+
+  .react-calendar__month-view__weekdays {
+    font-size: 15px;
+    font-family: 'ONE-Mobile-Title';
+    color: gray;
+    border-bottom: 1px solid gray;
+    padding-bottom: 5px;
 
     div {
       height: 30px;
     }
 
-    @media (max-width: 850px) {
-      font-size: 13px;
+    @media (max-width: 768px) {
+      font-size: 12px;
     }
-    @media (max-width: 710px) {
-      font-size: 10px;
+
+    @media (max-width: 425px) {
+      font-size: 9px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 8px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 7px;
     }
   }
 
-    .react-calendar__month-view__days {
-      button {
-        position: relative;
-        display: flex;
-        height: 80px;
-        border-left: 0.1px solid lightgray;
-        border-right: 0.1px solid lightgray;
-        border-bottom: 0.1px solid lightgray;
-        font-size: 13px;
-        font-family: 'ONE-Mobile-Title';
+  .react-calendar__month-view__days {
+    button {
+      position: relative;
+      display: flex;
+      height: 80px;
+      border-left: 0.1px solid lightgray;
+      border-right: 0.1px solid lightgray;
+      border-bottom: 0.1px solid lightgray;
+      font-size: 13px;
+      font-family: 'ONE-Mobile-Title';
+
+      @media (max-width: 768px) {
+        font-size: 11px;
       }
+
+      @media (max-width: 425px) {
+        font-size: 9px;
+      }
+
+      @media (max-width: 375px) {
+        font-size: 8px;
+      }
+
+      @media (max-width: 320px) {
+        font-size: 7px;
+      }
+    }
 
     button:last-child {
       border-radius: 0px 0px 15px 0px;
@@ -588,15 +901,27 @@ const Container = styled.div`
       border-radius: 0px 0px 0px 15px;
     }
 
-    @media (max-width: 850px) {
+    @media (max-width: 768px) {
       button {
-        font-size: 12px;
+        font-size: 11px;
       }
     }
 
-    @media (max-width: 710px) {
+    @media (max-width: 425px) {
       button {
-        font-size: 11px;
+        font-size: 9px;
+      }
+    }
+
+    @media (max-width: 375px) {
+      button {
+        font-size: 8px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      button {
+        font-size: 7px;
       }
     }
   }
@@ -633,16 +958,31 @@ const Container = styled.div`
         height: 120px; /* 원하는 크기로 설정 */
       }
 
-      @media (max-width: 1000px) {
+      @media (max-width: 768px) {
         img {
-          width: 100px; /* 반응형 크기 조정 */
-          height: 100px;
+          width: 110px;
+          height: 110px;
         }
       }
-      @media (max-width: 710px) {
+
+      @media (max-width: 425px) {
         img {
-          width: 70px;
-          height: 70px;
+          width: 65px;
+          height: 90px;
+        }
+      }
+
+      @media (max-width: 375px) {
+        img {
+          width: 50px;
+          height: 90px;
+        }
+      }
+
+      @media (max-width: 320px) {
+        img {
+          width: 45px;
+          height: 80px;
         }
       }
     }

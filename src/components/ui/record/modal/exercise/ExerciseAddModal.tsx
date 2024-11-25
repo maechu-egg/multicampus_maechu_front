@@ -165,7 +165,6 @@ const ExerciseAddModal = ({ searchTerm, onClose, successExerInsert }: ExerciseAd
 export default ExerciseAddModal;
 
 // 스타일 정의
-
 const AddSetButton = styled.button`
   padding: 12px 24px;
   font-size: 16px;
@@ -181,6 +180,26 @@ const AddSetButton = styled.button`
   &:hover {
     background-color: #ffffff;
     color: #1D2636;
+  }
+
+  @media (max-width: 768px) {
+    padding: 11px 22px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 8px 16px;
+    font-size: 12px;
   }
 `;
 
@@ -205,6 +224,26 @@ const ModalContent = styled.div`
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   text-align: left;
   color: #1D2636;
+
+  @media (max-width: 768px) {
+    width: 390px;
+    padding: 25px;
+  }
+
+  @media (max-width: 425px) {
+    width: 340px;
+    padding: 20px;
+  }
+
+  @media (max-width: 375px) {
+    width: 310px;
+    padding: 18px;
+  }
+
+  @media (max-width: 320px) {
+    width: 270px;
+    padding: 15px;
+  }
 `;
 
 const Label = styled.label`
@@ -223,6 +262,26 @@ const Label = styled.label`
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+      padding: 7px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 6px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 5px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 4px;
+      font-size: 10px;
+    }
   }
 `;
 
@@ -230,6 +289,22 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    margin-top: 18px;
+  }
+
+  @media (max-width: 425px) {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 375px) {
+    margin-top: 14px;
+  }
+
+  @media (max-width: 320px) {
+    margin-top: 12px;
+  }
 `;
 
 const SaveButton = styled.button`
@@ -247,6 +322,26 @@ const SaveButton = styled.button`
     background-color: #ffffff;
     color: #1D2636;
   }
+
+  @media (max-width: 768px) {
+    padding: 11px 22px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
 `;
 
 const CancelButton = styled.button`
@@ -263,5 +358,25 @@ const CancelButton = styled.button`
   &:hover {
     background-color: #ffffff;
     color: #1D2636;
+  }
+
+  @media (max-width: 768px) {
+    padding: 11px 22px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 8px 16px;
+    font-size: 12px;
   }
 `;

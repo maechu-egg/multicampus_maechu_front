@@ -26,9 +26,9 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
   const [editingSetId, setEditingSetId] = useState<number | null>(null);
   const [editData, setEditData] = useState<SetInfo>({} as SetInfo);
 
-  const [weight, setWeight] = useState<number | undefined>(editData.weight);
-  const [distance, setDistance] = useState<number | undefined>(editData.distance);
-  const [repetitions, setRepetitions] = useState<number | undefined>(editData.repetitions);
+  const [weightValue, setWeightValue] = useState<number | undefined>(editData.weight);
+  const [distanceValue, setDistanceValue] = useState<number | undefined>(editData.distance);
+  const [repetitionsValue, setRepetitionsValue] = useState<number | undefined>(editData.repetitions);
 
   const openEditModal = (currentData: SetInfo) => {
     setEditingSetId(currentData.set_id);
@@ -37,22 +37,24 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
 
   const handleSave = async () => {
     if (editingSetId !== null) {
-      if ((weight != null && distance != null && repetitions != null)
-        && !(weight === 0 && distance === 0  && repetitions === 0)) {
 
+      const weight = weightValue != null ? weightValue : 0;
+      const distance = distanceValue != null ? distanceValue : 0;
+      const repetitions = repetitionsValue != null ? repetitionsValue : 0;
+
+
+      if (weight !== 0 || distance !== 0 || repetitions !== 0) {
         editData.distance = distance;
         editData.repetitions = repetitions;
         editData.weight = weight;
-        
+  
         await updateSetInfo(editData);
         setEditingSetId(null); // 저장 후 수정 모드 해제
-        
-      } else{
+      } else {
         alert("값은 한 개 이상 넣어야 합니다.");
       }
     }
   };
-
   const updateSetInfo = async (setInfo: SetInfo) => {
     try {
       const response = await api.put(
@@ -100,24 +102,28 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
                   <>
                     <Label>
                       무게: 
-                      <input type="number" value={weight} 
-                        onChange={(e) => setWeight(parseInt(e.target.value))}
+                      <input type="number" min="0" value={weightValue} 
+                        onChange={(e) => setWeightValue(e.target.value ? parseInt(e.target.value) : undefined)}
                         placeholder="무게는 선택사항입니다"
                       />
                     </Label>
                     <Label>
                       횟수: 
-                      <input type="number" value={repetitions} 
-                        onChange={(e) => setRepetitions(parseInt(e.target.value))} 
+                      <input type="number" min="0" value={repetitionsValue} 
+                        onChange={(e) => setRepetitionsValue(e.target.value ? parseInt(e.target.value) : undefined)} 
                         placeholder="횟수는 선택사항입니다"
                       />
                     </Label>
                     <Label>
                       거리: 
-                      <input type="number" value={distance} 
-                        onChange={(e) => setDistance(parseInt(e.target.value))} 
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"  // 소수점 단위로 입력 가능하도록 설정
+                        value={distanceValue !== undefined ? distanceValue : ''}
+                        onChange={(e) => setDistanceValue(e.target.value ? parseFloat(e.target.value) : undefined)}
                         placeholder="거리는 선택사항입니다"
-                      /> 
+                      />
                     </Label>
                     <SaveButton onClick={handleSave}>저장</SaveButton>
                   </>
@@ -157,6 +163,22 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+
+  @media (max-width: 768px) {
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  @media (max-width: 425px) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  @media (max-width: 375px) {
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  @media (max-width: 320px) {
+    background: rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const ModalContent = styled.div`
@@ -164,7 +186,7 @@ const ModalContent = styled.div`
   padding: 24px;
   border-radius: 12px;
   max-width: 450px;
-  width: 90%;
+  width: 80%;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-out forwards;
   text-align: center;
@@ -174,6 +196,26 @@ const ModalContent = styled.div`
     color: #333;
     margin-bottom: 16px;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
   }
 
   @keyframes fadeIn {
@@ -198,6 +240,26 @@ const SetInfoWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    gap: 5px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px;
+    gap: 4px;
+  }
 `;
 
 const IndexContainer = styled.div`
@@ -205,12 +267,44 @@ const IndexContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
+
+  @media (max-width: 768px) {
+    gap: 5px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 4px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 3px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 2px;
+  }
 `;
 
 const InfoText = styled.p`
   margin: 0;
   font-size: 1rem;
   color: #444;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Label = styled.label`
@@ -227,12 +321,48 @@ const Label = styled.label`
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+      padding: 7px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 6px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 5px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 4px;
+      font-size: 10px;
+    }
   }
 `;
 
 const ControlButtonContainer = styled.div`
   display: flex;
   gap: 8px;
+
+  @media (max-width: 768px) {
+    gap: 7px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 6px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 5px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 4px;
+  }
 `;
 
 const ControlButton = styled.button`
@@ -254,6 +384,26 @@ const ControlButton = styled.button`
     outline: none;
     box-shadow: 0 0 0 2px rgba(29, 38, 54, 0.4);
   }
+
+  @media (max-width: 768px) {
+    padding: 3px 5px;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 425px) {
+    padding: 3px 4px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 2px 4px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 320px) {
+    padding: 2px 3px;
+    font-size: 0.85rem;
+  }
 `;
 
 const SaveButton = styled.button`
@@ -265,8 +415,29 @@ const SaveButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+
   &:hover {
     background: #333C4D;
+  }
+
+  @media (max-width: 768px) {
+    padding: 5px 11px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 425px) {
+    padding: 4px 10px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 4px 9px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 320px) {
+    padding: 3px 8px;
+    font-size: 0.8rem;
   }
 `;
 
@@ -284,5 +455,25 @@ const CloseButton = styled.button`
 
   &:hover {
     background-color: #333C4D;
+  }
+
+  @media (max-width: 768px) {
+    padding: 9px 15px;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 7px 13px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 `;

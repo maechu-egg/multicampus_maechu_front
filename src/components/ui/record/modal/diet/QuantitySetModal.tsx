@@ -103,6 +103,21 @@ const ModalContent = styled.div`
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
+
+  @media (max-width: 768px) {
+    width: 350px;
+    padding: 18px;
+  }
+
+  @media (max-width: 375px) {
+    width: 300px;
+    padding: 15px;
+  }
+  
+  @media (max-width: 320px) {
+    width: 270px;
+    padding: 15px;
+  }
 `;
 
 const Label = styled.label`
@@ -121,6 +136,16 @@ const Label = styled.label`
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+      padding: 7px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 6px;
+      font-size: 12px;
+    }
   }
 `;
 
@@ -128,6 +153,14 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    margin-top: 18px;
+  }
+
+  @media (max-width: 375px) {
+    margin-top: 15px;
+  }
 `;
 
 const SaveButton = styled.button`
@@ -141,7 +174,17 @@ const SaveButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #1d2636;
+    background-color: #16202b;
+  }
+
+  @media (max-width: 768px) {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px 16px;
+    font-size: 12px;
   }
 `;
 
@@ -156,6 +199,16 @@ const CancelButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #1d2636;
+    background-color: #16202b;
+  }
+
+  @media (max-width: 768px) {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px 16px;
+    font-size: 12px;
   }
 `;

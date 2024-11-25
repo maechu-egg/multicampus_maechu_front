@@ -121,8 +121,6 @@ const CustomItemModal = ({ searchTerm, onClose, onSave }: CustomItemModalProps):
 };
 
 export default CustomItemModal;
-
-// Styled Components
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -138,13 +136,33 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background: #ffffff;
-  width: 90%;
+  width: 80%;
   max-width: 500px;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 18px;
+    max-width: 450px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+    max-width: 400px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    max-width: 350px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+    max-width: 300px;
+  }
 `;
 
 const Header = styled.div`
@@ -154,12 +172,48 @@ const Header = styled.div`
   margin-bottom: 20px;
   border-bottom: 1px solid #e0e0e0;
   padding-bottom: 10px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 18px;
+    padding-bottom: 9px;
+  }
+
+  @media (max-width: 425px) {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+
+  @media (max-width: 375px) {
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+  }
+
+  @media (max-width: 320px) {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+  }
 `;
 
 const Form = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 10px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 8px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 6px;
+  }
 `;
 
 const FormItem = styled.div`
@@ -171,6 +225,22 @@ const FormItem = styled.div`
     font-weight: bold;
     font-size: 14px;
     color: #333333;
+
+    @media (max-width: 768px) {
+      font-size: 13.5px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 12.5px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 12px;
+    }
   }
 `;
 
@@ -185,6 +255,26 @@ const Input = styled.input`
     border-color: #1D2636;
     box-shadow: 0 0 5px rgba(29, 38, 54, 0.5);
   }
+
+  @media (max-width: 768px) {
+    padding: 9px;
+    font-size: 13.5px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 7px;
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+    font-size: 12px;
+  }
 `;
 
 const Actions = styled.div`
@@ -192,6 +282,26 @@ const Actions = styled.div`
   justify-content: flex-end;
   margin-top: 20px;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    margin-top: 18px;
+    gap: 9px;
+  }
+
+  @media (max-width: 425px) {
+    margin-top: 15px;
+    gap: 8px;
+  }
+
+  @media (max-width: 375px) {
+    margin-top: 12px;
+    gap: 6px;
+  }
+
+  @media (max-width: 320px) {
+    margin-top: 10px;
+    gap: 5px;
+  }
 `;
 
 const Button = styled.button<{ cancel?: boolean }>`
@@ -205,5 +315,25 @@ const Button = styled.button<{ cancel?: boolean }>`
 
   &:hover {
     background: ${(props) => (props.cancel ? "#e0e0e0" : "#16202b")};
+  }
+
+  @media (max-width: 768px) {
+    padding: 9px 18px;
+    font-size: 13.5px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px 15px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 7px 12px;
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px 10px;
+    font-size: 12px;
   }
 `;
