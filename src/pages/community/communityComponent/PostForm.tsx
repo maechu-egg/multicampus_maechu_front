@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./PostForm.css";
 import AlertModal from "./AlertModal";
@@ -63,7 +63,8 @@ const PostForm: React.FC<PostFormProps> = ({
 
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
-
+  const maxLength = 30;
+  const maxTags = 10;
 
   // 초기 이미지 파일명들을 저장할 state 추가
   const [existingImages, setExistingImages] = useState<string[]>(() => {
@@ -175,18 +176,32 @@ const PostForm: React.FC<PostFormProps> = ({
   };
 
 
+  // const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === 'Enter') {
+  //     e.preventDefault();
+  //     if (tagInput.trim() !== '') {
+  //       const newTag = tagInput.trim().startsWith('#') ? tagInput.trim() : `#${tagInput.trim()}`;
+  //       if (!customTags.includes(newTag) && newTag !== keywordTag) {
+  //         setCustomTags([...customTags, newTag]);
+  //       }
+  //       setTagInput('');
+  //     }
+  //   }
+  // };
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (tagInput.trim() !== '') {
         const newTag = tagInput.trim().startsWith('#') ? tagInput.trim() : `#${tagInput.trim()}`;
-        if (!customTags.includes(newTag) && newTag !== keywordTag) {
+        if (customTags.length <maxTags  && !customTags.includes(newTag) && newTag !== keywordTag) {
           setCustomTags([...customTags, newTag]);
-        }
+        } 
         setTagInput('');
       }
     }
   };
+
+
 
 
   const removeTag = (tagToRemove: string) => {
@@ -217,6 +232,24 @@ const PostForm: React.FC<PostFormProps> = ({
            (!imageFiles || imageFiles.length === 0) && 
            existingImages.length === 0;
   };
+
+  
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+
+    // 최대 글자수를 초과하지 않도록 설정
+    if (inputValue.length <= maxLength) {
+        setPost_title(inputValue);
+    }
+};
+
+useEffect(() => {
+    // 초기 데이터가 변경되었을 때에도 반영
+    if (initialData?.post_title) {
+        setPost_title(initialData.post_title);
+    }
+}, [initialData]);
 
   return (
     <div className="post-form-container">
@@ -282,9 +315,15 @@ const PostForm: React.FC<PostFormProps> = ({
             type="text"
             className="form-control"
             value={post_title}
-            onChange={(e) => setPost_title(e.target.value)}
+            // onChange={(e) => setPost_title(e.target.value)}
+            onChange={handleInputChange}
+
             placeholder="제목을 입력하세요"
+            maxLength={maxLength}
           />
+           <p className = "post_length">
+                {post_title.length}/{maxLength} 글자
+            </p>
         </div>
 
         <div className="mb-3">
@@ -377,12 +416,16 @@ const PostForm: React.FC<PostFormProps> = ({
         <input
           type="text"
           className="tag-input border-0"
-          placeholder="태그를 입력하고 Enter를 누르세요"
+          placeholder="태그를 입력하고 Enter를 누르세요. (최대 10개)"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={handleTagKeyDown}
         />
+        
       </div>
+      <p className="post_length">
+        {customTags.length}/{maxTags} 태그
+      </p>
     </div>
 
     <div className="d-flex justify-content-end gap-2">

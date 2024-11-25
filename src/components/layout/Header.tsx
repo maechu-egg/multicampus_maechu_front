@@ -184,15 +184,24 @@ const Container = styled.div`
     z-index: 5;
   }
 `;
-
 const Logo = styled.img`
   width: 90px;
   cursor: pointer;
   margin-left: 20px;
 
-  @media (max-width: 500px) {
-    width: 70px;
-    margin-left: 10px;
+  @media (min-width: 501px) and (max-width: 900px) {
+    width: calc(70px + (90 - 70) * ((100vw - 500px) / 400));
+    margin-left: calc(10px + (20 - 10) * ((100vw - 500px) / 400));
+  }
+
+  @media (min-width: 300px) and (max-width: 500px) {
+    width: calc(50px + (70 - 50) * ((100vw - 300px) / 200));
+    margin-left: calc(5px + (10 - 5) * ((100vw - 300px) / 200));
+  }
+
+  @media (max-width: 300px) {
+    width: 50px;
+    margin-left: 5px;
   }
 `;
 
@@ -220,6 +229,11 @@ const Tab = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 114px; // 최소 너비 설정
+
+   @media (min-width: 901px) and (max-width: 1033px) {
+      font-size: calc(0.9rem + 0.3vw); // 901px에서 1033px 사이에서 크기 조정
+    }
   }
 
   @media (max-width: 500px) {
@@ -233,13 +247,21 @@ const AuthButtons = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
+  margin-right: 0;
 
-  @media (max-width: 900px) {
-    margin-right: 10px;
+  @media (min-width: 501px) and (max-width: 900px) {
+    gap: calc(10px + (15px - 10px) * ((100vw - 500px) / 400));
+    margin-right: calc(10px * ((100vw - 500px) / 400));
   }
 
-  @media (max-width: 500px) {
-    gap: 10px;
+  @media (min-width: 300px) and (max-width: 500px) {
+    gap: calc(5px + (10px - 5px) * ((100vw - 300px) / 200));
+    margin-right: calc(5px * ((100vw - 300px) / 200));
+  }
+
+  @media (max-width: 300px) {
+    gap: 5px;
+    margin-right: 0;
   }
 `;
 
@@ -270,6 +292,7 @@ const Login = styled.div`
     font-size: 0.9rem;
   }
 `;
+
 
 const HamburgerMenuIcon = styled(RxHamburgerMenu)`
   display: none;

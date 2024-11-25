@@ -5,6 +5,7 @@ import { useAuth } from "context/AuthContext";
 import PostDetail from "pages/community/communityComponent/PostDetail";
 import { useNavigate } from "react-router-dom";
 import { postApi } from "services/api/community/postApi";
+import { useMediaQuery } from 'react-responsive';
 
 interface Post {
   post_id: number;
@@ -49,6 +50,7 @@ function PostList({ postData }: PostData): JSX.Element {
   const { state } = useAuth();
   const { token } = state;
   const navigate = useNavigate();
+  const isSmallScreen = useMediaQuery({ query: '(max-width: 579px)' });
 
   const handlePostClick = async (post: Post, isRecommended: boolean) => {
     try {
@@ -79,6 +81,7 @@ function PostList({ postData }: PostData): JSX.Element {
     }
   };
 
+ 
   return (
     <Container>
       {postData.length > 0 ? (
@@ -89,21 +92,23 @@ function PostList({ postData }: PostData): JSX.Element {
           >
             <Title>{post.post_title}</Title>
             <Details>
-              <span>👤 {post.post_nickname}</span> |{" "}
-              <span>🏷️ {post.post_sport}</span> |{" "}
-              <span>👁️ {post.post_views} views</span>
+              <Nickname>👤 {post.post_nickname}</Nickname> |{" "}
+              <SubSport>🏷️ {post.post_sport}</SubSport>
+              {/* 579px 이하일 때만 조회수를 해시태그와 같은 줄에 표시 */}
+              {isSmallScreen ? null : <ViewCount> | 👁️ {post.post_views} views</ViewCount>}
             </Details>
-            <Hashtags>
-              {post.post_hashtag &&
-                post.post_hashtag
-                  .split(",")
-                  .map((hashtag, index) => (
+            <TagViewContainer>
+              <Hashtags>
+                {post.post_hashtag &&
+                  post.post_hashtag.split(",").map((hashtag, index) => (
                     <span key={index}>{hashtag.trim()}</span>
                   ))}
-            </Hashtags>
+              </Hashtags>
+              {isSmallScreen && <ViewCount>👁️ {post.post_views} views</ViewCount>}
+            </TagViewContainer>
             <Footer>
-              <span>👍 {post.post_like_counts}</span>
-              <span>{new Date(post.post_date).toLocaleDateString()}</span>
+              <LikeCount>👍 {post.post_like_counts}</LikeCount>
+              <PostDate>{new Date(post.post_date).toLocaleDateString()}</PostDate>
             </Footer>
           </PostItem>
         ))
@@ -123,11 +128,48 @@ const Container = styled.div`
   flex-direction: column;
   gap: 16px;
 `;
+
+const SubSport = styled.span`
+  font-size:14px;
+  @media(max-width:470px){
+    font-size:12px;
+  }
+  @media(max-width:380px){
+    font-size:10px;
+    display:inline-block;
+    overflow: hidden; /* 넘치는 내용 숨기기 */
+    white-space: nowrap; /* 줄 바꿈 방지 */
+    text-overflow: ellipsis; /* 생략 부호 표시 */
+  }
+`;
+
+const TagViewContainer = styled.div`
+  display: flex;
+  justify-content: space-between; /* 양쪽 끝으로 배치 */
+  align-items: center; /* 세로 정렬 */
+  margin-top: 8px; /* 필요에 따라 여백 추가 */
+  overflow: hidden; /* 넘치는 내용 숨기기 */
+`;
+
 const Hashtags = styled.div`
   font-size: 0.85em;
   color: #6886ba;
-  margin-top: 8px;
+  max-width: 40%; /* 부모 요소의 너비에 맞춤 */
+  display:inline-block;
+  overflow: hidden; /* 넘치는 내용 숨기기 */
+  white-space: nowrap; /* 줄 바꿈 방지 */
+  text-overflow: ellipsis; /* 생략 부호 표시 */
+
+   @media(max-width:470px){
+    font-size:13px;
+    max-width:100px;
+  }
+  @media(max-width:380px){
+    font-size:11.5px;
+  }
 `;
+
+
 const PostItem = styled.div`
   border: 1px solid grey;
   border-radius: 8px;
@@ -150,6 +192,19 @@ const Title = styled.h3`
   font-size: 1.2em;
   color: #333;
   margin-bottom: 8px;
+  max-width: 200px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media(max-width:470px){
+    font-size:16px;
+  }
+
+  @media(max-width:380px){
+    font-size:14px;
+    max-width:160px;
+  }
 `;
 
 const Details = styled.div`
@@ -160,12 +215,6 @@ const Details = styled.div`
   gap: 8px;
 `;
 
-const Content = styled.p`
-  font-size: 0.95em;
-  color: #444;
-  margin-bottom: 12px;
-`;
-
 const Footer = styled.div`
   font-size: 0.85em;
   color: #555;
@@ -174,8 +223,65 @@ const Footer = styled.div`
   margin-top: 8px;
 `;
 
+const LikeCount = styled.span`
+   @media(max-width:470px){
+    font-size:13px;
+    max-width:100px;
+  }
+  @media(max-width:380px){
+    font-size:11.5px;
+  }
+`;
+
 const NoPosts = styled.p`
   text-align: center;
   color: #999;
   font-size: 1em;
+`;
+
+const Nickname = styled.span`
+  display: inline-block;
+  max-width: 150px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @media(max-width:470px){
+    font-size:12px;
+    max-width:100px;
+  }
+
+  @media(max-width:380px){
+    font-size:10px;
+    max-width:80px;
+  }
+`;
+
+const ViewCount = styled.span`
+  font-size: 0.80em;
+  color: #6886ba;
+
+  display: flex;
+  justify-content: flex-end; 
+
+   @media(max-width:470px){
+    font-size:13px;
+    max-width:100px;
+  }
+  @media(max-width:380px){
+    font-size:11.5px;
+  }
+`;
+
+const PostDate = styled.span`
+
+ @media(max-width:470px){
+    font-size:12px;
+    max-width:100px;
+  }
+    @media(max-width:380px){
+    font-size:10px;
+    max-width:80px;
+  }
+
 `;

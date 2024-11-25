@@ -58,7 +58,7 @@ function CrewBattleFeedModal({battle_id, crewId}:CrewInfoProps) {
             data.append("feed_kcal", feed_kcal.toString());
         }
         if (feed_img) {
-            data.append("feed_img", feed_img);
+            data.append("ImgFile", feed_img);
         }
         data.append("feed_exTime", feed_exTime.toString());
         if (crew_sport) {
