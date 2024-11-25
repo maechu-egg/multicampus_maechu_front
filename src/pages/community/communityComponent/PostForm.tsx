@@ -64,6 +64,7 @@ const PostForm: React.FC<PostFormProps> = ({
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
   const maxLength = 30;
+  const maxTags = 10;
 
   // 초기 이미지 파일명들을 저장할 state 추가
   const [existingImages, setExistingImages] = useState<string[]>(() => {
@@ -175,18 +176,32 @@ const PostForm: React.FC<PostFormProps> = ({
   };
 
 
+  // const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === 'Enter') {
+  //     e.preventDefault();
+  //     if (tagInput.trim() !== '') {
+  //       const newTag = tagInput.trim().startsWith('#') ? tagInput.trim() : `#${tagInput.trim()}`;
+  //       if (!customTags.includes(newTag) && newTag !== keywordTag) {
+  //         setCustomTags([...customTags, newTag]);
+  //       }
+  //       setTagInput('');
+  //     }
+  //   }
+  // };
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (tagInput.trim() !== '') {
         const newTag = tagInput.trim().startsWith('#') ? tagInput.trim() : `#${tagInput.trim()}`;
-        if (!customTags.includes(newTag) && newTag !== keywordTag) {
+        if (customTags.length <maxTags  && !customTags.includes(newTag) && newTag !== keywordTag) {
           setCustomTags([...customTags, newTag]);
-        }
+        } 
         setTagInput('');
       }
     }
   };
+
+
 
 
   const removeTag = (tagToRemove: string) => {
@@ -306,7 +321,7 @@ useEffect(() => {
             placeholder="제목을 입력하세요"
             maxLength={maxLength}
           />
-           <p className = "post_title_length">
+           <p className = "post_length">
                 {post_title.length}/{maxLength} 글자
             </p>
         </div>
@@ -401,12 +416,16 @@ useEffect(() => {
         <input
           type="text"
           className="tag-input border-0"
-          placeholder="태그를 입력하고 Enter를 누르세요"
+          placeholder="태그를 입력하고 Enter를 누르세요. (최대 10개)"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={handleTagKeyDown}
         />
+        
       </div>
+      <p className="post_length">
+        {customTags.length}/{maxTags} 태그
+      </p>
     </div>
 
     <div className="d-flex justify-content-end gap-2">

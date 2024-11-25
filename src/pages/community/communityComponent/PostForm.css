@@ -16,9 +16,10 @@
   font-weight: 600;
 }
 
-.post_title_length{
+.post_length{
   padding-left : 12px;
   color: #777;
+  margin-top: 2px;
 }
 
 .form-control, .form-select {
