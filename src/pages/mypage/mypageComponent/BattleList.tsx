@@ -63,62 +63,6 @@ function BattleList({ battleData = [] }: BattleListProps): JSX.Element {
       ) : (
         <NoData>참여 중인 배틀이 없습니다.</NoData>
       )}
-
-      {/* 모달 컴포넌트 */}
-      {isModalOpen && selectedBattleId !== null && selectedCrewId !== null && (
-        <ModalOverlay onClick={() => setIsModalOpen(false)}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <CrewBattleFeedDetailModal
-              battleId={selectedBattleId}
-              crewId={selectedCrewId}
-            />
-            <CloseButton onClick={() => setIsModalOpen(false)}>
-              닫기
-            </CloseButton>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-
-      {/* 피드 추가 모달 */}
-      <div
-        className="modal fade"
-        id="battleFeedModal"
-        tabIndex={-1}
-        aria-labelledby="battleFeedModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="battleFeedModalLabel">
-                피드 추가
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {/* 피드 추가 내용을 여기에 추가 */}
-              <p>피드를 추가할 내용을 여기에 작성하세요.</p>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                닫기
-              </button>
-              <button type="button" className="btn btn-primary">
-                저장
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </BattleContainer>
   );
 }
