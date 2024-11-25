@@ -22,10 +22,10 @@ interface SetAddModalProps {
   
     const handleSave = () => {
 
-      const weight = weightValue !== undefined ? weightValue : 0;
-      const distance = distanceValue !== undefined ? distanceValue : 0;
-      const repetitions = repetitionsValue !== undefined ? repetitionsValue : 0;
-      if(weight !== 0 && distance !== 0 && repetitions !==0){
+      const weight = weightValue != null ? weightValue : 0;
+      const distance = distanceValue != null ? distanceValue : 0;
+      const repetitions = repetitionsValue != null ? repetitionsValue : 0;
+      if(weight !== 0 || distance !== 0 || repetitions !==0){
         onSave({ weight, distance, repetitions, exercise_id });
         onClose();
       } else{
@@ -50,6 +50,7 @@ interface SetAddModalProps {
             거리 (km):
             <input
               type="number"
+              step="0.01"  // 소수점 단위로 입력 가능하도록 설정
               value={distanceValue}
               onChange={(e) => setDistanceValue(e.target.value ? parseInt(e.target.value) : undefined)}
               placeholder="거리는 선택사항입니다."            />

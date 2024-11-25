@@ -26,9 +26,9 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
   const [editingSetId, setEditingSetId] = useState<number | null>(null);
   const [editData, setEditData] = useState<SetInfo>({} as SetInfo);
 
-  const [weight, setWeight] = useState<number | undefined>(editData.weight);
-  const [distance, setDistance] = useState<number | undefined>(editData.distance);
-  const [repetitions, setRepetitions] = useState<number | undefined>(editData.repetitions);
+  const [weightValue, setWeightValue] = useState<number | undefined>(editData.weight);
+  const [distanceValue, setDistanceValue] = useState<number | undefined>(editData.distance);
+  const [repetitionsValue, setRepetitionsValue] = useState<number | undefined>(editData.repetitions);
 
   const openEditModal = (currentData: SetInfo) => {
     setEditingSetId(currentData.set_id);
@@ -37,22 +37,24 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
 
   const handleSave = async () => {
     if (editingSetId !== null) {
-      if ((weight != null && distance != null && repetitions != null)
-        && !(weight === 0 && distance === 0  && repetitions === 0)) {
 
+      const weight = weightValue != null ? weightValue : 0;
+      const distance = distanceValue != null ? distanceValue : 0;
+      const repetitions = repetitionsValue != null ? repetitionsValue : 0;
+
+
+      if (weight !== 0 || distance !== 0 || repetitions !== 0) {
         editData.distance = distance;
         editData.repetitions = repetitions;
         editData.weight = weight;
-        
+  
         await updateSetInfo(editData);
         setEditingSetId(null); // 저장 후 수정 모드 해제
-        
-      } else{
+      } else {
         alert("값은 한 개 이상 넣어야 합니다.");
       }
     }
   };
-
   const updateSetInfo = async (setInfo: SetInfo) => {
     try {
       const response = await api.put(
@@ -100,24 +102,28 @@ const SetInfoModal = ({ setInfo, onClose, modalInfo, receiveUpdatedSet, receiveD
                   <>
                     <Label>
                       무게: 
-                      <input type="number" value={weight} 
-                        onChange={(e) => setWeight(parseInt(e.target.value))}
+                      <input type="number" min="0" value={weightValue} 
+                        onChange={(e) => setWeightValue(e.target.value ? parseInt(e.target.value) : undefined)}
                         placeholder="무게는 선택사항입니다"
                       />
                     </Label>
                     <Label>
                       횟수: 
-                      <input type="number" value={repetitions} 
-                        onChange={(e) => setRepetitions(parseInt(e.target.value))} 
+                      <input type="number" min="0" value={repetitionsValue} 
+                        onChange={(e) => setRepetitionsValue(e.target.value ? parseInt(e.target.value) : undefined)} 
                         placeholder="횟수는 선택사항입니다"
                       />
                     </Label>
                     <Label>
                       거리: 
-                      <input type="number" value={distance} 
-                        onChange={(e) => setDistance(parseInt(e.target.value))} 
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"  // 소수점 단위로 입력 가능하도록 설정
+                        value={distanceValue !== undefined ? distanceValue : ''}
+                        onChange={(e) => setDistanceValue(e.target.value ? parseFloat(e.target.value) : undefined)}
                         placeholder="거리는 선택사항입니다"
-                      /> 
+                      />
                     </Label>
                     <SaveButton onClick={handleSave}>저장</SaveButton>
                   </>
