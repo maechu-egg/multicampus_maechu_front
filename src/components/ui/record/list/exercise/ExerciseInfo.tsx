@@ -173,10 +173,21 @@ const ExercisePoint = styled.div`
   }
 
   @media (max-width: 768px) {
+    margin: 12px 0;
+  }
+
+  @media (max-width: 425px) {
+    margin: 10px 0;
+  }
+
+  @media (max-width: 375px) {
     margin: 8px 0;
   }
-`;
 
+  @media (max-width: 320px) {
+    margin: 6px 0;
+  }
+`;
 
 const HeaderBar = styled.div`
   display: flex;
@@ -188,6 +199,22 @@ const HeaderBar = styled.div`
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 7px 14px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 6px 12px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 5px 10px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 4px 8px;
+  }
 `;
 
 const InfoText = styled.p`
@@ -200,11 +227,39 @@ const InfoText = styled.p`
   @media (max-width: 768px) {
     font-size: 0.9rem;
   }
+
+  @media (max-width: 425px) {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 0.75rem;
+  }
 `;
 
 const ControlButtonContainer = styled.div`
   display: flex;
   gap: 8px;
+
+  @media (max-width: 768px) {
+    gap: 7px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 6px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 5px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 4px;
+  }
 `;
 
 const ControlButton = styled.button`
@@ -225,6 +280,22 @@ const ControlButton = styled.button`
 
   &:focus { 
     box-shadow: 0 0 0 3px #4A5568;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 1rem;
   }
 `;
 
@@ -253,11 +324,48 @@ const ActionButton = styled.button`
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
   }
+
+  @media (max-width: 768px) {
+    padding: 4px 14px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 425px) {
+    padding: 3px 12px;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 375px) {
+    padding: 2px 10px;
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 320px) {
+    padding: 1px 8px;
+    font-size: 0.7rem;
+  }
 `;
+
 const HeaderIcon = styled.div`
   margin-right: 10px;
   font-size: 1.5rem;
   color: #fff;
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const HeaderText = styled.h2`
@@ -266,4 +374,20 @@ const HeaderText = styled.h2`
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 1px;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 0.9rem;
+  }
 `;

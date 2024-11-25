@@ -231,6 +231,7 @@ function ExercisePage(): JSX.Element {
 
 export default ExercisePage;
 
+// 스타일 정의
 const Container = styled.div`
   width: 100%;
   min-height: 800px;
@@ -238,7 +239,27 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
   background: #b6c0d3;
-  margin-bottom: 100px;
+
+
+  @media (max-width: 768px) {
+    padding: 15px;
+    min-height: 700px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 12px;
+    min-height: 650px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 10px;
+    min-height: 600px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 8px;
+    min-height: 550px;
+  }
 `;
 
 const SummaryCard = styled.div`
@@ -250,6 +271,26 @@ const SummaryCard = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    padding: 18px;
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 16px;
+    margin-bottom: 22px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 12px;
+    margin-bottom: 18px;
+  }
 `;
 
 const DateSection = styled.div`
@@ -259,17 +300,65 @@ const DateSection = styled.div`
     font-size: 24px;
     margin: 0;
     font-weight: 700;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 21px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 20px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 18px;
+    }
   }
   
   p {
     color: #868e96;
     margin: 5px 0 0 0;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 12.5px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 12px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 11px;
+    }
   }
 `;
 
 const StatsSection = styled.div`
   display: flex;
   gap: 30px;
+
+  @media (max-width: 768px) {
+    gap: 20px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 18px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 15px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 12px;
+  }
 `;
 
 const StatItem = styled.div`
@@ -279,6 +368,22 @@ const StatItem = styled.div`
     font-size: 14px;
     color: #868e96;
     margin: 0 0 5px 0;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 12.5px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 12px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 11px;
+    }
   }
   
   p {
@@ -286,12 +391,44 @@ const StatItem = styled.div`
     font-weight: 700;
     margin: 0;
     color: #212529;
+
+    @media (max-width: 768px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 17px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 15px;
+    }
   }
 `;
 
 const SearchBar = styled.div`
   position: relative;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 425px) {
+    margin-bottom: 22px;
+  }
+
+  @media (max-width: 375px) {
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 320px) {
+    margin-bottom: 18px;
+  }
 
   input {
     width: 100%;
@@ -305,6 +442,26 @@ const SearchBar = styled.div`
       outline: none;
       border-color: #2e5987;
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      padding: 13px;
+      font-size: 15px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 11px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 10px;
+      font-size: 12px;
     }
   }
 
@@ -325,6 +482,26 @@ const SearchBar = styled.div`
     &:hover {
       background: #333C4D;
     }
+
+    @media (max-width: 768px) {
+      padding: 7px 15px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 6px 14px;
+      font-size: 12.5px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 6px 14px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 5px 12px;
+      font-size: 11px;
+    }
   }
 `;
 
@@ -339,6 +516,23 @@ const ExerciseList = styled.div`
 
   @media (max-width: 768px) {
     padding: 12px;
+    gap: 14px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+    gap: 12px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 `;
 
@@ -347,6 +541,22 @@ const GlobalStyle = createGlobalStyle`
     background-color: #b6c0d3; // 전체 배경색 설정
     margin: 0; // 기본 마진 제거
     padding: 0; // 기본 패딩 제거
+
+    @media (max-width: 768px) {
+      background-color: #a5b1c2;
+    }
+
+    @media (max-width: 425px) {
+      background-color: #9faab6;
+    }
+
+    @media (max-width: 375px) {
+      background-color: #95a0b3;
+    }
+
+    @media (max-width: 320px) {
+      background-color: #8a97a8;
+    }
   }
 `;
 
@@ -360,6 +570,14 @@ const ToolTipTitle = styled.div`
   @media (max-width: 710px) {
     font-size: 15px;
   }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 13px;
+  }
 `;
 
 const ToolTipText = styled.div`
@@ -372,5 +590,13 @@ const ToolTipText = styled.div`
 
   @media (max-width: 710px) {
     font-size: 12px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 11.5px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 11px;
   }
 `;

@@ -22,10 +22,10 @@ interface SetAddModalProps {
   
     const handleSave = () => {
 
-      const weight = weightValue !== undefined ? weightValue : 0;
-      const distance = distanceValue !== undefined ? distanceValue : 0;
-      const repetitions = repetitionsValue !== undefined ? repetitionsValue : 0;
-      if(weight !== 0 && distance !== 0 && repetitions !==0){
+      const weight = weightValue != null ? weightValue : 0;
+      const distance = distanceValue != null ? distanceValue : 0;
+      const repetitions = repetitionsValue != null ? repetitionsValue : 0;
+      if(weight !== 0 || distance !== 0 || repetitions !==0){
         onSave({ weight, distance, repetitions, exercise_id });
         onClose();
       } else{
@@ -50,6 +50,7 @@ interface SetAddModalProps {
             거리 (km):
             <input
               type="number"
+              step="0.01"  // 소수점 단위로 입력 가능하도록 설정
               value={distanceValue}
               onChange={(e) => setDistanceValue(e.target.value ? parseInt(e.target.value) : undefined)}
               placeholder="거리는 선택사항입니다."            />
@@ -92,6 +93,26 @@ const ModalContent = styled.div`
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
+
+  @media (max-width: 768px) {
+    width: 340px;
+    padding: 18px;
+  }
+
+  @media (max-width: 425px) {
+    width: 300px;
+    padding: 16px;
+  }
+
+  @media (max-width: 375px) {
+    width: 270px;
+    padding: 14px;
+  }
+
+  @media (max-width: 320px) {
+    width: 240px;
+    padding: 12px;
+  }
 `;
 
 const Label = styled.label`
@@ -110,6 +131,26 @@ const Label = styled.label`
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+      padding: 7px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 6px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 5px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 4px;
+      font-size: 10px;
+    }
   }
 `;
 
@@ -117,6 +158,22 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    margin-top: 18px;
+  }
+
+  @media (max-width: 425px) {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 375px) {
+    margin-top: 14px;
+  }
+
+  @media (max-width: 320px) {
+    margin-top: 12px;
+  }
 `;
 
 const SaveButton = styled.button`
@@ -132,6 +189,26 @@ const SaveButton = styled.button`
   &:hover {
     background-color: #333C4D;
   }
+
+  @media (max-width: 768px) {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 7px 14px;
+    font-size: 11px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px 12px;
+    font-size: 10px;
+  }
 `;
 
 const CancelButton = styled.button`
@@ -146,5 +223,25 @@ const CancelButton = styled.button`
 
   &:hover {
     background-color: #2D3748;
+  }
+
+  @media (max-width: 768px) {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 7px 14px;
+    font-size: 11px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 6px 12px;
+    font-size: 10px;
   }
 `;

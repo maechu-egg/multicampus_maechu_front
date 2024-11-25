@@ -52,18 +52,50 @@ const ResultSection = styled.div`
   margin: 30px 0;
   background: #ffffff;
   border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    margin: 25px 0;
+  }
+
+  @media (max-width: 425px) {
+    margin: 20px 0;
+  }
+
+  @media (max-width: 375px) {
+    margin: 15px 0;
+  }
+
+  @media (max-width: 320px) {
+    margin: 10px 0;
   }
 `;
 
 const SectionIcon = styled.span`
   font-size: 24px;
   margin-right: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 22px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 16px;
+  }
 `;
 
 const SectionTitle = styled.h3`
@@ -75,6 +107,26 @@ const SectionTitle = styled.h3`
   font-size: 20px;
   display: flex;
   align-items: center;
+
+  @media (max-width: 768px) {
+    padding: 18px;
+    font-size: 18px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 16px;
+    font-size: 17px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 12px;
+    font-size: 15px;
+  }
 `;
 
 const SectionContent = styled.div`
@@ -82,12 +134,44 @@ const SectionContent = styled.div`
   background: rgba(255, 255, 255, 0.95);
   border-radius: 0 0 15px 15px;
   overflow-x: auto;
+
+  @media (max-width: 768px) {
+    padding: 22px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 18px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 15px;
+  }
 `;
 
 const CautionList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 10px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 8px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 6px;
+  }
 `;
 
 const CautionItem = styled.div`
@@ -101,13 +185,49 @@ const CautionItem = styled.div`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    gap: 10px;
+    padding: 13px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 6px;
+    padding: 10px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 4px;
+    padding: 8px;
   }
 `;
 
 const CautionIcon = styled.span`
   font-size: 20px;
   color: #ff9800;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 14px;
+  }
 `;
 
 const CautionText = styled.p`
@@ -115,4 +235,20 @@ const CautionText = styled.p`
   color: #333;
   line-height: 1.5;
   font-size: 15px;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 11px;
+  }
 `;

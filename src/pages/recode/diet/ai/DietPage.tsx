@@ -1,4 +1,4 @@
-import axios from "axios"; // axios import 추가
+import api from "../../../../services/api/axios"; // axios import 추가
 import CalendarTooltip from "components/ui/record/calendar/CalendarTooltip";
 import { useAuth } from "context/AuthContext";
 import { useEffect, useState } from "react";
@@ -236,7 +236,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
         if (!dietExists) {
           // 조건을 만족하지 않으면 diet 추가 및 items 추가
-          const response = await axios.get(`http://localhost:8001/record/diet/insert/meal`, {
+          const response = await api.get(`record/diet/insert/meal`, {
             params: { meal_type: mealTypeMap[mealType] },
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -309,7 +309,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
       console.log("debug: itemRequest", itemRequest);
   
       try {
-        await axios.post('http://localhost:8001/record/diet/insert/item', itemRequest, {
+        await api.post('record/diet/insert/item', itemRequest, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -342,7 +342,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
     if (memberId !== undefined && state.token) {
       try {
-        const response = await axios.get('http://localhost:8001/record/summary/daily', {
+        const response = await api.get('record/summary/daily', {
           headers: {
             'Authorization': `Bearer ${state.token}`,
             'Content-Type': 'application/json'
@@ -383,7 +383,7 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         const token = state.token;
         console.log('Token:', token); // 토큰 확인용 로그
 
-        const response = await axios.get('http://localhost:8001/record/diet/get/diet', {
+        const response = await api.get('record/diet/get/diet', {
           params: { record_date :  selectedDate},
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -437,8 +437,8 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
         console.log('Request Body:', requestBody);
         console.log('Using token:', state.token);
 
-        const response = await axios.post(
-          'http://localhost:8001/diet/generate', 
+        const response = await api.post(
+          'diet/generate', 
           requestBody,
           {
             headers: {
@@ -553,8 +553,8 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
           <TitleContainer>
             <Title>오늘의 식단</Title>
             &nbsp;&nbsp;
-              <CalendarTooltip text={
-                <CustomTool>
+              <CustomTool>
+                <ToolTip>
                   <ToolTipTitle>📃 식단 추천 및 기록 방법</ToolTipTitle>
                   <ToolTipText>
                     <hr/>
@@ -567,13 +567,12 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
                     <li>벌크업: 체지방 증가를 감수하면서 골격근 등 다른 체성분을 증가시킵니다.</li>
                     <li>린매스업: 체지방은 유지하면서 골격근을 증가시킵니다.</li>
                     <li>유지: 현재 몸 상태를 유지합니다.</li>
-                 </ToolTipText>
-                </CustomTool>
-                }>
+                  </ToolTipText>
+                </ToolTip>
                 <span style={{ cursor: 'pointer', fontSize: '20px' }}>
                   <FaRegQuestionCircle />
                 </span>
-            </CalendarTooltip>
+            </CustomTool>
           </TitleContainer>      
           <InfoContainer>
             {data ? (
@@ -831,6 +830,22 @@ const Container = styled.div`
 const Header = styled.div`
   text-align: center;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 425px) {
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 375px) {
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 320px) {
+    margin-bottom: 10px;
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -843,6 +858,22 @@ const Title = styled.h1`
   color: #1D2636;
   font-weight: 700;
   letter-spacing: 1px;
+
+  @media (max-width: 768px) {
+    font-size: 26px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 24px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 22px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 20px;
+  }
 `;
 
 const InfoContainer = styled.div`
@@ -850,18 +881,74 @@ const InfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 425px) {
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 375px) {
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 320px) {
+    margin-bottom: 5px;
+  }
 `;
 
 const TotalCalories = styled.div`
   font-size: 22px;
   font-weight: bold;
   color: #1D2636;
-`;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 17px;
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+ `;
 
 const CurrentDate = styled.div`
   font-size: 16px;
   color: #666;
-`;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+ `;
 
 const GoalContainer = styled.div`
   padding: 20px;
@@ -875,6 +962,22 @@ const GoalContainer = styled.div`
   align-items: flex-start;
   text-align: left;
 
+  @media (max-width: 768px) {
+    padding: 18px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 15px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 12px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 10px;
+  }
+
   .weight-info {
     align-self: flex-start;
     margin-bottom: 15px;
@@ -883,12 +986,44 @@ const GoalContainer = styled.div`
       font-size: 24px;
       font-weight: bold;
       margin: 0;
+
+      @media (max-width: 768px) {
+        font-size: 22px;
+      }
+
+      @media (max-width: 425px) {
+        font-size: 20px;
+      }
+
+      @media (max-width: 375px) {
+        font-size: 18px;
+      }
+
+      @media (max-width: 320px) {
+        font-size: 16px;
+      }
     }
   }
 
   p {
     font-size: 16px;
     margin: 5px 0;
+
+    @media (max-width: 768px) {
+      font-size: 15px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 14px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 12px;
+    }
   }
 
   .goal-consumed-container {
@@ -896,6 +1031,14 @@ const GoalContainer = styled.div`
     justify-content: space-between;
     width: 100%;
     gap: 20px;
+
+    @media (max-width: 768px) {
+      gap: 15px;
+    }
+
+    @media (max-width: 425px) {
+      gap: 10px;
+    }
   }
 
   .nutrition-info {
@@ -908,9 +1051,41 @@ const GoalContainer = styled.div`
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
+    @media (max-width: 768px) {
+      padding: 13px;
+    }
+
+    @media (max-width: 425px) {
+      padding: 12px;
+    }
+
+    @media (max-width: 375px) {
+      padding: 10px;
+    }
+
+    @media (max-width: 320px) {
+      padding: 8px;
+    }
+
     h3 {
       font-size: 20px;
       margin-bottom: 10px;
+
+      @media (max-width: 768px) {
+        font-size: 18px;
+      }
+
+      @media (max-width: 425px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 375px) {
+        font-size: 15px;
+      }
+
+      @media (max-width: 320px) {
+        font-size: 14px;
+      }
     }
 
     .info-block {
@@ -924,6 +1099,22 @@ const GoalContainer = styled.div`
 
 const Goal = styled.div`
   font-size: 18px;
+
+  @media (max-width: 768px) {
+    font-size: 17px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 14px;
+  }
 `;
 
 const RecordList = styled.div`
@@ -950,18 +1141,66 @@ const RecordItem = styled.div`
     transform: translateY(-5px); // 호버 시 위로 이동
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); // 호버 시 그림자 강화
   }
+
+  @media (max-width: 768px) {
+    padding: 18px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 15px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 12px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 10px;
+  }
 `;
 
 const FoodIcon = styled.div`
   font-size: 40px;
   margin-bottom: 10px;
   color: #1D2636;
+
+  @media (max-width: 768px) {
+    font-size: 38px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 36px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 34px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 32px;
+  }
 `;
 
 const FoodName = styled.div`
   font-size: 20px;
   font-weight: 500;
   color: #fff; // 텍스트 색상 유지
+
+  @media (max-width: 768px) {
+    font-size: 19px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 17px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 16px;
+  }
 `;
 
 const RecommendationButton = styled.button`
@@ -980,6 +1219,22 @@ const RecommendationButton = styled.button`
     background-color: #414d60;
     transform: translateY(-2px);
   }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+  }
 `;
 
 const ModalOverlay = styled.div`
@@ -996,14 +1251,34 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: #ffffff; // 모달 배경색
+  background: #ffffff;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); // 그림자 추가
-  max-width: 500px; // 최대 너비 설정
-  width: 90%; // 반응형 너비
-  max-height: 75vh; // 최대 높이 설정
-  overflow-y: auto; // 세로 스크롤 가능
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  max-height: 75vh;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    padding: 25px;
+    max-height: 70vh;
+  }
+
+  @media (max-width: 425px) {
+    max-height: 60vh;
+    width: 80%;
+  }
+
+  @media (max-width: 375px) {
+    max-height: 55vh;
+    width: 80%;
+  }
+
+  @media (max-width: 320px) {
+    max-height: 50vh;
+    width: 80%;
+  }
 `;
 
 const ModalHeader = styled.div`
@@ -1016,7 +1291,23 @@ const ModalHeader = styled.div`
 
   h2 {
     font-size: 24px;
-    color: #1D2636; // 제목 색상
+    color: #1D2636;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 425px) {
+      font-size: 20px;
+    }
+
+    @media (max-width: 375px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 320px) {
+      font-size: 16px;
+    }
   }
 `;
 
@@ -1032,6 +1323,22 @@ const CloseButton = styled.button`
 
   &:hover {
     color: #333C4D;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 22px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 16px;
   }
 `;
 
@@ -1059,6 +1366,22 @@ const ModalBody = styled.div`
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+  }
 `;
 
 const InputContainer = styled.div`
@@ -1075,6 +1398,26 @@ const Input = styled.input`
 
   &:focus {
     border-color: #1D2636;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+    padding: 9px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 13px;
+    padding: 7px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+    padding: 6px;
   }
 `;
 
@@ -1094,6 +1437,23 @@ const RecommendButton = styled.button`
     background-color: #333C4D;
     transform: translateY(-2px);
   }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+  }
+
 `;
 
 const CloseModalButton = styled.button`
@@ -1115,6 +1475,25 @@ const CloseModalButton = styled.button`
     background: #333C4D;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }   
+  @media (max-width: 768px) {
+    font-size: 15px;
+    padding: 10px 22px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+    padding: 8px 20px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 13px;
+    padding: 7px 18px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+    padding: 6px 16px;
   }
 `;
 
@@ -1133,34 +1512,116 @@ const StyledButton = styled.button`
     background-color: #333C4D; // hover 시 색상 변경
     transform: translateY(-2px); // hover 시 약간 위로 이동
   }
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+  } 
 `;
 
 const ToolTipTitle = styled.div`
   font-size: 18px;
 
-   @media (max-width: 850px) {
+  @media (max-width: 768px) {
     font-size: 17px;
-  } 
+  }
 
-  @media (max-width: 710px) {
+  @media (max-width: 425px) {
     font-size: 15px;
   }
+
+  @media (max-width: 375px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 13px;
+  }
+
 `;
 
 const ToolTipText = styled.div`
   font-size: 15px;
   text-align: left;
 
-  @media (max-width: 850px) {
+  @media (max-width: 768px) {
     font-size: 14px;
-  } 
+  }
 
-  @media (max-width: 710px) {
+  @media (max-width: 425px) {
     font-size: 12px;
   }
+
+  @media (max-width: 375px) {
+    font-size: 11px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 10px;
+  }
+
 `;
 
 const CustomTool = styled.div`
   position: relative;
   display: inline-block;
+`;
+
+const ToolTip = styled.div`
+  visibility: hidden;
+  max-width: 300px;
+  min-width: 150px;
+  width: 240px;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  box-shadow: 0 4px 12px rgba(0.5, 0.5, 0.5, 0.5);
+
+  ${CustomTool}:hover & {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 220px;
+    padding: 6px;
+  }
+
+  @media (max-width: 425px) {
+    width: 180px;
+    padding: 5px;
+    right: 0;
+  }
+
+  @media (max-width: 375px) {
+    width: 170px;
+    padding: 4px;
+    right: 0;
+  }
+
+  @media (max-width: 320px) {
+    width: 160px;
+    padding: 3px;
+    right: 0;
+  }
 `;

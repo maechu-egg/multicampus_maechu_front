@@ -162,11 +162,43 @@ const ResultSection = styled.div`
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   }
+
+  @media (max-width: 768px) {
+    margin: 15px 0;
+  }
+
+  @media (max-width: 425px) {
+    margin: 10px 0;
+  }
+
+  @media (max-width: 375px) {
+    margin: 8px 0;
+  }
+
+  @media (max-width: 320px) {
+    margin: 5px 0;
+  }
 `;
 
 const SectionIcon = styled.span`
   font-size: 24px;
   margin-right: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 14px;
+  }
 `;
 
 const SectionTitle = styled.h3`
@@ -178,6 +210,26 @@ const SectionTitle = styled.h3`
   font-size: 20px;
   display: flex;
   align-items: center;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+    font-size: 18px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+    font-size: 14px;
+  }
 `;
 
 const SectionContent = styled.div`
@@ -185,16 +237,45 @@ const SectionContent = styled.div`
   background: rgba(255, 255, 255, 0.95);
   border-radius: 0 0 15px 15px;
   overflow-x: auto;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+  }
 `;
-
-
-
 
 const TimelineContainer = styled.div`
   padding: 20px;
   position: relative;
   width: 100%;
   overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 5px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 4px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 3px;
+  }
 `;
 
 const MealTimelineGrid = styled.div`
@@ -226,6 +307,26 @@ const MealTimelineGrid = styled.div`
   &::after {
     display: none;
   }
+
+  @media (max-width: 768px) {
+    gap: 10px;
+    padding: 15px 0;
+  }
+
+  @media (max-width: 425px) {
+    gap: 5px;
+    padding: 10px 0;
+  }
+
+  @media (max-width: 375px) {
+    gap: 4px;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 320px) {
+    gap: 3px;
+    padding: 5px 0;
+  }
 `;
 
 const TimelineMealCard = styled.div<{ $backgroundColor: string }>`
@@ -252,6 +353,22 @@ const TimelineMealCard = styled.div<{ $backgroundColor: string }>`
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
   }
+
+  @media (max-width: 768px) {
+    flex: 0 0 200px;
+  }
+
+  @media (max-width: 425px) {
+    flex: 0 0 150px;
+  }
+
+  @media (max-width: 375px) {
+    flex: 0 0 120px;
+  }
+
+  @media (max-width: 320px) {
+    flex: 0 0 100px;
+  }
 `;
 
 const TimelineMealHeader = styled.div<{ $backgroundColor: string }>`
@@ -261,17 +378,64 @@ const TimelineMealHeader = styled.div<{ $backgroundColor: string }>`
   display: flex;
   align-items: center;
   gap: 10px;
-`;
 
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 6px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+  }
+`;
 
 const TimelineMealContent = styled.div`
   padding: 20px;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 10px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 8px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+  }
 `;
 
 const TimelineFoodList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  @media (max-width: 768px) {
+    gap: 10px;
+  }
+
+  @media (max-width: 425px) {
+    gap: 8px;
+  }
+
+  @media (max-width: 375px) {
+    gap: 6px;
+  }
+
+  @media (max-width: 320px) {
+    gap: 5px;
+  }
 `;
 
 const TimelineFoodItem = styled.div`
@@ -287,23 +451,89 @@ const TimelineFoodItem = styled.div`
     background: #f0f0f0;
     transform: translateX(5px);
   }
-`;
 
+  @media (max-width: 768px) {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  @media (max-width: 375px) {
+    padding: 6px;
+    gap: 5px;
+  }
+
+  @media (max-width: 320px) {
+    padding: 5px;
+    gap: 4px;
+  }
+`;
 
 const DietMealIcon = styled.span`
   font-size: 24px;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 14px;
+  }
 `;
 
 const MealTitle = styled.h3`
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-`;
 
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+  }
+`;
 
 const DietFoodIcon = styled.span`
   font-size: 20px;
   color: #666;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 12px;
+  }
 `;
 
 const FoodDetails = styled.div`
@@ -314,9 +544,42 @@ const DietFoodName = styled.div`
   font-weight: 500;
   color: #333;
   margin-bottom: 5px;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 11px;
+  }
 `;
 
 const FoodAmount = styled.div`
   font-size: 14px;
   color: #666;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 425px) {
+    font-size: 11px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 10px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 9px;
+  }
 `;
+
