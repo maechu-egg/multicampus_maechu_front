@@ -2,7 +2,6 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import styled from 'styled-components';
 import { FaRegQuestionCircle } from 'react-icons/fa';
-import CalendarTooltip from "./CalendarTooltip";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

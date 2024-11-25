@@ -56,9 +56,6 @@ interface SummaryData {
 		// 단백질 비율
 		proteinRatio: number
 	},
-	// 소모 칼로리
-	burnedCalories: number,
-	// 일일 권장 칼로리(탄단지비율) 및 bmr, tdee 과 다이어트 목표
 	recommended: {
 		// 목표 탄수화물
 		recommendedCarb: number,
@@ -342,7 +339,10 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
     console.log("debug >>> memberId : " + memberId);
     if (memberId !== undefined && state.token) {
       try {
-        const response = await api.get('record/summary/daily', {
+        const response = await api.get('record/diet/get/day/nutrients', {
+          params: {
+            record_date : selectedDate
+          },
           headers: {
             'Authorization': `Bearer ${state.token}`,
             'Content-Type': 'application/json'
