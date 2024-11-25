@@ -78,7 +78,7 @@ function RecordPage(): JSX.Element {
         {
           year: year,
           month: month,
-        },
+        },  
         { headers }
       );
 
@@ -86,11 +86,12 @@ function RecordPage(): JSX.Element {
       const exerciseDatesArray: string[] = [];
       const exerciseCaloriesMap: Record<string, number> = {};
 
-      exerciseResponse.data.forEach((record: ExerciseRecord) => {
-        exerciseDatesArray.push(record.record_date);
-        exerciseCaloriesMap[record.record_date] = record.totalCalories;
-      });
-
+      if(exerciseResponse && exerciseResponse.status !== 204){
+        exerciseResponse.data.forEach((record: ExerciseRecord) => {
+          exerciseDatesArray.push(record.record_date);
+          exerciseCaloriesMap[record.record_date] = record.totalCalories;
+        });
+      }
       setExerciseDates(exerciseDatesArray);
       setExerciseCalories(exerciseCaloriesMap);
 
@@ -108,11 +109,12 @@ function RecordPage(): JSX.Element {
       const dietDatesArray: string[] = [];
       const dietCaloriesMap: Record<string, number> = {};
 
-      dietResponse.data.forEach((record: DietRecord) => {
-        dietDatesArray.push(record.record_date);
-        dietCaloriesMap[record.record_date] = record.totalCalories;
-      });
-
+      if(dietResponse && dietResponse.status !== 204){
+        dietResponse.data.forEach((record: DietRecord) => {
+          dietDatesArray.push(record.record_date);
+          dietCaloriesMap[record.record_date] = record.totalCalories;
+        });
+      }
       setDietDates(dietDatesArray);
       setDietCalories(dietCaloriesMap);
     } catch (error) {
