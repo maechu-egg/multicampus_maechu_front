@@ -106,7 +106,10 @@ function CrewSearch(): JSX.Element {
                 {filteredData.length > 0 ? (
                     filteredData.map((crew) => {
                         return (
-                            <div className="col-3 mb-3 d-flex justify-content-center" key={crew.crew_id}>
+                            <div 
+                                className="col-12 col-sm-6 col-md-4 col-lg-3 mb-3 d-flex justify-content-center" 
+                                key={crew.crew_id}
+                            >
                                 <CrewCard 
                                     crew={crew} 
                                     onCrewClick={() => handlePostClick(crew.crew_id)}

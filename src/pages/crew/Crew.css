@@ -13,5 +13,12 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     color: gray;
+    font-size: 25px;
+}
+
+@media screen and (max-width : 500px) {
+    .nav-tabs .nav-link {
+        font-size: 10px;
+    }
 }
 

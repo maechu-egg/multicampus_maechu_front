@@ -189,7 +189,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
     }
 
     return (
-        <div className="profile-area" style={{padding : 0, width:"80%"}}>
+        <div className="profile-area" style={{padding : 0, width:"100%"}}>
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">
