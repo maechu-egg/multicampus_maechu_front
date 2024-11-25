@@ -6,6 +6,7 @@ import { useAuth } from "context/AuthContext";
 import api from "services/api/axios";
 import MyCrew from "./MyCrew";
 import LoginErrModal from "hooks/loginErrModal";
+import styled from 'styled-components';
 
 function CrewHeader(): JSX.Element {
   const { state } = useAuth();
@@ -48,7 +49,7 @@ function CrewHeader(): JSX.Element {
   }, [memberId]);
 
   return (
-    <div style={{ background: "#B6C0D3", height: "100%"}}>
+    <PageContainer>
       <LoginErrModal isOpen={isLoginWarningOpen} onClose={closeLoginWarning} />
       <div className="container">
         <br />
@@ -131,8 +132,15 @@ function CrewHeader(): JSX.Element {
         </div>
       </div>
       <br />
-    </div>
+    </PageContainer>
   );
 }
+
+const PageContainer = styled.div`
+  background-color: #B6C0D3;
+  min-height: 100vh;
+  height: 100%;
+  padding-bottom:100px;
+`;
 
 export default CrewHeader;
