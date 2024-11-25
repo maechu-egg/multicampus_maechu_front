@@ -444,6 +444,9 @@ const Content = styled.div`
   @media (min-width: 900px) {
     margin-left: 30%;
   }
+  @media(max-width:900px){
+    width:95%;
+  }
 `;
 
 const IconWrapper = styled.div`
