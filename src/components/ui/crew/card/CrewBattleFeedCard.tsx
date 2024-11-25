@@ -106,7 +106,7 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBat
                         {/* 내 카드에도 투표하기가 나오도록 같이 활성화 */}
                         {memberId == member.member_id && (
                             <button
-                                className=" flex-fill reject-btn"
+                                className="flex-fill reject-btn"
                                 onClick={VoteHandler}
                             >
                                 투표 하기
@@ -115,7 +115,7 @@ function CrewBattleFeedCard({ member, onClickHandler, battleId, crewId}: CrewBat
                         {/* 로그인 계정과 카드의 MEMBERID가 다를경우에는 투표하기 버튼만 활성화 */}
                         {memberId != member.member_id && (
                             <button
-                                className="btn btn-danger flex-fill exit-btn"
+                                className="flex-fill exit-btn"
                                 onClick={VoteHandler}
                             >
                                 투표 하기
