@@ -249,24 +249,40 @@ const CalorieValue = styled.span`
 const ToolTipTitle = styled.div`
   font-size: 18px;
 
-   @media (max-width: 850px) {
+  @media (max-width: 768px) {
     font-size: 17px;
-  } 
+  }
 
-  @media (max-width: 710px) {
+  @media (max-width: 425px) {
     font-size: 15px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 13px;
   }
 `;
 
 const ToolTipText = styled.div`
   font-size: 15px;
 
-  @media (max-width: 850px) {
+  @media (max-width: 768px) {
     font-size: 14px;
-  } 
+  }
 
-  @media (max-width: 710px) {
+  @media (max-width: 425px) {
     font-size: 12px;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 11px;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 10px;
   }
 `;
 
@@ -284,11 +300,10 @@ const ToolTip = styled.div`
   color: #fff;
   text-align: center;
   border-radius: 8px;
-  padding: 8px;
+  padding: 10px;
   position: absolute;
   z-index: 1;
   top: 100%;
-  right: 0;
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s, transform 0.3s;
@@ -300,14 +315,27 @@ const ToolTip = styled.div`
     transform: translateY(0);
   }
 
- @media (max-width: 880px) {
-    width: 200px;
-    padding: 7px;
-  } 
+  @media (max-width: 768px) {
+    width: 230px;
+    padding: 8px;
+  }
 
-  @media (max-width: 700px) {
-    width: 150px;  // 예시로 너비를 더 줄였습니다.
-    padding: 6px;  // 작은 화면에서 여백을 조정해 텍스트가 더 잘 맞도록 해줍니다.
+  @media (max-width: 425px) {
+    width: 210px;
+    padding: 7px;
+    right: 0;
+  }
+
+  @media (max-width: 375px) {
+    width: 190px;
+    padding: 6px;
+    right: 0;
+  }
+
+  @media (max-width: 320px) {
+    width: 170px;
+    padding: 4px;
+    right: 0;
   }
 `;
 
