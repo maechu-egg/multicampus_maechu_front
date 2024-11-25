@@ -347,8 +347,8 @@ function HomePage(): JSX.Element {
           <TextContainer>
             <h1>Swap-Spot</h1>
             <span>
-              나에게 필요한 운동 기구/용품를 찾거나, 사용하지 않은 운동
-              기구/용품을 공유해보세요 !
+              나에게 필요한 운동 기구/용품를 찾거나, <br />
+              사용하지 않은 운동 기구/용품을 공유해보세요 !
             </span>
           </TextContainer>
           <IconWrapper>
@@ -399,8 +399,8 @@ function HomePage(): JSX.Element {
           <TextContainer>
             <h1>Today Best - 오운완!</h1>
             <span>
-              워크스페이스의 다양한 운동인들의 운동인증, 기록을 통해 베스트
-              오운완 회원이 되세요 !
+              워크스페이스의 다양한 운동인증, 기록을 통해 <br />
+              베스트 오운완 회원이 되세요 !
             </span>
           </TextContainer>
           <IconWrapper>
@@ -542,8 +542,11 @@ const CarouselControl = styled.button<{ position: "prev" | "next" }>`
 `;
 
 const SwapSpot = styled.div`
-  width: 80%;
+  width: 85%;
   margin-top: 100px;
+  @media (max-width: 600px) {
+    width: 90%;
+  }
 
   .list-group {
     margin-top: 40px;
@@ -573,6 +576,10 @@ const SwapSpot = styled.div`
 const WorkSpace = styled.div`
   width: 85%;
   margin-top: 100px;
+  @media (max-width: 600px) {
+    width: 90%;
+  }
+  margin-bottom: 200px;
 `;
 
 const CardContainer = styled.div`
@@ -636,6 +643,9 @@ const Info = styled.div`
 const LocalCrew = styled.div`
   width: 85%;
   margin-top: 70px;
+  @media (max-width: 600px) {
+    width: 90%;
+  }
 `;
 
 const Title = styled.div`
@@ -659,6 +669,16 @@ const TextContainer = styled.div`
     font-size: 1rem;
     color: #555;
   }
+
+  @media (max-width: 600px) {
+    padding-left: 10px;
+    h1 {
+      font-size: 1.8rem;
+    }
+    span {
+      font-size: 0.8rem;
+    }
+  }
 `;
 
 const WarningMessage = styled.span`
@@ -666,11 +686,13 @@ const WarningMessage = styled.span`
   font-size: 0.9rem;
   margin-top: 10px;
 `;
-
 const IconWrapper = styled.div`
-  font-size: 1.5rem;
-  margin-left: auto;
-  padding-right: 60px;
+  cursor: pointer; // 클릭 가능하게 설정
+  font-size: 2rem; // 기본 아이콘 크기
+
+  @media (max-width: 600px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Cards = styled.div<{ isBlurred: boolean }>`
