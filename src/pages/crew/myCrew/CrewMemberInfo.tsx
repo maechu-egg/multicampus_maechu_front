@@ -34,8 +34,15 @@ function CrewMemberInfo({ crewId }: CrewInfoProps): JSX.Element {
         <div className="container">
             <div className="row">
                 {crewMembers.map(member => (
-                    <div key={member.crew_member_id} className="col-md-4 mb-4 d-flex justify-content-center">
-                        <CrewMemberCardEdit member={member} crewId={crewId} onClick={selectCrewMember}/>
+                    <div 
+                        key={member.crew_member_id} 
+                        className="col-12 col-sm-6 col-md-4 mb-4 d-flex justify-content-center"
+                    >
+                        <CrewMemberCardEdit 
+                            member={member} 
+                            crewId={crewId} 
+                            onClick={selectCrewMember}
+                        />
                     </div>
                 ))}
             </div>

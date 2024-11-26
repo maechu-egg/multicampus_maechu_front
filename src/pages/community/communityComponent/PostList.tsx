@@ -158,6 +158,12 @@ const RecommendedSection = styled.div`
     transform: translateY(-2px);
     box-shadow: 0 2px 15px rgba(171, 199, 255, 0.1);
   }
+
+  @media(max-width: 1024px){
+    .post-item.recommended{
+      margin:5px;
+    }
+  }
 `;
 
 const ScrollContainer = styled.div`
@@ -257,6 +263,12 @@ const ScrollContainer = styled.div`
     &::-webkit-scrollbar-thumb {
       opacity: 1;
       visibility: visible;
+    }
+  }
+     @media (max-width: 1024px) {
+    gap:0px;
+    .post-item.recommended{
+      padding
     }
   }
 `;
