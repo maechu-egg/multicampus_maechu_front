@@ -377,6 +377,7 @@ function MyPage(): JSX.Element {
         ) : null}
       </Content>
     </Container>
+
   );
 }
 
@@ -384,8 +385,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  height: 100%;
+  min-height:1000px;
   background-color: #b6c0d3;
   z-index: 4;
 
@@ -401,21 +401,22 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  height:100%;
   border-bottom: 0.8px solid #666;
   background-color: #f4f4f4;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   padding-top: 20px;
 
   @media (min-width: 900px) {
-    width: 30%;
-    height: 100%;
-    position: fixed;
-    top: 0;
+    max-width: 30%;
+    min-height:100vh;
+    position: sticky;
+    top: 98px;
     left: 0;
     background-color: #f4f4f4;
     border-right: 1px solid #ddd;
 
-    padding: 130px 25px 80px 25px;
+    padding: 50px 25px 80px 25px;
     align-items: flex-start;
     overflow-y: auto;
   }
@@ -439,15 +440,14 @@ const AccountIcon = styled.img`
 const Content = styled.div`
   margin-top: 30px;
   width: 75%;
-  height: 1000px;
-
+  margin-bottom: 100px;
   @media (min-width: 900px) {
-    margin-left: 30%;
+    margin-left: 2%;
+    margin-right: 1.5%;
   }
   @media(max-width:900px){
     width:95%;
   }
-
 `;
 
 const IconWrapper = styled.div`
@@ -566,38 +566,6 @@ const Info = styled.div`
     text-align: center;
     padding-top: 10px;
   }
-  @media(max-width:495px){
-    h3{
-      font-size:0.8em
-    }
-    h1{
-      font-size:0.7em
-    }
-  }
-  @media(max-width:439px){
-    h3{
-      font-size:0.7em
-    }
-    h1{
-     font-size:0.6em
-    }
-  }
-  @media(max-width:365px){
-    h3{
-      font-size:0.65em
-    }
-    h1{
-      font-size:0.55em
-    }
-  }
-  @media(max-width:335px){
-    h3{
-     font-size:0.6em
-    }
-    h1{
-      font-size:0.5em
-    }
-  }
 `;
 
 const ProgressBarWrapper = styled.div`
@@ -636,35 +604,12 @@ const ProgressBar = styled.div<{ progress: number }>`
     background-color: #a5a4a4;
     transition: background-color 0.3s ease;
   }
-
-  @media (min-width: 900px) {
-    align-items: center;
-    text-align: center;
-    padding-top: 10px;
-  }
-  @media(max-width:495px){
-    height:16px;
-  }
-
 `;
 
 const ProgressLabel = styled.span`
   margin-top: 4px;
   font-size: 0.9em;
   color: #333;
-
-  @media(max-width:495px){
-    font-size:0.85em
-  }
-  @media(max-width:439px){
-    font-size:0.8em
-  }
-  @media(max-width:365px){
-    font-size:0.75em
-  }
-  @media(max-width:335px){
-    font-size:0.7em
-  }
 `;
 
 const Category = styled.div`
@@ -700,21 +645,6 @@ const CategoryItem = styled.div<{ isSelected: boolean }>`
     margin: 0;
     justify-content: flex-start;
     padding-left: 16px;
-  }
-  @media (max-width:480px){
-    font-size:0.9em;
-  }
-  @media(max-width:450px){
-    font-size:0.8em;
-  }
-  @media(max-width:380px){
-    font-size:0.75em;
-  }
-  @media(max-width:340px){
-    font-size:0.7em;
-  }
-  @media(max-width:325px){
-    font-size:0.65em;
   }
 `;
 
