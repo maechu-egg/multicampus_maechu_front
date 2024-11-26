@@ -44,6 +44,7 @@ interface PostItemProps {
   crew_battle_wins : number;
   onClick: () => void;
   member_id : number;
+  onProfileClick: (member_id: number, post_nickname: string) => void;
 }
 
 const badgeImages: { [key: string]: string } = {
@@ -76,6 +77,7 @@ const PostItem: React.FC<PostItemProps> = ({
   member_badge_level,
   onClick,
   member_id,
+  onProfileClick,
 }) => {
 
   // 해시태그 문자열을 쉼표와 공백(", ") 기준으로 나누어 배열로 변환
@@ -84,79 +86,7 @@ const PostItem: React.FC<PostItemProps> = ({
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
  
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState<string>("");
-  const [personalPoints, setPersonalPoints] = useState(0);
-  const [crewPoints, setCrewPoints] = useState(0);
-  const [personalLevel, setPersonalLevel] = useState("기본");
-  const [crewLevel, setCrewLevel] = useState("기본");
-  const getLevelLabel = (points: number) => {
-    if (points >= 100) return "다이아몬드";
-    if (points >= 70) return "플래티넘";
-    if (points >= 50) return "골드";
-    if (points >= 30) return "실버";
-    if (points >= 10) return "브론즈";
-    return "기본";
-  };
 
-  const MamberBadgeImages: { [key: string]: string } = {
-    다이아몬드: '/img/personalBadge/badgeDiamond.png',
-    플래티넘: '/img/personalBadge/badgePlatinum.png',
-    골드: '/img/personalBadge/badgeGold.png',
-    실버: '/img/personalBadge/badgeSilver.png',
-    브론즈: '/img/personalBadge/badgeBronze.png',
-    기본: '/img/personalBadge/badgeDefault.png',
-  };
-  const CrowBadgeImages: { [key: string]: string } = {
-    다이아몬드: '/img/crewBadge/crewBadgeDiamond.png',
-    플래티넘: '/img/crewBadge/crewBadgePlatinum.png',
-    골드: '/img/crewBadge/crewBadgeGold.png',
-    실버: '/img/crewBadge/crewBadgeSilver.png',
-    브론즈: '/img/crewBadge/crewBadgeBronze.png',
-    기본: '/img/crewBadge/crewBadgeDefault.png',
-  };
-  const getMBadgeImage = (level: string): string => {
-    return MamberBadgeImages[level] || badgeImages['기본'];
-  };
-  const getCBadgeImage = (level: string): string => {
-    return CrowBadgeImages[level] || badgeImages['기본'];
-  };
-  const MamberBadgeImage = getMBadgeImage(personalLevel);
-  const CrowBadgeImage = getCBadgeImage(crewLevel)
-
-  const handleProfileClick = async () => {
-
-    try {
-
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        alert("로그인이 필요합니다.");
-        return;
-      }
-  
-      const response = await axios.get(`http://localhost:8080/community/posts/showprofile`, {
-        params: {
-          member_id: member_id, // 쿼리 파라미터로 전달
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const { member_img, current_points, crew_current_points } = response.data;
-      setProfileImage(`${BASE_URLI}${member_img}`);
-      setPersonalPoints(current_points);
-      setCrewPoints(crew_current_points);
-      setPersonalLevel(getLevelLabel(current_points));
-      setCrewLevel(getLevelLabel(crew_current_points));
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
   
   useEffect(() => {
     const handleResize = () => {
@@ -170,14 +100,7 @@ const PostItem: React.FC<PostItemProps> = ({
   return (
     <div className={`post-item ${isRecommended ? 'recommended' : ''}`}>
       <div className="post-content-wrapper">
-      <ProfileModal
-        isProfileOpen={isModalOpen}
-        onProfileClose={handleCloseModal}
-        profileImage={profileImage} // 동적 URL로 대체
-        nickname={post_nickname}
-        personalBadge={MamberBadgeImage || "/img/defaultPersonalBadge.png"}
-        crewBadge={CrowBadgeImage || "/img/defaultCrewBadge.png"}
-      />
+
         {/* <div className="category-date-line">
           <span className="subcategory">[{post_sport || '자유'}]</span>
           <span className="date">{formatDate(post_date)}</span>
@@ -220,7 +143,8 @@ const PostItem: React.FC<PostItemProps> = ({
            </ul>
            <ul className="title-author-line">
              <li className="post-titles" onClick={onClick}>{post_title}</li>
-             <li className="post_author" onClick={handleProfileClick}>
+             {/* <li className="post_author" onClick={handleProfileClick}> */}
+             <li className="post_author" onClick={() => onProfileClick(member_id, post_nickname)}>
                <div className="nickname-container">
                  {post_nickname}
                </div>
@@ -233,7 +157,8 @@ const PostItem: React.FC<PostItemProps> = ({
          <ul className="category-date-line">
            <li className="subcategory">[{post_sport || '자유'}]</li>
            <li className="post-titles" onClick={onClick}>{post_title}</li>
-           <li className="post_author" onClick={handleProfileClick}>
+           {/* <li className="post_author" onClick={handleProfileClick}> */}
+           <li className="post_author" onClick={() => onProfileClick(member_id, post_nickname)}>
              <div className="nickname-container">
                {post_nickname}
              </div>
