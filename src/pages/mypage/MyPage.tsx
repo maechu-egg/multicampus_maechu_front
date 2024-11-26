@@ -40,6 +40,9 @@ interface todayRecord {
     fat: number;
     protein: number;
     quantity: number;
+    carbRatio : number;
+    proteinRatio: number;
+    fatRatio: number;
   };
   recommended: {
     bmr: number;
@@ -304,8 +307,8 @@ function MyPage(): JSX.Element {
             <Info>
               <h3>오늘 칼로리 (탄/단/지)</h3>
               <h1>
-                In : {kcalInfo.consumed.calorie}Kcal ({kcalInfo.consumed.carb}%
-                / {kcalInfo.consumed.protein}% / {kcalInfo.consumed.fat}%)
+                In : {kcalInfo.consumed.calorie}Kcal ({kcalInfo.consumed.carbRatio}%
+                / {kcalInfo.consumed.proteinRatio}% / {kcalInfo.consumed.fatRatio}%)
               </h1>
               <h1>Out : {kcalInfo.burnedCalories}Kcal </h1>
             </Info>
@@ -381,13 +384,23 @@ function MyPage(): JSX.Element {
   );
 }
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #b6c0d3;
+  z-index: 4;
+  padding-bottom: 100px; /* Footer 높이 */
+`;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height:1000px;
   background-color: #b6c0d3;
-  z-index: 4;
+  z-index: 3;
 
   @media (min-width: 900px) {
     flex-direction: row;
@@ -566,6 +579,38 @@ const Info = styled.div`
     text-align: center;
     padding-top: 10px;
   }
+   @media(max-width:495px){
+    h3{
+      font-size:0.8em
+    }
+    h1{
+      font-size:0.7em
+    }
+  }
+  @media(max-width:439px){
+    h3{
+      font-size:0.7em
+    }
+    h1{
+     font-size:0.6em
+    }
+  }
+  @media(max-width:365px){
+    h3{
+      font-size:0.65em
+    }
+    h1{
+      font-size:0.55em
+    }
+  }
+  @media(max-width:335px){
+    h3{
+     font-size:0.6em
+    }
+    h1{
+      font-size:0.5em
+    }
+  }
 `;
 
 const ProgressBarWrapper = styled.div`
@@ -604,12 +649,33 @@ const ProgressBar = styled.div<{ progress: number }>`
     background-color: #a5a4a4;
     transition: background-color 0.3s ease;
   }
+  @media (min-width: 900px) {
+    align-items: center;
+    text-align: center;
+    padding-top: 10px;
+  }
+  @media(max-width:495px){
+    height:16px;
+  }
 `;
 
 const ProgressLabel = styled.span`
   margin-top: 4px;
   font-size: 0.9em;
   color: #333;
+
+  @media(max-width:495px){
+    font-size:0.85em
+  }
+  @media(max-width:439px){
+    font-size:0.8em
+  }
+  @media(max-width:365px){
+    font-size:0.75em
+  }
+  @media(max-width:335px){
+    font-size:0.7em
+  }
 `;
 
 const Category = styled.div`
@@ -645,6 +711,21 @@ const CategoryItem = styled.div<{ isSelected: boolean }>`
     margin: 0;
     justify-content: flex-start;
     padding-left: 16px;
+  }
+  @media (max-width:480px){
+    font-size:0.9em;
+  }
+  @media(max-width:450px){
+    font-size:0.8em;
+  }
+  @media(max-width:380px){
+    font-size:0.75em;
+  }
+  @media(max-width:340px){
+    font-size:0.7em;
+  }
+  @media(max-width:325px){
+    font-size:0.65em;
   }
 `;
 

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PostItem from "./PostItem";
 import RecommendedPostsItem from "./RecommendedPostsItem";
 import styled from "styled-components";
 import "./RecommendedPostsItem.css"; 
+import ProfileModal from "./ProfileModal";
+import axios from "axios";
 
 /* 게시물 목록을 표시하는 컴포넌트 */
 interface Comment {
@@ -54,6 +56,7 @@ interface PostListProps {
   onPostClick: (post: Post, isRecommended: boolean) => void;
 }
 
+const BASE_URLI = "https://workspace.kr.object.ncloudstorage.com/";
 const PostList: React.FC<PostListProps> = ({
   posts,
   recommendedPosts,
@@ -85,6 +88,84 @@ const PostList: React.FC<PostListProps> = ({
   const handleMouseUp = () => {
     setIsDragging(false);
   };
+
+  const [nickname, setNickname] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [personalPoints, setPersonalPoints] = useState(0);
+  const [crewPoints, setCrewPoints] = useState(0);
+  const [personalLevel, setPersonalLevel] = useState("기본");
+  const [crewLevel, setCrewLevel] = useState("기본");
+  const getLevelLabel = (points: number) => {
+    if (points >= 100) return "다이아몬드";
+    if (points >= 70) return "플래티넘";
+    if (points >= 50) return "골드";
+    if (points >= 30) return "실버";
+    if (points >= 10) return "브론즈";
+    return "기본";
+  };
+
+  const MamberBadgeImages: { [key: string]: string } = {
+    다이아몬드: '/img/personalBadge/badgeDiamond.png',
+    플래티넘: '/img/personalBadge/badgePlatinum.png',
+    골드: '/img/personalBadge/badgeGold.png',
+    실버: '/img/personalBadge/badgeSilver.png',
+    브론즈: '/img/personalBadge/badgeBronze.png',
+    기본: '/img/personalBadge/badgeDefault.png',
+  };
+  const CrowBadgeImages: { [key: string]: string } = {
+    다이아몬드: '/img/crewBadge/crewBadgeDiamond.png',
+    플래티넘: '/img/crewBadge/crewBadgePlatinum.png',
+    골드: '/img/crewBadge/crewBadgeGold.png',
+    실버: '/img/crewBadge/crewBadgeSilver.png',
+    브론즈: '/img/crewBadge/crewBadgeBronze.png',
+    기본: '/img/crewBadge/crewBadgeDefault.png',
+  };
+  const getMBadgeImage = (level: string): string => {
+    return MamberBadgeImages[level] || MamberBadgeImages['기본'];
+  };
+  const getCBadgeImage = (level: string): string => {
+    return CrowBadgeImages[level] || CrowBadgeImages['기본'];
+  };
+  const MamberBadgeImage = getMBadgeImage(personalLevel);
+  const CrowBadgeImage = getCBadgeImage(crewLevel)
+
+  const handleProfileClick = async (member_id:number, post_nickname:string) => {
+
+    try {
+
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+  
+      const response = await axios.get(`http://localhost:8080/community/posts/showprofile`, {
+        params: {
+          member_id: member_id, // 쿼리 파라미터로 전달
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const { member_img, current_points, crew_current_points } = response.data;
+      setProfileImage(`${BASE_URLI}${member_img}`);
+      setPersonalPoints(current_points);
+      setCrewPoints(crew_current_points);
+      setPersonalLevel(getLevelLabel(current_points));
+      setCrewLevel(getLevelLabel(crew_current_points));
+      setNickname(post_nickname);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  
+
   return (
     <div className="postlist_wrap">
       {recommendedPosts && recommendedPosts.length > 0 && (
@@ -116,11 +197,26 @@ const PostList: React.FC<PostListProps> = ({
           <PostItem
             key={post.post_id}
             {...post}
+            onProfileClick={(member_id: number, post_nickname: string) =>
+              handleProfileClick(member_id, post_nickname)
+            }
             onClick={() => onPostClick(post, false)}
             isRecommended={false}
           />
         ))
       )}
+      {isModalOpen &&(
+        <ProfileModal
+          isProfileOpen={isModalOpen}
+          onProfileClose={handleCloseModal}
+          profileImage={profileImage} // 동적 URL로 대체
+          nickname={nickname}
+          personalBadge={MamberBadgeImage || "/img/defaultPersonalBadge.png"}
+          crewBadge={CrowBadgeImage || "/img/defaultCrewBadge.png"}
+      />
+      )
+
+      }
     </div>
   );
 };

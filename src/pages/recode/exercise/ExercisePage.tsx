@@ -243,12 +243,13 @@ export default ExercisePage;
 // 스타일 정의
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: #b6c0d3;
-
+  
 
   @media (max-width: 768px) {
     padding: 15px;
@@ -522,7 +523,7 @@ const ExerciseList = styled.div`
   padding: 16px;
   border-radius: 8px;
   background-color: transparent;
-
+  
   @media (max-width: 768px) {
     padding: 12px;
     gap: 14px;
