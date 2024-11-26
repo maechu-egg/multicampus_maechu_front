@@ -40,6 +40,9 @@ interface todayRecord {
     fat: number;
     protein: number;
     quantity: number;
+    carbRatio : number;
+    proteinRatio: number;
+    fatRatio: number;
   };
   recommended: {
     bmr: number;
@@ -243,6 +246,7 @@ function MyPage(): JSX.Element {
   };
 
   return (
+    <Wrapper>
     <Container>
       <Header>
         {userInfo ? (
@@ -304,8 +308,8 @@ function MyPage(): JSX.Element {
             <Info>
               <h3>오늘 칼로리 (탄/단/지)</h3>
               <h1>
-                In : {kcalInfo.consumed.calorie}Kcal ({kcalInfo.consumed.carb}%
-                / {kcalInfo.consumed.protein}% / {kcalInfo.consumed.fat}%)
+                In : {kcalInfo.consumed.calorie}Kcal ({kcalInfo.consumed.carbRatio}%
+                / {kcalInfo.consumed.proteinRatio}% / {kcalInfo.consumed.fatRatio}%)
               </h1>
               <h1>Out : {kcalInfo.burnedCalories}Kcal </h1>
             </Info>
@@ -377,23 +381,28 @@ function MyPage(): JSX.Element {
         ) : null}
       </Content>
     </Container>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #b6c0d3;
+  z-index: 4;
+  padding-bottom: 100px; /* Footer 높이 */
+`;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  height: 100%;
+  width: 100%;
+  height: auto;
   background-color: #b6c0d3;
-  z-index: 4;
-
-  @media (min-width: 900px) {
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-  }
+  z-index: 3;
 `;
 
 const Header = styled.div`
