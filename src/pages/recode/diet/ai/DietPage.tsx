@@ -56,9 +56,6 @@ interface SummaryData {
 		// 단백질 비율
 		proteinRatio: number
 	},
-	// 소모 칼로리
-	burnedCalories: number,
-	// 일일 권장 칼로리(탄단지비율) 및 bmr, tdee 과 다이어트 목표
 	recommended: {
 		// 목표 탄수화물
 		recommendedCarb: number,
@@ -339,10 +336,13 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
 
   const fetchData = async () => {
     console.log("debug >>> fetchData start !!! ");
-
+    console.log("debug >>> memberId : " + memberId);
     if (memberId !== undefined && state.token) {
       try {
-        const response = await api.get('record/summary/daily', {
+        const response = await api.get('record/diet/get/day/nutrients', {
+          params: {
+            record_date : selectedDate
+          },
           headers: {
             'Authorization': `Bearer ${state.token}`,
             'Content-Type': 'application/json'
@@ -823,8 +823,8 @@ export default DietPage;
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
+  height: 100vh;
   padding: 20px;
-  margin-bottom: 150px;
 `;
 
 const Header = styled.div`
@@ -1582,12 +1582,12 @@ const ToolTip = styled.div`
   visibility: hidden;
   max-width: 300px;
   min-width: 150px;
-  width: 240px;
+  width: 300px;
   background-color: rgba(0, 0, 0, 0.9);
   color: #fff;
   text-align: center;
   border-radius: 8px;
-  padding: 8px;
+  padding: 10px;
   position: absolute;
   z-index: 1;
   top: 100%;
@@ -1603,25 +1603,25 @@ const ToolTip = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 220px;
-    padding: 6px;
+    width: 270px;
+    padding: 8px;
   }
 
   @media (max-width: 425px) {
-    width: 180px;
-    padding: 5px;
+    width: 230px;
+    padding: 7px;
     right: 0;
   }
 
   @media (max-width: 375px) {
-    width: 170px;
-    padding: 4px;
+    width: 200px;
+    padding: 6px;
     right: 0;
   }
 
   @media (max-width: 320px) {
-    width: 160px;
-    padding: 3px;
+    width: 180px;
+    padding: 5px;
     right: 0;
   }
 `;

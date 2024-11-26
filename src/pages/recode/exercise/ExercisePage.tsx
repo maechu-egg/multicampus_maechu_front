@@ -154,8 +154,7 @@ function ExercisePage(): JSX.Element {
             <h2>{format(date, 'yyyy.MM.dd ')}       
               <CalendarTooltip text={
                 <>
-                  <ToolTipTitle>⏳ 칼로리 계산법</ToolTipTitle>
-                    <br/>
+                  <ToolTipTitle>⏳ MET 란</ToolTipTitle>
                     <ToolTipText>
                       <li>
                         MET는 1분간 소비되는 단위 체중당 에너지 소비량으로 
@@ -164,15 +163,25 @@ function ExercisePage(): JSX.Element {
                       <li>
                         MET는 <a href="https://www.data.go.kr/data/15068730/fileData.do">한국건강증진개발원</a>에서 가져와 데이터 정제 후 DB에서 보관합니다.              
                       </li>
+                      <li>
+                        MET는 세가지 강도인 LOW, GENERAL, HIGH로 분류됩니다. 통상적으로 LOW 강도에서 3 MET 미만, GENERAL 강도에서 3~5.9MET 미만, HIGH 강도에서 6 MET 이상을 가지며, 각 강도당 1,5 배수가 일반적입니다.
+                      </li>
                   </ToolTipText>
                   <hr/>
-                  <ToolTipTitle>⏳ MET 공식</ToolTipTitle>
-                    <br/>
+                  <ToolTipTitle>📘 MET 공식</ToolTipTitle>
                     <ToolTipText>
                       <li>1 * (3.5ml * kg * min)</li>
                       <li>= air(ml)</li>
                       <li>air(L) * 5 = kcal</li>                 
                   </ToolTipText>
+                  <hr/>
+                  <ToolTipTitle>📗 칼로리 계산법 </ToolTipTitle>
+                    <ToolTipText>
+                      <li>
+                        칼로리 = (MET * 3.5 * 몸무게 * 시간(분)) / 200 
+                      </li>
+                  </ToolTipText>
+
                </>
               }>
               <span style={{ cursor: 'pointer', fontSize: '20px' }}>
@@ -234,12 +243,13 @@ export default ExercisePage;
 // 스타일 정의
 const Container = styled.div`
   width: 100%;
-  min-height: 800px;
+  min-height: 100vh;
+  height: 100;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background: #b6c0d3;
-
+  
 
   @media (max-width: 768px) {
     padding: 15px;
@@ -513,7 +523,7 @@ const ExerciseList = styled.div`
   padding: 16px;
   border-radius: 8px;
   background-color: transparent;
-
+  
   @media (max-width: 768px) {
     padding: 12px;
     gap: 14px;
@@ -563,15 +573,15 @@ const GlobalStyle = createGlobalStyle`
 const ToolTipTitle = styled.div`
   font-size: 18px;
 
-   @media (max-width: 850px) {
+   @media (max-width: 768px) {
     font-size: 17px;
   } 
 
-  @media (max-width: 710px) {
+  @media (max-width: 425px) {
     font-size: 15px;
   }
 
-  @media (max-width: 425px) {
+  @media (max-width: 375px) {
     font-size: 14px;
   }
 
@@ -584,16 +594,16 @@ const ToolTipText = styled.div`
   font-size: 15px;
   text-align: left;
 
-  @media (max-width: 850px) {
+   @media (max-width: 768px) {
     font-size: 14px;
   } 
 
-  @media (max-width: 710px) {
-    font-size: 12px;
+  @media (max-width: 425px) {
+    font-size: 13px;
   }
 
-  @media (max-width: 425px) {
-    font-size: 11.5px;
+  @media (max-width: 375px) {
+    font-size: 12px;
   }
 
   @media (max-width: 320px) {
