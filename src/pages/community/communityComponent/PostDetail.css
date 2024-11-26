@@ -43,7 +43,37 @@
   padding: 5px 10px;
   background-color: #f0f2f5;
   border-radius: 4px;
+  display: flex; 
+  align-items: center;
 }
+
+.author .nickname {
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+  max-width: 150px; 
+  margin-right: 8px; 
+}
+@media (max-width: 400px) {
+  .author .nickname {
+    max-width: 100px; 
+    margin-right: 4px; 
+  }
+}
+
+@media (max-width: 350px) {
+  .author .nickname {
+    max-width: 80px; 
+    margin-right: 4px; 
+  }
+}
+@media (max-width: 325px) {
+  .author .nickname {
+    max-width: 60px; 
+    margin-right: 4px; 
+  }
+}
+
 
 .info-right {
   display: flex;
