@@ -277,9 +277,9 @@ export const usePost = () => {
     formData.append("post_sport", post_sport);
     formData.append("post_hashtag", post_hashtag);
     formData.append("post_sports_keyword", post_sports_keyword);
-
+   
     if (existingImages.length > 0) {
-      formData.append("existing_image", existingImages[0]); // 기존 이미지 파일 이름 전송
+      formData.append("existing_images", existingImages[0]); // 기존 이미지 파일 이름 전송
     }
 
     if (imageFiles) {
