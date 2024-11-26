@@ -228,9 +228,10 @@ const PostDetail: React.FC<PostDetailProps> = ({
       <div className="post-header">
         <h2>{post_title}</h2>
         <div className="post-info">
-          <span className="author">{post_nickname}
-          <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" /> 
-          </span>
+        <span className="author">
+          <span className="nickname">{post_nickname}</span>
+          <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />
+        </span>
           <div className="info-right">
             <span className="date">{formatDate(post_date)}</span>
             <span className="views">조회수: {post_views}</span>
