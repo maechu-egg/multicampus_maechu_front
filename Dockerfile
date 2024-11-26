@@ -13,6 +13,7 @@ RUN npm install --legacy-peer-deps --force
 COPY . .
 
 # 정적 파일 빌드
+RUN npm install react-scripts
 RUN npm run build
 
 # 2. 배포 단계: Nginx로 정적 파일 제공
