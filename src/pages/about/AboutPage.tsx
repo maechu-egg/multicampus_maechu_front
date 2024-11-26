@@ -15,7 +15,7 @@ function AboutPage() {
             {/* 로고 섹션 */}
             <div className="section logo-section">
               <img
-                src={process.env.PUBLIC_URL + "/img/Mainlogo.png"}
+                src="/img/Mainlogo.png"
                 alt="Workspace Logo"
                 className="main-logo"
               />
