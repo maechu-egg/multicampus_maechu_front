@@ -174,7 +174,7 @@ const ScrollContainer = styled.div`
   -webkit-overflow-scrolling: touch;
   cursor: grab;
   user-select: none;
-  width: 100%;
+  max-width:1200px;
   position: relative;
   justify-content: center;  /* 중앙 정렬 추가 */
 

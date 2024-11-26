@@ -119,7 +119,7 @@
 
 .list_title{  
   padding-left: 16px;
-  width: 1150px;
+  max-width: 1150px;
   height:50px;
   margin: 80px auto 10px;
   font-weight: bold; 
