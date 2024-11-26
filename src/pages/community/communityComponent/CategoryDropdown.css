@@ -4,7 +4,10 @@
   margin: 0 auto;    
   width: 95%;        /* PostItem과 동일하게 유지 */
 }
-
+.community-filter-back{
+  background-color: #b6c0d3 ;
+  padding-bottom:20px;
+}
 @media screen and (min-width: 481px) and (max-width: 696px) {
   .community-filter-section{
     transform: scale(0.98);

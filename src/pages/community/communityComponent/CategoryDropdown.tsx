@@ -70,6 +70,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
     : [];
 
     return (
+      <div className={`filter-back ${variant}-filter-back`}>
       <div className={`filter-section ${variant}-filter-section`}>
         <div className={`section-headers ${variant}-section-headers`}>
           <div className={`header-item ${variant}-header-item`}>카테고리 선택</div>
@@ -134,6 +135,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
             </div>
           )}
         </div>
+      </div>
       </div>
     );
 };
