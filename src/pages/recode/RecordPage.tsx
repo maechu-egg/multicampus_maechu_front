@@ -255,22 +255,23 @@ function RecordPage(): JSX.Element {
                 </CloseButton>
                 <ModalHeader>{selectedDate}</ModalHeader>
                 <ButtonGroup>
-                {exerciseDates.includes(selectedDate) && (
-                    <ModalButton
-                      onClick={() =>
-                        navigate(`/record/exercise/${selectedDate}`)
-                      }
-                    >
-                      💪🏻 운동
-                    </ModalButton>
-                  )}
-                  {dietDates.includes(selectedDate) && (
-                    <ModalButton
-                      onClick={() => navigate(`/record/diet/${selectedDate}`)}
-                    >
-                      🥗 식단
-                    </ModalButton>
-                  )}                </ButtonGroup>
+                {(exerciseDates.includes(selectedDate) || selectedDate === new Date().toISOString().split('T')[0]) && (
+                  <ModalButton
+                    onClick={() =>
+                      navigate(`/record/exercise/${selectedDate}`)
+                    }
+                  >
+                    💪🏻 운동
+                  </ModalButton>
+                )}
+                {(dietDates.includes(selectedDate) || selectedDate === new Date().toISOString().split('T')[0]) && (
+                  <ModalButton
+                    onClick={() => navigate(`/record/diet/${selectedDate}`)}
+                  >
+                    🥗 식단
+                  </ModalButton>
+                )}
+                  </ButtonGroup>
               </ModalContent>
             </ModalOverlay>
           )}
