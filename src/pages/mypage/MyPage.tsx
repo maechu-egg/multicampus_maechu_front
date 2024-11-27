@@ -40,6 +40,9 @@ interface todayRecord {
     fat: number;
     protein: number;
     quantity: number;
+    carbRatio : number;
+    proteinRatio: number;
+    fatRatio: number;
   };
   recommended: {
     bmr: number;
@@ -304,8 +307,8 @@ function MyPage(): JSX.Element {
             <Info>
               <h3>오늘 칼로리 (탄/단/지)</h3>
               <h1>
-                In : {kcalInfo.consumed.calorie}Kcal ({kcalInfo.consumed.carb}%
-                / {kcalInfo.consumed.protein}% / {kcalInfo.consumed.fat}%)
+                In : {kcalInfo.consumed.calorie}Kcal ({kcalInfo.consumed.carbRatio}%
+                / {kcalInfo.consumed.proteinRatio}% / {kcalInfo.consumed.fatRatio}%)
               </h1>
               <h1>Out : {kcalInfo.burnedCalories}Kcal </h1>
             </Info>
@@ -377,17 +380,27 @@ function MyPage(): JSX.Element {
         ) : null}
       </Content>
     </Container>
+
   );
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #b6c0d3;
+  z-index: 4;
+  padding-bottom: 100px; /* Footer 높이 */
+`;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  height: 100%;
+  min-height:1000px;
   background-color: #b6c0d3;
-  z-index: 4;
+  z-index: 3;
 
   @media (min-width: 900px) {
     flex-direction: row;
@@ -401,21 +414,22 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  height:100%;
   border-bottom: 0.8px solid #666;
   background-color: #f4f4f4;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   padding-top: 20px;
 
   @media (min-width: 900px) {
-    width: 30%;
-    height: 100%;
-    position: fixed;
-    top: 0;
+    max-width: 30%;
+    min-height:100vh;
+    position: sticky;
+    top: 98px;
     left: 0;
     background-color: #f4f4f4;
     border-right: 1px solid #ddd;
 
-    padding: 130px 25px 80px 25px;
+    padding: 50px 25px 80px 25px;
     align-items: flex-start;
     overflow-y: auto;
   }
@@ -439,15 +453,14 @@ const AccountIcon = styled.img`
 const Content = styled.div`
   margin-top: 30px;
   width: 75%;
-  height: 1000px;
-
+  margin-bottom: 100px;
   @media (min-width: 900px) {
-    margin-left: 30%;
+    margin-left: 2%;
+    margin-right: 1.5%;
   }
   @media(max-width:900px){
     width:95%;
   }
-
 `;
 
 const IconWrapper = styled.div`
@@ -566,7 +579,7 @@ const Info = styled.div`
     text-align: center;
     padding-top: 10px;
   }
-  @media(max-width:495px){
+   @media(max-width:495px){
     h3{
       font-size:0.8em
     }
@@ -636,7 +649,6 @@ const ProgressBar = styled.div<{ progress: number }>`
     background-color: #a5a4a4;
     transition: background-color 0.3s ease;
   }
-
   @media (min-width: 900px) {
     align-items: center;
     text-align: center;
@@ -645,7 +657,6 @@ const ProgressBar = styled.div<{ progress: number }>`
   @media(max-width:495px){
     height:16px;
   }
-
 `;
 
 const ProgressLabel = styled.span`

@@ -54,7 +54,10 @@ const PostForm: React.FC<PostFormProps> = ({
   const [post_sports_keyword, setPost_sports_keyword] = useState(initialData?.post_sports_keyword || "");
   const [imageFiles, setImageFiles] = useState<File[] | null>(null);
   const [tagInput, setTagInput] = useState("");
-  const [keywordTag, setKeywordTag] = useState<string>("");
+  // const [keywordTag, setKeywordTag] = useState<string>("");
+  const [keywordTag, setKeywordTag] = useState<string>(
+    initialData?.post_sports_keyword ? `#${initialData.post_sports_keyword}` : ""
+  );
   const [customTags, setCustomTags] = useState<string[]>(
     initialData?.post_hashtag ? 
       initialData.post_hashtag.split(", ").filter(tag => !recommendedKeywords.includes(tag.replace('#', ''))) 
@@ -424,7 +427,7 @@ useEffect(() => {
         
       </div>
       <p className="post_length">
-        {customTags.length}/{maxTags} 태그
+       {customTags.length}/{maxTags} 태그
       </p>
     </div>
 
