@@ -1,5 +1,5 @@
 // PostList.tsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "context/AuthContext";
 import PostDetail from "pages/community/communityComponent/PostDetail";
@@ -46,11 +46,41 @@ interface PostData {
   postData: Post[];
 }
 
-function PostList({ postData }: PostData): JSX.Element {
+const PostList = ({ postData }: PostData): JSX.Element => {
   const { state } = useAuth();
   const { token } = state;
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery({ query: '(max-width: 579px)' });
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    const fetchPostDetails = async () => {
+      try {
+        if (!token) return;
+
+        // 각 게시글의 상세 정보를 가져옴
+        const postsWithDetails = await Promise.all(
+          postData.map(async (post) => {
+            const response = await postApi.getPostDetail(
+              post.post_id,
+              post.author,
+              token
+            );
+            return {
+              ...post,
+              post_like_counts: response.data.post_like_counts
+            };
+          })
+        );
+
+        setPosts(postsWithDetails);
+      } catch (error) {
+        console.error("Error fetching post details:", error);
+      }
+    };
+
+    fetchPostDetails();
+  }, [postData, token]);
 
   const handlePostClick = async (post: Post, isRecommended: boolean) => {
     try {
@@ -81,11 +111,10 @@ function PostList({ postData }: PostData): JSX.Element {
     }
   };
 
- 
   return (
     <Container>
-      {postData.length > 0 ? (
-        postData.map((post) => (
+      {posts.length > 0 ? (
+        posts.map((post) => (
           <PostItem
             key={post.post_id}
             onClick={() => handlePostClick(post, post.isRecommended || false)}
@@ -117,7 +146,7 @@ function PostList({ postData }: PostData): JSX.Element {
       )}
     </Container>
   );
-}
+};
 
 export default PostList;
 

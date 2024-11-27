@@ -87,13 +87,24 @@ function HomePage(): JSX.Element {
     const getSwapData = async () => {
       setIsSwapDataLoading(true);
       try {
-        const response = await api.get(
-          "/community/home/posts/searchMarketplace"
-        );
+        const response = await api.get("/community/home/posts/searchMarketplace");
         console.log("중고거래 키워드 응답 : ", response.data);
         if (response.status === 200) {
-          // swapData에 list 속성의 배열을 저장
-          setSwapData(response.data.list || []);
+          // 각 게시글의 상세 정보를 가져와서 좋아요 수 포함
+          const postsWithDetails = await Promise.all(
+            response.data.list.map(async (post: Swap) => {
+              const detailResponse = await postApi.getPostDetail(
+                post.post_id,
+                post.author,
+                token || ''
+              );
+              return {
+                ...post,
+                post_like_counts: detailResponse.data.post_like_counts
+              };
+            })
+          );
+          setSwapData(postsWithDetails || []);
         }
       } catch (error) {
         console.log("swap 데이터를 가져오는데 실패했습니다.", error);
@@ -101,7 +112,10 @@ function HomePage(): JSX.Element {
         setIsSwapDataLoading(false);
       }
     };
-    getSwapData();
+
+    if (token) {
+      getSwapData();
+    }
   }, [token]);
 
   useEffect(() => {
@@ -110,13 +124,30 @@ function HomePage(): JSX.Element {
         const response = await api.get("/community/home/posts/searchToday");
         console.log("오운완 데이터 응답: ", response.data);
         if (response.status === 200) {
-          setTodayWorkout(response.data.list || []);
+          // 각 게시글의 상세 정보를 가져와서 좋아요 수 포함
+          const postsWithDetails = await Promise.all(
+            response.data.list.map(async (post: TodayWorkout) => {
+              const detailResponse = await postApi.getPostDetail(
+                post.post_id,
+                false,  // author 정보가 없으므로 false로 설정
+                token || ''
+              );
+              return {
+                ...post,
+                post_like_counts: detailResponse.data.post_like_counts
+              };
+            })
+          );
+          setTodayWorkout(postsWithDetails || []);
         }
       } catch (error) {
         console.log("오운완 데이터를 가져오는데 실패했습니다.", error);
       }
     };
-    getTodayData();
+
+    if (token) {
+      getTodayData();
+    }
   }, [token]);
 
   const handleCrewDetailClick = (crewId: number) => {
