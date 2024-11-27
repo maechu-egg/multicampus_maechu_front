@@ -54,6 +54,7 @@
   max-width: 150px; 
   margin-right: 8px; 
 }
+
 @media (max-width: 400px) {
   .author .nickname {
     max-width: 100px; 
@@ -264,18 +265,128 @@
   align-items: center;
 }
 
-.comment-author {
+.comment-author-wrapper {
   font-weight: 500;
   color: #444;
   background-color: #f0f2f5;
   padding: 4px 8px;
   border-radius: 4px;
+  display: flex;
+  align-items:center;
 }
 
+.comment-author{
+  overflow: hidden; /* 넘치는 내용을 숨김 */
+  white-space: nowrap; /* 한 줄로 표시 */
+  text-overflow: ellipsis; /* 넘치는 부분을 ...으로 표시 */
+  margin-right:8px;
+
+}
 .comment-date {
   font-size: 0.9rem;
   color: #777;
 }
+
+@media screen and (max-width:900px) {
+  .comment-author-wrapper{
+    transform: scale(0.9);
+  }
+  .comment-author{
+    max-width: calc(80px + (100vw - 100px) * 0.25);
+    margin-right:0px;
+    font-size:0.9rem;
+  }
+  .comment-date{
+    font-size:0.8rem;
+  }
+  .comment-content{
+    font-size:0.9rem;
+  }
+  .comment-reactions{
+    transform: scale(0.9);
+    gap:0px;
+  }
+}
+
+@media screen and (max-width:650px) {
+  .comment-author-wrapper{
+    padding:2px;
+    transform: scale(0.85);
+  }
+  .comment-author{
+    max-width: calc(80px + (100vw - 100px) * 0.2);
+    font-size:0.8rem;
+  }
+  .comment-date{
+    font-size:0.7rem;
+  }
+  .comment-content{
+    font-size:0.85rem;
+  }
+  .comment-reactions{
+    transform: scale(0.8);
+    gap:0px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .comment{
+    padding:10px;
+  }
+  .comment-author-wrapper{
+    padding:1px;
+    transform: scale(0.8);
+  }
+  .comment-author{
+    max-width: calc(80px + (100vw - 100px) * 0.15);
+    font-size:0.75rem;
+  }
+  .comment-content{
+    font-size:0.80rem;
+  }
+  .comment-reactions{
+    transform: scale(0.7);
+  }
+  .form-control{
+    transform: scaleY(0.9);
+    font-size: 0.9rem;
+  }
+  #comment-submit-btn{
+    transform: scaleY(0.9);
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width:400px){
+  .comment-content{
+    font-size:0.75rem;
+  }
+  .comment-author{
+    max-width: 100px;
+  }
+  .comment-date{
+    font-size: 0.65rem;
+  }
+  .reaction-buttons{
+    transform: scale(0.85);
+  }
+  .comment-sort-buttons{
+    transform: scale(0.9);
+  }
+  .tag-item{
+    transform: scale(0.9);
+  }
+  .form-control{
+    transform: scaleY(0.8);
+    font-size: 0.8rem;
+  }
+  #comment-submit-btn{
+    transform: scaleY(0.8);
+    font-size: 0.8rem;
+  }
+}
+
+
 
 .comment-content {
   line-height: 1.6;
@@ -327,14 +438,6 @@
   font-weight: 500;
 }
 
-.member_badge_img{
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  object-fit: contain;
-  margin-left:8px;
-  margin-top:-3px;
-}
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {

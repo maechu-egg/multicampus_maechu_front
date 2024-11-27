@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
-import { formatDate } from '../../../utils/dateFormat';
+import { formatDate,  formatDateShort } from '../../../utils/dateFormat';
 import { commentApi } from 'services/api/community/commentApi';
 import type { Comment } from '../../../hooks/community/useComment';
 import ConfirmModal from './ConfirmModal';
@@ -23,7 +23,19 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [commentDisliked, setCommentDisliked] = useState(comment.comment_dislike_status);
   const [CommentLikeCount, setCommentLikeCount] = useState(comment.comment_like_counts);
   const [CommentDislikeCount, setCommentDislikeCount] = useState(comment.comment_dislike_counts);
- 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 500); 
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 500);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     setCommentLiked( comment.comment_like_status );
     setCommentDisliked(comment.comment_dislike_status);
@@ -170,10 +182,11 @@ const CommentItem: React.FC<CommentItemProps> = ({
   return (
     <div className="comment">
       <div className="comment-header">
-        <span className="comment-author">{comment.author}
-        <img src={badgeImage} alt={`${comment.member_badge_level} badge`} className="member_badge_img" /> 
+        <span className="comment-author-wrapper">
+          <span className="comment-author">{comment.author}</span>
+          <img src={badgeImage} alt={`${comment.member_badge_level} badge`} className="member_badge_img" /> 
         </span>
-        <span className="comment-date">{formatDate(comment.date)}</span>
+        <span className="comment-date">  {isMobile ? formatDateShort(comment.date) : formatDate(comment.date)}</span>
       </div>
       <div className="comment-content">{comment.content}</div>
       <div className="comment-reactions">
