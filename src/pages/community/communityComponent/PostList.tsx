@@ -5,7 +5,7 @@ import styled from "styled-components";
 import "./RecommendedPostsItem.css"; 
 import ProfileModal from "./ProfileModal";
 import axios from "axios";
-
+import api from "services/api/axios";
 /* 게시물 목록을 표시하는 컴포넌트 */
 interface Comment {
   id: number;
@@ -140,7 +140,7 @@ const PostList: React.FC<PostListProps> = ({
         return;
       }
   
-      const response = await axios.get(`http://localhost:8080/community/posts/showprofile`, {
+      const response = await api.get(`/community/posts/showprofile`, {
         params: {
           member_id: member_id, // 쿼리 파라미터로 전달
         },
