@@ -70,6 +70,7 @@ function DietDetailPage(): JSX.Element {
   const [isUpdateDropdownOpen, setIsUpdateDropdownOpen] = useState<boolean>(false); 
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const value = new Date();
 
   useEffect(() => {
       if (!state.token) {
@@ -82,7 +83,7 @@ function DietDetailPage(): JSX.Element {
       console.log("debug >>> token : " + state.token);
       console.log("debug >>> memberId : " + memberId);
 
-      dietGet();
+      checkData(value);
   }, [token]);
 
 
@@ -101,6 +102,53 @@ function DietDetailPage(): JSX.Element {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  // 운동 기록 여부 확인
+  const checkData = async (data: Date) => {
+    if (selectedDate) {
+      console.log("debug >>> checkData start !!");
+      try {
+        const year = date.getFullYear().toString();
+        const month = (date.getMonth() + 1).toString();
+    
+        const headers = {
+          Authorization: `Bearer ${state.token}`,
+        };
+  
+        const today = new Date();
+        const formattedToday = format(today, 'yyyy-MM-dd');
+
+        // 운동 기록 날짜 가져오기
+        const response = await api.post("record/diet/get/month",
+          {
+            year: year,
+            month: month,  
+          }
+          ,{ headers }
+    
+          );
+
+          const exerciseDatesArray: string[] = [];
+          response.data.forEach((record: { record_date: string }) => {
+          exerciseDatesArray.push(record.record_date);
+          });
+
+        // 선택된 날짜가 오늘이거나, 기록이 있는 경우 데이터 가져오기
+        if (selectedDate === formattedToday || exerciseDatesArray.includes(selectedDate)) {
+          dietGet();
+        } else {
+          alert("해당 날짜에는 기록이 없습니다. 캘린더 페이지로 이동합니다.");
+          navigate("/recordpage"); // 캘린더 페이지로 리다이렉트
+        }
+
+        console.log("debug >>> checkData end !!");
+
+      } catch (error) {
+        console.error("식단 기록 날짜 조회 실패:", error);
+      }
+    }
+  }
+
 
   // 식품 리스트 가져오기
   const dietGet = async () => {
