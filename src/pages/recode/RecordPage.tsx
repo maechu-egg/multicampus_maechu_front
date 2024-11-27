@@ -211,9 +211,9 @@ function RecordPage(): JSX.Element {
     let emoji = null;
     // 상태에 따른 이모지 설정
     if (hasExercise && hasDiet)
-      emoji = <img src="/img/record/perfect.png" alt="Pass" />; // 둘 다 있을 때
+      emoji = <img src="/img/record/perfect.png" alt="Perfect" />; // 둘 다 있을 때
     else if (hasExercise || hasDiet)
-      emoji = <img src="/img/record/pass.png" alt="Perfect" />;
+      emoji = <img src="/img/record/pass.png" alt="Pass" />;
     return (
       <div className="date-content">
         {emoji && <span className="emoji">{emoji}</span>}
@@ -255,17 +255,22 @@ function RecordPage(): JSX.Element {
                 </CloseButton>
                 <ModalHeader>{selectedDate}</ModalHeader>
                 <ButtonGroup>
-                  <ModalButton
-                    onClick={() => navigate(`/record/exercise/${selectedDate}`)}
-                  >
-                    💪🏻 운동
-                  </ModalButton>
-                  <ModalButton
-                    onClick={() => navigate(`/record/diet/${selectedDate}`)}
-                  >
-                    🥗 식단
-                  </ModalButton>
-                </ButtonGroup>
+                {exerciseDates.includes(selectedDate) && (
+                    <ModalButton
+                      onClick={() =>
+                        navigate(`/record/exercise/${selectedDate}`)
+                      }
+                    >
+                      💪🏻 운동
+                    </ModalButton>
+                  )}
+                  {dietDates.includes(selectedDate) && (
+                    <ModalButton
+                      onClick={() => navigate(`/record/diet/${selectedDate}`)}
+                    >
+                      🥗 식단
+                    </ModalButton>
+                  )}                </ButtonGroup>
               </ModalContent>
             </ModalOverlay>
           )}
