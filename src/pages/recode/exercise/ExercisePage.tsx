@@ -30,7 +30,8 @@ function ExercisePage(): JSX.Element {
   // 일일 칼로리, 일일 운동 시간
   const [todayCalorie,setTodayCalorie] = useState<number>(0);
   const [todayTime,setTodayTime] = useState<number>(0);
-  
+  const value = new Date();
+
   const navigate = useNavigate();
   // 운동 리스트
   const [exerciseData,setExerciseData] = useState<ExerciseDTO[]>([]);
@@ -66,6 +67,50 @@ function ExercisePage(): JSX.Element {
     }
   };
 
+  // 운동 기록 여부 확인
+  const checkData = async (data: Date) => {
+    if (selectedDate) {
+      try {
+        const year = date.getFullYear().toString();
+        const month = (date.getMonth() + 1).toString();
+    
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+  
+        const today = new Date();
+        const formattedToday = format(today, 'yyyy-MM-dd');
+        // 운동 기록 날짜 가져오기
+        const response = await api.post("record/exercise/get/month",
+          {
+            year: year,
+            month: month,  
+          }
+          ,{ headers }
+        );
+
+        if (response && response.status !== 204) {
+            const exerciseDatesArray: string[] = [];
+            response.data.forEach((record: { record_date: string }) => {
+            exerciseDatesArray.push(record.record_date);
+          });
+  
+          // 선택된 날짜가 오늘이거나, 기록이 있는 경우 데이터 가져오기
+          if (selectedDate === formattedToday || exerciseDatesArray.includes(selectedDate)) {
+            exerciseGet(selectedDate);
+          } else {
+            alert("해당 날짜에는 기록이 없습니다. 캘린더 페이지로 이동합니다.");
+            navigate("/recordpage"); // 캘린더 페이지로 리다이렉트
+          }
+        } else {
+          console.log("debug >>> 운동 기록 조회 실패");
+        }
+      } catch (error) {
+        console.error("운동 기록 날짜 조회 실패:", error);
+      }
+    }
+  }
+
   // 마운트 시 exericseGet 실행
   useEffect(() => {
     if (!token) {
@@ -77,7 +122,7 @@ function ExercisePage(): JSX.Element {
 
     // selectedDate가 정의된 경우에만 exerciseGet 호출
     if (selectedDate) {
-      exerciseGet(selectedDate);
+      checkData(value);
     }
   }, [token]);
 
