@@ -132,6 +132,12 @@ function MyPage(): JSX.Element {
   const closeProfileModal = () => setProfileModalOpen(false);
 
   const handleCategoryClick = async (category: string) => {
+    
+    window.scrollTo({
+      top: 0,
+        behavior: "smooth",
+      });
+      
     setSelectedCategory(category);
     let endpoint = "";
     if (category === "내가 쓴 글") {
@@ -163,6 +169,8 @@ function MyPage(): JSX.Element {
         console.error("Error fetching data:", error);
       }
     }
+    
+
   };
 
   const fetchUserInfo = async () => {

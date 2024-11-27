@@ -133,6 +133,14 @@ function HomePage(): JSX.Element {
     setIsLoginWarningOpen(false);
   };
 
+  const handleNavigate = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+
   const handleSwapClick = async (post: Swap | TodayWorkout) => {
     try {
       if (!token) {
@@ -146,6 +154,7 @@ function HomePage(): JSX.Element {
         "author" in post ? post.author : false,
         token
       );
+      
       const detailedPost = response.data;
       console.log("Detailed post data:", detailedPost);
 
@@ -280,7 +289,10 @@ function HomePage(): JSX.Element {
           <IconWrapper>
             <FontAwesomeIcon
               icon={faArrowRight}
-              onClick={() => navigate("/crewpage")}
+              onClick={() => {
+                handleNavigate(); 
+                navigate("/crewpage"); 
+              }}
             />
           </IconWrapper>
         </Title>
@@ -354,14 +366,15 @@ function HomePage(): JSX.Element {
           <IconWrapper>
             <FontAwesomeIcon
               icon={faArrowRight}
-              onClick={() =>
+              onClick={() => {
+                handleNavigate(); 
                 navigate("/communitypage", {
                   state: {
                     fromMyPage: false,
                     initialKeyword: "중고장터",
                   },
-                })
-              }
+                });
+              }}
               style={{ cursor: "pointer" }}
             />
           </IconWrapper>
@@ -404,18 +417,19 @@ function HomePage(): JSX.Element {
             </span>
           </TextContainer>
           <IconWrapper>
-            <FontAwesomeIcon
-              icon={faArrowRight}
-              onClick={() =>
-                navigate("/communitypage", {
-                  state: {
-                    fromMyPage: false,
-                    initialKeyword: "오운완",
-                  },
-                })
-              }
-              style={{ cursor: "pointer" }}
-            />
+          <FontAwesomeIcon
+            icon={faArrowRight}
+            onClick={() => {
+              handleNavigate(); 
+              navigate("/communitypage", {
+                state: {
+                  fromMyPage: false,
+                  initialKeyword: "오운완",
+                },
+              });
+            }}
+            style={{ cursor: "pointer" }}
+          />
           </IconWrapper>
         </Title>
         <CardContainer>

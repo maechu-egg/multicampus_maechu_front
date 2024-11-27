@@ -23,6 +23,13 @@ function LoginPage(): JSX.Element {
       setEmailErrMsg("");
     }
   };
+  
+  const handleNavigate = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const handleLogin = async () => {
     if (emailErrMsg) {
@@ -48,6 +55,10 @@ function LoginPage(): JSX.Element {
         console.log("로그인 후 Context 상태:", state); // Context 상태 출력
 
         navigate("/"); // 홈페이지로 이동
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
       } else {
         alert("토큰을 받을 수 없습니다."); // 토큰이 없을 경우 알림
       }
@@ -99,7 +110,7 @@ function LoginPage(): JSX.Element {
         </Input>
 
         <ButtonGroup>
-          <Link to="/signpage">
+          <Link to="/signpage"  onClick={handleNavigate}>
             <button
               type="button"
               className="btn btn-link"
@@ -108,7 +119,7 @@ function LoginPage(): JSX.Element {
               Sign Up
             </button>
           </Link>
-          <Link to="/forgotpwpage">
+          <Link to="/forgotpwpage" onClick={handleNavigate}>
             <button type="button" className="btn btn-link">
               Forgot Password
             </button>

@@ -133,7 +133,12 @@ function ForgotPwPage(): JSX.Element {
         password,
       });
       console.log("서버 응답: ", response.data);
-      navigate("/login");
+      navigate("/loginpage");
+      
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     } catch (error) {
       console.error("비밀번호 변경 실패: ", error);
       alert("비밀번호 변경에 실패했습니다. 다시 시도하세요.");
