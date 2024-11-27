@@ -427,7 +427,7 @@ useEffect(() => {
         
       </div>
       <p className="post_length">
-      {keywordTag ? customTags.length + 1 : customTags.length}/{maxTags} 태그
+       {customTags.length}/{maxTags} 태그
       </p>
     </div>
 
