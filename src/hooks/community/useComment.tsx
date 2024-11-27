@@ -12,11 +12,9 @@ export interface Comment {
   comment_like_status: boolean;
   comment_dislike_status: boolean;
   commentAuthor: boolean;
-  current_points : number;
-  crew_current_points:number;
-  member_badge_level:string;
-  crew_badge_level : string;
-  crew_battle_wins : number;
+  current_points: number;
+  member_badge_level: string;
+  member_id: number;
 }
 
 interface ServerComment {
@@ -29,11 +27,8 @@ interface ServerComment {
   commentAuthor: boolean;
   comment_like_status: boolean;  
   comment_dislike_status: boolean; 
-  current_points : number;
-  crew_current_points:number;
-  member_badge_level:string;
-  crew_badge_level : string;
-  crew_battle_wins : number;
+  current_points: number;
+  member_id: number;
 }
 
 export const useComment = () => {
@@ -57,28 +52,35 @@ export const useComment = () => {
   
       if (response.status === 200) {
         const serverComments = response.data;
-        const newComments: Comment[] = serverComments.map((serverComment: ServerComment) => ({
-          id: serverComment.comments_id,
-          postId: postId,
-          author: serverComment.c_nickname ?? "Unknown",
-          content: serverComment.comments_contents,
-          date: serverComment.comments_date,
-          comment_like_counts: serverComment.comment_like_counts ?? 0,
-          comment_dislike_counts: serverComment.comment_dislike_counts ?? 0,
-          commentAuthor: serverComment.commentAuthor,
-          comment_like_status: serverComment.comment_like_status ?? false,
-          comment_dislike_status: serverComment.comment_dislike_status ?? false,
-          current_points : serverComment.current_points,
-          crew_current_points:serverComment.crew_current_points,
-          member_badge_level: getLevelLabel(serverComment.current_points),
-          crew_badge_level :  getLevelLabel(serverComment.crew_current_points),
-          crew_battle_wins : serverComment.crew_battle_wins,
-        }));
+        const newComments: Comment[] = serverComments.map((serverComment: ServerComment) => {
+          console.log('댓글 데이터 확인:', {
+            comment_id: serverComment.comments_id,
+            member_id: serverComment.member_id,
+            current_points: serverComment.current_points,
+            badge_level: getLevelLabel(serverComment.current_points)
+          });
+  
+          return {
+            id: serverComment.comments_id,
+            postId: postId,
+            author: serverComment.c_nickname ?? "Unknown",
+            content: serverComment.comments_contents,
+            date: serverComment.comments_date,
+            comment_like_counts: serverComment.comment_like_counts ?? 0,
+            comment_dislike_counts: serverComment.comment_dislike_counts ?? 0,
+            commentAuthor: serverComment.commentAuthor,
+            comment_like_status: serverComment.comment_like_status ?? false,
+            comment_dislike_status: serverComment.comment_dislike_status ?? false,
+            current_points: serverComment.current_points,
+            member_badge_level: getLevelLabel(serverComment.current_points),  // 개인 포인트로만 레벨 계산
+            member_id: serverComment.member_id,
+          };
+        });
   
         console.log("변환된 댓글 데이터:", newComments);
         setComments(newComments);
       }
-    } catch (error: any) { // error 타입을 any로 명시
+    } catch (error: any) {
       console.error("댓글 데이터를 가져오는 중 오류 발생:", error);
       if (error.response) {
         console.error("에러 응답:", error.response.data);

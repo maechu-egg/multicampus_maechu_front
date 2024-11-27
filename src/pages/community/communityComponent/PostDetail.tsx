@@ -8,25 +8,7 @@ import { useAuth } from "context/AuthContext";
 import ConfirmModal from "./ConfirmModal";
 import AlertModal from "./AlertModal";
 import { useComment } from "hooks/community/useComment";
-
-
-interface Comment {
-  id: number;
-  postId: number;
-  author: string;
-  content: string;
-  date: string;
-  comment_like_counts: number;
-  comment_dislike_counts: number;
-  comment_like_status: boolean;
-  comment_dislike_status: boolean;
-  commentAuthor: boolean;
-  current_points : number;
-  crew_current_points:number;
-  member_badge_level:string;
-  crew_badge_level : string;
-  crew_battle_wins : number;
-}
+import { Comment } from '../../../hooks/community/useComment';  // Comment 타입 import
 
 interface PostDetailProps {
   post_id: number;
