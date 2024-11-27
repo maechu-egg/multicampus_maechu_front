@@ -114,12 +114,12 @@ const PostList: React.FC<PostListProps> = ({
     기본: '/img/personalBadge/badgeDefault.png',
   };
   const CrowBadgeImages: { [key: string]: string } = {
-    다이아몬드: '/img/crewBadge/crewBadgeDiamond.png',
-    플래티넘: '/img/crewBadge/crewBadgePlatinum.png',
-    골드: '/img/crewBadge/crewBadgeGold.png',
-    실버: '/img/crewBadge/crewBadgeSilver.png',
-    브론즈: '/img/crewBadge/crewBadgeBronze.png',
-    기본: '/img/crewBadge/crewBadgeDefault.png',
+    다이아몬드: '/img/crewMemberBadge/CrewBadgeDiamond.png',
+    플래티넘: '/img/crewMemberBadge/CrewBadgePlatinum.png',
+    골드: '/img/crewMemberBadge/CrewBadgeGold.png',
+    실버: '/img/crewMemberBadge/CrewBadgeSilver.png',
+    브론즈: '/img/crewMemberBadge/CrewBadgeBronze.png',
+    기본: '/img/crewMemberBadge/CrewBadgeDefault.png',
   };
   const getMBadgeImage = (level: string): string => {
     return MamberBadgeImages[level] || MamberBadgeImages['기본'];
