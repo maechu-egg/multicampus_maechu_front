@@ -61,15 +61,15 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
     // 뱃지 레벨에 따른 이미지 세팅
     useEffect(() => {
         if(member.badge_level === "브론즈") {
-            setImgPath("/img/crewMemberBadge/CrewBadgeBronze.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeBronze.jpg");
         } else if(member.badge_level === "실버") {
-            setImgPath("/img/crewMemberBadge/CrewBadgeSilver.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeSilver.jpg");
         } else if(member.badge_level === "골드") {
-            setImgPath("/img/crewMemberBadge/CrewBadgeGold.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeGold.jpg");
         } else if(member.badge_level === "플래티넘") {
-            setImgPath("/img/crewMemberBadge/CrewBadgePlatinum.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgePlatinum.jpg");
         } else if(member.badge_level === "다이아") {
-            setImgPath("/img/crewMemberBadge/CrewBadgeDiamond.png");
+            setImgPath("/img/crewMemberBadge/CrewBadgeDiamond.jpg");
         } else if(member.badge_level === "기본") {
             setImgPath("/img/crewMemberBadge/CrewBadgeDefault.png");
         } else if(member.badge_level=== null) {
