@@ -124,7 +124,7 @@
 }
 
 .progress {
-  background: gold;
+  background: #1D2636;
   height: 100%;
   transition: width 0.3s;
 }

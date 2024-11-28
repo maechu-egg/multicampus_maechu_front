@@ -134,7 +134,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             <p>개인 뱃지</p>
           </Badge>
           <Badge>
-            <img src={crewBadge} alt="크루 뱃지" />
+            <img 
+              src={crewBadge} 
+              alt="크루 뱃지" 
+              onError={(e) => {
+                e.currentTarget.src = '/img/crewBadge/crewBadgeDefault.png';
+              }}
+            />
             <p>크루 뱃지</p>
           </Badge>
         </BadgeContainer>

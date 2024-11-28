@@ -45,6 +45,7 @@ interface PostItemProps {
   onClick: () => void;
   member_id : number;
   onProfileClick: (member_id: number, post_nickname: string) => void;
+  onBadgeInfo: (member_id: number) => Promise<string>;
 }
 
 const badgeImages: { [key: string]: string } = {
@@ -78,11 +79,23 @@ const PostItem: React.FC<PostItemProps> = ({
   onClick,
   member_id,
   onProfileClick,
+  onBadgeInfo,
 }) => {
+  const [badgeLevel, setBadgeLevel] = useState("기본");
+  const [badgeImage, setBadgeImage] = useState(badgeImages['기본']);
+
+  useEffect(() => {
+    const fetchBadgeInfo = async () => {
+      const level = await onBadgeInfo(member_id);
+      setBadgeLevel(level);
+      setBadgeImage(badgeImages[level]);
+    };
+
+    fetchBadgeInfo();
+  }, [member_id, onBadgeInfo]);
 
   // 해시태그 문자열을 쉼표와 공백(", ") 기준으로 나누어 배열로 변환
   const hashtagArray = post_hashtag ? post_hashtag.split(", ") : [];
-  const badgeImage = getBadgeImage(member_badge_level);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
  
@@ -148,7 +161,7 @@ const PostItem: React.FC<PostItemProps> = ({
                <div className="nickname-container">
                  {post_nickname}
                </div>
-               <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />
+               <img src={badgeImage} alt={`${badgeLevel} badge`} className="member_badge_img" />
              </li>
            </ul>
          </>
@@ -162,7 +175,7 @@ const PostItem: React.FC<PostItemProps> = ({
              <div className="nickname-container">
                {post_nickname}
              </div>
-             <img src={badgeImage} alt={`${member_badge_level} badge`} className="member_badge_img" />
+             <img src={badgeImage} alt={`${badgeLevel} badge`} className="member_badge_img" />
            </li>
            <li className="post-date" onClick={onClick}>{formatDate(post_date)}
           </li>

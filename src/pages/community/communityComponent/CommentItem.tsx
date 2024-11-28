@@ -4,8 +4,7 @@ import { formatDate,  formatDateShort } from '../../../utils/dateFormat';
 import { commentApi } from 'services/api/community/commentApi';
 import type { Comment } from '../../../hooks/community/useComment';
 import ConfirmModal from './ConfirmModal';
-
-
+import api from 'services/api/axios';
 
 interface CommentItemProps {
   comment: Comment;

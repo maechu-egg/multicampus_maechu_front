@@ -60,6 +60,10 @@ function Header(): JSX.Element {
     localStorage.removeItem("memberId");
     dispatch({ type: "LOGOUT" });
     navigate("/");
+       window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   // 상태 변경 시 로그 출력
@@ -71,7 +75,7 @@ function Header(): JSX.Element {
     <Container ref={HeaderRef} className={isScrolled ? "scrolled" : ""}>
       <HamburgerMenuIcon onClick={toggleMenu} className="hamburger-menu" />
       <Link to="/">
-        <Logo src={MainLogo} alt="Main Logo" />
+        <Logo src={MainLogo} alt="Main Logo" onClick={handleNavigate}/>
       </Link>
       <Tabs>
         <Tab>
@@ -99,17 +103,17 @@ function Header(): JSX.Element {
       <AuthButtons>
         {state.token ? (
           <>
-            <Link to="/mypage" style={{ textDecoration: "none" }}>
-              <Sign>My Page</Sign>
+            <Link to="/mypage" style={{ textDecoration: "none" }} >
+              <Sign  onClick={handleNavigate}>My Page</Sign>
             </Link>
             <Login onClick={handleLogout}>Logout</Login>
           </>
         ) : (
           <>
-            <Link to="/signpage" style={{ textDecoration: "none" }}>
+            <Link to="/signpage" style={{ textDecoration: "none" }}  onClick={handleNavigate}>
               <Sign>Sign up</Sign>
             </Link>
-            <Link to="/loginpage" style={{ textDecoration: "none" }}>
+            <Link to="/loginpage" style={{ textDecoration: "none" }}  onClick={handleNavigate}>
               <Login>Login</Login>
             </Link>
           </>
@@ -120,16 +124,16 @@ function Header(): JSX.Element {
       <Sidebar $isClickMenuBtn={isClickMenuBtn}>
         <CloseIcon onClick={handleCloseMenu} />
         <SidebarContent>
-          <Tab onClick={toggleMenu}>
+          <Tab onClick={()=>{toggleMenu(); handleNavigate(); }}>
             <Link to="/communitypage">커뮤니티</Link>
           </Tab>
-          <Tab onClick={toggleMenu}>
+          <Tab onClick={()=>{toggleMenu(); handleNavigate(); }}>
             <Link to="/crewpage">운동 크루</Link>
           </Tab>
-          <Tab onClick={toggleMenu}>
+          <Tab onClick={()=>{toggleMenu(); handleNavigate(); }}>
             <Link to="/aboutpage">워크스페이스</Link>
           </Tab>
-          <Tab onClick={toggleMenu}>
+          <Tab onClick={()=>{toggleMenu(); handleNavigate(); }}>
             <Link to="/recordpage">나의 기록</Link>
           </Tab>
         </SidebarContent>

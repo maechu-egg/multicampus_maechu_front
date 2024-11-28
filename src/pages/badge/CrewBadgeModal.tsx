@@ -180,11 +180,12 @@ function CrewBadgeModal({
             다음등급: badgeInfo.nextBadge,
             필요점수: badgeInfo.requiredScore,
           });
+          
 
           setCurrentBadgeInfo({
-            currentBadge: badgeData.badge_level,
-            nextBadge: badgeInfo.nextBadge || "",
-            image: crewBadgeImages[badgeData.badge_level as BadgeLevel],
+            currentBadge: badgeInfo.currentBadge, // badgeInfo에서 currentBadge 가져오기
+            nextBadge: badgeInfo.nextBadge || "", // badgeInfo에서 nextBadge 가져오기
+            image: badgeInfo.image, // badgeInfo에서 image 가져오기
           });
 
           setScore(currentScore);
