@@ -231,7 +231,7 @@ useEffect(() => {
     if (!isSearchActive && activePost_sport === "") {
       fetchRecommendedPosts(activeTab);
     }
-  }, [activeTab]);
+  }, [activeTab, activePost_sport]);
 
   useEffect(() => {
     if (currentPage >= 1) {
