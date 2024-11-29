@@ -68,7 +68,7 @@ function CrewMemberCardEdit({ member, crewId, onClick }: CrewInfoProps): JSX.Ele
             setImgPath("/img/crewMemberBadge/CrewBadgeGold.jpg");
         } else if(member.badge_level === "플래티넘") {
             setImgPath("/img/crewMemberBadge/CrewBadgePlatinum.jpg");
-        } else if(member.badge_level === "다이아") {
+        } else if(member.badge_level === "다이아몬드") {
             setImgPath("/img/crewMemberBadge/CrewBadgeDiamond.jpg");
         } else if(member.badge_level === "기본") {
             setImgPath("/img/crewMemberBadge/CrewBadgeDefault.png");
