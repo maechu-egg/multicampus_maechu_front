@@ -4,8 +4,7 @@ import RecommendedPostsItem from "./RecommendedPostsItem";
 import styled from "styled-components";
 import "./RecommendedPostsItem.css"; 
 import ProfileModal from "./ProfileModal";
-import axios from "axios";
-
+import api from '../../../services/api/axios';
 /* 게시물 목록을 표시하는 컴포넌트 */
 interface Comment {
   id: number;
@@ -114,12 +113,12 @@ const PostList: React.FC<PostListProps> = ({
     기본: '/img/personalBadge/badgeDefault.png',
   };
   const CrowBadgeImages: { [key: string]: string } = {
-    다이아몬드: '/img/crewBadge/crewBadgeDiamond.png',
-    플래티넘: '/img/crewBadge/crewBadgePlatinum.png',
-    골드: '/img/crewBadge/crewBadgeGold.png',
-    실버: '/img/crewBadge/crewBadgeSilver.png',
-    브론즈: '/img/crewBadge/crewBadgeBronze.png',
-    기본: '/img/crewBadge/crewBadgeDefault.png',
+    다이아몬드: '/img/crewBadge/CrewBadgeDiamond.png',
+    플래티넘: '/img/crewBadge/CrewBadgePlatinum.png',
+    골드: '/img/crewBadge/CrewBadgeGold.png',
+    실버: '/img/crewBadge/CrewBadgeSilver.png',
+    브론즈: '/img/crewBadge/CrewBadgeBronze.png',
+    기본: '/img/crewBadge/CrewBadgeDefault.png',
   };
   const getMBadgeImage = (level: string): string => {
     return MamberBadgeImages[level] || MamberBadgeImages['기본'];
@@ -140,7 +139,7 @@ const PostList: React.FC<PostListProps> = ({
         return;
       }
   
-      const response = await axios.get(`http://localhost:8080/community/posts/showprofile`, {
+      const response = await api.get(`/community/posts/showprofile`, {
         params: {
           member_id: member_id, // 쿼리 파라미터로 전달
         },
@@ -165,6 +164,31 @@ const PostList: React.FC<PostListProps> = ({
     setIsModalOpen(false);
   };
   
+  const handleBadgeInfo = async (member_id: number): Promise<string> => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return "기본";  // 토큰이 없을 때도 문자열 반환
+      }
+
+      const response = await api.get(`/community/posts/showprofile`, {
+        params: {
+          member_id: member_id,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { current_points } = response.data;
+      const level = getLevelLabel(current_points);
+      return level || "기본";  // undefined가 반환되지 않도록 보장
+    } catch (error) {
+      console.error("뱃지 데이터를 가져오는 중 오류 발생:", error);
+      return "기본";
+    }
+  };
 
   return (
     <div className="postlist_wrap">
@@ -200,6 +224,7 @@ const PostList: React.FC<PostListProps> = ({
             onProfileClick={(member_id: number, post_nickname: string) =>
               handleProfileClick(member_id, post_nickname)
             }
+            onBadgeInfo={handleBadgeInfo}
             onClick={() => onPostClick(post, false)}
             isRecommended={false}
           />

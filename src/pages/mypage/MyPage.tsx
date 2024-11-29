@@ -132,6 +132,12 @@ function MyPage(): JSX.Element {
   const closeProfileModal = () => setProfileModalOpen(false);
 
   const handleCategoryClick = async (category: string) => {
+    
+    window.scrollTo({
+      top: 0,
+        behavior: "smooth",
+      });
+      
     setSelectedCategory(category);
     let endpoint = "";
     if (category === "내가 쓴 글") {
@@ -163,6 +169,8 @@ function MyPage(): JSX.Element {
         console.error("Error fetching data:", error);
       }
     }
+    
+
   };
 
   const fetchUserInfo = async () => {
@@ -246,7 +254,6 @@ function MyPage(): JSX.Element {
   };
 
   return (
-    <Wrapper>
     <Container>
       <Header>
         {userInfo ? (
@@ -381,7 +388,7 @@ function MyPage(): JSX.Element {
         ) : null}
       </Content>
     </Container>
-    </Wrapper>
+
   );
 }
 
@@ -399,10 +406,15 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  height: auto;
+  min-height:1000px;
   background-color: #b6c0d3;
   z-index: 3;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+  }
 `;
 
 const Header = styled.div`
@@ -410,21 +422,22 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  height:100%;
   border-bottom: 0.8px solid #666;
   background-color: #f4f4f4;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   padding-top: 20px;
 
   @media (min-width: 900px) {
-    width: 30%;
-    height: 100%;
-    position: fixed;
-    top: 0;
+    max-width: 30%;
+    min-height:100vh;
+    position: sticky;
+    top: 98px;
     left: 0;
     background-color: #f4f4f4;
     border-right: 1px solid #ddd;
 
-    padding: 130px 25px 80px 25px;
+    padding: 50px 25px 80px 25px;
     align-items: flex-start;
     overflow-y: auto;
   }
@@ -448,15 +461,14 @@ const AccountIcon = styled.img`
 const Content = styled.div`
   margin-top: 30px;
   width: 75%;
-  height: 1000px;
-
+  margin-bottom: 100px;
   @media (min-width: 900px) {
-    margin-left: 30%;
+    margin-left: 2%;
+    margin-right: 1.5%;
   }
   @media(max-width:900px){
     width:95%;
   }
-
 `;
 
 const IconWrapper = styled.div`
@@ -575,7 +587,7 @@ const Info = styled.div`
     text-align: center;
     padding-top: 10px;
   }
-  @media(max-width:495px){
+   @media(max-width:495px){
     h3{
       font-size:0.8em
     }
@@ -645,7 +657,6 @@ const ProgressBar = styled.div<{ progress: number }>`
     background-color: #a5a4a4;
     transition: background-color 0.3s ease;
   }
-
   @media (min-width: 900px) {
     align-items: center;
     text-align: center;
@@ -654,7 +665,6 @@ const ProgressBar = styled.div<{ progress: number }>`
   @media(max-width:495px){
     height:16px;
   }
-
 `;
 
 const ProgressLabel = styled.span`

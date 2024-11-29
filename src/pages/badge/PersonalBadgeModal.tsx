@@ -191,12 +191,9 @@ function PersonalBadgeModal({
         const badgeInfo = getBadgeInfo(badgeData.current_points || 0);
 
         setCurrentBadgeInfo({
-          currentBadge: badgeData.badge_level,
+          currentBadge: badgeInfo.currentBadge, // badgeInfo에서 currentBadge 가져오기
           nextBadge: badgeInfo.nextBadge || "",
-          image:
-            badgeImages[
-              badgeData.badge_level.toLowerCase() as keyof typeof badgeImages
-            ] || badgeImages.default,
+          image: badgeInfo.image, 
         });
 
         if (badgeInfo.requiredScore) {

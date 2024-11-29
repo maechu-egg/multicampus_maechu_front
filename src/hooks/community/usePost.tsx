@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // AuthContext import 추가
 import { useComment } from './useComment';
 import axios from 'axios';
+import api from 'services/api/axios';
+
 
 export interface Comment {
   id: number;
@@ -177,18 +179,37 @@ export const usePost = () => {
         alert("로그인이 필요합니다.");
         return;
       }
-  
+
       const response = await postApi.getPostDetail(post.post_id, isRecommended, token);
-      setSelectedPost(response.data);
+      
+      // 게시글 작성자의 프로필 정보도 함께 가져오기
+      const profileResponse = await api.get(`/community/posts/showprofile`, { 
+        params: {
+          member_id: post.member_id,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // 게시글 정보와 프로필 정보 합치기
+      const postData = {
+        ...response.data,
+        current_points: profileResponse.data.current_points,
+        crew_current_points: profileResponse.data.crew_current_points
+      };
+
+      console.log('Post detail with profile:', postData);
+      setSelectedPost(postData);
       setIsAuthor(response.data.Author);
-      getComments(post.post_id);  // 댓글 가져오기 추가
-       // 페이지 상단으로 스크롤
+      getComments(post.post_id);
+
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
       });
     } catch (error) {
-      console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
+      console.error("게시글 상세 정보를 가져오는 중 오류 발생:", error);
     }
   };
 

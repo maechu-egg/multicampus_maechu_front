@@ -71,25 +71,25 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
           const response = await api.get('/crew_badges/ranking', config);
           console.log('[DEBUG] 크루 뱃지 랭킹 응답:', response.data);
           
-          // 백엔드 응답 데이터를 그대로 사용
-          const rankings = response.data;
-          const current = rankings.find((user: CrewRankUser) => 
+          // 전체 데이터 저장
+          setTopRanks(response.data);
+          const current = response.data.find((user: CrewRankUser) => 
             user.member_id === Number(memberId)
           );
-        
-          setTopRanks(rankings);
+          
           if (current) {
             setCurrentRank(current);
           }
         }
         else {
           const response = await api.get('/badges/user/rankings', config);
-          const rankings = response.data;
-          const current = rankings.find((user: PersonalRankUser) => 
+          
+          // 여기도 전체 데이터 저장으로 수정
+          setTopRanks(response.data);
+          const current = response.data.find((user: PersonalRankUser) => 
             user.memberId === Number(memberId)
           );
-  
-          setTopRanks(rankings);
+
           if (current) {
             setCurrentRank(current);
           }
@@ -104,6 +104,13 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
   
     fetchRankings();
   }, [isCrew, token, memberId]);
+
+  const getBadgeImage = (level: string): string => {
+    if (level === '다이아') {
+      return badgeImages['다이아몬드'];
+    }
+    return badgeImages[level as BadgeLevel] || badgeImages['기본'];
+  };
 
   const renderUserInfo = (rank: PersonalRankUser | CrewRankUser) => {
     if (isCrew) {
@@ -127,11 +134,19 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
       );
     } else {
       const personalRank = rank as PersonalRankUser;
+      
+      console.log('Personal Badge Info:', {
+        nickname: personalRank.nickname,
+        badgeLevel: personalRank.badgeLevel,
+        availableKeys: Object.keys(badgeImages),
+        imagePath: getBadgeImage(personalRank.badgeLevel)
+      });
+
       return (
         <div className="user-info-personal">
           <div className="badge-nickname-container">
             <img 
-              src={badgeImages[personalRank.badgeLevel]} 
+              src={getBadgeImage(personalRank.badgeLevel)} 
               alt={personalRank.badgeLevel} 
               className="rank-badge-image"
             />
@@ -160,7 +175,11 @@ function BadgeRankSection({ isCrew = false }: BadgeRankSectionProps) {
       </h3>
       
       <div className="rank-list">
-        {topRanks.map((rank, index) => {
+        {topRanks.sort((a, b) => {
+          const pointsA = isCrew ? (a as CrewRankUser).crew_current_points : (a as PersonalRankUser).currentPoints;
+          const pointsB = isCrew ? (b as CrewRankUser).crew_current_points : (b as PersonalRankUser).currentPoints;
+          return pointsB - pointsA;  // 내림차순 정렬
+        }).slice(0, 10).map((rank, index) => {
           const rankId = isCrew ? (rank as CrewRankUser).member_id : (rank as PersonalRankUser).memberId;
           const currentRankId = isCrew 
             ? (currentRank as CrewRankUser)?.member_id 

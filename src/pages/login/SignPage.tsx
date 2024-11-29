@@ -191,6 +191,10 @@ function SignPage(): JSX.Element {
         axiosError.response ? axiosError.response.data : axiosError.message
       );
     }
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const isSignUpEnabled =

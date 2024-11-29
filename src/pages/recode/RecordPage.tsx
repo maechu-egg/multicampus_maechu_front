@@ -61,6 +61,13 @@ function RecordPage(): JSX.Element {
   const closeLoginWarning = () => {
     setIsLoginWarningOpen(false);
   };
+  const handleNavigate = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
 
   // 현재 날짜 기준 월 데이터 조회
   const fetchMonthData = async (date: Date) => {
@@ -255,22 +262,27 @@ function RecordPage(): JSX.Element {
                 </CloseButton>
                 <ModalHeader>{selectedDate}</ModalHeader>
                 <ButtonGroup>
-                {exerciseDates.includes(selectedDate) && (
-                    <ModalButton
-                      onClick={() =>
-                        navigate(`/record/exercise/${selectedDate}`)
-                      }
-                    >
-                      💪🏻 운동
-                    </ModalButton>
-                  )}
-                  {dietDates.includes(selectedDate) && (
-                    <ModalButton
-                      onClick={() => navigate(`/record/diet/${selectedDate}`)}
-                    >
-                      🥗 식단
-                    </ModalButton>
-                  )}                </ButtonGroup>
+                {(exerciseDates.includes(selectedDate) || selectedDate === new Date().toISOString().split('T')[0]) && (
+                  <ModalButton
+                    onClick={() =>{
+                      handleNavigate();
+                      navigate(`/record/exercise/${selectedDate}`);
+                    }}
+                  >
+                    💪🏻 운동
+                  </ModalButton>
+                )}
+                {(dietDates.includes(selectedDate) || selectedDate === new Date().toISOString().split('T')[0]) && (
+                  <ModalButton
+                    onClick={() => {
+                      handleNavigate();
+                      navigate(`/record/diet/${selectedDate}`);
+                    }}
+                  >
+                    🥗 식단
+                  </ModalButton>
+                )}
+                  </ButtonGroup>
               </ModalContent>
             </ModalOverlay>
           )}

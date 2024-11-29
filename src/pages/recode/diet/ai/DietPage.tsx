@@ -1,5 +1,4 @@
 import api from "../../../../services/api/axios"; // axios import 추가
-import CalendarTooltip from "components/ui/record/calendar/CalendarTooltip";
 import { useAuth } from "context/AuthContext";
 import { useEffect, useState } from "react";
 import { FaRegQuestionCircle } from "react-icons/fa";
@@ -121,7 +120,6 @@ function DietPage() {
   const [isSnackDetailModalOpen, setIsSnackDetailModalOpen] = useState(false);
   const [meals, setMeals] = useState<MealPlanData | null>(null); // meals 상태 추가
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
-
 
   const dietRecords = [
     { food: "breakfast"},
@@ -328,11 +326,10 @@ const getMealDataFromTable = (plan: any): MealPlanData => {
       return;
     }
 
-    fetchData();
     findDiet();
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.token]);
+    fetchData();
 
+  }, [state.token]);
 
   const fetchData = async () => {
     console.log("debug >>> fetchData start !!! ");
